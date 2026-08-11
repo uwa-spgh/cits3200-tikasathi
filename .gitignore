@@ -1,0 +1,62 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# Environment & Secrets (Figma tokens, API keys, signing keys)
+.env*
+mcp_config.json
+key.properties
+*.keystore
+*.jks
+
+# IDE & Editor Settings
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+
+# Flutter / Dart / Pub
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+/coverage/
+
+# Android auto-generated & build files
+android/local.properties
+android/app/debug
+android/app/profile
+android/app/release
+.gradle/
+
+# iOS / macOS auto-generated files
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/app.flttmp
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/ephemeral/
+**/macos/Flutter/ephemeral/
+**/ios/Pods/
+
+# Desktop platform ephemeral build files (Windows / Linux)
+windows/flutter/ephemeral/
+linux/flutter/ephemeral/
+
+# Symbolication & Obfuscation
+app.*.symbols
+app.*.map.json
