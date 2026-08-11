@@ -80,54 +80,50 @@ This repository is equipped with custom, community-proven AI steering skills loc
 - **proven_drift_sqlite:** Enforces offline-first Data Access Objects (DAOs) and watching database streams natively with Riverpod.
 - **proven_flutter_testing:** Enforces `ProviderScope` wrapping for widget tests and mandates running CI checks locally before submitting code.
 
-## 7. Getting Started for Developers
+## 7. Quick Start Guide for Developers
 
-Welcome to the team! Follow these instructions to get your local environment ready for this project:
+Welcome to the team! Follow this step-by-step Quick Start guide to set up your local environment and begin feature development:
 
-### 1. Install Flutter
-If you haven't already, install the [Flutter SDK](https://docs.flutter.dev/get-started/install). Ensure that `flutter doctor` runs cleanly on your machine and that `flutter` is available on your system PATH.
+### Step 1: Prerequisites & SDK Setup
+1. Install the [Flutter SDK](https://docs.flutter.dev/get-started/install) (version 3.22+).
+2. Ensure `flutter` is available on your system `PATH` and that `flutter doctor` runs without critical errors.
+3. > [!WARNING]
+   > **Windows Users:**
+   > Flutter requires symlink support to build plugins. You **must** enable **Developer Mode** in Windows before fetching dependencies:
+   > 1. Open your terminal and run `start ms-settings:developers`
+   > 2. Toggle **Developer Mode** to **ON**.
 
-### 2. Fetch Dependencies
-This project uses a custom scaffold. Run the following command in the root of the project to fetch all required dependencies (Riverpod, Drift, Freezed, etc.):
+### Step 2: Fetch Dependencies
+Run the following command in the project root:
 ```bash
 flutter pub get
 ```
-> [!WARNING]
-> **Windows Users:**
-> Flutter requires symlink support to build plugins. You must enable **Developer Mode** in Windows before running `flutter pub get`. 
-> 1. Open your terminal and run `start ms-settings:developers`
-> 2. Toggle **Developer Mode** ON.
 
-### 3. Generate Code
-We use `build_runner` for Riverpod, Freezed, and Drift code generation. After fetching dependencies, generate all required `.g.dart` files:
+### Step 3: Start Code Generation (Watch Mode)
+We use `build_runner` for Riverpod state providers (`.g.dart`), Freezed models, and Drift SQLite databases.
+During active development, run build_runner in **watch mode** so generated files update automatically whenever you save a file:
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner watch --delete-conflicting-outputs
 ```
-> [!NOTE]
-> We **commit generated files** (`.g.dart`, `.freezed.dart`) to the repository. You only need to re-run this command when you change a file containing `@riverpod`, `@freezed`, or Drift annotations.
+*(Alternatively, for a single manual build pass, run: `dart run build_runner build --delete-conflicting-outputs`)*
 
-### 4. Verify Locally
-Before pushing any code, run the same checks that CI will enforce on your Pull Request:
+### Step 4: Explore the Reference Feature
+If you are new to Flutter or Riverpod, examine the `example_counter` feature before writing new code:
+* **UI Screen:** [counter_screen.dart](file:///c:/Users/tobyf/Desktop/cits3200-tikasathi/lib/features/example_counter/presentation/counter_screen.dart) — Shows `ConsumerWidget`, `ref.watch()` for UI rebuilds, and `ref.read()` for button actions.
+* **State Logic:** [counter_notifier.dart](file:///c:/Users/tobyf/Desktop/cits3200-tikasathi/lib/features/example_counter/domain/counter_notifier.dart) — Demonstrates modern `@riverpod` annotations.
+* **Tests:** [counter_notifier_test.dart](file:///c:/Users/tobyf/Desktop/cits3200-tikasathi/test/features/example_counter/domain/counter_notifier_test.dart) & [counter_screen_test.dart](file:///c:/Users/tobyf/Desktop/cits3200-tikasathi/test/features/example_counter/presentation/counter_screen_test.dart).
+* **Crash Course:** Read [DEVELOPER_GUIDE.md](file:///c:/Users/tobyf/Desktop/cits3200-tikasathi/DEVELOPER_GUIDE.md) for a 5-minute Flutter & Riverpod 101 summary.
+
+### Step 5: Verify Locally Before Committing
+Before opening a Pull Request, verify your changes locally using the same checks enforced by GitHub Actions:
 ```bash
 dart format .
 flutter analyze
 flutter test
 ```
 
-### 5. Setup Figma AI Integration
-We use AI agents to translate Figma designs into Flutter code. To give your IDE access to our Figma files:
-1. Open your IDE's `mcp_config.json` file.
-2. Add the following Figma configuration, replacing the token with your own Personal Access Token:
-```json
-"figma": {
-  "command": "npx",
-  "args": ["-y", "@modelcontextprotocol/server-figma"],
-  "env": {
-    "FIGMA_ACCESS_TOKEN": "YOUR_FIGMA_PERSONAL_ACCESS_TOKEN"
-  }
-}
-```
+### Step 6: Git Workflow & Figma Integration
+* **Branching Strategy:** Review [CONTRIBUTING.md](file:///c:/Users/tobyf/Desktop/cits3200-tikasathi/CONTRIBUTING.md) for `feature/`, `fix/`, and `chore/` branch naming and Conventional Commit rules.
+* **Figma MCP Server:** If configured in your IDE, AI agents can extract design tokens directly from Figma links. Configure `@modelcontextprotocol/server-figma` in your `mcp_config.json` with your `FIGMA_ACCESS_TOKEN`.
 
-### 6. Read the Contributing Guide
-See `CONTRIBUTING.md` for our Git branching strategy, commit message conventions, and Pull Request workflow.
 

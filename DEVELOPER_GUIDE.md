@@ -59,3 +59,20 @@ Because we use `@riverpod` (and `Freezed` for models), a lot of code is generate
 dart run build_runner build --delete-conflicting-outputs
 ```
 *(If you see red squiggly lines saying `.g.dart` is missing, you forgot to run this command!)*
+
+> [!TIP]
+> **Pro Tip:** During active development, use `watch` mode instead of `build` so that code regenerates automatically whenever you save a file:
+> ```bash
+> dart run build_runner watch --delete-conflicting-outputs
+> ```
+
+---
+
+## 🌐 Localization (EN / NP)
+
+The app supports English and Nepali. Translation strings live in ARB files inside `lib/core/l10n/`:
+- `app_en.arb` — English strings
+- `app_ne.arb` — Nepali strings
+
+When you add a new user-facing string, add it to **both** ARB files. See Flutter's [Internationalizing Flutter apps](https://docs.flutter.dev/accessibility-and-internationalization/internationalization) guide for more details.
+
