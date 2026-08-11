@@ -79,3 +79,35 @@ This repository is equipped with custom, community-proven AI steering skills loc
 - **proven_flutter_riverpod:** Mandates modern `@riverpod` codegen and strict immutable models using `freezed`.
 - **proven_drift_sqlite:** Enforces offline-first Data Access Objects (DAOs) and watching database streams natively with Riverpod.
 - **proven_flutter_testing:** Enforces `ProviderScope` wrapping for widget tests and mandates running CI checks locally before submitting code.
+
+## 7. Getting Started for Developers
+
+Welcome to the team! Follow these instructions to get your local environment ready for this project:
+
+### 1. Install Flutter
+If you haven't already, install the [Flutter SDK](https://docs.flutter.dev/get-started/install). Ensure that `flutter doctor` runs cleanly on your machine.
+
+### 2. Fetch Dependencies
+This project uses a custom scaffold. Run the following command in the root of the project to fetch all required dependencies (Riverpod, Drift, Freezed, etc.):
+```bash
+flutter pub get
+```
+> [!WARNING]
+> **Windows Users:**
+> Flutter requires symlink support to build plugins. You must enable **Developer Mode** in Windows before running `flutter pub get`. 
+> 1. Open your terminal and run `start ms-settings:developers`
+> 2. Toggle **Developer Mode** ON.
+
+### 3. Setup Figma AI Integration
+We use AI agents to translate Figma designs into Flutter code. To give your IDE access to our Figma files:
+1. Open your IDE's `mcp_config.json` file.
+2. Add the following Figma configuration, replacing the token with your own Personal Access Token:
+```json
+"figma": {
+  "command": "npx",
+  "args": ["-y", "@modelcontextprotocol/server-figma"],
+  "env": {
+    "FIGMA_ACCESS_TOKEN": "YOUR_FIGMA_PERSONAL_ACCESS_TOKEN"
+  }
+}
+```

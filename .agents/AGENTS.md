@@ -13,3 +13,6 @@ You MUST adhere to the instructions laid out in the following skills found in `.
 - `proven_flutter_riverpod`
 - `proven_drift_sqlite`
 - `proven_flutter_testing`
+
+## Agent Documentation Rule
+**CRITICAL:** If you modify any features, architecture, or core configuration in this repository, you MUST verify and update the root `README.md` to ensure the project documentation remains perfectly up-to-date with your changes. Do not leave the README out of sync with the codebase.
