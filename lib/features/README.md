@@ -5,7 +5,7 @@ Each feature should ideally be split into:
 - `domain/`: Business logic, models (Freezed), and interfaces.
 - `data/`: Repositories and Data sources handling Drift calls.
 
-## Active Features
+## Features To Develop
 - `child_profile`: Handling registration and tracking of children.
 - `vaccine_schedule`: Calculation of NIP schedules and catch-up logic.
 - `education`: Health information and Myth/Fact sheets.

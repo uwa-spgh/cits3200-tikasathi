@@ -85,7 +85,7 @@ This repository is equipped with custom, community-proven AI steering skills loc
 Welcome to the team! Follow these instructions to get your local environment ready for this project:
 
 ### 1. Install Flutter
-If you haven't already, install the [Flutter SDK](https://docs.flutter.dev/get-started/install). Ensure that `flutter doctor` runs cleanly on your machine.
+If you haven't already, install the [Flutter SDK](https://docs.flutter.dev/get-started/install). Ensure that `flutter doctor` runs cleanly on your machine and that `flutter` is available on your system PATH.
 
 ### 2. Fetch Dependencies
 This project uses a custom scaffold. Run the following command in the root of the project to fetch all required dependencies (Riverpod, Drift, Freezed, etc.):
@@ -98,7 +98,23 @@ flutter pub get
 > 1. Open your terminal and run `start ms-settings:developers`
 > 2. Toggle **Developer Mode** ON.
 
-### 3. Setup Figma AI Integration
+### 3. Generate Code
+We use `build_runner` for Riverpod, Freezed, and Drift code generation. After fetching dependencies, generate all required `.g.dart` files:
+```bash
+dart run build_runner build --delete-conflicting-outputs
+```
+> [!NOTE]
+> We **commit generated files** (`.g.dart`, `.freezed.dart`) to the repository. You only need to re-run this command when you change a file containing `@riverpod`, `@freezed`, or Drift annotations.
+
+### 4. Verify Locally
+Before pushing any code, run the same checks that CI will enforce on your Pull Request:
+```bash
+dart format .
+flutter analyze
+flutter test
+```
+
+### 5. Setup Figma AI Integration
 We use AI agents to translate Figma designs into Flutter code. To give your IDE access to our Figma files:
 1. Open your IDE's `mcp_config.json` file.
 2. Add the following Figma configuration, replacing the token with your own Personal Access Token:
@@ -111,3 +127,7 @@ We use AI agents to translate Figma designs into Flutter code. To give your IDE 
   }
 }
 ```
+
+### 6. Read the Contributing Guide
+See `CONTRIBUTING.md` for our Git branching strategy, commit message conventions, and Pull Request workflow.
+

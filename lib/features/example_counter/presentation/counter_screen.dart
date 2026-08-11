@@ -15,7 +15,7 @@ class CounterScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Example Feature')),
       body: Center(
         child: Text(
-          'Count: $count', 
+          'Count: $count',
           style: Theme.of(context).textTheme.headlineMedium,
         ),
       ),
