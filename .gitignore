@@ -60,3 +60,6 @@ linux/flutter/ephemeral/
 # Symbolication & Obfuscation
 app.*.symbols
 app.*.map.json
+
+# FVM Version Cache
+.fvm/
