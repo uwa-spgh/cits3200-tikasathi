@@ -48,8 +48,11 @@ Every pull request to the `main` or `develop` branch will trigger a workflow tha
 ## 4. Core Modules & Data Architecture
 
 ### Child Profile Management
-- Store UUID, Name, DOB, Sex, Caregiver details, and Ward Number.
+- Store UUID, Name, DOB and Sex.
 - **Validation:** Gracefully handle future dates or invalid inputs.
+
+### Caregiver Profile Management
+- Store UUID, Name, Phone Number and Address.
 
 ### Immunisation Engine
 - Automatically calculate age and generate the vaccine schedule (BCG, Pentavalent, Rotavirus, PCV, etc.) based on the Nepal NIP schedule.
