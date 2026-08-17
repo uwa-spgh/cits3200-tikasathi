@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 
 part 'daos/child_profiles_dao.dart';
 part 'tables/child_profiles.dart';
+part 'tables/vaccination_records.dart';
 part 'app_database.g.dart';
 
 /// The central Drift database for TikaSathi.
@@ -20,14 +21,28 @@ part 'app_database.g.dart';
 /// 5. Run: `dart run build_runner build --delete-conflicting-outputs`
 ///
 /// See the `proven_drift_sqlite` skill in `.agents/skills/` for the full pattern.
-@DriftDatabase(tables: [ChildProfiles], daos: [ChildProfilesDao])
+@DriftDatabase(
+  tables: [ChildProfiles, VaccinationRecords],
+  daos: [ChildProfilesDao],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
   AppDatabase.forTesting(super.e);
 
-  /// Bump this when you change a table schema and add a migration.
+  /// Pre-release: stay at 1. Do not add onUpgrade yet.
+  /// After a schema change, wipe the local app / delete `tikasathi.sqlite`.
+  /// Start versioned migrations after the first user release.
   @override
   int get schemaVersion => 1;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      beforeOpen: (OpeningDetails details) async {
+        await customStatement('PRAGMA foreign_keys = ON');
+      },
+    );
+  }
 }
 
 /// Opens a persistent SQLite database file in the app's documents directory.
