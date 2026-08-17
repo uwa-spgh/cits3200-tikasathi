@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 part 'daos/child_profiles_dao.dart';
+part 'daos/vaccination_records_dao.dart';
 part 'tables/child_profiles.dart';
 part 'tables/vaccination_records.dart';
 part 'app_database.g.dart';
@@ -23,7 +24,7 @@ part 'app_database.g.dart';
 /// See the `proven_drift_sqlite` skill in `.agents/skills/` for the full pattern.
 @DriftDatabase(
   tables: [ChildProfiles, VaccinationRecords],
-  daos: [ChildProfilesDao],
+  daos: [ChildProfilesDao, VaccinationRecordsDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
