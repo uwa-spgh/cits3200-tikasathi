@@ -23,6 +23,7 @@ The goal is to build an mHealth application for mothers and caregivers in low-re
 Based on the project constraints and team requirements, the following tech stack will be used:
 
 * **UI & Framework:** **Flutter (Dart)**. Flutter is highly performant on low-end hardware, natively compiles to both iOS and Android, and allows for a single unified codebase.
+* **Flutter Version Management:** **FVM** pins the project to Flutter 3.44.9, so every developer and the CI pipeline use a compatible Flutter and Dart toolchain.
 * **State Management:** **Riverpod**. A compile-safe, scalable state management solution that will handle the app's complex reactive state (e.g., updating UI instantly when a vaccine is marked completed).
 * **Local Database:** **Drift**. A reactive, type-safe SQLite library for Flutter. It is perfect for local data storage and offline-first persistence.
 * **Notifications:** `flutter_local_notifications` to interface with the device's native calendar and notification APIs for the 3-touch reminder system (1 week before, 1 day before, day-of).
@@ -85,9 +86,16 @@ This repository is equipped with custom, community-proven AI steering skills loc
 Welcome to the team! Follow this step-by-step Quick Start guide to set up your local environment and begin feature development:
 
 ### Step 1: Prerequisites & SDK Setup
-1. Install the [Flutter SDK](https://docs.flutter.dev/get-started/install) (version 3.22+).
-2. Ensure `flutter` is available on your system `PATH` and that `flutter doctor` runs without critical errors.
-3. > [!WARNING]
+1. Install [FVM](https://fvm.app/documentation/getting-started/installation), the Flutter Version Manager.
+2. From the project root, install the Flutter version pinned in `.fvmrc`:
+   ```bash
+   fvm install
+   ```
+3. Verify the development environment:
+   ```bash
+   fvm flutter doctor
+   ```
+4. > [!WARNING]
    > **Windows Users:**
    > Flutter requires symlink support to build plugins. You **must** enable **Developer Mode** in Windows before fetching dependencies:
    > 1. Open your terminal and run `start ms-settings:developers`
@@ -96,16 +104,16 @@ Welcome to the team! Follow this step-by-step Quick Start guide to set up your l
 ### Step 2: Fetch Dependencies
 Run the following command in the project root:
 ```bash
-flutter pub get
+fvm flutter pub get
 ```
 
 ### Step 3: Start Code Generation (Watch Mode)
 We use `build_runner` for Riverpod state providers (`.g.dart`), Freezed models, and Drift SQLite databases.
 During active development, run build_runner in **watch mode** so generated files update automatically whenever you save a file:
 ```bash
-dart run build_runner watch --delete-conflicting-outputs
+fvm dart run build_runner watch --delete-conflicting-outputs
 ```
-*(Alternatively, for a single manual build pass, run: `dart run build_runner build --delete-conflicting-outputs`)*
+*(Alternatively, for a single manual build pass, run: `fvm dart run build_runner build --delete-conflicting-outputs`)*
 
 ### Step 4: Explore the Reference Feature
 If you are new to Flutter or Riverpod, examine the `example_counter` feature before writing new code:
@@ -117,13 +125,12 @@ If you are new to Flutter or Riverpod, examine the `example_counter` feature bef
 ### Step 5: Verify Locally Before Committing
 Before opening a Pull Request, verify your changes locally using the same checks enforced by GitHub Actions:
 ```bash
-dart format .
-flutter analyze
-flutter test
+fvm dart format .
+fvm flutter analyze
+fvm flutter test
 ```
 
 ### Step 6: Git Workflow & Figma Integration
 * **Branching Strategy:** Review [CONTRIBUTING.md](file:///c:/Users/tobyf/Desktop/cits3200-tikasathi/CONTRIBUTING.md) for `feature/`, `fix/`, and `chore/` branch naming and Conventional Commit rules.
 * **Figma MCP Server:** If configured in your IDE, AI agents can extract design tokens directly from Figma links. Configure `@modelcontextprotocol/server-figma` in your `mcp_config.json` with your `FIGMA_ACCESS_TOKEN`.
-
 
