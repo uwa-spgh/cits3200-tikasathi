@@ -150,6 +150,31 @@ void main() {
       await subscription.cancel();
     });
 
+    test('rejects a duplicate child, vaccine, and dose number', () async {
+      const childId = 'child-1';
+      await insertChild(childId);
+      await vaccinationRecordsDao.insertVaccinationRecord(
+        VaccinationRecordsCompanion.insert(
+          id: 'record-1',
+          childId: childId,
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+        ),
+      );
+
+      expect(
+        () => vaccinationRecordsDao.insertVaccinationRecord(
+          VaccinationRecordsCompanion.insert(
+            id: 'record-2',
+            childId: childId,
+            vaccineCode: 'BCG',
+            doseNumber: 1,
+          ),
+        ),
+        throwsA(isA<Exception>()),
+      );
+    });
+
     test('rejects a vaccination record without a matching child', () async {
       expect(
         () => vaccinationRecordsDao.insertVaccinationRecord(

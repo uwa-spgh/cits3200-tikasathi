@@ -374,6 +374,10 @@ class $VaccinationRecordsTable extends VaccinationRecords
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+        {childId, vaccineCode, doseNumber},
+      ];
+  @override
   VaccinationRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return VaccinationRecord(
