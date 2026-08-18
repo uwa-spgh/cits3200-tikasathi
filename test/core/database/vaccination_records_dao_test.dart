@@ -1,0 +1,192 @@
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:tikasathi/core/database/app_database.dart';
+
+void main() {
+  group('VaccinationRecordsDao', () {
+    late AppDatabase database;
+    late ChildProfilesDao childProfilesDao;
+    late VaccinationRecordsDao vaccinationRecordsDao;
+
+    setUp(() {
+      database = AppDatabase.forTesting(NativeDatabase.memory());
+      childProfilesDao = database.childProfilesDao;
+      vaccinationRecordsDao = database.vaccinationRecordsDao;
+    });
+
+    tearDown(() async {
+      await database.close();
+    });
+
+    Future<void> insertChild(String id) {
+      return childProfilesDao.insertChildProfile(
+        ChildProfilesCompanion.insert(
+          id: id,
+          name: 'Aarav',
+          dateOfBirth: DateTime(2023, 4, 15),
+          sex: 'male',
+        ),
+      );
+    }
+
+    Future<List<VaccinationRecord>> recordsFor(String childId) {
+      return vaccinationRecordsDao
+          .watchVaccinationRecordsForChild(childId)
+          .first;
+    }
+
+    test('stores a vaccination record for a child', () async {
+      const childId = 'child-1';
+      const recordId = 'record-1';
+      const vaccineCode = 'BCG';
+      const doseNumber = 1;
+      const facilityName = 'Patan Hospital';
+      final administeredDate = DateTime(2023, 4, 16);
+
+      await insertChild(childId);
+      await vaccinationRecordsDao.insertVaccinationRecord(
+        VaccinationRecordsCompanion.insert(
+          id: recordId,
+          childId: childId,
+          vaccineCode: vaccineCode,
+          doseNumber: doseNumber,
+          administeredDate: Value(administeredDate),
+          facilityName: const Value(facilityName),
+        ),
+      );
+
+      final records = await recordsFor(childId);
+
+      expect(records, hasLength(1));
+      expect(records.single.id, recordId);
+      expect(records.single.childId, childId);
+      expect(records.single.vaccineCode, vaccineCode);
+      expect(records.single.doseNumber, doseNumber);
+      expect(records.single.administeredDate, administeredDate);
+      expect(records.single.facilityName, facilityName);
+    });
+
+    test('retrieves multiple vaccination records for one child', () async {
+      const childId = 'child-1';
+      await insertChild(childId);
+      await vaccinationRecordsDao.insertVaccinationRecord(
+        VaccinationRecordsCompanion.insert(
+          id: 'record-1',
+          childId: childId,
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+        ),
+      );
+      await vaccinationRecordsDao.insertVaccinationRecord(
+        VaccinationRecordsCompanion.insert(
+          id: 'record-2',
+          childId: childId,
+          vaccineCode: 'OPV',
+          doseNumber: 1,
+        ),
+      );
+
+      final records = await recordsFor(childId);
+
+      expect(records, hasLength(2));
+      expect(
+        records.map((record) => record.id),
+        containsAll(['record-1', 'record-2']),
+      );
+    });
+
+    test("does not return another child's vaccination records", () async {
+      await insertChild('child-a');
+      await insertChild('child-b');
+      await vaccinationRecordsDao.insertVaccinationRecord(
+        VaccinationRecordsCompanion.insert(
+          id: 'record-a',
+          childId: 'child-a',
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+        ),
+      );
+      await vaccinationRecordsDao.insertVaccinationRecord(
+        VaccinationRecordsCompanion.insert(
+          id: 'record-b',
+          childId: 'child-b',
+          vaccineCode: 'OPV',
+          doseNumber: 1,
+        ),
+      );
+
+      final recordsForA = await recordsFor('child-a');
+
+      expect(recordsForA, hasLength(1));
+      expect(recordsForA.single.id, 'record-a');
+    });
+
+    test('emits again when a vaccination record is added', () async {
+      const childId = 'child-1';
+      await insertChild(childId);
+
+      final events = <List<VaccinationRecord>>[];
+      final subscription = vaccinationRecordsDao
+          .watchVaccinationRecordsForChild(childId)
+          .listen(events.add);
+
+      await pumpEventQueue();
+      expect(events.last, isEmpty);
+
+      await vaccinationRecordsDao.insertVaccinationRecord(
+        VaccinationRecordsCompanion.insert(
+          id: 'record-1',
+          childId: childId,
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+        ),
+      );
+
+      await pumpEventQueue();
+      expect(events.last, hasLength(1));
+      expect(events.last.single.id, 'record-1');
+
+      await subscription.cancel();
+    });
+
+    test('rejects a duplicate child, vaccine, and dose number', () async {
+      const childId = 'child-1';
+      await insertChild(childId);
+      await vaccinationRecordsDao.insertVaccinationRecord(
+        VaccinationRecordsCompanion.insert(
+          id: 'record-1',
+          childId: childId,
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+        ),
+      );
+
+      expect(
+        () => vaccinationRecordsDao.insertVaccinationRecord(
+          VaccinationRecordsCompanion.insert(
+            id: 'record-2',
+            childId: childId,
+            vaccineCode: 'BCG',
+            doseNumber: 1,
+          ),
+        ),
+        throwsA(isA<Exception>()),
+      );
+    });
+
+    test('rejects a vaccination record without a matching child', () async {
+      expect(
+        () => vaccinationRecordsDao.insertVaccinationRecord(
+          VaccinationRecordsCompanion.insert(
+            id: 'record-1',
+            childId: 'missing-child',
+            vaccineCode: 'BCG',
+            doseNumber: 1,
+          ),
+        ),
+        throwsA(isA<Exception>()),
+      );
+    });
+  });
+}
