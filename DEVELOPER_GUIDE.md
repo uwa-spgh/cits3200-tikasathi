@@ -68,6 +68,21 @@ dart run build_runner build --delete-conflicting-outputs
 
 ---
 
+## 💾 Local database (pre-release)
+
+We use Drift / SQLite. The file is `tikasathi.sqlite` in the app documents directory.
+
+**Until the first user release, `schemaVersion` stays at 1.** Do not add `onUpgrade` steps for new tables. After you pull a schema change (new table, new column, unique key), wipe your local database so Drift can recreate it:
+
+- Uninstall the app from the simulator/device, or
+- Delete `tikasathi.sqlite` and hot-restart
+
+If you skip this, inserts can fail with `no such table` (or a similar schema error).
+
+After we ship to real users, schema changes must bump `schemaVersion` and add an `onUpgrade` migration. Wiping user data will no longer be OK.
+
+---
+
 ## 🌐 Localization (EN / NP)
 
 The app supports English and Nepali. Translation strings live in ARB files inside `lib/core/l10n/`:
