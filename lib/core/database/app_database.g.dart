@@ -308,8 +308,8 @@ class $VaccinationRecordsTable extends VaccinationRecords
       const VerificationMeta('administeredDate');
   @override
   late final GeneratedColumn<DateTime> administeredDate =
-      GeneratedColumn<DateTime>('administered_date', aliasedName, true,
-          type: DriftSqlType.dateTime, requiredDuringInsert: false);
+      GeneratedColumn<DateTime>('administered_date', aliasedName, false,
+          type: DriftSqlType.dateTime, requiredDuringInsert: true);
   static const VerificationMeta _facilityNameMeta =
       const VerificationMeta('facilityName');
   @override
@@ -361,6 +361,8 @@ class $VaccinationRecordsTable extends VaccinationRecords
           _administeredDateMeta,
           administeredDate.isAcceptableOrUnknown(
               data['administered_date']!, _administeredDateMeta));
+    } else if (isInserting) {
+      context.missing(_administeredDateMeta);
     }
     if (data.containsKey('facility_name')) {
       context.handle(
@@ -390,7 +392,7 @@ class $VaccinationRecordsTable extends VaccinationRecords
       doseNumber: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}dose_number'])!,
       administeredDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}administered_date']),
+          DriftSqlType.dateTime, data['${effectivePrefix}administered_date'])!,
       facilityName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}facility_name']),
     );
@@ -408,16 +410,14 @@ class VaccinationRecord extends DataClass
   final String childId;
   final String vaccineCode;
   final int doseNumber;
-
-  /// Null until the caregiver marks this dose completed.
-  final DateTime? administeredDate;
+  final DateTime administeredDate;
   final String? facilityName;
   const VaccinationRecord(
       {required this.id,
       required this.childId,
       required this.vaccineCode,
       required this.doseNumber,
-      this.administeredDate,
+      required this.administeredDate,
       this.facilityName});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -426,9 +426,7 @@ class VaccinationRecord extends DataClass
     map['child_id'] = Variable<String>(childId);
     map['vaccine_code'] = Variable<String>(vaccineCode);
     map['dose_number'] = Variable<int>(doseNumber);
-    if (!nullToAbsent || administeredDate != null) {
-      map['administered_date'] = Variable<DateTime>(administeredDate);
-    }
+    map['administered_date'] = Variable<DateTime>(administeredDate);
     if (!nullToAbsent || facilityName != null) {
       map['facility_name'] = Variable<String>(facilityName);
     }
@@ -441,9 +439,7 @@ class VaccinationRecord extends DataClass
       childId: Value(childId),
       vaccineCode: Value(vaccineCode),
       doseNumber: Value(doseNumber),
-      administeredDate: administeredDate == null && nullToAbsent
-          ? const Value.absent()
-          : Value(administeredDate),
+      administeredDate: Value(administeredDate),
       facilityName: facilityName == null && nullToAbsent
           ? const Value.absent()
           : Value(facilityName),
@@ -458,8 +454,7 @@ class VaccinationRecord extends DataClass
       childId: serializer.fromJson<String>(json['childId']),
       vaccineCode: serializer.fromJson<String>(json['vaccineCode']),
       doseNumber: serializer.fromJson<int>(json['doseNumber']),
-      administeredDate:
-          serializer.fromJson<DateTime?>(json['administeredDate']),
+      administeredDate: serializer.fromJson<DateTime>(json['administeredDate']),
       facilityName: serializer.fromJson<String?>(json['facilityName']),
     );
   }
@@ -471,7 +466,7 @@ class VaccinationRecord extends DataClass
       'childId': serializer.toJson<String>(childId),
       'vaccineCode': serializer.toJson<String>(vaccineCode),
       'doseNumber': serializer.toJson<int>(doseNumber),
-      'administeredDate': serializer.toJson<DateTime?>(administeredDate),
+      'administeredDate': serializer.toJson<DateTime>(administeredDate),
       'facilityName': serializer.toJson<String?>(facilityName),
     };
   }
@@ -481,16 +476,14 @@ class VaccinationRecord extends DataClass
           String? childId,
           String? vaccineCode,
           int? doseNumber,
-          Value<DateTime?> administeredDate = const Value.absent(),
+          DateTime? administeredDate,
           Value<String?> facilityName = const Value.absent()}) =>
       VaccinationRecord(
         id: id ?? this.id,
         childId: childId ?? this.childId,
         vaccineCode: vaccineCode ?? this.vaccineCode,
         doseNumber: doseNumber ?? this.doseNumber,
-        administeredDate: administeredDate.present
-            ? administeredDate.value
-            : this.administeredDate,
+        administeredDate: administeredDate ?? this.administeredDate,
         facilityName:
             facilityName.present ? facilityName.value : this.facilityName,
       );
@@ -544,7 +537,7 @@ class VaccinationRecordsCompanion extends UpdateCompanion<VaccinationRecord> {
   final Value<String> childId;
   final Value<String> vaccineCode;
   final Value<int> doseNumber;
-  final Value<DateTime?> administeredDate;
+  final Value<DateTime> administeredDate;
   final Value<String?> facilityName;
   final Value<int> rowid;
   const VaccinationRecordsCompanion({
@@ -561,13 +554,14 @@ class VaccinationRecordsCompanion extends UpdateCompanion<VaccinationRecord> {
     required String childId,
     required String vaccineCode,
     required int doseNumber,
-    this.administeredDate = const Value.absent(),
+    required DateTime administeredDate,
     this.facilityName = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         childId = Value(childId),
         vaccineCode = Value(vaccineCode),
-        doseNumber = Value(doseNumber);
+        doseNumber = Value(doseNumber),
+        administeredDate = Value(administeredDate);
   static Insertable<VaccinationRecord> custom({
     Expression<String>? id,
     Expression<String>? childId,
@@ -593,7 +587,7 @@ class VaccinationRecordsCompanion extends UpdateCompanion<VaccinationRecord> {
       Value<String>? childId,
       Value<String>? vaccineCode,
       Value<int>? doseNumber,
-      Value<DateTime?>? administeredDate,
+      Value<DateTime>? administeredDate,
       Value<String?>? facilityName,
       Value<int>? rowid}) {
     return VaccinationRecordsCompanion(
@@ -649,22 +643,349 @@ class VaccinationRecordsCompanion extends UpdateCompanion<VaccinationRecord> {
   }
 }
 
+class $VaccinationDuesTable extends VaccinationDues
+    with TableInfo<$VaccinationDuesTable, VaccinationDue> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VaccinationDuesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _childIdMeta =
+      const VerificationMeta('childId');
+  @override
+  late final GeneratedColumn<String> childId = GeneratedColumn<String>(
+      'child_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES child_profiles (id)'));
+  static const VerificationMeta _vaccineCodeMeta =
+      const VerificationMeta('vaccineCode');
+  @override
+  late final GeneratedColumn<String> vaccineCode = GeneratedColumn<String>(
+      'vaccine_code', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _doseNumberMeta =
+      const VerificationMeta('doseNumber');
+  @override
+  late final GeneratedColumn<int> doseNumber = GeneratedColumn<int>(
+      'dose_number', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _dueDateMeta =
+      const VerificationMeta('dueDate');
+  @override
+  late final GeneratedColumn<DateTime> dueDate = GeneratedColumn<DateTime>(
+      'due_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, childId, vaccineCode, doseNumber, dueDate];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vaccination_dues';
+  @override
+  VerificationContext validateIntegrity(Insertable<VaccinationDue> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('child_id')) {
+      context.handle(_childIdMeta,
+          childId.isAcceptableOrUnknown(data['child_id']!, _childIdMeta));
+    } else if (isInserting) {
+      context.missing(_childIdMeta);
+    }
+    if (data.containsKey('vaccine_code')) {
+      context.handle(
+          _vaccineCodeMeta,
+          vaccineCode.isAcceptableOrUnknown(
+              data['vaccine_code']!, _vaccineCodeMeta));
+    } else if (isInserting) {
+      context.missing(_vaccineCodeMeta);
+    }
+    if (data.containsKey('dose_number')) {
+      context.handle(
+          _doseNumberMeta,
+          doseNumber.isAcceptableOrUnknown(
+              data['dose_number']!, _doseNumberMeta));
+    } else if (isInserting) {
+      context.missing(_doseNumberMeta);
+    }
+    if (data.containsKey('due_date')) {
+      context.handle(_dueDateMeta,
+          dueDate.isAcceptableOrUnknown(data['due_date']!, _dueDateMeta));
+    } else if (isInserting) {
+      context.missing(_dueDateMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+        {childId, vaccineCode, doseNumber},
+      ];
+  @override
+  VaccinationDue map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VaccinationDue(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      childId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}child_id'])!,
+      vaccineCode: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}vaccine_code'])!,
+      doseNumber: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}dose_number'])!,
+      dueDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}due_date'])!,
+    );
+  }
+
+  @override
+  $VaccinationDuesTable createAlias(String alias) {
+    return $VaccinationDuesTable(attachedDatabase, alias);
+  }
+}
+
+class VaccinationDue extends DataClass implements Insertable<VaccinationDue> {
+  final String id;
+  final String childId;
+  final String vaccineCode;
+  final int doseNumber;
+  final DateTime dueDate;
+  const VaccinationDue(
+      {required this.id,
+      required this.childId,
+      required this.vaccineCode,
+      required this.doseNumber,
+      required this.dueDate});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['child_id'] = Variable<String>(childId);
+    map['vaccine_code'] = Variable<String>(vaccineCode);
+    map['dose_number'] = Variable<int>(doseNumber);
+    map['due_date'] = Variable<DateTime>(dueDate);
+    return map;
+  }
+
+  VaccinationDuesCompanion toCompanion(bool nullToAbsent) {
+    return VaccinationDuesCompanion(
+      id: Value(id),
+      childId: Value(childId),
+      vaccineCode: Value(vaccineCode),
+      doseNumber: Value(doseNumber),
+      dueDate: Value(dueDate),
+    );
+  }
+
+  factory VaccinationDue.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VaccinationDue(
+      id: serializer.fromJson<String>(json['id']),
+      childId: serializer.fromJson<String>(json['childId']),
+      vaccineCode: serializer.fromJson<String>(json['vaccineCode']),
+      doseNumber: serializer.fromJson<int>(json['doseNumber']),
+      dueDate: serializer.fromJson<DateTime>(json['dueDate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'childId': serializer.toJson<String>(childId),
+      'vaccineCode': serializer.toJson<String>(vaccineCode),
+      'doseNumber': serializer.toJson<int>(doseNumber),
+      'dueDate': serializer.toJson<DateTime>(dueDate),
+    };
+  }
+
+  VaccinationDue copyWith(
+          {String? id,
+          String? childId,
+          String? vaccineCode,
+          int? doseNumber,
+          DateTime? dueDate}) =>
+      VaccinationDue(
+        id: id ?? this.id,
+        childId: childId ?? this.childId,
+        vaccineCode: vaccineCode ?? this.vaccineCode,
+        doseNumber: doseNumber ?? this.doseNumber,
+        dueDate: dueDate ?? this.dueDate,
+      );
+  VaccinationDue copyWithCompanion(VaccinationDuesCompanion data) {
+    return VaccinationDue(
+      id: data.id.present ? data.id.value : this.id,
+      childId: data.childId.present ? data.childId.value : this.childId,
+      vaccineCode:
+          data.vaccineCode.present ? data.vaccineCode.value : this.vaccineCode,
+      doseNumber:
+          data.doseNumber.present ? data.doseNumber.value : this.doseNumber,
+      dueDate: data.dueDate.present ? data.dueDate.value : this.dueDate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VaccinationDue(')
+          ..write('id: $id, ')
+          ..write('childId: $childId, ')
+          ..write('vaccineCode: $vaccineCode, ')
+          ..write('doseNumber: $doseNumber, ')
+          ..write('dueDate: $dueDate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, childId, vaccineCode, doseNumber, dueDate);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VaccinationDue &&
+          other.id == this.id &&
+          other.childId == this.childId &&
+          other.vaccineCode == this.vaccineCode &&
+          other.doseNumber == this.doseNumber &&
+          other.dueDate == this.dueDate);
+}
+
+class VaccinationDuesCompanion extends UpdateCompanion<VaccinationDue> {
+  final Value<String> id;
+  final Value<String> childId;
+  final Value<String> vaccineCode;
+  final Value<int> doseNumber;
+  final Value<DateTime> dueDate;
+  final Value<int> rowid;
+  const VaccinationDuesCompanion({
+    this.id = const Value.absent(),
+    this.childId = const Value.absent(),
+    this.vaccineCode = const Value.absent(),
+    this.doseNumber = const Value.absent(),
+    this.dueDate = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VaccinationDuesCompanion.insert({
+    required String id,
+    required String childId,
+    required String vaccineCode,
+    required int doseNumber,
+    required DateTime dueDate,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        childId = Value(childId),
+        vaccineCode = Value(vaccineCode),
+        doseNumber = Value(doseNumber),
+        dueDate = Value(dueDate);
+  static Insertable<VaccinationDue> custom({
+    Expression<String>? id,
+    Expression<String>? childId,
+    Expression<String>? vaccineCode,
+    Expression<int>? doseNumber,
+    Expression<DateTime>? dueDate,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (childId != null) 'child_id': childId,
+      if (vaccineCode != null) 'vaccine_code': vaccineCode,
+      if (doseNumber != null) 'dose_number': doseNumber,
+      if (dueDate != null) 'due_date': dueDate,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VaccinationDuesCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? childId,
+      Value<String>? vaccineCode,
+      Value<int>? doseNumber,
+      Value<DateTime>? dueDate,
+      Value<int>? rowid}) {
+    return VaccinationDuesCompanion(
+      id: id ?? this.id,
+      childId: childId ?? this.childId,
+      vaccineCode: vaccineCode ?? this.vaccineCode,
+      doseNumber: doseNumber ?? this.doseNumber,
+      dueDate: dueDate ?? this.dueDate,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (childId.present) {
+      map['child_id'] = Variable<String>(childId.value);
+    }
+    if (vaccineCode.present) {
+      map['vaccine_code'] = Variable<String>(vaccineCode.value);
+    }
+    if (doseNumber.present) {
+      map['dose_number'] = Variable<int>(doseNumber.value);
+    }
+    if (dueDate.present) {
+      map['due_date'] = Variable<DateTime>(dueDate.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VaccinationDuesCompanion(')
+          ..write('id: $id, ')
+          ..write('childId: $childId, ')
+          ..write('vaccineCode: $vaccineCode, ')
+          ..write('doseNumber: $doseNumber, ')
+          ..write('dueDate: $dueDate, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $ChildProfilesTable childProfiles = $ChildProfilesTable(this);
   late final $VaccinationRecordsTable vaccinationRecords =
       $VaccinationRecordsTable(this);
+  late final $VaccinationDuesTable vaccinationDues =
+      $VaccinationDuesTable(this);
   late final ChildProfilesDao childProfilesDao =
       ChildProfilesDao(this as AppDatabase);
   late final VaccinationRecordsDao vaccinationRecordsDao =
       VaccinationRecordsDao(this as AppDatabase);
+  late final VaccinationDuesDao vaccinationDuesDao =
+      VaccinationDuesDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [childProfiles, vaccinationRecords];
+      [childProfiles, vaccinationRecords, vaccinationDues];
 }
 
 typedef $$ChildProfilesTableCreateCompanionBuilder = ChildProfilesCompanion
@@ -705,6 +1026,23 @@ final class $$ChildProfilesTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$VaccinationDuesTable, List<VaccinationDue>>
+      _vaccinationDuesRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.vaccinationDues,
+              aliasName: $_aliasNameGenerator(
+                  db.childProfiles.id, db.vaccinationDues.childId));
+
+  $$VaccinationDuesTableProcessedTableManager get vaccinationDuesRefs {
+    final manager =
+        $$VaccinationDuesTableTableManager($_db, $_db.vaccinationDues)
+            .filter((f) => f.childId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_vaccinationDuesRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$ChildProfilesTableFilterComposer
@@ -741,6 +1079,27 @@ class $$ChildProfilesTableFilterComposer
             $$VaccinationRecordsTableFilterComposer(
               $db: $db,
               $table: $db.vaccinationRecords,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> vaccinationDuesRefs(
+      Expression<bool> Function($$VaccinationDuesTableFilterComposer f) f) {
+    final $$VaccinationDuesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.vaccinationDues,
+        getReferencedColumn: (t) => t.childId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$VaccinationDuesTableFilterComposer(
+              $db: $db,
+              $table: $db.vaccinationDues,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -814,6 +1173,27 @@ class $$ChildProfilesTableAnnotationComposer
                 ));
     return f(composer);
   }
+
+  Expression<T> vaccinationDuesRefs<T extends Object>(
+      Expression<T> Function($$VaccinationDuesTableAnnotationComposer a) f) {
+    final $$VaccinationDuesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.vaccinationDues,
+        getReferencedColumn: (t) => t.childId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$VaccinationDuesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.vaccinationDues,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$ChildProfilesTableTableManager extends RootTableManager<
@@ -827,7 +1207,8 @@ class $$ChildProfilesTableTableManager extends RootTableManager<
     $$ChildProfilesTableUpdateCompanionBuilder,
     (ChildProfile, $$ChildProfilesTableReferences),
     ChildProfile,
-    PrefetchHooks Function({bool vaccinationRecordsRefs})> {
+    PrefetchHooks Function(
+        {bool vaccinationRecordsRefs, bool vaccinationDuesRefs})> {
   $$ChildProfilesTableTableManager(_$AppDatabase db, $ChildProfilesTable table)
       : super(TableManagerState(
           db: db,
@@ -872,11 +1253,13 @@ class $$ChildProfilesTableTableManager extends RootTableManager<
                     $$ChildProfilesTableReferences(db, table, e)
                   ))
               .toList(),
-          prefetchHooksCallback: ({vaccinationRecordsRefs = false}) {
+          prefetchHooksCallback: (
+              {vaccinationRecordsRefs = false, vaccinationDuesRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (vaccinationRecordsRefs) db.vaccinationRecords
+                if (vaccinationRecordsRefs) db.vaccinationRecords,
+                if (vaccinationDuesRefs) db.vaccinationDues
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
@@ -890,6 +1273,18 @@ class $$ChildProfilesTableTableManager extends RootTableManager<
                         managerFromTypedResult: (p0) =>
                             $$ChildProfilesTableReferences(db, table, p0)
                                 .vaccinationRecordsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.childId == item.id),
+                        typedResults: items),
+                  if (vaccinationDuesRefs)
+                    await $_getPrefetchedData<ChildProfile, $ChildProfilesTable, VaccinationDue>(
+                        currentTable: table,
+                        referencedTable: $$ChildProfilesTableReferences
+                            ._vaccinationDuesRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$ChildProfilesTableReferences(db, table, p0)
+                                .vaccinationDuesRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.childId == item.id),
@@ -912,14 +1307,15 @@ typedef $$ChildProfilesTableProcessedTableManager = ProcessedTableManager<
     $$ChildProfilesTableUpdateCompanionBuilder,
     (ChildProfile, $$ChildProfilesTableReferences),
     ChildProfile,
-    PrefetchHooks Function({bool vaccinationRecordsRefs})>;
+    PrefetchHooks Function(
+        {bool vaccinationRecordsRefs, bool vaccinationDuesRefs})>;
 typedef $$VaccinationRecordsTableCreateCompanionBuilder
     = VaccinationRecordsCompanion Function({
   required String id,
   required String childId,
   required String vaccineCode,
   required int doseNumber,
-  Value<DateTime?> administeredDate,
+  required DateTime administeredDate,
   Value<String?> facilityName,
   Value<int> rowid,
 });
@@ -929,7 +1325,7 @@ typedef $$VaccinationRecordsTableUpdateCompanionBuilder
   Value<String> childId,
   Value<String> vaccineCode,
   Value<int> doseNumber,
-  Value<DateTime?> administeredDate,
+  Value<DateTime> administeredDate,
   Value<String?> facilityName,
   Value<int> rowid,
 });
@@ -1122,7 +1518,7 @@ class $$VaccinationRecordsTableTableManager extends RootTableManager<
             Value<String> childId = const Value.absent(),
             Value<String> vaccineCode = const Value.absent(),
             Value<int> doseNumber = const Value.absent(),
-            Value<DateTime?> administeredDate = const Value.absent(),
+            Value<DateTime> administeredDate = const Value.absent(),
             Value<String?> facilityName = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -1140,7 +1536,7 @@ class $$VaccinationRecordsTableTableManager extends RootTableManager<
             required String childId,
             required String vaccineCode,
             required int doseNumber,
-            Value<DateTime?> administeredDate = const Value.absent(),
+            required DateTime administeredDate,
             Value<String?> facilityName = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -1210,6 +1606,283 @@ typedef $$VaccinationRecordsTableProcessedTableManager = ProcessedTableManager<
     (VaccinationRecord, $$VaccinationRecordsTableReferences),
     VaccinationRecord,
     PrefetchHooks Function({bool childId})>;
+typedef $$VaccinationDuesTableCreateCompanionBuilder = VaccinationDuesCompanion
+    Function({
+  required String id,
+  required String childId,
+  required String vaccineCode,
+  required int doseNumber,
+  required DateTime dueDate,
+  Value<int> rowid,
+});
+typedef $$VaccinationDuesTableUpdateCompanionBuilder = VaccinationDuesCompanion
+    Function({
+  Value<String> id,
+  Value<String> childId,
+  Value<String> vaccineCode,
+  Value<int> doseNumber,
+  Value<DateTime> dueDate,
+  Value<int> rowid,
+});
+
+final class $$VaccinationDuesTableReferences extends BaseReferences<
+    _$AppDatabase, $VaccinationDuesTable, VaccinationDue> {
+  $$VaccinationDuesTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $ChildProfilesTable _childIdTable(_$AppDatabase db) =>
+      db.childProfiles.createAlias($_aliasNameGenerator(
+          db.vaccinationDues.childId, db.childProfiles.id));
+
+  $$ChildProfilesTableProcessedTableManager get childId {
+    final $_column = $_itemColumn<String>('child_id')!;
+
+    final manager = $$ChildProfilesTableTableManager($_db, $_db.childProfiles)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_childIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$VaccinationDuesTableFilterComposer
+    extends Composer<_$AppDatabase, $VaccinationDuesTable> {
+  $$VaccinationDuesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get vaccineCode => $composableBuilder(
+      column: $table.vaccineCode, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get doseNumber => $composableBuilder(
+      column: $table.doseNumber, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get dueDate => $composableBuilder(
+      column: $table.dueDate, builder: (column) => ColumnFilters(column));
+
+  $$ChildProfilesTableFilterComposer get childId {
+    final $$ChildProfilesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.childId,
+        referencedTable: $db.childProfiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ChildProfilesTableFilterComposer(
+              $db: $db,
+              $table: $db.childProfiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$VaccinationDuesTableOrderingComposer
+    extends Composer<_$AppDatabase, $VaccinationDuesTable> {
+  $$VaccinationDuesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get vaccineCode => $composableBuilder(
+      column: $table.vaccineCode, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get doseNumber => $composableBuilder(
+      column: $table.doseNumber, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get dueDate => $composableBuilder(
+      column: $table.dueDate, builder: (column) => ColumnOrderings(column));
+
+  $$ChildProfilesTableOrderingComposer get childId {
+    final $$ChildProfilesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.childId,
+        referencedTable: $db.childProfiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ChildProfilesTableOrderingComposer(
+              $db: $db,
+              $table: $db.childProfiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$VaccinationDuesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $VaccinationDuesTable> {
+  $$VaccinationDuesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get vaccineCode => $composableBuilder(
+      column: $table.vaccineCode, builder: (column) => column);
+
+  GeneratedColumn<int> get doseNumber => $composableBuilder(
+      column: $table.doseNumber, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get dueDate =>
+      $composableBuilder(column: $table.dueDate, builder: (column) => column);
+
+  $$ChildProfilesTableAnnotationComposer get childId {
+    final $$ChildProfilesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.childId,
+        referencedTable: $db.childProfiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ChildProfilesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.childProfiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$VaccinationDuesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $VaccinationDuesTable,
+    VaccinationDue,
+    $$VaccinationDuesTableFilterComposer,
+    $$VaccinationDuesTableOrderingComposer,
+    $$VaccinationDuesTableAnnotationComposer,
+    $$VaccinationDuesTableCreateCompanionBuilder,
+    $$VaccinationDuesTableUpdateCompanionBuilder,
+    (VaccinationDue, $$VaccinationDuesTableReferences),
+    VaccinationDue,
+    PrefetchHooks Function({bool childId})> {
+  $$VaccinationDuesTableTableManager(
+      _$AppDatabase db, $VaccinationDuesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VaccinationDuesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VaccinationDuesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VaccinationDuesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> childId = const Value.absent(),
+            Value<String> vaccineCode = const Value.absent(),
+            Value<int> doseNumber = const Value.absent(),
+            Value<DateTime> dueDate = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              VaccinationDuesCompanion(
+            id: id,
+            childId: childId,
+            vaccineCode: vaccineCode,
+            doseNumber: doseNumber,
+            dueDate: dueDate,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String childId,
+            required String vaccineCode,
+            required int doseNumber,
+            required DateTime dueDate,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              VaccinationDuesCompanion.insert(
+            id: id,
+            childId: childId,
+            vaccineCode: vaccineCode,
+            doseNumber: doseNumber,
+            dueDate: dueDate,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$VaccinationDuesTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({childId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (childId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.childId,
+                    referencedTable:
+                        $$VaccinationDuesTableReferences._childIdTable(db),
+                    referencedColumn:
+                        $$VaccinationDuesTableReferences._childIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$VaccinationDuesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $VaccinationDuesTable,
+    VaccinationDue,
+    $$VaccinationDuesTableFilterComposer,
+    $$VaccinationDuesTableOrderingComposer,
+    $$VaccinationDuesTableAnnotationComposer,
+    $$VaccinationDuesTableCreateCompanionBuilder,
+    $$VaccinationDuesTableUpdateCompanionBuilder,
+    (VaccinationDue, $$VaccinationDuesTableReferences),
+    VaccinationDue,
+    PrefetchHooks Function({bool childId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1218,6 +1891,8 @@ class $AppDatabaseManager {
       $$ChildProfilesTableTableManager(_db, _db.childProfiles);
   $$VaccinationRecordsTableTableManager get vaccinationRecords =>
       $$VaccinationRecordsTableTableManager(_db, _db.vaccinationRecords);
+  $$VaccinationDuesTableTableManager get vaccinationDues =>
+      $$VaccinationDuesTableTableManager(_db, _db.vaccinationDues);
 }
 
 mixin _$ChildProfilesDaoMixin on DatabaseAccessor<AppDatabase> {
@@ -1227,4 +1902,9 @@ mixin _$VaccinationRecordsDaoMixin on DatabaseAccessor<AppDatabase> {
   $ChildProfilesTable get childProfiles => attachedDatabase.childProfiles;
   $VaccinationRecordsTable get vaccinationRecords =>
       attachedDatabase.vaccinationRecords;
+  $VaccinationDuesTable get vaccinationDues => attachedDatabase.vaccinationDues;
+}
+mixin _$VaccinationDuesDaoMixin on DatabaseAccessor<AppDatabase> {
+  $ChildProfilesTable get childProfiles => attachedDatabase.childProfiles;
+  $VaccinationDuesTable get vaccinationDues => attachedDatabase.vaccinationDues;
 }

@@ -7,8 +7,10 @@ import 'package:path_provider/path_provider.dart';
 
 part 'daos/child_profiles_dao.dart';
 part 'daos/vaccination_records_dao.dart';
+part 'daos/vaccination_dues_dao.dart';
 part 'tables/child_profiles.dart';
 part 'tables/vaccination_records.dart';
+part 'tables/vaccination_dues.dart';
 part 'app_database.g.dart';
 
 /// The central Drift database for TikaSathi.
@@ -23,8 +25,8 @@ part 'app_database.g.dart';
 ///
 /// See the `proven_drift_sqlite` skill in `.agents/skills/` for the full pattern.
 @DriftDatabase(
-  tables: [ChildProfiles, VaccinationRecords],
-  daos: [ChildProfilesDao, VaccinationRecordsDao],
+  tables: [ChildProfiles, VaccinationRecords, VaccinationDues],
+  daos: [ChildProfilesDao, VaccinationRecordsDao, VaccinationDuesDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());

@@ -8,11 +8,13 @@ void main() {
     late AppDatabase database;
     late ChildProfilesDao childProfilesDao;
     late VaccinationRecordsDao vaccinationRecordsDao;
+    late VaccinationDuesDao vaccinationDuesDao;
 
     setUp(() {
       database = AppDatabase.forTesting(NativeDatabase.memory());
       childProfilesDao = database.childProfilesDao;
       vaccinationRecordsDao = database.vaccinationRecordsDao;
+      vaccinationDuesDao = database.vaccinationDuesDao;
     });
 
     tearDown(() async {
@@ -51,7 +53,7 @@ void main() {
           childId: childId,
           vaccineCode: vaccineCode,
           doseNumber: doseNumber,
-          administeredDate: Value(administeredDate),
+          administeredDate: administeredDate,
           facilityName: const Value(facilityName),
         ),
       );
@@ -76,6 +78,7 @@ void main() {
           childId: childId,
           vaccineCode: 'BCG',
           doseNumber: 1,
+          administeredDate: DateTime(2023, 4, 16),
         ),
       );
       await vaccinationRecordsDao.insertVaccinationRecord(
@@ -84,6 +87,7 @@ void main() {
           childId: childId,
           vaccineCode: 'OPV',
           doseNumber: 1,
+          administeredDate: DateTime(2023, 6, 11),
         ),
       );
 
@@ -105,6 +109,7 @@ void main() {
           childId: 'child-a',
           vaccineCode: 'BCG',
           doseNumber: 1,
+          administeredDate: DateTime(2023, 4, 16),
         ),
       );
       await vaccinationRecordsDao.insertVaccinationRecord(
@@ -113,6 +118,7 @@ void main() {
           childId: 'child-b',
           vaccineCode: 'OPV',
           doseNumber: 1,
+          administeredDate: DateTime(2023, 6, 11),
         ),
       );
 
@@ -140,6 +146,7 @@ void main() {
           childId: childId,
           vaccineCode: 'BCG',
           doseNumber: 1,
+          administeredDate: DateTime(2023, 4, 16),
         ),
       );
 
@@ -159,6 +166,7 @@ void main() {
           childId: childId,
           vaccineCode: 'BCG',
           doseNumber: 1,
+          administeredDate: DateTime(2023, 4, 16),
         ),
       );
 
@@ -169,6 +177,7 @@ void main() {
             childId: childId,
             vaccineCode: 'BCG',
             doseNumber: 1,
+            administeredDate: DateTime(2023, 4, 20),
           ),
         ),
         throwsA(isA<Exception>()),
@@ -183,6 +192,117 @@ void main() {
             childId: 'missing-child',
             vaccineCode: 'BCG',
             doseNumber: 1,
+            administeredDate: DateTime(2023, 4, 16),
+          ),
+        ),
+        throwsA(isA<Exception>()),
+      );
+    });
+
+    test('removes the matching vaccination due when a record is stored',
+        () async {
+      const childId = 'child-1';
+      await insertChild(childId);
+      await vaccinationDuesDao.insertVaccinationDue(
+        VaccinationDuesCompanion.insert(
+          id: 'due-1',
+          childId: childId,
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+          dueDate: DateTime(2023, 4, 15),
+        ),
+      );
+      await vaccinationDuesDao.insertVaccinationDue(
+        VaccinationDuesCompanion.insert(
+          id: 'due-2',
+          childId: childId,
+          vaccineCode: 'OPV',
+          doseNumber: 1,
+          dueDate: DateTime(2023, 6, 10),
+        ),
+      );
+
+      await vaccinationRecordsDao.insertVaccinationRecord(
+        VaccinationRecordsCompanion.insert(
+          id: 'record-1',
+          childId: childId,
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+          administeredDate: DateTime(2023, 4, 16),
+        ),
+      );
+
+      final dues =
+          await vaccinationDuesDao.watchVaccinationDuesForChild(childId).first;
+      final records = await recordsFor(childId);
+
+      expect(records, hasLength(1));
+      expect(dues, hasLength(1));
+      expect(dues.single.id, 'due-2');
+    });
+
+    test('stores a vaccination record when no matching due exists', () async {
+      const childId = 'child-1';
+      await insertChild(childId);
+
+      await vaccinationRecordsDao.insertVaccinationRecord(
+        VaccinationRecordsCompanion.insert(
+          id: 'record-1',
+          childId: childId,
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+          administeredDate: DateTime(2023, 4, 16),
+        ),
+      );
+
+      final records = await recordsFor(childId);
+      expect(records, hasLength(1));
+      expect(records.single.id, 'record-1');
+    });
+
+    test('leaves dues unchanged when the record insert is rejected', () async {
+      const childId = 'child-1';
+      await insertChild(childId);
+      await vaccinationDuesDao.insertVaccinationDue(
+        VaccinationDuesCompanion.insert(
+          id: 'due-1',
+          childId: childId,
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+          dueDate: DateTime(2023, 4, 15),
+        ),
+      );
+
+      /// throws bc of no administeredDate
+      await expectLater(
+        vaccinationRecordsDao.insertVaccinationRecord(
+          const VaccinationRecordsCompanion(
+            id: Value('record-1'),
+            childId: Value(childId),
+            vaccineCode: Value('BCG'),
+            doseNumber: Value(1),
+          ),
+        ),
+        throwsA(isA<Exception>()),
+      );
+
+      final dues =
+          await vaccinationDuesDao.watchVaccinationDuesForChild(childId).first;
+      expect(dues, hasLength(1));
+      expect(dues.single.id, 'due-1');
+    });
+
+    test('rejects a vaccination record without an administered date', () async {
+      const childId = 'child-1';
+      await insertChild(childId);
+
+      expect(
+        () => vaccinationRecordsDao.insertVaccinationRecord(
+          const VaccinationRecordsCompanion(
+            id: Value('record-1'),
+            childId: Value(childId),
+            vaccineCode: Value('BCG'),
+            doseNumber: Value(1),
           ),
         ),
         throwsA(isA<Exception>()),

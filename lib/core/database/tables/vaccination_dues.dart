@@ -1,6 +1,6 @@
 part of '../app_database.dart';
 
-class VaccinationRecords extends Table {
+class VaccinationDues extends Table {
   TextColumn get id => text()();
 
   TextColumn get childId => text().references(ChildProfiles, #id)();
@@ -9,9 +9,7 @@ class VaccinationRecords extends Table {
 
   IntColumn get doseNumber => integer()();
 
-  DateTimeColumn get administeredDate => dateTime()();
-
-  TextColumn get facilityName => text().nullable()();
+  DateTimeColumn get dueDate => dateTime()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
