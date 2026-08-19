@@ -62,5 +62,28 @@ void main() {
       expect(profiles.map((profile) => profile.id),
           containsAll(['child-1', 'child-2']));
     });
+
+    test('emits again when a child profile is added', () async {
+      final events = <List<ChildProfile>>[];
+      final subscription = dao.streamAllChildProfiles().listen(events.add);
+
+      await pumpEventQueue();
+      expect(events.last, isEmpty);
+
+      await dao.insertChildProfile(
+        ChildProfilesCompanion.insert(
+          id: 'child-1',
+          name: 'Aarav',
+          dateOfBirth: DateTime(2023, 4, 15),
+          sex: 'male',
+        ),
+      );
+
+      await pumpEventQueue();
+      expect(events.last, hasLength(1));
+      expect(events.last.single.id, 'child-1');
+
+      await subscription.cancel();
+    });
   });
 }

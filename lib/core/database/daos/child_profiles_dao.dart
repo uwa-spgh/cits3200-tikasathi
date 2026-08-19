@@ -12,4 +12,8 @@ class ChildProfilesDao extends DatabaseAccessor<AppDatabase>
   Future<List<ChildProfile>> getAllChildProfiles() {
     return select(childProfiles).get();
   }
+
+  Stream<List<ChildProfile>> streamAllChildProfiles() {
+    return select(childProfiles).watch();
+  }
 }
