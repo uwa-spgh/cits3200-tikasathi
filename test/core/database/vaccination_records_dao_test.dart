@@ -51,7 +51,7 @@ void main() {
           childId: childId,
           vaccineCode: vaccineCode,
           doseNumber: doseNumber,
-          administeredDate: Value(administeredDate),
+          administeredDate: administeredDate,
           facilityName: const Value(facilityName),
         ),
       );
@@ -76,6 +76,7 @@ void main() {
           childId: childId,
           vaccineCode: 'BCG',
           doseNumber: 1,
+          administeredDate: DateTime(2023, 4, 16),
         ),
       );
       await vaccinationRecordsDao.insertVaccinationRecord(
@@ -84,6 +85,7 @@ void main() {
           childId: childId,
           vaccineCode: 'OPV',
           doseNumber: 1,
+          administeredDate: DateTime(2023, 6, 11),
         ),
       );
 
@@ -105,6 +107,7 @@ void main() {
           childId: 'child-a',
           vaccineCode: 'BCG',
           doseNumber: 1,
+          administeredDate: DateTime(2023, 4, 16),
         ),
       );
       await vaccinationRecordsDao.insertVaccinationRecord(
@@ -113,6 +116,7 @@ void main() {
           childId: 'child-b',
           vaccineCode: 'OPV',
           doseNumber: 1,
+          administeredDate: DateTime(2023, 6, 11),
         ),
       );
 
@@ -140,6 +144,7 @@ void main() {
           childId: childId,
           vaccineCode: 'BCG',
           doseNumber: 1,
+          administeredDate: DateTime(2023, 4, 16),
         ),
       );
 
@@ -159,6 +164,7 @@ void main() {
           childId: childId,
           vaccineCode: 'BCG',
           doseNumber: 1,
+          administeredDate: DateTime(2023, 4, 16),
         ),
       );
 
@@ -169,6 +175,7 @@ void main() {
             childId: childId,
             vaccineCode: 'BCG',
             doseNumber: 1,
+            administeredDate: DateTime(2023, 4, 20),
           ),
         ),
         throwsA(isA<Exception>()),
@@ -183,6 +190,24 @@ void main() {
             childId: 'missing-child',
             vaccineCode: 'BCG',
             doseNumber: 1,
+            administeredDate: DateTime(2023, 4, 16),
+          ),
+        ),
+        throwsA(isA<Exception>()),
+      );
+    });
+
+    test('rejects a vaccination record without an administered date', () async {
+      const childId = 'child-1';
+      await insertChild(childId);
+
+      expect(
+        () => vaccinationRecordsDao.insertVaccinationRecord(
+          const VaccinationRecordsCompanion(
+            id: Value('record-1'),
+            childId: Value(childId),
+            vaccineCode: Value('BCG'),
+            doseNumber: Value(1),
           ),
         ),
         throwsA(isA<Exception>()),

@@ -9,8 +9,7 @@ class VaccinationRecords extends Table {
 
   IntColumn get doseNumber => integer()();
 
-  /// Null until the caregiver marks this dose completed.
-  DateTimeColumn get administeredDate => dateTime().nullable()();
+  DateTimeColumn get administeredDate => dateTime()();
 
   TextColumn get facilityName => text().nullable()();
 

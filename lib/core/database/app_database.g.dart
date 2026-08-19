@@ -308,8 +308,8 @@ class $VaccinationRecordsTable extends VaccinationRecords
       const VerificationMeta('administeredDate');
   @override
   late final GeneratedColumn<DateTime> administeredDate =
-      GeneratedColumn<DateTime>('administered_date', aliasedName, true,
-          type: DriftSqlType.dateTime, requiredDuringInsert: false);
+      GeneratedColumn<DateTime>('administered_date', aliasedName, false,
+          type: DriftSqlType.dateTime, requiredDuringInsert: true);
   static const VerificationMeta _facilityNameMeta =
       const VerificationMeta('facilityName');
   @override
@@ -361,6 +361,8 @@ class $VaccinationRecordsTable extends VaccinationRecords
           _administeredDateMeta,
           administeredDate.isAcceptableOrUnknown(
               data['administered_date']!, _administeredDateMeta));
+    } else if (isInserting) {
+      context.missing(_administeredDateMeta);
     }
     if (data.containsKey('facility_name')) {
       context.handle(
@@ -390,7 +392,7 @@ class $VaccinationRecordsTable extends VaccinationRecords
       doseNumber: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}dose_number'])!,
       administeredDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}administered_date']),
+          DriftSqlType.dateTime, data['${effectivePrefix}administered_date'])!,
       facilityName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}facility_name']),
     );
@@ -408,16 +410,14 @@ class VaccinationRecord extends DataClass
   final String childId;
   final String vaccineCode;
   final int doseNumber;
-
-  /// Null until the caregiver marks this dose completed.
-  final DateTime? administeredDate;
+  final DateTime administeredDate;
   final String? facilityName;
   const VaccinationRecord(
       {required this.id,
       required this.childId,
       required this.vaccineCode,
       required this.doseNumber,
-      this.administeredDate,
+      required this.administeredDate,
       this.facilityName});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -426,9 +426,7 @@ class VaccinationRecord extends DataClass
     map['child_id'] = Variable<String>(childId);
     map['vaccine_code'] = Variable<String>(vaccineCode);
     map['dose_number'] = Variable<int>(doseNumber);
-    if (!nullToAbsent || administeredDate != null) {
-      map['administered_date'] = Variable<DateTime>(administeredDate);
-    }
+    map['administered_date'] = Variable<DateTime>(administeredDate);
     if (!nullToAbsent || facilityName != null) {
       map['facility_name'] = Variable<String>(facilityName);
     }
@@ -441,9 +439,7 @@ class VaccinationRecord extends DataClass
       childId: Value(childId),
       vaccineCode: Value(vaccineCode),
       doseNumber: Value(doseNumber),
-      administeredDate: administeredDate == null && nullToAbsent
-          ? const Value.absent()
-          : Value(administeredDate),
+      administeredDate: Value(administeredDate),
       facilityName: facilityName == null && nullToAbsent
           ? const Value.absent()
           : Value(facilityName),
@@ -458,8 +454,7 @@ class VaccinationRecord extends DataClass
       childId: serializer.fromJson<String>(json['childId']),
       vaccineCode: serializer.fromJson<String>(json['vaccineCode']),
       doseNumber: serializer.fromJson<int>(json['doseNumber']),
-      administeredDate:
-          serializer.fromJson<DateTime?>(json['administeredDate']),
+      administeredDate: serializer.fromJson<DateTime>(json['administeredDate']),
       facilityName: serializer.fromJson<String?>(json['facilityName']),
     );
   }
@@ -471,7 +466,7 @@ class VaccinationRecord extends DataClass
       'childId': serializer.toJson<String>(childId),
       'vaccineCode': serializer.toJson<String>(vaccineCode),
       'doseNumber': serializer.toJson<int>(doseNumber),
-      'administeredDate': serializer.toJson<DateTime?>(administeredDate),
+      'administeredDate': serializer.toJson<DateTime>(administeredDate),
       'facilityName': serializer.toJson<String?>(facilityName),
     };
   }
@@ -481,16 +476,14 @@ class VaccinationRecord extends DataClass
           String? childId,
           String? vaccineCode,
           int? doseNumber,
-          Value<DateTime?> administeredDate = const Value.absent(),
+          DateTime? administeredDate,
           Value<String?> facilityName = const Value.absent()}) =>
       VaccinationRecord(
         id: id ?? this.id,
         childId: childId ?? this.childId,
         vaccineCode: vaccineCode ?? this.vaccineCode,
         doseNumber: doseNumber ?? this.doseNumber,
-        administeredDate: administeredDate.present
-            ? administeredDate.value
-            : this.administeredDate,
+        administeredDate: administeredDate ?? this.administeredDate,
         facilityName:
             facilityName.present ? facilityName.value : this.facilityName,
       );
@@ -544,7 +537,7 @@ class VaccinationRecordsCompanion extends UpdateCompanion<VaccinationRecord> {
   final Value<String> childId;
   final Value<String> vaccineCode;
   final Value<int> doseNumber;
-  final Value<DateTime?> administeredDate;
+  final Value<DateTime> administeredDate;
   final Value<String?> facilityName;
   final Value<int> rowid;
   const VaccinationRecordsCompanion({
@@ -561,13 +554,14 @@ class VaccinationRecordsCompanion extends UpdateCompanion<VaccinationRecord> {
     required String childId,
     required String vaccineCode,
     required int doseNumber,
-    this.administeredDate = const Value.absent(),
+    required DateTime administeredDate,
     this.facilityName = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         childId = Value(childId),
         vaccineCode = Value(vaccineCode),
-        doseNumber = Value(doseNumber);
+        doseNumber = Value(doseNumber),
+        administeredDate = Value(administeredDate);
   static Insertable<VaccinationRecord> custom({
     Expression<String>? id,
     Expression<String>? childId,
@@ -593,7 +587,7 @@ class VaccinationRecordsCompanion extends UpdateCompanion<VaccinationRecord> {
       Value<String>? childId,
       Value<String>? vaccineCode,
       Value<int>? doseNumber,
-      Value<DateTime?>? administeredDate,
+      Value<DateTime>? administeredDate,
       Value<String?>? facilityName,
       Value<int>? rowid}) {
     return VaccinationRecordsCompanion(
@@ -1321,7 +1315,7 @@ typedef $$VaccinationRecordsTableCreateCompanionBuilder
   required String childId,
   required String vaccineCode,
   required int doseNumber,
-  Value<DateTime?> administeredDate,
+  required DateTime administeredDate,
   Value<String?> facilityName,
   Value<int> rowid,
 });
@@ -1331,7 +1325,7 @@ typedef $$VaccinationRecordsTableUpdateCompanionBuilder
   Value<String> childId,
   Value<String> vaccineCode,
   Value<int> doseNumber,
-  Value<DateTime?> administeredDate,
+  Value<DateTime> administeredDate,
   Value<String?> facilityName,
   Value<int> rowid,
 });
@@ -1524,7 +1518,7 @@ class $$VaccinationRecordsTableTableManager extends RootTableManager<
             Value<String> childId = const Value.absent(),
             Value<String> vaccineCode = const Value.absent(),
             Value<int> doseNumber = const Value.absent(),
-            Value<DateTime?> administeredDate = const Value.absent(),
+            Value<DateTime> administeredDate = const Value.absent(),
             Value<String?> facilityName = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -1542,7 +1536,7 @@ class $$VaccinationRecordsTableTableManager extends RootTableManager<
             required String childId,
             required String vaccineCode,
             required int doseNumber,
-            Value<DateTime?> administeredDate = const Value.absent(),
+            required DateTime administeredDate,
             Value<String?> facilityName = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
