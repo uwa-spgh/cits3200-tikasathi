@@ -1,10 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:tikasathi/features/app_shell/presentation/app_bottom_navigation_bar.dart';
 import 'package:tikasathi/main.dart';
 
 void main() {
-  testWidgets('App renders the TikaSathi title', (WidgetTester tester) async {
+  testWidgets('App boots into shell with bottom navigation',
+      (WidgetTester tester) async {
     // Wrap in ProviderScope as required by Riverpod
     await tester.pumpWidget(
       const ProviderScope(
@@ -12,7 +14,7 @@ void main() {
       ),
     );
 
-    // Verify the app boots and renders its initial text
-    expect(find.text('TikaSathi Initialized'), findsOneWidget);
+    expect(find.byType(AppBottomNavigationBar), findsOneWidget);
+    expect(find.text('Home placeholder'), findsOneWidget);
   });
 }
