@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
 
 import 'core/theme/app_theme.dart';
 
@@ -20,11 +21,7 @@ class TikaSathiApp extends ConsumerWidget {
     return MaterialApp(
       title: 'TikaSathi',
       theme: AppTheme.light,
-      home: const Scaffold(
-        body: Center(
-          child: Text('TikaSathi Initialized'),
-        ),
-      ),
+      home: const AppShellScreen(),
     );
   }
 }
