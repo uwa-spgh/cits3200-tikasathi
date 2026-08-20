@@ -16,6 +16,10 @@ void main() {
       await database.close();
     });
 
+    Future<List<ChildProfile>> allProfiles() {
+      return dao.streamAllChildProfiles().first;
+    }
+
     test('stores a child profile record', () async {
       const id = 'child-1';
       const name = 'Aarav';
@@ -31,7 +35,7 @@ void main() {
         ),
       );
 
-      final profiles = await dao.getAllChildProfiles();
+      final profiles = await allProfiles();
       expect(profiles, hasLength(1));
       expect(profiles.single.id, id);
       expect(profiles.single.name, name);
@@ -57,7 +61,7 @@ void main() {
         ),
       );
 
-      final profiles = await dao.getAllChildProfiles();
+      final profiles = await allProfiles();
       expect(profiles, hasLength(2));
       expect(profiles.map((profile) => profile.id),
           containsAll(['child-1', 'child-2']));
@@ -111,7 +115,7 @@ void main() {
         sex: 'female',
       );
 
-      final profiles = await dao.getAllChildProfiles();
+      final profiles = await allProfiles();
       expect(profiles, hasLength(2));
 
       final updated =
