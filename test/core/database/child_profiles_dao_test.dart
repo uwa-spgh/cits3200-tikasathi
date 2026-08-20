@@ -85,5 +85,75 @@ void main() {
 
       await subscription.cancel();
     });
+
+    test('updates only the matching child profile', () async {
+      await dao.insertChildProfile(
+        ChildProfilesCompanion.insert(
+          id: 'child-1',
+          name: 'Aarav',
+          dateOfBirth: DateTime(2023, 4, 15),
+          sex: 'male',
+        ),
+      );
+      await dao.insertChildProfile(
+        ChildProfilesCompanion.insert(
+          id: 'child-2',
+          name: 'Sita',
+          dateOfBirth: DateTime(2022, 8, 3),
+          sex: 'female',
+        ),
+      );
+
+      await dao.updateChildProfile(
+        id: 'child-1',
+        name: 'Aarav Sharma',
+        dateOfBirth: DateTime(2023, 5, 1),
+        sex: 'female',
+      );
+
+      final profiles = await dao.getAllChildProfiles();
+      expect(profiles, hasLength(2));
+
+      final updated =
+          profiles.singleWhere((profile) => profile.id == 'child-1');
+      expect(updated.name, 'Aarav Sharma');
+      expect(updated.dateOfBirth, DateTime(2023, 5, 1));
+      expect(updated.sex, 'female');
+
+      final unchanged =
+          profiles.singleWhere((profile) => profile.id == 'child-2');
+      expect(unchanged.name, 'Sita');
+      expect(unchanged.dateOfBirth, DateTime(2022, 8, 3));
+      expect(unchanged.sex, 'female');
+    });
+
+    test('emits again when a child profile is updated', () async {
+      await dao.insertChildProfile(
+        ChildProfilesCompanion.insert(
+          id: 'child-1',
+          name: 'Aarav',
+          dateOfBirth: DateTime(2023, 4, 15),
+          sex: 'male',
+        ),
+      );
+
+      final events = <List<ChildProfile>>[];
+      final subscription = dao.streamAllChildProfiles().listen(events.add);
+
+      await pumpEventQueue();
+      expect(events.last.single.name, 'Aarav');
+
+      await dao.updateChildProfile(
+        id: 'child-1',
+        name: 'Aarav Sharma',
+        dateOfBirth: DateTime(2023, 4, 15),
+        sex: 'male',
+      );
+
+      await pumpEventQueue();
+      expect(events.last.single.name, 'Aarav Sharma');
+
+      await subscription.cancel();
+    });
   });
 }

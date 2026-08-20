@@ -16,4 +16,19 @@ class ChildProfilesDao extends DatabaseAccessor<AppDatabase>
   Stream<List<ChildProfile>> streamAllChildProfiles() {
     return select(childProfiles).watch();
   }
+
+  Future<int> updateChildProfile({
+    required String id,
+    required String name,
+    required DateTime dateOfBirth,
+    required String sex,
+  }) {
+    return (update(childProfiles)..where((row) => row.id.equals(id))).write(
+      ChildProfilesCompanion(
+        name: Value(name),
+        dateOfBirth: Value(dateOfBirth),
+        sex: Value(sex),
+      ),
+    );
+  }
 }
