@@ -1,6 +1,6 @@
 part of '../app_database.dart';
 
-@DriftAccessor(tables: [ChildProfiles])
+@DriftAccessor(tables: [ChildProfiles, VaccinationDues, VaccinationRecords])
 class ChildProfilesDao extends DatabaseAccessor<AppDatabase>
     with _$ChildProfilesDaoMixin {
   ChildProfilesDao(super.db);
@@ -26,5 +26,16 @@ class ChildProfilesDao extends DatabaseAccessor<AppDatabase>
         sex: Value(sex),
       ),
     );
+  }
+
+  /// Removes the child and that child's dues and records.
+  Future<int> deleteChildProfile(String id) {
+    return transaction(() async {
+      await (delete(vaccinationDues)..where((row) => row.childId.equals(id)))
+          .go();
+      await (delete(vaccinationRecords)..where((row) => row.childId.equals(id)))
+          .go();
+      return (delete(childProfiles)..where((row) => row.id.equals(id))).go();
+    });
   }
 }
