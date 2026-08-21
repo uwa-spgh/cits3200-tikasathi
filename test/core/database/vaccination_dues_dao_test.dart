@@ -77,7 +77,7 @@ void main() {
         VaccinationDuesCompanion.insert(
           id: 'due-2',
           childId: childId,
-          vaccineCode: 'OPV',
+          vaccineCode: 'BOPV',
           doseNumber: 1,
           dueDate: DateTime(2023, 6, 10),
         ),
@@ -108,7 +108,7 @@ void main() {
         VaccinationDuesCompanion.insert(
           id: 'due-b',
           childId: 'child-b',
-          vaccineCode: 'OPV',
+          vaccineCode: 'BOPV',
           doseNumber: 1,
           dueDate: DateTime(2023, 6, 10),
         ),
@@ -227,7 +227,8 @@ void main() {
         );
       });
 
-      test('rejects a vaccination due with valid code but invalid dose', () async {
+      test('rejects a vaccination due with valid code but invalid dose',
+          () async {
         const childId = 'child-1';
         await insertChild(childId);
         expect(

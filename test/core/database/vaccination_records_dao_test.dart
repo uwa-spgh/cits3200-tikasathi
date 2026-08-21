@@ -86,7 +86,7 @@ void main() {
         VaccinationRecordsCompanion.insert(
           id: 'record-2',
           childId: childId,
-          vaccineCode: 'OPV',
+          vaccineCode: 'BOPV',
           doseNumber: 1,
           administeredDate: DateTime(2023, 6, 11),
         ),
@@ -117,7 +117,7 @@ void main() {
         VaccinationRecordsCompanion.insert(
           id: 'record-b',
           childId: 'child-b',
-          vaccineCode: 'OPV',
+          vaccineCode: 'BOPV',
           doseNumber: 1,
           administeredDate: DateTime(2023, 6, 11),
         ),
@@ -217,7 +217,7 @@ void main() {
         VaccinationDuesCompanion.insert(
           id: 'due-2',
           childId: childId,
-          vaccineCode: 'OPV',
+          vaccineCode: 'BOPV',
           doseNumber: 1,
           dueDate: DateTime(2023, 6, 10),
         ),
@@ -310,7 +310,6 @@ void main() {
       );
     });
 
-
     group('NIP', () {
       test('looks up the due age of an existing vaccine dose', () {
         const vaccine = 'PENTA';
@@ -359,35 +358,34 @@ void main() {
         await insertChild(childId);
 
         expect(
-          () => vaccinationRecordsDao.insertVaccinationRecord(
-            VaccinationRecordsCompanion.insert(
-              id: 'record-1',
-              childId: childId,
-              vaccineCode: 'BCGFAKE',
-              doseNumber: 1,
-              administeredDate: DateTime(2023, 4, 16),
-            ),
-          ),
-          throwsA(isA<Exception>())
-        );
+            () => vaccinationRecordsDao.insertVaccinationRecord(
+                  VaccinationRecordsCompanion.insert(
+                    id: 'record-1',
+                    childId: childId,
+                    vaccineCode: 'BCGFAKE',
+                    doseNumber: 1,
+                    administeredDate: DateTime(2023, 4, 16),
+                  ),
+                ),
+            throwsA(isA<Exception>()));
       });
 
-      test('rejects a vaccination record with a valid code but invalid dose', () async {
+      test('rejects a vaccination record with a valid code but invalid dose',
+          () async {
         const childId = 'child-1';
         await insertChild(childId);
 
         expect(
-          () => vaccinationRecordsDao.insertVaccinationRecord(
-            VaccinationRecordsCompanion.insert(
-              id: 'record-1',
-              childId: childId,
-              vaccineCode: 'BCG',
-              doseNumber: 2,
-              administeredDate: DateTime(2023, 4, 16),
-            ),
-          ),
-          throwsA(isA<Exception>())
-        );
+            () => vaccinationRecordsDao.insertVaccinationRecord(
+                  VaccinationRecordsCompanion.insert(
+                    id: 'record-1',
+                    childId: childId,
+                    vaccineCode: 'BCG',
+                    doseNumber: 2,
+                    administeredDate: DateTime(2023, 4, 16),
+                  ),
+                ),
+            throwsA(isA<Exception>()));
       });
     });
   });
