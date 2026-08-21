@@ -25,17 +25,8 @@ class HomeRepository {
       final dueRows = await _database.vaccinationDuesDao
           .watchVaccinationDuesForChild(profile.id)
           .first;
-      final recordRows = await _database.vaccinationRecordsDao
-          .watchVaccinationRecordsForChild(profile.id)
-          .first;
 
-      final outstandingDues = dueRows.where((due) {
-        final hasMatchingRecord = recordRows.any((record) =>
-            record.childId == due.childId &&
-            record.vaccineCode == due.vaccineCode &&
-            record.doseNumber == due.doseNumber);
-        return !hasMatchingRecord;
-      }).toList();
+      final List<VaccinationDue> outstandingDues = dueRows;
 
       final status = _describeStatus(outstandingDues, currentTime);
       final vaccineLabel = _nextVaccineLabel(outstandingDues, currentTime);
