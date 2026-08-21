@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -15,6 +16,6 @@ void main() {
     );
 
     expect(find.byType(AppBottomNavigationBar), findsOneWidget);
-    expect(find.text('Home placeholder'), findsOneWidget);
+    expect(find.byKey(const Key('home-title')), findsOneWidget);
   });
 }
