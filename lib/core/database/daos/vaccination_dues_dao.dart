@@ -6,6 +6,9 @@ class VaccinationDuesDao extends DatabaseAccessor<AppDatabase>
   VaccinationDuesDao(super.db);
 
   Future<int> insertVaccinationDue(VaccinationDuesCompanion vaccinationDue) {
+    if (!doesDoseExist(vaccinationDue.vaccineCode.value, vaccinationDue.doseNumber.value)) {
+      throw Exception('invalid vaccine or dose');
+    }
     return into(vaccinationDues).insert(vaccinationDue);
   }
 
