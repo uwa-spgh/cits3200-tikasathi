@@ -1,9 +1,11 @@
 import 'dart:core';
 
+import 'package:tikasathi/core/database/app_database.dart';
+
 // Note: The dose of a vaccine corresponds to the index of each due-at-age. Ergo, to determine if a particular doseNumber exists, 
 // check if it is within the length of the list for the particular vaccine. Likewise, to determine if a particular vaccineCode exists,
 // check if the key exists in the NIP map
-final NIP = {
+final Map<String, List<DayDuration>> _NIP = Map.unmodifiable({
   'BCG': [DayDuration()],
   'PENTA': [DayDuration(weeks: 6), DayDuration(weeks: 10), DayDuration(weeks: 14)],
   'BOPV': [DayDuration(weeks: 6), DayDuration(weeks: 10), DayDuration(weeks: 14)],
@@ -13,7 +15,7 @@ final NIP = {
   'MR': [DayDuration(months: 9), DayDuration(months: 15)],
   'JE': [DayDuration(months: 12)],
   'TCV': [DayDuration(months: 15)],
-};
+});
 
 class DayDuration {
   final Duration duration;
@@ -27,6 +29,27 @@ class DayDuration {
 }
 
 bool doesDoseExist(String vaccineCode, int doseNumber) {
-  if (!NIP.containsKey(vaccineCode)) return false;
-  return doseNumber > 0 && doseNumber <= NIP[vaccineCode]!.length;
+  return getDoseAge(vaccineCode, doseNumber) != null;
+}
+
+DayDuration? getDoseAge(String vaccineCode, int doseNumber) {
+  return _NIP[vaccineCode]?.elementAtOrNull(doseNumber - 1);
+}
+
+typedef DoseRecord = ({int doseNumber, Duration dueAge, String vaccineCode});
+
+List<DoseRecord> getAllDoses() {
+  final List<({String vaccineCode, int doseNumber, Duration dueAge})> result = [];
+
+  _NIP.forEach((vaccine, ages) {
+    for (final (dose, age) in ages.indexed) {
+      result.add((
+        vaccineCode: vaccine,
+        doseNumber: dose + 1,
+        dueAge: age.duration
+      ));
+    }
+  });
+  
+  return result;
 }
