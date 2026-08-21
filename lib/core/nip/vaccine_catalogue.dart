@@ -31,6 +31,6 @@ class DayDuration {
 
 extension AddDayDuration on DateTime {
   DateTime addDayDuration(DayDuration duration) {
-    return DateTime(year - duration.years, month - duration.months, day - (duration.days + duration.weeks * 7));
+    return DateTime(year + duration.years, month + duration.months, day + (duration.days + duration.weeks * 7));
   }
 }
