@@ -34,8 +34,8 @@ class HomeScreen extends ConsumerWidget {
       final homeGroupsState = ref.watch(homeStatusGroupsProvider);
       resolvedGroups = homeGroupsState.when(
         data: (List<HomeStatusGroup> data) => data,
-        loading: () => homeDemoGroups,
-        error: (Object error, StackTrace stackTrace) => homeDemoGroups,
+        loading: () => const <HomeStatusGroup>[],
+        error: (Object error, StackTrace stackTrace) => const <HomeStatusGroup>[],
       );
     }
 
