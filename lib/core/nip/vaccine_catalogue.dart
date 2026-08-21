@@ -1,7 +1,5 @@
 import 'dart:core';
 
-import 'package:tikasathi/core/database/app_database.dart';
-
 // Note: The dose of a vaccine corresponds to the index of each due-at-age. Ergo, to determine if a particular doseNumber exists, 
 // check if it is within the length of the list for the particular vaccine. Likewise, to determine if a particular vaccineCode exists,
 // check if the key exists in the NIP map
