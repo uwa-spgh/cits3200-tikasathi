@@ -6,8 +6,7 @@ import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart'
 
 void main() {
   group('AppShellScreen', () {
-    testWidgets('shows home screen by default',
-        (WidgetTester tester) async {
+    testWidgets('shows home screen by default', (WidgetTester tester) async {
       await tester.pumpWidget(
         const ProviderScope(
           child: MaterialApp(
