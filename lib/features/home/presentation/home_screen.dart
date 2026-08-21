@@ -1,19 +1,81 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/home_demo_data.dart';
+import '../domain/home_models.dart';
+import '../domain/home_status_groups_provider.dart';
+import 'register_child_dialog.dart';
 
 typedef HomeChildActionCallback = void Function(HomeChildSummary child);
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({
     super.key,
-    this.groups = homeDemoGroups,
+    this.groups,
     this.onAddChildPressed,
     this.onRecordVaccinePressed,
     this.onFindClinicPressed,
     this.onChildPressed,
   });
- 
+
+  final List<HomeStatusGroup>? groups;
+  final VoidCallback? onAddChildPressed;
+  final HomeChildActionCallback? onRecordVaccinePressed;
+  final HomeChildActionCallback? onFindClinicPressed;
+  final HomeChildActionCallback? onChildPressed;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final List<HomeStatusGroup> resolvedGroups;
+
+    if (groups != null) {
+      resolvedGroups = groups!;
+    } else {
+      final homeGroupsState = ref.watch(homeStatusGroupsProvider);
+      resolvedGroups = homeGroupsState.when(
+        data: (List<HomeStatusGroup> data) => data,
+        loading: () => homeDemoGroups,
+        error: (Object error, StackTrace stackTrace) => homeDemoGroups,
+      );
+    }
+
+    return _HomeScreenContent(
+      groups: resolvedGroups,
+      onAddChildPressed: onAddChildPressed,
+      onRecordVaccinePressed: onRecordVaccinePressed,
+      onFindClinicPressed: onFindClinicPressed,
+      onChildPressed: onChildPressed,
+    );
+  }
+
+  static void _showPlaceholder(BuildContext context, String action) {
+    final ScaffoldMessengerState scaffoldMessenger =
+        ScaffoldMessenger.of(context);
+    scaffoldMessenger.hideCurrentSnackBar();
+    scaffoldMessenger.showSnackBar(
+      SnackBar(
+        content: Text('$action is not available yet.'),
+      ),
+    );
+  }
+
+  static Future<void> _openRegisterChildDialog(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext _) => const RegisterChildDialog(),
+    );
+  }
+}
+
+class _HomeScreenContent extends StatelessWidget {
+  const _HomeScreenContent({
+    required this.groups,
+    required this.onAddChildPressed,
+    required this.onRecordVaccinePressed,
+    required this.onFindClinicPressed,
+    required this.onChildPressed,
+  });
+
   final List<HomeStatusGroup> groups;
   final VoidCallback? onAddChildPressed;
   final HomeChildActionCallback? onRecordVaccinePressed;
@@ -32,28 +94,31 @@ class HomeScreen extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 560),
             child: ListView(
               padding: EdgeInsets.fromLTRB(
-                  horizontalPadding, 16, horizontalPadding, 24),
+                horizontalPadding,
+                16,
+                horizontalPadding,
+                24,
+              ),
               children: <Widget>[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      child: Text(
-                        'Your children',
-                        key: const Key('home-title'),
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.w800,
-                              color: const Color(0xFF11284F),
-                            ),
-                      ),
-                    ),
-                    OutlinedButton(
+                LayoutBuilder(
+                  builder:
+                      (BuildContext context, BoxConstraints headerConstraints) {
+                    final bool compactHeader = headerConstraints.maxWidth < 340;
+
+                    final Widget title = Text(
+                      'Your children',
+                      key: const Key('home-title'),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                color: const Color(0xFF11284F),
+                              ),
+                    );
+
+                    final Widget addChildButton = OutlinedButton(
                       key: const Key('home-add-child-button'),
                       onPressed: onAddChildPressed ??
-                          () => _showPlaceholder(context, 'Add child'),
+                          () => HomeScreen._openRegisterChildDialog(context),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: const Color(0xFF0E64C5),
                         side: const BorderSide(color: Color(0xFF0E64C5)),
@@ -61,21 +126,42 @@ class HomeScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(22),
                         ),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 10),
-                        minimumSize: const Size(112, 44),
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
+                        minimumSize: const Size(0, 44),
                       ),
                       child: const Text(
                         '+ Add child',
                         style: TextStyle(fontWeight: FontWeight.w700),
                       ),
-                    ),
-                  ],
+                    );
+
+                    if (compactHeader) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          title,
+                          const SizedBox(height: 8),
+                          addChildButton,
+                        ],
+                      );
+                    }
+
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(child: title),
+                        addChildButton,
+                      ],
+                    );
+                  },
                 ),
                 const SizedBox(height: 18),
                 if (groups.isEmpty)
                   _HomeEmptyState(
                     onAddChildPressed: onAddChildPressed ??
-                        () => _showPlaceholder(context, 'Add child'),
+                        () => HomeScreen._openRegisterChildDialog(context),
                   )
                 else
                   ...groups.map(
@@ -88,21 +174,22 @@ class HomeScreen extends StatelessWidget {
                             onChildPressed!(child);
                             return;
                           }
-                          _showPlaceholder(context, 'Child details');
+                          HomeScreen._showPlaceholder(context, 'Child details');
                         },
                         onRecordVaccinePressed: (HomeChildSummary child) {
                           if (onRecordVaccinePressed != null) {
                             onRecordVaccinePressed!(child);
                             return;
                           }
-                          _showPlaceholder(context, 'Record vaccine');
+                          HomeScreen._showPlaceholder(
+                              context, 'Record vaccine');
                         },
                         onFindClinicPressed: (HomeChildSummary child) {
                           if (onFindClinicPressed != null) {
                             onFindClinicPressed!(child);
                             return;
                           }
-                          _showPlaceholder(context, 'Find clinic');
+                          HomeScreen._showPlaceholder(context, 'Find clinic');
                         },
                       ),
                     ),
@@ -112,14 +199,6 @@ class HomeScreen extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-
-  void _showPlaceholder(BuildContext context, String action) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$action is not available yet.'),
-      ),
     );
   }
 }
@@ -164,12 +243,14 @@ class _StatusGroupCard extends StatelessWidget {
               children: <Widget>[
                 Icon(style.icon, color: Colors.white, size: 18),
                 const SizedBox(width: 6),
-                Text(
-                  group.headerLabel,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                      ),
+                Expanded(
+                  child: Text(
+                    group.headerLabel,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                        ),
+                  ),
                 ),
               ],
             ),
@@ -214,89 +295,139 @@ class _HomeChildCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: onChildPressed,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-            child: Row(
-              children: <Widget>[
-                CircleAvatar(
-                  radius: 18,
-                  backgroundColor: const Color(0xFFEAF2FF),
-                  child: Text(
-                    child.avatarEmoji,
-                    style: const TextStyle(fontSize: 20),
-                  ),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints childConstraints) {
+        final bool compactActions = childConstraints.maxWidth < 420;
+
+        final List<Widget> actionButtons = <Widget>[
+          if (child.canRecordVaccine)
+            FilledButton.icon(
+              key: Key('record-vaccine-${child.name}'),
+              onPressed: onRecordVaccinePressed,
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF0E64C5),
+                foregroundColor: Colors.white,
+                minimumSize: const Size(0, 44),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        child.name,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
+              ),
+              icon: const Icon(Icons.edit, size: 18),
+              label: const Text('Record vaccine'),
+            ),
+          if (child.canFindClinic)
+            FilledButton.icon(
+              key: Key('find-clinic-${child.name}'),
+              onPressed: onFindClinicPressed,
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFFD9ECFF),
+                foregroundColor: const Color(0xFF0E64C5),
+                minimumSize: const Size(0, 44),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
+              ),
+              icon: const Icon(Icons.location_on_outlined, size: 18),
+              label: const Text('Find clinic'),
+            ),
+        ];
+
+        final Widget actionGroup = compactActions
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: actionButtons
+                    .map(
+                      (Widget button) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: button,
                       ),
-                      Text(
-                        '${child.vaccineLabel} - ${child.ageLabel}',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: const Color(0xFF495D7D),
-                              fontWeight: FontWeight.w600,
+                    )
+                    .toList(),
+              )
+            : Wrap(
+                spacing: 10,
+                runSpacing: 8,
+                alignment: WrapAlignment.start,
+                crossAxisAlignment: WrapCrossAlignment.start,
+                children: actionButtons,
+              );
+
+        return Column(
+          children: <Widget>[
+            InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: onChildPressed,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Row(
+                    children: <Widget>[
+                      CircleAvatar(
+                        radius: 18,
+                        backgroundColor: const Color(0xFFEAF2FF),
+                        child: Text(
+                          child.avatarEmoji,
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              child.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                  ),
                             ),
+                            Text(
+                              '${child.vaccineLabel} - ${child.ageLabel}',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(
+                                    color: const Color(0xFF495D7D),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Icon(
+                        Icons.chevron_right_rounded,
+                        size: 34,
+                        color: Color(0xFF465A7A),
                       ),
                     ],
                   ),
                 ),
-                const Icon(
-                  Icons.chevron_right_rounded,
-                  size: 34,
-                  color: Color(0xFF465A7A),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 10,
-          runSpacing: 8,
-          children: <Widget>[
-            if (child.canRecordVaccine)
-              FilledButton.icon(
-                key: Key('record-vaccine-${child.name}'),
-                onPressed: onRecordVaccinePressed,
-                style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFF0E64C5),
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(160, 44),
-                  textStyle: const TextStyle(
-                      fontWeight: FontWeight.w700, fontSize: 18),
-                ),
-                icon: const Icon(Icons.edit, size: 18),
-                label: const Text('Record vaccine'),
-              ),
-            if (child.canFindClinic)
-              FilledButton.icon(
-                key: Key('find-clinic-${child.name}'),
-                onPressed: onFindClinicPressed,
-                style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFFD9ECFF),
-                  foregroundColor: const Color(0xFF0E64C5),
-                  minimumSize: const Size(160, 44),
-                  textStyle: const TextStyle(
-                      fontWeight: FontWeight.w700, fontSize: 18),
-                ),
-                icon: const Icon(Icons.location_on_outlined, size: 18),
-                label: const Text('Find clinic'),
-              ),
+            const SizedBox(height: 8),
+            actionGroup,
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 }
