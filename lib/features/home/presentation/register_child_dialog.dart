@@ -74,6 +74,11 @@ class _RegisterChildDialogState extends ConsumerState<RegisterChildDialog> {
       if (mounted) {
         Navigator.of(context).pop();
       }
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to save child. Please try again.')),
+      );
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }
