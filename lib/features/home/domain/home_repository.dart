@@ -77,21 +77,22 @@ class HomeRepository {
     }
 
     final nowDate = DateTime(now.year, now.month, now.day);
+
+    // Any due date on or before today counts as due TODAY (covers overdue)
     final hasDueToday = dueRows.any((VaccinationDue due) {
       final dueDate = DateTime(
         due.dueDate.year,
         due.dueDate.month,
         due.dueDate.day,
       );
-      return dueDate.year == nowDate.year &&
-          dueDate.month == nowDate.month &&
-          dueDate.day == nowDate.day;
+      return !dueDate.isAfter(nowDate); // dueDate <= nowDate
     });
 
     if (hasDueToday) {
       return HomeVaccinationGroup.dueToday;
     }
 
+    // Due soon: strictly after today and within the next 14 calendar days
     final hasDueSoon = dueRows.any((VaccinationDue due) {
       final dueDate = DateTime(
         due.dueDate.year,
@@ -99,7 +100,7 @@ class HomeRepository {
         due.dueDate.day,
       );
       final difference = dueDate.difference(nowDate).inDays;
-      return difference >= 0 && difference <= 14;
+      return difference > 0 && difference <= 14;
     });
 
     if (hasDueSoon) {

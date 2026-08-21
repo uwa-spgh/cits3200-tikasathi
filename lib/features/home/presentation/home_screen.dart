@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../domain/home_demo_data.dart';
 import '../domain/home_models.dart';
 import '../domain/home_status_groups_provider.dart';
 import 'register_child_dialog.dart';
@@ -35,7 +34,8 @@ class HomeScreen extends ConsumerWidget {
       resolvedGroups = homeGroupsState.when(
         data: (List<HomeStatusGroup> data) => data,
         loading: () => const <HomeStatusGroup>[],
-        error: (Object error, StackTrace stackTrace) => const <HomeStatusGroup>[],
+        error: (Object error, StackTrace stackTrace) =>
+            const <HomeStatusGroup>[],
       );
     }
 
