@@ -1,0 +1,50 @@
+name: Release Builds
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.44.9'
+        channel: 'stable'
+
+    - name: Install Dependencies
+      run: flutter pub get
+
+    - name: Run Code Generation
+      run: dart run build_runner build --delete-conflicting-outputs
+
+    - name: Build Android APK
+      run: flutter build apk --release
+
+    - name: Build iOS (Unsigned)
+      run: flutter build ipa --release --no-codesign
+
+    - name: Upload Android Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-apk
+        path: build/app/outputs/flutter-apk/app-release.apk
+
+    - name: Upload iOS Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ios-xcarchive
+        path: build/ios/archive/Runner.xcarchive
