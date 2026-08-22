@@ -82,7 +82,8 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.widgetWithText(FilledButton, 'Save'));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
 
       expect(find.byType(RegisterChildDialog), findsNothing);
 

@@ -37,14 +37,12 @@ jobs:
     - name: Build iOS (Unsigned)
       run: flutter build ipa --release --no-codesign
 
-    - name: Upload Android Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: android-apk
-        path: build/app/outputs/flutter-apk/app-release.apk
+    - name: Zip iOS Archive
+      run: cd build/ios/archive && zip -r ../../../ios-release.zip Runner.xcarchive
 
-    - name: Upload iOS Artifact
-      uses: actions/upload-artifact@v4
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
       with:
-        name: ios-xcarchive
-        path: build/ios/archive/Runner.xcarchive
+        files: |
+          build/app/outputs/flutter-apk/app-release.apk
+          ios-release.zip
