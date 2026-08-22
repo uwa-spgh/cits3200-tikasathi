@@ -75,7 +75,7 @@ void main() {
         VaccinationDuesCompanion.insert(
           id: 'd2',
           childId: 'c1',
-          vaccineCode: 'PENTA',
+          vaccineCode: 'BOPV',
           doseNumber: 1,
           dueDate: DateTime(2026, 8, 22),
         ),
@@ -100,7 +100,7 @@ void main() {
         VaccinationDuesCompanion.insert(
           id: 'd3',
           childId: 'c1',
-          vaccineCode: 'BOPV',
+          vaccineCode: 'PENTA',
           doseNumber: 1,
           dueDate: DateTime(2026, 8, 30),
         ),
@@ -125,7 +125,7 @@ void main() {
         VaccinationDuesCompanion.insert(
           id: 'd4',
           childId: 'c1',
-          vaccineCode: 'PCV',
+          vaccineCode: 'MR',
           doseNumber: 1,
           dueDate: DateTime(2026, 9, 10),
         ),
