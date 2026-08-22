@@ -1897,6 +1897,9 @@ class $AppDatabaseManager {
 
 mixin _$ChildProfilesDaoMixin on DatabaseAccessor<AppDatabase> {
   $ChildProfilesTable get childProfiles => attachedDatabase.childProfiles;
+  $VaccinationDuesTable get vaccinationDues => attachedDatabase.vaccinationDues;
+  $VaccinationRecordsTable get vaccinationRecords =>
+      attachedDatabase.vaccinationRecords;
 }
 mixin _$VaccinationRecordsDaoMixin on DatabaseAccessor<AppDatabase> {
   $ChildProfilesTable get childProfiles => attachedDatabase.childProfiles;
