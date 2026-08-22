@@ -10,6 +10,10 @@ class VaccinationRecordsDao extends DatabaseAccessor<AppDatabase>
   Future<int> insertVaccinationRecord(
     VaccinationRecordsCompanion vaccinationRecord,
   ) {
+    if (!doesDoseExist(vaccinationRecord.vaccineCode.value,
+        vaccinationRecord.doseNumber.value)) {
+      throw Exception('invalid vaccine or dose');
+    }
     return transaction(() async {
       final rowId = await into(vaccinationRecords).insert(vaccinationRecord);
       await (delete(vaccinationDues)

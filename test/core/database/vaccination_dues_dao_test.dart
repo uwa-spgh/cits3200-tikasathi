@@ -77,7 +77,7 @@ void main() {
         VaccinationDuesCompanion.insert(
           id: 'due-2',
           childId: childId,
-          vaccineCode: 'OPV',
+          vaccineCode: 'BOPV',
           doseNumber: 1,
           dueDate: DateTime(2023, 6, 10),
         ),
@@ -108,7 +108,7 @@ void main() {
         VaccinationDuesCompanion.insert(
           id: 'due-b',
           childId: 'child-b',
-          vaccineCode: 'OPV',
+          vaccineCode: 'BOPV',
           doseNumber: 1,
           dueDate: DateTime(2023, 6, 10),
         ),
@@ -189,6 +189,61 @@ void main() {
         ),
         throwsA(isA<Exception>()),
       );
+    });
+
+    group('NIP', () {
+      test('accepts a vaccination due with valid code and dose', () async {
+        const childId = 'child-1';
+        await insertChild(childId);
+        await vaccinationDuesDao.insertVaccinationDue(
+          VaccinationDuesCompanion.insert(
+            id: 'due-1',
+            childId: childId,
+            vaccineCode: 'BCG',
+            doseNumber: 1,
+            dueDate: DateTime(2023, 4, 15),
+          ),
+        );
+
+        final dues = await duesFor(childId);
+        expect(dues, hasLength(1));
+        expect(dues.single.childId, childId);
+      });
+
+      test('rejects a vaccination due with invalid code', () async {
+        const childId = 'child-1';
+        await insertChild(childId);
+        expect(
+          () => vaccinationDuesDao.insertVaccinationDue(
+            VaccinationDuesCompanion.insert(
+              id: 'due-1',
+              childId: childId,
+              vaccineCode: 'BCGFAKE',
+              doseNumber: 1,
+              dueDate: DateTime(2023, 4, 15),
+            ),
+          ),
+          throwsA(isA<Exception>()),
+        );
+      });
+
+      test('rejects a vaccination due with valid code but invalid dose',
+          () async {
+        const childId = 'child-1';
+        await insertChild(childId);
+        expect(
+          () => vaccinationDuesDao.insertVaccinationDue(
+            VaccinationDuesCompanion.insert(
+              id: 'due-1',
+              childId: childId,
+              vaccineCode: 'BCG',
+              doseNumber: 2,
+              dueDate: DateTime(2023, 4, 15),
+            ),
+          ),
+          throwsA(isA<Exception>()),
+        );
+      });
     });
   });
 }

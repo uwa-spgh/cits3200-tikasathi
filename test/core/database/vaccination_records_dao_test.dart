@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tikasathi/core/database/app_database.dart';
+import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
 
 void main() {
   group('VaccinationRecordsDao', () {
@@ -85,7 +86,7 @@ void main() {
         VaccinationRecordsCompanion.insert(
           id: 'record-2',
           childId: childId,
-          vaccineCode: 'OPV',
+          vaccineCode: 'BOPV',
           doseNumber: 1,
           administeredDate: DateTime(2023, 6, 11),
         ),
@@ -116,7 +117,7 @@ void main() {
         VaccinationRecordsCompanion.insert(
           id: 'record-b',
           childId: 'child-b',
-          vaccineCode: 'OPV',
+          vaccineCode: 'BOPV',
           doseNumber: 1,
           administeredDate: DateTime(2023, 6, 11),
         ),
@@ -216,7 +217,7 @@ void main() {
         VaccinationDuesCompanion.insert(
           id: 'due-2',
           childId: childId,
-          vaccineCode: 'OPV',
+          vaccineCode: 'BOPV',
           doseNumber: 1,
           dueDate: DateTime(2023, 6, 10),
         ),
@@ -307,6 +308,85 @@ void main() {
         ),
         throwsA(isA<Exception>()),
       );
+    });
+
+    group('NIP', () {
+      test('looks up the due age of an existing vaccine dose', () {
+        const vaccine = 'PENTA';
+        const dose = 2;
+        final age = getDoseAge(vaccine, dose);
+
+        expect(age?.duration, DayDuration(weeks: 10).duration);
+      });
+
+      test('returns null for a nonexisting vaccine dose', () {
+        const vaccine = "BCG";
+        const dose = 2;
+        final age = getDoseAge(vaccine, dose);
+
+        expect(age, null);
+
+        const vaccineFake = "FAKE";
+        const doseFake = 1;
+        final ageFake = getDoseAge(vaccineFake, doseFake);
+
+        expect(ageFake, null);
+      });
+
+      test('accepts a vaccination record with a valid code and dose', () async {
+        // this is identical to a previous test, should it remain?
+        const childId = 'child-1';
+        await insertChild(childId);
+
+        await vaccinationRecordsDao.insertVaccinationRecord(
+          VaccinationRecordsCompanion.insert(
+            id: 'record-1',
+            childId: childId,
+            vaccineCode: 'BCG',
+            doseNumber: 1,
+            administeredDate: DateTime(2023, 4, 16),
+          ),
+        );
+
+        final records = await recordsFor(childId);
+        expect(records, hasLength(1));
+        expect(records.single.id, 'record-1');
+      });
+
+      test('rejects a vaccination record with an invalid code', () async {
+        const childId = 'child-1';
+        await insertChild(childId);
+
+        expect(
+            () => vaccinationRecordsDao.insertVaccinationRecord(
+                  VaccinationRecordsCompanion.insert(
+                    id: 'record-1',
+                    childId: childId,
+                    vaccineCode: 'BCGFAKE',
+                    doseNumber: 1,
+                    administeredDate: DateTime(2023, 4, 16),
+                  ),
+                ),
+            throwsA(isA<Exception>()));
+      });
+
+      test('rejects a vaccination record with a valid code but invalid dose',
+          () async {
+        const childId = 'child-1';
+        await insertChild(childId);
+
+        expect(
+            () => vaccinationRecordsDao.insertVaccinationRecord(
+                  VaccinationRecordsCompanion.insert(
+                    id: 'record-1',
+                    childId: childId,
+                    vaccineCode: 'BCG',
+                    doseNumber: 2,
+                    administeredDate: DateTime(2023, 4, 16),
+                  ),
+                ),
+            throwsA(isA<Exception>()));
+      });
     });
   });
 }
