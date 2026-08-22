@@ -199,7 +199,7 @@ void main() {
         VaccinationDuesCompanion.insert(
           id: 'due-2',
           childId: 'child-2',
-          vaccineCode: 'OPV',
+          vaccineCode: 'BOPV',
           doseNumber: 1,
           dueDate: DateTime(2022, 10, 3),
         ),
@@ -208,7 +208,7 @@ void main() {
         VaccinationRecordsCompanion.insert(
           id: 'record-1',
           childId: 'child-1',
-          vaccineCode: 'HepB',
+          vaccineCode: 'PENTA',
           doseNumber: 1,
           administeredDate: DateTime(2023, 4, 16),
         ),
