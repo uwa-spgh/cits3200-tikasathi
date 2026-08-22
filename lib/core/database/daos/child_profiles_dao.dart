@@ -13,6 +13,10 @@ class ChildProfilesDao extends DatabaseAccessor<AppDatabase>
     return select(childProfiles).watch();
   }
 
+  Future<List<ChildProfile>> getAllChildProfiles() {
+    return select(childProfiles).get();
+  }
+
   Future<int> updateChildProfile({
     required String id,
     required String name,
