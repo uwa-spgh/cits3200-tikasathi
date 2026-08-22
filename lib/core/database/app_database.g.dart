@@ -1910,4 +1910,6 @@ mixin _$VaccinationRecordsDaoMixin on DatabaseAccessor<AppDatabase> {
 mixin _$VaccinationDuesDaoMixin on DatabaseAccessor<AppDatabase> {
   $ChildProfilesTable get childProfiles => attachedDatabase.childProfiles;
   $VaccinationDuesTable get vaccinationDues => attachedDatabase.vaccinationDues;
+  $VaccinationRecordsTable get vaccinationRecords =>
+      attachedDatabase.vaccinationRecords;
 }
