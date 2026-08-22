@@ -1,17 +1,20 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tikasathi/core/database/app_database.dart';
+import 'package:tikasathi/core/nip/generate.dart';
 
 void main() {
   group('VaccinationDuesDao', () {
     late AppDatabase database;
     late ChildProfilesDao childProfilesDao;
     late VaccinationDuesDao vaccinationDuesDao;
+    late VaccinationRecordsDao vaccinationRecordsDao;
 
     setUp(() {
       database = AppDatabase.forTesting(NativeDatabase.memory());
       childProfilesDao = database.childProfilesDao;
       vaccinationDuesDao = database.vaccinationDuesDao;
+      vaccinationRecordsDao = database.vaccinationRecordsDao;
     });
 
     tearDown(() async {
@@ -243,6 +246,260 @@ void main() {
           ),
           throwsA(isA<Exception>()),
         );
+      });
+    });
+
+    group('insertDuesForChild', () {
+      const childId = 'child-1';
+      final today = DateTime(2026, 8, 22);
+      final dob = DateTime(2023, 4, 15);
+
+      GenerateDues stubReturning(List<GeneratedDue> generatedDues) =>
+          (DateTime dob, DateTime today, List<AdministeredDose> records) =>
+              generatedDues;
+
+      test('persists dues matching the stub', () async {
+        await insertChild(childId);
+        final bcgDue = (
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+          dueDate: DateTime(2023, 4, 15),
+        );
+        final pentaDue = (
+          vaccineCode: 'PENTA',
+          doseNumber: 1,
+          dueDate: DateTime(2023, 5, 27),
+        );
+
+        await expectLater(
+          vaccinationDuesDao.insertDuesForChild(
+            childId,
+            today: today,
+            generateDues: stubReturning([bcgDue, pentaDue]),
+          ),
+          completes,
+        );
+
+        final dues = await duesFor(childId);
+        expect(dues, hasLength(2));
+        expect(
+          dues.map((due) => (
+                vaccineCode: due.vaccineCode,
+                doseNumber: due.doseNumber,
+                dueDate: due.dueDate,
+              )),
+          containsAll([bcgDue, pentaDue]),
+        );
+        expect(dues.every((due) => due.childId == childId), isTrue);
+        expect(dues.map((due) => due.id), everyElement(isNotEmpty));
+        expect(dues.map((due) => due.id).toSet(), hasLength(2));
+      });
+
+      test('empty stub leaves child with no dues', () async {
+        await insertChild(childId);
+
+        await expectLater(
+          vaccinationDuesDao.insertDuesForChild(
+            childId,
+            today: today,
+            generateDues: stubReturning([]),
+          ),
+          completes,
+        );
+
+        expect(await duesFor(childId), isEmpty);
+        final profiles = await childProfilesDao.streamAllChildProfiles().first;
+        expect(profiles.single.id, childId);
+      });
+
+      test('invalid dose rolls back the whole batch', () async {
+        await insertChild(childId);
+
+        await expectLater(
+          vaccinationDuesDao.insertDuesForChild(
+            childId,
+            today: today,
+            generateDues: stubReturning([
+              (
+                vaccineCode: 'BCG',
+                doseNumber: 1,
+                dueDate: DateTime(2023, 4, 15),
+              ),
+              (
+                vaccineCode: 'PENTA',
+                doseNumber: 1,
+                dueDate: DateTime(2023, 5, 27),
+              ),
+              // BCG-2: invalid
+              (
+                vaccineCode: 'BCG',
+                doseNumber: 2,
+                dueDate: DateTime(2023, 4, 15),
+              ),
+            ]),
+          ),
+          throwsA(
+            predicate<Object>(
+              (e) =>
+                  e is Exception &&
+                  e.toString().contains('invalid vaccine or dose'),
+            ),
+          ),
+        );
+
+        expect(await duesFor(childId), isEmpty);
+        final profiles = await childProfilesDao.streamAllChildProfiles().first;
+        expect(profiles.single.id, childId);
+      });
+
+      test('missing child throws and does not call generate', () async {
+        var generateCalled = false;
+
+        await expectLater(
+          vaccinationDuesDao.insertDuesForChild(
+            'missing-child',
+            generateDues:
+                (DateTime dob, DateTime today, List<AdministeredDose> records) {
+              generateCalled = true;
+              return [
+                (
+                  vaccineCode: 'BCG',
+                  doseNumber: 1,
+                  dueDate: DateTime(2023, 4, 15),
+                ),
+              ];
+            },
+          ),
+          throwsA(
+            predicate<Object>(
+              (e) => e is Exception && e.toString().contains('child not found'),
+            ),
+          ),
+        );
+
+        expect(generateCalled, isFalse);
+      });
+
+      test('forwards dob, today, and empty records', () async {
+        await insertChild(childId);
+        DateTime? capturedDob;
+        DateTime? capturedToday;
+        List<AdministeredDose>? capturedRecords;
+
+        await vaccinationDuesDao.insertDuesForChild(
+          childId,
+          today: today,
+          generateDues: (DateTime receivedDob, DateTime receivedToday,
+              List<AdministeredDose> records) {
+            capturedDob = receivedDob;
+            capturedToday = receivedToday;
+            capturedRecords = records;
+            return [];
+          },
+        );
+
+        expect(capturedDob, dob);
+        expect(capturedToday, today);
+        expect(capturedRecords, isEmpty);
+      });
+
+      test('forwards records already in the database', () async {
+        await insertChild(childId);
+        final administeredDate = DateTime(2023, 6, 1);
+        await vaccinationRecordsDao.insertVaccinationRecord(
+          VaccinationRecordsCompanion.insert(
+            id: 'record-1',
+            childId: childId,
+            vaccineCode: 'PENTA',
+            doseNumber: 1,
+            administeredDate: administeredDate,
+          ),
+        );
+
+        List<AdministeredDose>? capturedRecords;
+        await vaccinationDuesDao.insertDuesForChild(
+          childId,
+          today: today,
+          generateDues:
+              (DateTime dob, DateTime today, List<AdministeredDose> records) {
+            capturedRecords = records;
+            return [];
+          },
+        );
+
+        expect(capturedRecords, hasLength(1));
+        expect(
+          capturedRecords!.single,
+          (
+            vaccineCode: 'PENTA',
+            doseNumber: 1,
+            administeredDate: administeredDate,
+          ),
+        );
+        expect(
+          await vaccinationRecordsDao
+              .watchVaccinationRecordsForChild(childId)
+              .first,
+          hasLength(1),
+        );
+      });
+
+      test('failed persist does not delete prior dues', () async {
+        await insertChild(childId);
+        await vaccinationDuesDao.insertVaccinationDue(
+          VaccinationDuesCompanion.insert(
+            id: 'due-1',
+            childId: childId,
+            vaccineCode: 'BCG',
+            doseNumber: 1,
+            dueDate: DateTime(2023, 4, 15),
+          ),
+        );
+
+        await expectLater(
+          vaccinationDuesDao.insertDuesForChild(
+            childId,
+            today: today,
+            generateDues: stubReturning([
+              (
+                vaccineCode: 'PENTA',
+                doseNumber: 1,
+                dueDate: DateTime(2023, 5, 27),
+              ),
+              (
+                vaccineCode: 'BCGFAKE',
+                doseNumber: 1,
+                dueDate: DateTime(2023, 4, 15),
+              ),
+            ]),
+          ),
+          throwsA(isA<Exception>()),
+        );
+
+        final dues = await duesFor(childId);
+        expect(dues, hasLength(1));
+        expect(dues.single.id, 'due-1');
+        expect(dues.single.vaccineCode, 'BCG');
+      });
+
+      test("does not write another child's dues", () async {
+        await insertChild('child-a');
+        await insertChild('child-b');
+
+        await vaccinationDuesDao.insertDuesForChild(
+          'child-a',
+          today: today,
+          generateDues: stubReturning([
+            (
+              vaccineCode: 'BCG',
+              doseNumber: 1,
+              dueDate: DateTime(2023, 4, 15),
+            ),
+          ]),
+        );
+
+        expect(await duesFor('child-a'), hasLength(1));
+        expect(await duesFor('child-b'), isEmpty);
       });
     });
   });
