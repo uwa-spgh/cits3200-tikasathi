@@ -6,8 +6,7 @@ import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart'
 
 void main() {
   group('AppShellScreen', () {
-    testWidgets('shows home placeholder by default',
-        (WidgetTester tester) async {
+    testWidgets('shows home screen by default', (WidgetTester tester) async {
       await tester.pumpWidget(
         const ProviderScope(
           child: MaterialApp(
@@ -15,9 +14,10 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       expect(find.byType(AppBottomNavigationBar), findsOneWidget);
-      expect(find.text('Home placeholder'), findsOneWidget);
+      expect(find.byKey(const Key('home-title')), findsOneWidget);
       expect(find.text('Learn placeholder'), findsNothing);
       expect(find.text('Settings placeholder'), findsNothing);
       expect(find.byIcon(Icons.record_voice_over), findsOneWidget);
@@ -32,11 +32,12 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       await tester.tap(find.text('Learn'));
       await tester.pumpAndSettle();
       expect(find.text('Learn placeholder'), findsOneWidget);
-      expect(find.text('Home placeholder'), findsNothing);
+      expect(find.byKey(const Key('home-title')), findsNothing);
 
       await tester.tap(find.text('Settings'));
       await tester.pumpAndSettle();
@@ -53,6 +54,7 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       expect(find.byTooltip('Read aloud'), findsOneWidget);
       await tester.tap(find.byIcon(Icons.record_voice_over));
