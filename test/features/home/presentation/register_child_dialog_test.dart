@@ -91,8 +91,7 @@ void main() {
 
       expect(find.byType(RegisterChildDialog), findsNothing);
 
-      final profiles =
-          await database.childProfilesDao.streamAllChildProfiles().first;
+      final profiles = await database.childProfilesDao.getAllChildProfiles();
       expect(profiles, hasLength(1));
       final child = profiles.single;
       expect(child.name, 'Kiran');

@@ -9,8 +9,7 @@ class HomeRepository {
 
   Future<List<HomeStatusGroup>> loadHomeStatusGroups({DateTime? now}) async {
     final DateTime currentTime = now ?? DateTime.now();
-    final profiles =
-        await _database.childProfilesDao.streamAllChildProfiles().first;
+    final profiles = await _database.childProfilesDao.getAllChildProfiles();
 
     if (profiles.isEmpty) {
       return const <HomeStatusGroup>[];
