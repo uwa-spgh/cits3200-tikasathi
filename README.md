@@ -39,6 +39,8 @@ Every pull request to the `main` or `develop` branch will trigger a workflow tha
 2. **Unit Tests:** `flutter test` to verify the logic of the age calculator, vaccine schedule generator, and missed-dose catch-up algorithm.
 3. **Widget Tests:** Automated UI tests to ensure critical flows (e.g., child registration, language toggling) render correctly without regressions.
 
+**Releases:** Any pushed tag starting with `v` (e.g., `v1.0.0`) will automatically trigger a build workflow that generates an Android APK and an iOS Archive and publishes them as a GitHub Release.
+
 > [!TIP]
 > **Project Acceptance Tests**
 > Your team will also perform manual Acceptance Testing on physical low-end devices to verify the app meets the criteria outlined in `Project Acceptance Tests.md`, such as:
