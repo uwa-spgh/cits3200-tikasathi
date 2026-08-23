@@ -5,7 +5,9 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import 'package:tikasathi/core/nip/generate.dart';
 import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
+import 'package:uuid/uuid.dart';
 
 part 'daos/child_profiles_dao.dart';
 part 'daos/vaccination_records_dao.dart';

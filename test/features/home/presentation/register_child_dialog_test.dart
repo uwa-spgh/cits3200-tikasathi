@@ -83,7 +83,11 @@ void main() {
 
       await tester.tap(find.widgetWithText(FilledButton, 'Save'));
       await tester.pump();
-      await tester.pump(const Duration(seconds: 1));
+      for (var i = 0;
+          i < 20 && find.byType(RegisterChildDialog).evaluate().isNotEmpty;
+          i++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
 
       expect(find.byType(RegisterChildDialog), findsNothing);
 

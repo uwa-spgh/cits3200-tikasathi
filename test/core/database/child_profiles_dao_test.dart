@@ -185,7 +185,8 @@ void main() {
           sex: 'female',
         ),
       );
-      // Manual until insertChildProfile also writes the child's needed vaccinations.
+
+      // manual insertion of child's vaccine for now
       await vaccinationDuesDao.insertVaccinationDue(
         VaccinationDuesCompanion.insert(
           id: 'due-1',
