@@ -79,11 +79,42 @@ void main() {
   });
 
   group('status', () {
+    test('status correctly identifies completed vaccination', () {
+      final today = DateTime.now();
+      final dob = today.subtract(DayDuration(weeks: 16).duration);
+      final records = <AdministeredDose>[
+        (vaccineCode: 'BOPV', doseNumber: 1, administeredDate: dob.add(DayDuration(weeks: 6).duration)),
+        (vaccineCode: 'BOPV', doseNumber: 2, administeredDate: dob.add(DayDuration(weeks: 10).duration)),
+        (vaccineCode: 'BOPV', doseNumber: 3, administeredDate: dob.add(DayDuration(weeks: 14).duration)),
+      ];
 
+      final dues = generate(dob, today, records);
+      expect(status(today, dues, 'BOPV'), VaccineStatus.completed);
+    });
+
+    test('status correctly identifies ongoing vaccination', () {
+      final past = DateTime.now();
+      final dob = past.subtract(DayDuration(weeks: 11).duration);
+      final records = <AdministeredDose>[
+        (vaccineCode: 'BOPV', doseNumber: 1, administeredDate: dob.add(DayDuration(weeks: 6).duration)),
+        (vaccineCode: 'BOPV', doseNumber: 2, administeredDate: dob.add(DayDuration(weeks: 10).duration)),
+      ];
+
+      final dues = generate(dob, past, records);
+      final today = past.add(DayDuration(weeks: 2).duration);
+      expect(status(today, dues, 'BOPV'), VaccineStatus.ongoing);
+    });
+
+    test('status correctly identifies overdue vaccination', () {
+      final past = DateTime.now();
+      final dob = past.subtract(DayDuration(weeks: 11).duration);
+      final records = <AdministeredDose>[
+        (vaccineCode: 'BOPV', doseNumber: 1, administeredDate: dob.add(DayDuration(weeks: 6).duration)),
+        (vaccineCode: 'BOPV', doseNumber: 2, administeredDate: dob.add(DayDuration(weeks: 10).duration)),
+      ];
+
+      final dues = generate(dob, past, records);
+      final today = past.add(DayDuration(weeks: 4).duration);
+      expect(status(today, dues, 'BOPV'), VaccineStatus.overdue);});
   });
-  // test('status correctly identifies completed vaccination', () {});
-
-  // test('status correctly identifies ongoing vaccination', () {});
-
-  // test('status correctly identifies overdue vaccination', () {});
 }
