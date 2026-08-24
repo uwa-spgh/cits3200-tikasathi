@@ -1,7 +1,7 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tikasathi/core/database/app_database.dart';
-import 'package:tikasathi/core/nip/generate.dart';
+import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
 
 void main() {
   group('VaccinationDuesDao', () {
