@@ -1,4 +1,7 @@
 import 'dart:core';
+import 'dart:math';
+
+part 'generate.dart';
 
 // Note: The dose of a vaccine corresponds to the index of each due-at-age. Ergo, to determine if a particular doseNumber exists,
 // check if it is within the length of the list for the particular vaccine. Likewise, to determine if a particular vaccineCode exists,
@@ -37,6 +40,15 @@ class DayDuration {
     int days = 0,
   }) : duration = Duration(
             days: days + weeks * 7 + (months * 30.44 + years * 365.25).toInt());
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is DayDuration && other.duration == duration;
+  }
+
+  @override
+  int get hashCode => duration.hashCode;
 }
 
 bool doesDoseExist(String vaccineCode, int doseNumber) {
@@ -45,20 +57,4 @@ bool doesDoseExist(String vaccineCode, int doseNumber) {
 
 DayDuration? getDoseAge(String vaccineCode, int doseNumber) {
   return _niP[vaccineCode]?.elementAtOrNull(doseNumber - 1);
-}
-
-typedef DoseRecord = ({int doseNumber, Duration dueAge, String vaccineCode});
-
-List<DoseRecord> getAllDoses() {
-  final List<({String vaccineCode, int doseNumber, Duration dueAge})> result =
-      [];
-
-  _niP.forEach((vaccine, ages) {
-    for (final (dose, age) in ages.indexed) {
-      result.add(
-          (vaccineCode: vaccine, doseNumber: dose + 1, dueAge: age.duration));
-    }
-  });
-
-  return result;
 }
