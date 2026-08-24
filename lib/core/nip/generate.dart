@@ -25,7 +25,7 @@ final Map<String, List<CatchUpRule>> _catchUp = Map.unmodifiable({
   'BCG': [
     CatchUpRule(maxAge: DayDuration(years: 5))
   ],
-  'PENTA': [], // no catch-up mentioned
+  'PENTA': <CatchUpRule>[], // no catch-up mentioned
   'BOPV': [
     CatchUpRule(doses: 3, minInterval: DayDuration(months: 1))
   ],
@@ -42,7 +42,7 @@ final Map<String, List<CatchUpRule>> _catchUp = Map.unmodifiable({
   'MR': [
     CatchUpRule(minAge: DayDuration(months: 9), maxAge: DayDuration(years: 5), doses: 2, minInterval: DayDuration(months: 1))
   ],
-  'JE': [], // no catch-up mentioned
+  'JE': <CatchUpRule>[], // no catch-up mentioned
   'TCV': [
     CatchUpRule(minAge: DayDuration(months: 15), maxAge: DayDuration(years: 5))
   ]
@@ -78,7 +78,7 @@ List<GeneratedDue> generate(
       // dose completed
       if (records.any((AdministeredDose record) => record.vaccineCode == vaccine && record.doseNumber == dose + 1)) continue;
       // dose ongoing
-      if (age < doseAge.duration) {
+      if (age <= doseAge.duration) {
         result.add((vaccineCode: vaccine, doseNumber: dose + 1, dueDate: dob.add(doseAge.duration)));
         continue;
       }
@@ -110,14 +110,19 @@ List<GeneratedDue> _generateCatchUp(
 ) {
   final List<GeneratedDue> result = [];
 
-  final rule = _catchUp[vaccineCode]!.firstWhere((CatchUpRule rule) {
-    return rule.minAge.duration <= age && age < rule.maxAge.duration;
-  });
+  final CatchUpRule rule;
+  try {
+    rule = _catchUp[vaccineCode]!.firstWhere((CatchUpRule rule) {
+      return rule.minAge.duration <= age && age < rule.maxAge.duration;
+    });
+  } on StateError catch(_) {
+    return result;
+  }
 
   for (int i = dosesTaken; i < rule.doses; i++) {
     // For now, only vaccinations under the maxAge are added to results, which may result in incomplete vaccination schedules
-    if (age + rule.minInterval.duration * i + const Duration(days: 1) > rule.minAge.duration) break;
-    result.add((vaccineCode: vaccineCode, doseNumber: i + 1, dueDate: today.add(rule.minInterval.duration * i + const Duration(days: 1))));
+    if (age + rule.minInterval.duration * i + const Duration(days: 1) > rule.maxAge.duration) break;
+    result.add((vaccineCode: vaccineCode, doseNumber: i + 1, dueDate: today.add(rule.minInterval.duration * (i - dosesTaken) + const Duration(days: 1))));
   }
   return result;
 }
