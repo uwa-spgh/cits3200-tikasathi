@@ -1,26 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'home_status_groups_provider.dart';
+part of 'onboarding_state.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$homeStatusGroupsHash() => r'c968799d05790a3c7c4a834f034a7e843a5d77d4';
+String _$onboardingControllerHash() =>
+    r'e126210295e63ad7e8d23c883b80d2df46e8474c';
 
-/// See also [HomeStatusGroups].
-@ProviderFor(HomeStatusGroups)
-final homeStatusGroupsProvider =
-    AsyncNotifierProvider<HomeStatusGroups, List<HomeStatusGroup>>.internal(
-  HomeStatusGroups.new,
-  name: r'homeStatusGroupsProvider',
+/// See also [OnboardingController].
+@ProviderFor(OnboardingController)
+final onboardingControllerProvider = AutoDisposeNotifierProvider<
+    OnboardingController, OnboardingStateData>.internal(
+  OnboardingController.new,
+  name: r'onboardingControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$homeStatusGroupsHash,
+      : _$onboardingControllerHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$HomeStatusGroups = AsyncNotifier<List<HomeStatusGroup>>;
+typedef _$OnboardingController = AutoDisposeNotifier<OnboardingStateData>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

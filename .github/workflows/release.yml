@@ -44,7 +44,16 @@ jobs:
     - name: Zip iOS Archive
       run: cd build/ios/archive && zip -r ../../../ios-release.zip Runner.xcarchive
 
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-builds
+        path: |
+          build/app/outputs/flutter-apk/app-release.apk
+          ios-release.zip
+
     - name: Create GitHub Release
+      if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v2
       with:
         files: |

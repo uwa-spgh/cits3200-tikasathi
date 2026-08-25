@@ -70,7 +70,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('home-title')), findsOneWidget);
-      expect(find.text('Your children'), findsOneWidget);
+      expect(find.text('तपाईंको बच्चाहरू'), findsOneWidget);
       expect(find.byKey(const Key('home-group-dueToday')), findsOneWidget);
       expect(find.byKey(const Key('home-group-dueSoon')), findsOneWidget);
       expect(find.text('Aisha'), findsOneWidget);
@@ -115,11 +115,12 @@ void main() {
 
       await tester.tap(find.byKey(const Key('record-vaccine-Aisha')));
       await tester.pumpAndSettle();
-      expect(find.text('Record vaccine is not available yet.'), findsOneWidget);
+      expect(find.text('खोप रेकर्ड is not available yet.'), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('find-clinic-Aisha')));
       await tester.pumpAndSettle();
-      expect(find.text('Find clinic is not available yet.'), findsOneWidget);
+      expect(find.text('क्लिनिक खोज्नुहोस् is not available yet.'),
+          findsOneWidget);
     });
 
     testWidgets('renders empty state when no children are available',
@@ -136,7 +137,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('home-empty-state')), findsOneWidget);
-      expect(find.text('No children added yet.'), findsOneWidget);
+      expect(find.text('अहिलेसम्म कुनै बच्चा थपिएको छैन।'), findsOneWidget);
       expect(find.byKey(const Key('home-add-child-button')), findsOneWidget);
     });
 
