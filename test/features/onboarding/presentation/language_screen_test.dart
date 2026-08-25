@@ -5,7 +5,8 @@ import 'package:tikasathi/core/l10n/app_localizations.dart';
 import 'package:tikasathi/features/onboarding/presentation/language_screen.dart';
 
 void main() {
-  testWidgets('LanguageScreen renders localized strings correctly in English', (WidgetTester tester) async {
+  testWidgets('LanguageScreen renders localized strings correctly in English',
+      (WidgetTester tester) async {
     await tester.pumpWidget(
       const ProviderScope(
         child: MaterialApp(
@@ -23,7 +24,8 @@ void main() {
     expect(find.text('Continue'), findsOneWidget);
   });
 
-  testWidgets('LanguageScreen renders localized strings correctly in Nepali', (WidgetTester tester) async {
+  testWidgets('LanguageScreen renders localized strings correctly in Nepali',
+      (WidgetTester tester) async {
     await tester.pumpWidget(
       const ProviderScope(
         child: MaterialApp(
