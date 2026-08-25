@@ -1,0 +1,339 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
+import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
+
+class ChildScreen extends ConsumerStatefulWidget {
+  const ChildScreen({super.key});
+
+  @override
+  ConsumerState<ChildScreen> createState() => _ChildScreenState();
+}
+
+class _ChildScreenState extends ConsumerState<ChildScreen> {
+  final _nameController = TextEditingController();
+  final _ddController = TextEditingController();
+  final _mmController = TextEditingController();
+  final _yyController = TextEditingController();
+
+  String _selectedGender = 'Girl';
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _ddController.dispose();
+    _mmController.dispose();
+    _yyController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _onFinish() async {
+    // Basic validation
+    if (_nameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter child\'s name')),
+      );
+      return;
+    }
+
+    final dd = int.tryParse(_ddController.text);
+    final mm = int.tryParse(_mmController.text);
+    final yy = int.tryParse(_yyController.text);
+
+    if (dd == null || mm == null || yy == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid Date of Birth')),
+      );
+      return;
+    }
+
+    // Basic date parsing (Assuming current century for YY if less than 100, though Nepali dates usually are full year or 2 digits, but we just use standard DateTime for now).
+    // Let's assume YY is 20YY if < 100
+    final year = yy < 100 ? 2000 + yy : yy;
+    
+    DateTime? dob;
+    try {
+      dob = DateTime(year, mm, dd);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invalid Date of Birth')),
+      );
+      return;
+    }
+
+    final controller = ref.read(onboardingControllerProvider.notifier);
+    
+    controller.updateChildInfo(
+      name: _nameController.text.trim(),
+      dob: dob,
+      sex: _selectedGender,
+    );
+
+    final success = await controller.finishSetup();
+
+    if (success && mounted) {
+      // Clear navigation stack and go to AppShell
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute<void>(builder: (context) => const AppShellScreen()),
+        (route) => false,
+      );
+    } else if (mounted) {
+      final error = ref.read(onboardingControllerProvider).error;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving setup: $error')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(onboardingControllerProvider);
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F9FC),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Step indicator
+              Row(
+                children: [
+                  Container(
+                    height: 8,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0F52BA),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    height: 8,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0F52BA),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    height: 8,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0F52BA),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  const Text(
+                    'Step 3 of 3',
+                    style: TextStyle(
+                      color: Color(0xFF64748B),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
+              
+              // Form Card
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '👶 Child\'s name',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0F172A),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: _nameController,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                        hintText: 'Enter full name',
+                        hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Color(0xFF0F52BA)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Color(0xFF0F52BA)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    
+                    const Text(
+                      '📅 Date of Birth',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0F172A),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(child: _buildDateBox('DD', _ddController)),
+                        const SizedBox(width: 12),
+                        Expanded(child: _buildDateBox('MM', _mmController)),
+                        const SizedBox(width: 12),
+                        Expanded(child: _buildDateBox('YY', _yyController)),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    
+                    const Text(
+                      '⚥ Gender',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0F172A),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildGenderButton('Girl', '👱‍♀️'),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildGenderButton('Boy', '👱‍♂️'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 48),
+
+              ElevatedButton(
+                onPressed: state.isSaving ? null : _onFinish,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0F52BA),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  minimumSize: const Size(double.infinity, 56),
+                ),
+                child: state.isSaving
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Finish Setup',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Icon(Icons.arrow_forward, size: 20),
+                        ],
+                      ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDateBox(String hint, TextEditingController controller) {
+    return TextField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      textAlign: TextAlign.center,
+      maxLength: 2,
+      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      decoration: InputDecoration(
+        counterText: '',
+        hintText: hint,
+        hintStyle: const TextStyle(
+          color: Color(0xFF94A3B8),
+          fontSize: 24,
+          fontWeight: FontWeight.normal,
+        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 16),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF0F52BA)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF0F52BA)),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGenderButton(String gender, String emoji) {
+    final isSelected = _selectedGender == gender;
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _selectedGender = gender;
+        });
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFFE2F0FE) : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? const Color(0xFF0F52BA) : const Color(0xFF0F52BA),
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(emoji, style: const TextStyle(fontSize: 24)),
+            const SizedBox(width: 8),
+            Text(
+              gender,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                color: isSelected ? const Color(0xFF0F52BA) : const Color(0xFF0F172A),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
