@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:tikasathi/core/l10n/app_localizations.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
 
 import 'core/theme/app_theme.dart';
@@ -46,8 +48,13 @@ class _TikaSathiAppState extends ConsumerState<TikaSathiApp> {
 
   @override
   Widget build(BuildContext context) {
+    final currentLanguage = ref.watch(languageProvider);
+
     return MaterialApp(
       title: 'TikaSathi',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: Locale(currentLanguage),
       theme: AppTheme.light,
       home: _hasCompletedOnboarding == null
           ? const Scaffold(

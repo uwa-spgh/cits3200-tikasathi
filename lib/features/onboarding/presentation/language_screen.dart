@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tikasathi/core/l10n/app_localizations.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/onboarding/presentation/caregiver_screen.dart';
 
@@ -10,6 +11,7 @@ class LanguageScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(onboardingControllerProvider);
     final controller = ref.read(onboardingControllerProvider.notifier);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F9FC),
@@ -38,7 +40,7 @@ class LanguageScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 32),
               Text(
-                state.selectedLanguage == 'np' ? 'स्वागत छ!' : 'Welcome!',
+                l10n.welcome,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 32,
@@ -47,10 +49,10 @@ class LanguageScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Please select your language / कृपया आफ्नो भाषा छान्नुहोस्',
+              Text(
+                l10n.selectLanguagePrompt,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   color: Color(0xFF64748B),
                 ),
@@ -95,12 +97,12 @@ class LanguageScreen extends ConsumerWidget {
                   ),
                   minimumSize: const Size(double.infinity, 56),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Continue',
-                      style: TextStyle(
+                      l10n.continueButton,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                       ),

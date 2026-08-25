@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tikasathi/core/l10n/app_localizations.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/onboarding/presentation/child_screen.dart';
 
@@ -40,27 +41,18 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(onboardingControllerProvider);
-    final isNp = state.selectedLanguage == 'np';
+    final l10n = AppLocalizations.of(context)!;
 
-    final title = isNp ? 'हेरचाहकर्ताको विवरण' : 'Caregiver Details';
-    final subtitle = isNp
-        ? 'कृपया आफ्नो विवरण भर्नुहोस्।'
-        : 'Please enter your information so we can set up the app.';
-    final nameLabel = isNp ? '👩‍🦰 पूरा नाम' : '👩‍🦰 Full Name';
-    final nameHint =
-        isNp ? 'तपाईंको पूरा नाम प्रविष्ट गर्नुहोस्' : 'Enter your full name';
-    final phoneLabel = isNp ? '📱 फोन नम्बर' : '📱 Phone Number';
-    final phoneHint = isNp
-        ? 'तपाईंको फोन नम्बर प्रविष्ट गर्नुहोस्'
-        : 'Enter your phone number';
-    final addressLabel =
-        isNp ? '🏠 ठेगाना (वैकल्पिक)' : '🏠 Address (Optional)';
-    final addressHint = isNp
-        ? 'तपाईंको ठेगाना प्रविष्ट गर्नुहोस्'
-        : 'Enter your street address';
-    final continueText = isNp ? 'अगाडि बढ्नुहोस्' : 'Continue';
-    final stepText = isNp ? 'चरण १/२' : 'Step 1 of 2';
+    final title = l10n.caregiverTitle;
+    final subtitle = l10n.caregiverSubtitle;
+    final nameLabel = l10n.fullNameLabel;
+    final nameHint = l10n.fullNameHint;
+    final phoneLabel = l10n.phoneNumberLabel;
+    final phoneHint = l10n.phoneNumberHint;
+    final addressLabel = l10n.addressLabel;
+    final addressHint = l10n.addressHint;
+    final continueText = l10n.continueButton;
+    final stepText = l10n.step1Of2;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F9FC),

@@ -3,5 +3,39 @@
   "appTitle": "टीकासाथी",
   "@appTitle": {
     "description": "The title of the application"
+  },
+  "welcome": "स्वागत छ!",
+  "selectLanguagePrompt": "Please select your language / कृपया आफ्नो भाषा छान्नुहोस्",
+  "continueButton": "अगाडि बढ्नुहोस्",
+  "caregiverTitle": "हेरचाहकर्ताको विवरण",
+  "caregiverSubtitle": "कृपया आफ्नो विवरण भर्नुहोस्।",
+  "fullNameLabel": "👩‍🦰 पूरा नाम",
+  "fullNameHint": "तपाईंको पूरा नाम प्रविष्ट गर्नुहोस्",
+  "phoneNumberLabel": "📱 फोन नम्बर",
+  "phoneNumberHint": "तपाईंको फोन नम्बर प्रविष्ट गर्नुहोस्",
+  "addressLabel": "🏠 ठेगाना (वैकल्पिक)",
+  "addressHint": "तपाईंको ठेगाना प्रविष्ट गर्नुहोस्",
+  "step1Of2": "चरण १/२",
+  "step2Of2": "चरण २/२",
+  "childNameLabel": "👶 बच्चाको नाम",
+  "childNameHint": "पूरा नाम प्रविष्ट गर्नुहोस्",
+  "dobLabel": "📅 जन्म मिति",
+  "ddHint": "गते",
+  "mmHint": "महिना",
+  "yyyyHint": "वर्ष",
+  "genderLabel": "⚥ लिङ्ग",
+  "girlText": "छोरी",
+  "boyText": "छोरा",
+  "finishSetup": "सेटअप पूरा गर्नुहोस्",
+  "errorEmptyName": "कृपया बच्चाको नाम प्रविष्ट गर्नुहोस्",
+  "errorInvalidDate": "कृपया मान्य जन्म मिति प्रविष्ट गर्नुहोस्",
+  "errorDate": "अवैध जन्म मिति",
+  "errorSavingSetup": "सेटअप सुरक्षित गर्दा त्रुटि: {error}",
+  "@errorSavingSetup": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
   }
 }

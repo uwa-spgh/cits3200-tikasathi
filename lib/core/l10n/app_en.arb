@@ -3,5 +3,39 @@
   "appTitle": "TikaSathi",
   "@appTitle": {
     "description": "The title of the application"
+  },
+  "welcome": "Welcome!",
+  "selectLanguagePrompt": "Please select your language / कृपया आफ्नो भाषा छान्नुहोस्",
+  "continueButton": "Continue",
+  "caregiverTitle": "Caregiver Details",
+  "caregiverSubtitle": "Please enter your information so we can set up the app.",
+  "fullNameLabel": "👩‍🦰 Full Name",
+  "fullNameHint": "Enter your full name",
+  "phoneNumberLabel": "📱 Phone Number",
+  "phoneNumberHint": "Enter your phone number",
+  "addressLabel": "🏠 Address (Optional)",
+  "addressHint": "Enter your street address",
+  "step1Of2": "Step 1 of 2",
+  "step2Of2": "Step 2 of 2",
+  "childNameLabel": "👶 Child's name",
+  "childNameHint": "Enter full name",
+  "dobLabel": "📅 Date of Birth",
+  "ddHint": "DD",
+  "mmHint": "MM",
+  "yyyyHint": "YYYY",
+  "genderLabel": "⚥ Gender",
+  "girlText": "Girl",
+  "boyText": "Boy",
+  "finishSetup": "Finish Setup",
+  "errorEmptyName": "Please enter child's name",
+  "errorInvalidDate": "Please enter a valid Date of Birth",
+  "errorDate": "Invalid Date of Birth",
+  "errorSavingSetup": "Error saving setup: {error}",
+  "@errorSavingSetup": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
   }
 }

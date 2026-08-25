@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tikasathi/core/l10n/app_localizations.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 
@@ -27,14 +28,11 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
     super.dispose();
   }
 
-  Future<void> _onFinish(bool isNp) async {
-    final errorEmptyName = isNp
-        ? 'कृपया बच्चाको नाम प्रविष्ट गर्नुहोस्'
-        : 'Please enter child\'s name';
-    final errorInvalidDate = isNp
-        ? 'कृपया मान्य जन्म मिति प्रविष्ट गर्नुहोस्'
-        : 'Please enter a valid Date of Birth';
-    final errorDate = isNp ? 'अवैध जन्म मिति' : 'Invalid Date of Birth';
+  Future<void> _onFinish() async {
+    final l10n = AppLocalizations.of(context)!;
+    final errorEmptyName = l10n.errorEmptyName;
+    final errorInvalidDate = l10n.errorInvalidDate;
+    final errorDate = l10n.errorDate;
 
     if (_nameController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -85,7 +83,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
     } else if (mounted) {
       final error = ref.read(onboardingControllerProvider).error;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving setup: $error')),
+        SnackBar(content: Text(l10n.errorSavingSetup(error ?? ''))),
       );
     }
   }
@@ -93,20 +91,19 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(onboardingControllerProvider);
-    final isNp = state.selectedLanguage == 'np';
+    final l10n = AppLocalizations.of(context)!;
 
-    final stepText = isNp ? 'चरण २/२' : 'Step 2 of 2';
-    final childNameLabel = isNp ? '👶 बच्चाको नाम' : '👶 Child\'s name';
-    final childNameHint =
-        isNp ? 'पूरा नाम प्रविष्ट गर्नुहोस्' : 'Enter full name';
-    final dobLabel = isNp ? '📅 जन्म मिति' : '📅 Date of Birth';
-    final ddHint = isNp ? 'गते' : 'DD';
-    final mmHint = isNp ? 'महिना' : 'MM';
-    final yyyyHint = isNp ? 'वर्ष' : 'YYYY';
-    final genderLabel = isNp ? '⚥ लिङ्ग' : '⚥ Gender';
-    final girlText = isNp ? 'छोरी' : 'Girl';
-    final boyText = isNp ? 'छोरा' : 'Boy';
-    final finishText = isNp ? 'सेटअप पूरा गर्नुहोस्' : 'Finish Setup';
+    final stepText = l10n.step2Of2;
+    final childNameLabel = l10n.childNameLabel;
+    final childNameHint = l10n.childNameHint;
+    final dobLabel = l10n.dobLabel;
+    final ddHint = l10n.ddHint;
+    final mmHint = l10n.mmHint;
+    final yyyyHint = l10n.yyyyHint;
+    final genderLabel = l10n.genderLabel;
+    final girlText = l10n.girlText;
+    final boyText = l10n.boyText;
+    final finishText = l10n.finishSetup;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F9FC),
@@ -252,7 +249,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
               const SizedBox(height: 48),
 
               ElevatedButton(
-                onPressed: state.isSaving ? null : () => _onFinish(isNp),
+                onPressed: state.isSaving ? null : _onFinish,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0F52BA),
                   foregroundColor: Colors.white,
