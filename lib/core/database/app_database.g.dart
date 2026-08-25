@@ -966,6 +966,421 @@ class VaccinationDuesCompanion extends UpdateCompanion<VaccinationDue> {
   }
 }
 
+class $RemindersTable extends Reminders
+    with TableInfo<$RemindersTable, Reminder> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RemindersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _childIdMeta =
+      const VerificationMeta('childId');
+  @override
+  late final GeneratedColumn<String> childId = GeneratedColumn<String>(
+      'child_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES child_profiles (id)'));
+  static const VerificationMeta _dueIdMeta = const VerificationMeta('dueId');
+  @override
+  late final GeneratedColumn<String> dueId = GeneratedColumn<String>(
+      'due_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES vaccination_dues (id)'));
+  @override
+  late final GeneratedColumnWithTypeConverter<ReminderKind, String> kind =
+      GeneratedColumn<String>('kind', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<ReminderKind>($RemindersTable.$converterkind);
+  static const VerificationMeta _scheduledForMeta =
+      const VerificationMeta('scheduledFor');
+  @override
+  late final GeneratedColumn<DateTime> scheduledFor = GeneratedColumn<DateTime>(
+      'scheduled_for', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _notificationIdMeta =
+      const VerificationMeta('notificationId');
+  @override
+  late final GeneratedColumn<int> notificationId = GeneratedColumn<int>(
+      'notification_id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _deliveredAtMeta =
+      const VerificationMeta('deliveredAt');
+  @override
+  late final GeneratedColumn<DateTime> deliveredAt = GeneratedColumn<DateTime>(
+      'delivered_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, childId, dueId, kind, scheduledFor, notificationId, deliveredAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'reminders';
+  @override
+  VerificationContext validateIntegrity(Insertable<Reminder> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('child_id')) {
+      context.handle(_childIdMeta,
+          childId.isAcceptableOrUnknown(data['child_id']!, _childIdMeta));
+    } else if (isInserting) {
+      context.missing(_childIdMeta);
+    }
+    if (data.containsKey('due_id')) {
+      context.handle(
+          _dueIdMeta, dueId.isAcceptableOrUnknown(data['due_id']!, _dueIdMeta));
+    } else if (isInserting) {
+      context.missing(_dueIdMeta);
+    }
+    if (data.containsKey('scheduled_for')) {
+      context.handle(
+          _scheduledForMeta,
+          scheduledFor.isAcceptableOrUnknown(
+              data['scheduled_for']!, _scheduledForMeta));
+    } else if (isInserting) {
+      context.missing(_scheduledForMeta);
+    }
+    if (data.containsKey('notification_id')) {
+      context.handle(
+          _notificationIdMeta,
+          notificationId.isAcceptableOrUnknown(
+              data['notification_id']!, _notificationIdMeta));
+    } else if (isInserting) {
+      context.missing(_notificationIdMeta);
+    }
+    if (data.containsKey('delivered_at')) {
+      context.handle(
+          _deliveredAtMeta,
+          deliveredAt.isAcceptableOrUnknown(
+              data['delivered_at']!, _deliveredAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+        {notificationId},
+        {dueId, kind, scheduledFor},
+      ];
+  @override
+  Reminder map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Reminder(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      childId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}child_id'])!,
+      dueId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}due_id'])!,
+      kind: $RemindersTable.$converterkind.fromSql(attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}kind'])!),
+      scheduledFor: attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime, data['${effectivePrefix}scheduled_for'])!,
+      notificationId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}notification_id'])!,
+      deliveredAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}delivered_at']),
+    );
+  }
+
+  @override
+  $RemindersTable createAlias(String alias) {
+    return $RemindersTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<ReminderKind, String, String> $converterkind =
+      const EnumNameConverter<ReminderKind>(ReminderKind.values);
+}
+
+class Reminder extends DataClass implements Insertable<Reminder> {
+  final String id;
+  final String childId;
+  final String dueId;
+
+  /// Which reminder rule produced this row. See [ReminderKind].
+  final ReminderKind kind;
+  final DateTime scheduledFor;
+
+  /// The id this reminder is registered under with the device's notification
+  /// system. Unique so a reminder can be cancelled without ambiguity.
+  final int notificationId;
+
+  /// When the reminder was handed to the device. Null while still pending.
+  final DateTime? deliveredAt;
+  const Reminder(
+      {required this.id,
+      required this.childId,
+      required this.dueId,
+      required this.kind,
+      required this.scheduledFor,
+      required this.notificationId,
+      this.deliveredAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['child_id'] = Variable<String>(childId);
+    map['due_id'] = Variable<String>(dueId);
+    {
+      map['kind'] =
+          Variable<String>($RemindersTable.$converterkind.toSql(kind));
+    }
+    map['scheduled_for'] = Variable<DateTime>(scheduledFor);
+    map['notification_id'] = Variable<int>(notificationId);
+    if (!nullToAbsent || deliveredAt != null) {
+      map['delivered_at'] = Variable<DateTime>(deliveredAt);
+    }
+    return map;
+  }
+
+  RemindersCompanion toCompanion(bool nullToAbsent) {
+    return RemindersCompanion(
+      id: Value(id),
+      childId: Value(childId),
+      dueId: Value(dueId),
+      kind: Value(kind),
+      scheduledFor: Value(scheduledFor),
+      notificationId: Value(notificationId),
+      deliveredAt: deliveredAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deliveredAt),
+    );
+  }
+
+  factory Reminder.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Reminder(
+      id: serializer.fromJson<String>(json['id']),
+      childId: serializer.fromJson<String>(json['childId']),
+      dueId: serializer.fromJson<String>(json['dueId']),
+      kind: $RemindersTable.$converterkind
+          .fromJson(serializer.fromJson<String>(json['kind'])),
+      scheduledFor: serializer.fromJson<DateTime>(json['scheduledFor']),
+      notificationId: serializer.fromJson<int>(json['notificationId']),
+      deliveredAt: serializer.fromJson<DateTime?>(json['deliveredAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'childId': serializer.toJson<String>(childId),
+      'dueId': serializer.toJson<String>(dueId),
+      'kind': serializer
+          .toJson<String>($RemindersTable.$converterkind.toJson(kind)),
+      'scheduledFor': serializer.toJson<DateTime>(scheduledFor),
+      'notificationId': serializer.toJson<int>(notificationId),
+      'deliveredAt': serializer.toJson<DateTime?>(deliveredAt),
+    };
+  }
+
+  Reminder copyWith(
+          {String? id,
+          String? childId,
+          String? dueId,
+          ReminderKind? kind,
+          DateTime? scheduledFor,
+          int? notificationId,
+          Value<DateTime?> deliveredAt = const Value.absent()}) =>
+      Reminder(
+        id: id ?? this.id,
+        childId: childId ?? this.childId,
+        dueId: dueId ?? this.dueId,
+        kind: kind ?? this.kind,
+        scheduledFor: scheduledFor ?? this.scheduledFor,
+        notificationId: notificationId ?? this.notificationId,
+        deliveredAt: deliveredAt.present ? deliveredAt.value : this.deliveredAt,
+      );
+  Reminder copyWithCompanion(RemindersCompanion data) {
+    return Reminder(
+      id: data.id.present ? data.id.value : this.id,
+      childId: data.childId.present ? data.childId.value : this.childId,
+      dueId: data.dueId.present ? data.dueId.value : this.dueId,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      scheduledFor: data.scheduledFor.present
+          ? data.scheduledFor.value
+          : this.scheduledFor,
+      notificationId: data.notificationId.present
+          ? data.notificationId.value
+          : this.notificationId,
+      deliveredAt:
+          data.deliveredAt.present ? data.deliveredAt.value : this.deliveredAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Reminder(')
+          ..write('id: $id, ')
+          ..write('childId: $childId, ')
+          ..write('dueId: $dueId, ')
+          ..write('kind: $kind, ')
+          ..write('scheduledFor: $scheduledFor, ')
+          ..write('notificationId: $notificationId, ')
+          ..write('deliveredAt: $deliveredAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, childId, dueId, kind, scheduledFor, notificationId, deliveredAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Reminder &&
+          other.id == this.id &&
+          other.childId == this.childId &&
+          other.dueId == this.dueId &&
+          other.kind == this.kind &&
+          other.scheduledFor == this.scheduledFor &&
+          other.notificationId == this.notificationId &&
+          other.deliveredAt == this.deliveredAt);
+}
+
+class RemindersCompanion extends UpdateCompanion<Reminder> {
+  final Value<String> id;
+  final Value<String> childId;
+  final Value<String> dueId;
+  final Value<ReminderKind> kind;
+  final Value<DateTime> scheduledFor;
+  final Value<int> notificationId;
+  final Value<DateTime?> deliveredAt;
+  final Value<int> rowid;
+  const RemindersCompanion({
+    this.id = const Value.absent(),
+    this.childId = const Value.absent(),
+    this.dueId = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.scheduledFor = const Value.absent(),
+    this.notificationId = const Value.absent(),
+    this.deliveredAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RemindersCompanion.insert({
+    required String id,
+    required String childId,
+    required String dueId,
+    required ReminderKind kind,
+    required DateTime scheduledFor,
+    required int notificationId,
+    this.deliveredAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        childId = Value(childId),
+        dueId = Value(dueId),
+        kind = Value(kind),
+        scheduledFor = Value(scheduledFor),
+        notificationId = Value(notificationId);
+  static Insertable<Reminder> custom({
+    Expression<String>? id,
+    Expression<String>? childId,
+    Expression<String>? dueId,
+    Expression<String>? kind,
+    Expression<DateTime>? scheduledFor,
+    Expression<int>? notificationId,
+    Expression<DateTime>? deliveredAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (childId != null) 'child_id': childId,
+      if (dueId != null) 'due_id': dueId,
+      if (kind != null) 'kind': kind,
+      if (scheduledFor != null) 'scheduled_for': scheduledFor,
+      if (notificationId != null) 'notification_id': notificationId,
+      if (deliveredAt != null) 'delivered_at': deliveredAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RemindersCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? childId,
+      Value<String>? dueId,
+      Value<ReminderKind>? kind,
+      Value<DateTime>? scheduledFor,
+      Value<int>? notificationId,
+      Value<DateTime?>? deliveredAt,
+      Value<int>? rowid}) {
+    return RemindersCompanion(
+      id: id ?? this.id,
+      childId: childId ?? this.childId,
+      dueId: dueId ?? this.dueId,
+      kind: kind ?? this.kind,
+      scheduledFor: scheduledFor ?? this.scheduledFor,
+      notificationId: notificationId ?? this.notificationId,
+      deliveredAt: deliveredAt ?? this.deliveredAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (childId.present) {
+      map['child_id'] = Variable<String>(childId.value);
+    }
+    if (dueId.present) {
+      map['due_id'] = Variable<String>(dueId.value);
+    }
+    if (kind.present) {
+      map['kind'] =
+          Variable<String>($RemindersTable.$converterkind.toSql(kind.value));
+    }
+    if (scheduledFor.present) {
+      map['scheduled_for'] = Variable<DateTime>(scheduledFor.value);
+    }
+    if (notificationId.present) {
+      map['notification_id'] = Variable<int>(notificationId.value);
+    }
+    if (deliveredAt.present) {
+      map['delivered_at'] = Variable<DateTime>(deliveredAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RemindersCompanion(')
+          ..write('id: $id, ')
+          ..write('childId: $childId, ')
+          ..write('dueId: $dueId, ')
+          ..write('kind: $kind, ')
+          ..write('scheduledFor: $scheduledFor, ')
+          ..write('notificationId: $notificationId, ')
+          ..write('deliveredAt: $deliveredAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -974,18 +1389,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $VaccinationRecordsTable(this);
   late final $VaccinationDuesTable vaccinationDues =
       $VaccinationDuesTable(this);
+  late final $RemindersTable reminders = $RemindersTable(this);
   late final ChildProfilesDao childProfilesDao =
       ChildProfilesDao(this as AppDatabase);
   late final VaccinationRecordsDao vaccinationRecordsDao =
       VaccinationRecordsDao(this as AppDatabase);
   late final VaccinationDuesDao vaccinationDuesDao =
       VaccinationDuesDao(this as AppDatabase);
+  late final RemindersDao remindersDao = RemindersDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [childProfiles, vaccinationRecords, vaccinationDues];
+      [childProfiles, vaccinationRecords, vaccinationDues, reminders];
 }
 
 typedef $$ChildProfilesTableCreateCompanionBuilder = ChildProfilesCompanion
@@ -1040,6 +1457,21 @@ final class $$ChildProfilesTableReferences
 
     final cache =
         $_typedResult.readTableOrNull(_vaccinationDuesRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$RemindersTable, List<Reminder>>
+      _remindersRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+          db.reminders,
+          aliasName:
+              $_aliasNameGenerator(db.childProfiles.id, db.reminders.childId));
+
+  $$RemindersTableProcessedTableManager get remindersRefs {
+    final manager = $$RemindersTableTableManager($_db, $_db.reminders)
+        .filter((f) => f.childId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_remindersRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -1100,6 +1532,27 @@ class $$ChildProfilesTableFilterComposer
             $$VaccinationDuesTableFilterComposer(
               $db: $db,
               $table: $db.vaccinationDues,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> remindersRefs(
+      Expression<bool> Function($$RemindersTableFilterComposer f) f) {
+    final $$RemindersTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.reminders,
+        getReferencedColumn: (t) => t.childId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RemindersTableFilterComposer(
+              $db: $db,
+              $table: $db.reminders,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -1194,6 +1647,27 @@ class $$ChildProfilesTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> remindersRefs<T extends Object>(
+      Expression<T> Function($$RemindersTableAnnotationComposer a) f) {
+    final $$RemindersTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.reminders,
+        getReferencedColumn: (t) => t.childId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RemindersTableAnnotationComposer(
+              $db: $db,
+              $table: $db.reminders,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$ChildProfilesTableTableManager extends RootTableManager<
@@ -1208,7 +1682,9 @@ class $$ChildProfilesTableTableManager extends RootTableManager<
     (ChildProfile, $$ChildProfilesTableReferences),
     ChildProfile,
     PrefetchHooks Function(
-        {bool vaccinationRecordsRefs, bool vaccinationDuesRefs})> {
+        {bool vaccinationRecordsRefs,
+        bool vaccinationDuesRefs,
+        bool remindersRefs})> {
   $$ChildProfilesTableTableManager(_$AppDatabase db, $ChildProfilesTable table)
       : super(TableManagerState(
           db: db,
@@ -1254,12 +1730,15 @@ class $$ChildProfilesTableTableManager extends RootTableManager<
                   ))
               .toList(),
           prefetchHooksCallback: (
-              {vaccinationRecordsRefs = false, vaccinationDuesRefs = false}) {
+              {vaccinationRecordsRefs = false,
+              vaccinationDuesRefs = false,
+              remindersRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (vaccinationRecordsRefs) db.vaccinationRecords,
-                if (vaccinationDuesRefs) db.vaccinationDues
+                if (vaccinationDuesRefs) db.vaccinationDues,
+                if (remindersRefs) db.reminders
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
@@ -1288,6 +1767,19 @@ class $$ChildProfilesTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.childId == item.id),
+                        typedResults: items),
+                  if (remindersRefs)
+                    await $_getPrefetchedData<ChildProfile, $ChildProfilesTable,
+                            Reminder>(
+                        currentTable: table,
+                        referencedTable: $$ChildProfilesTableReferences
+                            ._remindersRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$ChildProfilesTableReferences(db, table, p0)
+                                .remindersRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.childId == item.id),
                         typedResults: items)
                 ];
               },
@@ -1308,7 +1800,9 @@ typedef $$ChildProfilesTableProcessedTableManager = ProcessedTableManager<
     (ChildProfile, $$ChildProfilesTableReferences),
     ChildProfile,
     PrefetchHooks Function(
-        {bool vaccinationRecordsRefs, bool vaccinationDuesRefs})>;
+        {bool vaccinationRecordsRefs,
+        bool vaccinationDuesRefs,
+        bool remindersRefs})>;
 typedef $$VaccinationRecordsTableCreateCompanionBuilder
     = VaccinationRecordsCompanion Function({
   required String id,
@@ -1644,6 +2138,21 @@ final class $$VaccinationDuesTableReferences extends BaseReferences<
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
   }
+
+  static MultiTypedResultKey<$RemindersTable, List<Reminder>>
+      _remindersRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+          db.reminders,
+          aliasName:
+              $_aliasNameGenerator(db.vaccinationDues.id, db.reminders.dueId));
+
+  $$RemindersTableProcessedTableManager get remindersRefs {
+    final manager = $$RemindersTableTableManager($_db, $_db.reminders)
+        .filter((f) => f.dueId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_remindersRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$VaccinationDuesTableFilterComposer
@@ -1685,6 +2194,27 @@ class $$VaccinationDuesTableFilterComposer
                   $removeJoinBuilderFromRootComposer,
             ));
     return composer;
+  }
+
+  Expression<bool> remindersRefs(
+      Expression<bool> Function($$RemindersTableFilterComposer f) f) {
+    final $$RemindersTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.reminders,
+        getReferencedColumn: (t) => t.dueId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RemindersTableFilterComposer(
+              $db: $db,
+              $table: $db.reminders,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
   }
 }
 
@@ -1770,6 +2300,27 @@ class $$VaccinationDuesTableAnnotationComposer
             ));
     return composer;
   }
+
+  Expression<T> remindersRefs<T extends Object>(
+      Expression<T> Function($$RemindersTableAnnotationComposer a) f) {
+    final $$RemindersTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.reminders,
+        getReferencedColumn: (t) => t.dueId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RemindersTableAnnotationComposer(
+              $db: $db,
+              $table: $db.reminders,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$VaccinationDuesTableTableManager extends RootTableManager<
@@ -1783,7 +2334,7 @@ class $$VaccinationDuesTableTableManager extends RootTableManager<
     $$VaccinationDuesTableUpdateCompanionBuilder,
     (VaccinationDue, $$VaccinationDuesTableReferences),
     VaccinationDue,
-    PrefetchHooks Function({bool childId})> {
+    PrefetchHooks Function({bool childId, bool remindersRefs})> {
   $$VaccinationDuesTableTableManager(
       _$AppDatabase db, $VaccinationDuesTable table)
       : super(TableManagerState(
@@ -1833,10 +2384,10 @@ class $$VaccinationDuesTableTableManager extends RootTableManager<
                     $$VaccinationDuesTableReferences(db, table, e)
                   ))
               .toList(),
-          prefetchHooksCallback: ({childId = false}) {
+          prefetchHooksCallback: ({childId = false, remindersRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [],
+              explicitlyWatchedTables: [if (remindersRefs) db.reminders],
               addJoins: <
                   T extends TableManagerState<
                       dynamic,
@@ -1864,7 +2415,21 @@ class $$VaccinationDuesTableTableManager extends RootTableManager<
                 return state;
               },
               getPrefetchedDataCallback: (items) async {
-                return [];
+                return [
+                  if (remindersRefs)
+                    await $_getPrefetchedData<VaccinationDue,
+                            $VaccinationDuesTable, Reminder>(
+                        currentTable: table,
+                        referencedTable: $$VaccinationDuesTableReferences
+                            ._remindersRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$VaccinationDuesTableReferences(db, table, p0)
+                                .remindersRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.dueId == item.id),
+                        typedResults: items)
+                ];
               },
             );
           },
@@ -1882,7 +2447,391 @@ typedef $$VaccinationDuesTableProcessedTableManager = ProcessedTableManager<
     $$VaccinationDuesTableUpdateCompanionBuilder,
     (VaccinationDue, $$VaccinationDuesTableReferences),
     VaccinationDue,
-    PrefetchHooks Function({bool childId})>;
+    PrefetchHooks Function({bool childId, bool remindersRefs})>;
+typedef $$RemindersTableCreateCompanionBuilder = RemindersCompanion Function({
+  required String id,
+  required String childId,
+  required String dueId,
+  required ReminderKind kind,
+  required DateTime scheduledFor,
+  required int notificationId,
+  Value<DateTime?> deliveredAt,
+  Value<int> rowid,
+});
+typedef $$RemindersTableUpdateCompanionBuilder = RemindersCompanion Function({
+  Value<String> id,
+  Value<String> childId,
+  Value<String> dueId,
+  Value<ReminderKind> kind,
+  Value<DateTime> scheduledFor,
+  Value<int> notificationId,
+  Value<DateTime?> deliveredAt,
+  Value<int> rowid,
+});
+
+final class $$RemindersTableReferences
+    extends BaseReferences<_$AppDatabase, $RemindersTable, Reminder> {
+  $$RemindersTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $ChildProfilesTable _childIdTable(_$AppDatabase db) =>
+      db.childProfiles.createAlias(
+          $_aliasNameGenerator(db.reminders.childId, db.childProfiles.id));
+
+  $$ChildProfilesTableProcessedTableManager get childId {
+    final $_column = $_itemColumn<String>('child_id')!;
+
+    final manager = $$ChildProfilesTableTableManager($_db, $_db.childProfiles)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_childIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $VaccinationDuesTable _dueIdTable(_$AppDatabase db) =>
+      db.vaccinationDues.createAlias(
+          $_aliasNameGenerator(db.reminders.dueId, db.vaccinationDues.id));
+
+  $$VaccinationDuesTableProcessedTableManager get dueId {
+    final $_column = $_itemColumn<String>('due_id')!;
+
+    final manager =
+        $$VaccinationDuesTableTableManager($_db, $_db.vaccinationDues)
+            .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_dueIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$RemindersTableFilterComposer
+    extends Composer<_$AppDatabase, $RemindersTable> {
+  $$RemindersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<ReminderKind, ReminderKind, String> get kind =>
+      $composableBuilder(
+          column: $table.kind,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<DateTime> get scheduledFor => $composableBuilder(
+      column: $table.scheduledFor, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get notificationId => $composableBuilder(
+      column: $table.notificationId,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deliveredAt => $composableBuilder(
+      column: $table.deliveredAt, builder: (column) => ColumnFilters(column));
+
+  $$ChildProfilesTableFilterComposer get childId {
+    final $$ChildProfilesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.childId,
+        referencedTable: $db.childProfiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ChildProfilesTableFilterComposer(
+              $db: $db,
+              $table: $db.childProfiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$VaccinationDuesTableFilterComposer get dueId {
+    final $$VaccinationDuesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.dueId,
+        referencedTable: $db.vaccinationDues,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$VaccinationDuesTableFilterComposer(
+              $db: $db,
+              $table: $db.vaccinationDues,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RemindersTableOrderingComposer
+    extends Composer<_$AppDatabase, $RemindersTable> {
+  $$RemindersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+      column: $table.kind, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get scheduledFor => $composableBuilder(
+      column: $table.scheduledFor,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get notificationId => $composableBuilder(
+      column: $table.notificationId,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deliveredAt => $composableBuilder(
+      column: $table.deliveredAt, builder: (column) => ColumnOrderings(column));
+
+  $$ChildProfilesTableOrderingComposer get childId {
+    final $$ChildProfilesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.childId,
+        referencedTable: $db.childProfiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ChildProfilesTableOrderingComposer(
+              $db: $db,
+              $table: $db.childProfiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$VaccinationDuesTableOrderingComposer get dueId {
+    final $$VaccinationDuesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.dueId,
+        referencedTable: $db.vaccinationDues,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$VaccinationDuesTableOrderingComposer(
+              $db: $db,
+              $table: $db.vaccinationDues,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RemindersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RemindersTable> {
+  $$RemindersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<ReminderKind, String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get scheduledFor => $composableBuilder(
+      column: $table.scheduledFor, builder: (column) => column);
+
+  GeneratedColumn<int> get notificationId => $composableBuilder(
+      column: $table.notificationId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deliveredAt => $composableBuilder(
+      column: $table.deliveredAt, builder: (column) => column);
+
+  $$ChildProfilesTableAnnotationComposer get childId {
+    final $$ChildProfilesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.childId,
+        referencedTable: $db.childProfiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ChildProfilesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.childProfiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$VaccinationDuesTableAnnotationComposer get dueId {
+    final $$VaccinationDuesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.dueId,
+        referencedTable: $db.vaccinationDues,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$VaccinationDuesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.vaccinationDues,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RemindersTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $RemindersTable,
+    Reminder,
+    $$RemindersTableFilterComposer,
+    $$RemindersTableOrderingComposer,
+    $$RemindersTableAnnotationComposer,
+    $$RemindersTableCreateCompanionBuilder,
+    $$RemindersTableUpdateCompanionBuilder,
+    (Reminder, $$RemindersTableReferences),
+    Reminder,
+    PrefetchHooks Function({bool childId, bool dueId})> {
+  $$RemindersTableTableManager(_$AppDatabase db, $RemindersTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RemindersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RemindersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RemindersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> childId = const Value.absent(),
+            Value<String> dueId = const Value.absent(),
+            Value<ReminderKind> kind = const Value.absent(),
+            Value<DateTime> scheduledFor = const Value.absent(),
+            Value<int> notificationId = const Value.absent(),
+            Value<DateTime?> deliveredAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              RemindersCompanion(
+            id: id,
+            childId: childId,
+            dueId: dueId,
+            kind: kind,
+            scheduledFor: scheduledFor,
+            notificationId: notificationId,
+            deliveredAt: deliveredAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String childId,
+            required String dueId,
+            required ReminderKind kind,
+            required DateTime scheduledFor,
+            required int notificationId,
+            Value<DateTime?> deliveredAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              RemindersCompanion.insert(
+            id: id,
+            childId: childId,
+            dueId: dueId,
+            kind: kind,
+            scheduledFor: scheduledFor,
+            notificationId: notificationId,
+            deliveredAt: deliveredAt,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$RemindersTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({childId = false, dueId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (childId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.childId,
+                    referencedTable:
+                        $$RemindersTableReferences._childIdTable(db),
+                    referencedColumn:
+                        $$RemindersTableReferences._childIdTable(db).id,
+                  ) as T;
+                }
+                if (dueId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.dueId,
+                    referencedTable: $$RemindersTableReferences._dueIdTable(db),
+                    referencedColumn:
+                        $$RemindersTableReferences._dueIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$RemindersTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $RemindersTable,
+    Reminder,
+    $$RemindersTableFilterComposer,
+    $$RemindersTableOrderingComposer,
+    $$RemindersTableAnnotationComposer,
+    $$RemindersTableCreateCompanionBuilder,
+    $$RemindersTableUpdateCompanionBuilder,
+    (Reminder, $$RemindersTableReferences),
+    Reminder,
+    PrefetchHooks Function({bool childId, bool dueId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1893,6 +2842,8 @@ class $AppDatabaseManager {
       $$VaccinationRecordsTableTableManager(_db, _db.vaccinationRecords);
   $$VaccinationDuesTableTableManager get vaccinationDues =>
       $$VaccinationDuesTableTableManager(_db, _db.vaccinationDues);
+  $$RemindersTableTableManager get reminders =>
+      $$RemindersTableTableManager(_db, _db.reminders);
 }
 
 mixin _$ChildProfilesDaoMixin on DatabaseAccessor<AppDatabase> {
@@ -1912,4 +2863,9 @@ mixin _$VaccinationDuesDaoMixin on DatabaseAccessor<AppDatabase> {
   $VaccinationDuesTable get vaccinationDues => attachedDatabase.vaccinationDues;
   $VaccinationRecordsTable get vaccinationRecords =>
       attachedDatabase.vaccinationRecords;
+}
+mixin _$RemindersDaoMixin on DatabaseAccessor<AppDatabase> {
+  $ChildProfilesTable get childProfiles => attachedDatabase.childProfiles;
+  $VaccinationDuesTable get vaccinationDues => attachedDatabase.vaccinationDues;
+  $RemindersTable get reminders => attachedDatabase.reminders;
 }
