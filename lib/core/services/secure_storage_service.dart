@@ -39,6 +39,18 @@ class SecureStorageService {
       'address': await _storage.read(key: 'caregiver_address'),
     };
   }
+
+  Future<void> saveLanguage(String lang) async {
+    await _storage.write(key: 'app_language', value: lang);
+  }
+
+  Future<String?> getLanguage() async {
+    return await _storage.read(key: 'app_language');
+  }
+
+  Future<void> clearAll() async {
+    await _storage.deleteAll();
+  }
 }
 
 @Riverpod(keepAlive: true)

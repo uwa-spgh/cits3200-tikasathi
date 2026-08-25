@@ -27,11 +27,18 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
     super.dispose();
   }
 
-  Future<void> _onFinish() async {
-    // Basic validation
+  Future<void> _onFinish(bool isNp) async {
+    final errorEmptyName = isNp
+        ? 'कृपया बच्चाको नाम प्रविष्ट गर्नुहोस्'
+        : 'Please enter child\'s name';
+    final errorInvalidDate = isNp
+        ? 'कृपया मान्य जन्म मिति प्रविष्ट गर्नुहोस्'
+        : 'Please enter a valid Date of Birth';
+    final errorDate = isNp ? 'अवैध जन्म मिति' : 'Invalid Date of Birth';
+
     if (_nameController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter child\'s name')),
+        SnackBar(content: Text(errorEmptyName)),
       );
       return;
     }
@@ -42,27 +49,25 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
 
     if (dd == null || mm == null || yy == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid Date of Birth')),
+        SnackBar(content: Text(errorInvalidDate)),
       );
       return;
     }
 
-    // Basic date parsing (Assuming current century for YY if less than 100, though Nepali dates usually are full year or 2 digits, but we just use standard DateTime for now).
-    // Let's assume YY is 20YY if < 100
-    final year = yy < 100 ? 2000 + yy : yy;
-    
+    final year = yy;
+
     DateTime? dob;
     try {
       dob = DateTime(year, mm, dd);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid Date of Birth')),
+        SnackBar(content: Text(errorDate)),
       );
       return;
     }
 
     final controller = ref.read(onboardingControllerProvider.notifier);
-    
+
     controller.updateChildInfo(
       name: _nameController.text.trim(),
       dob: dob,
@@ -72,7 +77,6 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
     final success = await controller.finishSetup();
 
     if (success && mounted) {
-      // Clear navigation stack and go to AppShell
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute<void>(builder: (context) => const AppShellScreen()),
@@ -89,6 +93,20 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(onboardingControllerProvider);
+    final isNp = state.selectedLanguage == 'np';
+
+    final stepText = isNp ? 'चरण २/२' : 'Step 2 of 2';
+    final childNameLabel = isNp ? '👶 बच्चाको नाम' : '👶 Child\'s name';
+    final childNameHint =
+        isNp ? 'पूरा नाम प्रविष्ट गर्नुहोस्' : 'Enter full name';
+    final dobLabel = isNp ? '📅 जन्म मिति' : '📅 Date of Birth';
+    final ddHint = isNp ? 'गते' : 'DD';
+    final mmHint = isNp ? 'महिना' : 'MM';
+    final yyyyHint = isNp ? 'वर्ष' : 'YYYY';
+    final genderLabel = isNp ? '⚥ लिङ्ग' : '⚥ Gender';
+    final girlText = isNp ? 'छोरी' : 'Girl';
+    final boyText = isNp ? 'छोरा' : 'Boy';
+    final finishText = isNp ? 'सेटअप पूरा गर्नुहोस्' : 'Finish Setup';
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F9FC),
@@ -109,36 +127,29 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
               // Step indicator
               Row(
                 children: [
-                  Container(
-                    height: 8,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF0F52BA),
-                      borderRadius: BorderRadius.circular(4),
+                  Expanded(
+                    child: Container(
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF0F52BA),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
-                  Container(
-                    height: 8,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF0F52BA),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    height: 8,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF0F52BA),
-                      borderRadius: BorderRadius.circular(4),
+                  Expanded(
+                    child: Container(
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF0F52BA),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 16),
-                  const Text(
-                    'Step 3 of 3',
-                    style: TextStyle(
+                  Text(
+                    stepText,
+                    style: const TextStyle(
                       color: Color(0xFF64748B),
                       fontWeight: FontWeight.w500,
                     ),
@@ -146,7 +157,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
                 ],
               ),
               const SizedBox(height: 32),
-              
+
               // Form Card
               Container(
                 padding: const EdgeInsets.all(24),
@@ -164,9 +175,9 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      '👶 Child\'s name',
-                      style: TextStyle(
+                    Text(
+                      childNameLabel,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF0F172A),
@@ -177,23 +188,24 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
                       controller: _nameController,
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                        hintText: 'Enter full name',
+                        hintText: childNameHint,
                         hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFF0F52BA)),
+                          borderSide:
+                              const BorderSide(color: Color(0xFF0F52BA)),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFF0F52BA)),
+                          borderSide:
+                              const BorderSide(color: Color(0xFF0F52BA)),
                         ),
                       ),
                     ),
                     const SizedBox(height: 24),
-                    
-                    const Text(
-                      '📅 Date of Birth',
-                      style: TextStyle(
+                    Text(
+                      dobLabel,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF0F172A),
@@ -202,18 +214,19 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        Expanded(child: _buildDateBox('DD', _ddController)),
+                        Expanded(child: _buildDateBox(ddHint, _ddController)),
                         const SizedBox(width: 12),
-                        Expanded(child: _buildDateBox('MM', _mmController)),
+                        Expanded(child: _buildDateBox(mmHint, _mmController)),
                         const SizedBox(width: 12),
-                        Expanded(child: _buildDateBox('YY', _yyController)),
+                        Expanded(
+                            child: _buildDateBox(yyyyHint, _yyController,
+                                maxLength: 4)),
                       ],
                     ),
                     const SizedBox(height: 24),
-                    
-                    const Text(
-                      '⚥ Gender',
-                      style: TextStyle(
+                    Text(
+                      genderLabel,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF0F172A),
@@ -223,11 +236,13 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: _buildGenderButton('Girl', '👱‍♀️'),
+                          child: _buildGenderButton('Girl', '👱‍♀️',
+                              label: girlText),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
-                          child: _buildGenderButton('Boy', '👱‍♂️'),
+                          child: _buildGenderButton('Boy', '👱‍♂️',
+                              label: boyText),
                         ),
                       ],
                     ),
@@ -237,7 +252,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
               const SizedBox(height: 48),
 
               ElevatedButton(
-                onPressed: state.isSaving ? null : _onFinish,
+                onPressed: state.isSaving ? null : () => _onFinish(isNp),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0F52BA),
                   foregroundColor: Colors.white,
@@ -249,18 +264,18 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
                 ),
                 child: state.isSaving
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : const Row(
+                    : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Finish Setup',
-                            style: TextStyle(
+                            finishText,
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          SizedBox(width: 8),
-                          Icon(Icons.arrow_forward, size: 20),
+                          const SizedBox(width: 8),
+                          const Icon(Icons.arrow_forward, size: 20),
                         ],
                       ),
               ),
@@ -271,19 +286,20 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
     );
   }
 
-  Widget _buildDateBox(String hint, TextEditingController controller) {
+  Widget _buildDateBox(String hint, TextEditingController controller,
+      {int maxLength = 2}) {
     return TextField(
       controller: controller,
       keyboardType: TextInputType.number,
       textAlign: TextAlign.center,
-      maxLength: 2,
+      maxLength: maxLength,
       style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
       decoration: InputDecoration(
         counterText: '',
         hintText: hint,
         hintStyle: const TextStyle(
           color: Color(0xFF94A3B8),
-          fontSize: 24,
+          fontSize: 20, // slightly smaller to fit Nepali
           fontWeight: FontWeight.normal,
         ),
         contentPadding: const EdgeInsets.symmetric(vertical: 16),
@@ -299,12 +315,13 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
     );
   }
 
-  Widget _buildGenderButton(String gender, String emoji) {
-    final isSelected = _selectedGender == gender;
+  Widget _buildGenderButton(String genderId, String emoji,
+      {required String label}) {
+    final isSelected = _selectedGender == genderId;
     return InkWell(
       onTap: () {
         setState(() {
-          _selectedGender = gender;
+          _selectedGender = genderId;
         });
       },
       borderRadius: BorderRadius.circular(12),
@@ -314,7 +331,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
           color: isSelected ? const Color(0xFFE2F0FE) : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? const Color(0xFF0F52BA) : const Color(0xFF0F52BA),
+            color: const Color(0xFF0F52BA),
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -324,11 +341,13 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
             Text(emoji, style: const TextStyle(fontSize: 24)),
             const SizedBox(width: 8),
             Text(
-              gender,
+              label,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                color: isSelected ? const Color(0xFF0F52BA) : const Color(0xFF0F172A),
+                color: isSelected
+                    ? const Color(0xFF0F52BA)
+                    : const Color(0xFF0F172A),
               ),
             ),
           ],

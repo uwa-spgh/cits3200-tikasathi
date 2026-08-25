@@ -5,6 +5,7 @@ import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart'
 import 'core/theme/app_theme.dart';
 import 'package:tikasathi/features/onboarding/presentation/language_screen.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
+import 'package:tikasathi/core/providers/language_provider.dart';
 
 void main() {
   runApp(
@@ -34,6 +35,10 @@ class _TikaSathiAppState extends ConsumerState<TikaSathiApp> {
   Future<void> _checkOnboarding() async {
     final storage = ref.read(secureStorageServiceProvider);
     final completed = await storage.hasCompletedOnboarding();
+
+    // Load language globally
+    await ref.read(languageProvider.notifier).loadLanguage();
+
     setState(() {
       _hasCompletedOnboarding = completed;
     });

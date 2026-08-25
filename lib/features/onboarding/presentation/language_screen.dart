@@ -56,16 +56,7 @@ class LanguageScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 48),
-              
-              // English Button
-              _LanguageButton(
-                title: 'English',
-                flag: '🇬🇧',
-                isSelected: state.selectedLanguage == 'en',
-                onTap: () => controller.updateLanguage('en'),
-              ),
-              const SizedBox(height: 16),
-              
+
               // Nepali Button
               _LanguageButton(
                 title: 'नेपाली',
@@ -73,9 +64,18 @@ class LanguageScreen extends ConsumerWidget {
                 isSelected: state.selectedLanguage == 'np',
                 onTap: () => controller.updateLanguage('np'),
               ),
-              
+              const SizedBox(height: 16),
+
+              // English Button
+              _LanguageButton(
+                title: 'English',
+                flag: '🇬🇧',
+                isSelected: state.selectedLanguage == 'en',
+                onTap: () => controller.updateLanguage('en'),
+              ),
+
               const Spacer(),
-              
+
               // Continue Button
               ElevatedButton(
                 onPressed: () {
@@ -142,7 +142,8 @@ class _LanguageButton extends StatelessWidget {
           color: isSelected ? const Color(0xFFE2F0FE) : Colors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? const Color(0xFF0F52BA) : const Color(0xFFE2E8F0),
+            color:
+                isSelected ? const Color(0xFF0F52BA) : const Color(0xFFE2E8F0),
             width: 2,
           ),
         ),
@@ -158,7 +159,9 @@ class _LanguageButton extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                color: isSelected ? const Color(0xFF0F52BA) : const Color(0xFF334155),
+                color: isSelected
+                    ? const Color(0xFF0F52BA)
+                    : const Color(0xFF334155),
               ),
             ),
             const Spacer(),

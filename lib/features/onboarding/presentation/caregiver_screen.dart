@@ -40,6 +40,28 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(onboardingControllerProvider);
+    final isNp = state.selectedLanguage == 'np';
+
+    final title = isNp ? 'हेरचाहकर्ताको विवरण' : 'Caregiver Details';
+    final subtitle = isNp
+        ? 'कृपया आफ्नो विवरण भर्नुहोस्।'
+        : 'Please enter your information so we can set up the app.';
+    final nameLabel = isNp ? '👩‍🦰 पूरा नाम' : '👩‍🦰 Full Name';
+    final nameHint =
+        isNp ? 'तपाईंको पूरा नाम प्रविष्ट गर्नुहोस्' : 'Enter your full name';
+    final phoneLabel = isNp ? '📱 फोन नम्बर' : '📱 Phone Number';
+    final phoneHint = isNp
+        ? 'तपाईंको फोन नम्बर प्रविष्ट गर्नुहोस्'
+        : 'Enter your phone number';
+    final addressLabel =
+        isNp ? '🏠 ठेगाना (वैकल्पिक)' : '🏠 Address (Optional)';
+    final addressHint = isNp
+        ? 'तपाईंको ठेगाना प्रविष्ट गर्नुहोस्'
+        : 'Enter your street address';
+    final continueText = isNp ? 'अगाडि बढ्नुहोस्' : 'Continue';
+    final stepText = isNp ? 'चरण १/२' : 'Step 1 of 2';
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F9FC),
       appBar: AppBar(
@@ -59,36 +81,29 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
               // Step indicator
               Row(
                 children: [
-                  Container(
-                    height: 8,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF0F52BA),
-                      borderRadius: BorderRadius.circular(4),
+                  Expanded(
+                    child: Container(
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF0F52BA),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
-                  Container(
-                    height: 8,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF0F52BA),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    height: 8,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE2E8F0),
-                      borderRadius: BorderRadius.circular(4),
+                  Expanded(
+                    child: Container(
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE2E8F0),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 16),
-                  const Text(
-                    'Step 2 of 3',
-                    style: TextStyle(
+                  Text(
+                    stepText,
+                    style: const TextStyle(
                       color: Color(0xFF64748B),
                       fontWeight: FontWeight.w500,
                     ),
@@ -96,19 +111,19 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
                 ],
               ),
               const SizedBox(height: 32),
-              
-              const Text(
-                'Caregiver Details',
-                style: TextStyle(
+
+              Text(
+                title,
+                style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF0F172A),
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Please enter your information so we can set up the app.',
-                style: TextStyle(
+              Text(
+                subtitle,
+                style: const TextStyle(
                   fontSize: 16,
                   color: Color(0xFF64748B),
                 ),
@@ -116,25 +131,25 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
               const SizedBox(height: 32),
 
               _buildTextField(
-                label: '👩‍🦰 Full Name',
-                hint: 'Enter your full name',
+                label: nameLabel,
+                hint: nameHint,
                 controller: _nameController,
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 24),
-              
+
               _buildTextField(
-                label: '📱 Phone Number',
-                hint: 'Enter your phone number',
+                label: phoneLabel,
+                hint: phoneHint,
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 24),
-              
+
               _buildTextField(
-                label: '🏠 Address (Optional)',
-                hint: 'Enter your street address',
+                label: addressLabel,
+                hint: addressHint,
                 controller: _addressController,
                 textInputAction: TextInputAction.done,
               ),
@@ -151,18 +166,18 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
                   ),
                   minimumSize: const Size(double.infinity, 56),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Continue',
-                      style: TextStyle(
+                      continueText,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(width: 8),
-                    Icon(Icons.arrow_forward, size: 20),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.arrow_forward, size: 20),
                   ],
                 ),
               ),

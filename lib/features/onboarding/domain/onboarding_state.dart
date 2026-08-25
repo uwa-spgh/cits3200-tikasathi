@@ -1,4 +1,3 @@
-import 'package:drift/drift.dart' hide JsonKey;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tikasathi/core/database/app_database.dart';
@@ -63,7 +62,7 @@ class OnboardingController extends _$OnboardingController {
     state = state.copyWith(isSaving: true, error: null);
     try {
       final secureStorage = ref.read(secureStorageServiceProvider);
-      
+
       // 1. Save Caregiver
       await secureStorage.saveCaregiverProfile(
         name: state.caregiverName,
@@ -75,7 +74,7 @@ class OnboardingController extends _$OnboardingController {
       if (state.childName.isNotEmpty && state.childDob != null) {
         final db = ref.read(appDatabaseProvider);
         final id = const Uuid().v4();
-        
+
         await db.childProfilesDao.insertChildProfile(
           ChildProfilesCompanion.insert(
             id: id,
@@ -86,9 +85,10 @@ class OnboardingController extends _$OnboardingController {
         );
       }
 
-      // 3. Mark completed
+      // 3. Save Language & Mark completed
+      await secureStorage.saveLanguage(state.selectedLanguage);
       await secureStorage.setOnboardingCompleted();
-      
+
       state = state.copyWith(isSaving: false);
       return true;
     } catch (e) {

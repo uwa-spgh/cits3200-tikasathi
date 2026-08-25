@@ -7,7 +7,8 @@ class HomeRepository {
 
   final AppDatabase _database;
 
-  Future<List<HomeStatusGroup>> loadHomeStatusGroups({DateTime? now}) async {
+  Future<List<HomeStatusGroup>> loadHomeStatusGroups(
+      {DateTime? now, bool isNp = false}) async {
     final DateTime currentTime = now ?? DateTime.now();
     final profiles = await _database.childProfilesDao.getAllChildProfiles();
 
@@ -29,10 +30,11 @@ class HomeRepository {
       final List<VaccinationDue> outstandingDues = dueRows;
 
       final status = _describeStatus(outstandingDues, currentTime);
-      final vaccineLabel = _nextVaccineLabel(outstandingDues, currentTime);
+      final vaccineLabel =
+          _nextVaccineLabel(outstandingDues, currentTime, isNp: isNp);
       final child = HomeChildSummary(
         name: profile.name,
-        ageLabel: formatAge(profile.dateOfBirth),
+        ageLabel: formatAge(profile.dateOfBirth, isNp: isNp),
         vaccineLabel: vaccineLabel,
         avatarEmoji: getChildAvatar(
           sex: _sexFromString(profile.sex),
@@ -110,9 +112,10 @@ class HomeRepository {
     return HomeVaccinationGroup.upToDate;
   }
 
-  String _nextVaccineLabel(List<VaccinationDue> dueRows, DateTime now) {
+  String _nextVaccineLabel(List<VaccinationDue> dueRows, DateTime now,
+      {bool isNp = false}) {
     if (dueRows.isEmpty) {
-      return 'Up to date';
+      return isNp ? 'पूरा भएको' : 'Up to date';
     }
 
     final sortedDues = List<VaccinationDue>.from(dueRows)
