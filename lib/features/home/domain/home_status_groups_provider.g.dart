@@ -6,7 +6,7 @@ part of 'home_status_groups_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$homeStatusGroupsHash() => r'881e14ec0544b890e9558296e5661a430a2d2f96';
+String _$homeStatusGroupsHash() => r'c968799d05790a3c7c4a834f034a7e843a5d77d4';
 
 /// See also [HomeStatusGroups].
 @ProviderFor(HomeStatusGroups)
