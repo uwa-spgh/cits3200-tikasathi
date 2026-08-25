@@ -16,7 +16,8 @@ void main() {
   testWidgets('App boots into shell with bottom navigation',
       (WidgetTester tester) async {
     final mockStorage = MockSecureStorageService();
-    when(() => mockStorage.hasCompletedOnboarding()).thenAnswer((_) async => true);
+    when(() => mockStorage.hasCompletedOnboarding())
+        .thenAnswer((_) async => true);
     when(() => mockStorage.getLanguage()).thenAnswer((_) async => 'en');
 
     // Wrap in ProviderScope as required by Riverpod

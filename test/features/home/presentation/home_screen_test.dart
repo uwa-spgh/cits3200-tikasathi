@@ -119,7 +119,8 @@ void main() {
 
       await tester.tap(find.byKey(const Key('find-clinic-Aisha')));
       await tester.pumpAndSettle();
-      expect(find.text('क्लिनिक खोज्नुहोस् is not available yet.'), findsOneWidget);
+      expect(find.text('क्लिनिक खोज्नुहोस् is not available yet.'),
+          findsOneWidget);
     });
 
     testWidgets('renders empty state when no children are available',
