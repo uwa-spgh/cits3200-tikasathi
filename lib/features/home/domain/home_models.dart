@@ -10,6 +10,7 @@ enum HomeVaccinationGroup {
 class HomeChildSummary {
   const HomeChildSummary({
     required this.name,
+    this.childId = '',
     required this.ageLabel,
     required this.vaccineLabel,
     required this.avatarEmoji,
@@ -18,6 +19,7 @@ class HomeChildSummary {
   });
 
   final String name;
+  final String childId;
   final String ageLabel;
   final String vaccineLabel;
   final String avatarEmoji;
