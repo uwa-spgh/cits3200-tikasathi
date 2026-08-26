@@ -7,10 +7,6 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
 
   /// Replaces the reminders for the due identified by [dueId] with the ones
   /// [planReminders] derives from that due's date.
-  ///
-  /// Safe to call again for a due that already has reminders, which is what
-  /// rescheduling after a reboot or a device clock change relies on. Reminders
-  /// already in the past as at [from] are not scheduled.
   Future<List<Reminder>> scheduleRemindersForDue(
     String dueId, {
     DateTime? from,
@@ -43,7 +39,7 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
     });
   }
 
-  /// Drops the reminders for a due, e.g. once the dose has been recorded.
+  /// drops the reminders for a due (e.g. once the dose has been recorded)
   Future<int> deleteRemindersForDue(String dueId) {
     return (delete(reminders)..where((row) => row.dueId.equals(dueId))).go();
   }
@@ -61,8 +57,6 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
   }
 
   /// Reminders not yet handed to the device, soonest first.
-  ///
-  /// Use this on startup to re-register reminders with the operating system.
   Future<List<Reminder>> getPendingReminders() {
     return (select(reminders)
           ..where((row) => row.deliveredAt.isNull())
@@ -71,7 +65,7 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
   }
 
   /// Pending reminders that were due at or before [instant], soonest first.
-  ///
+
   /// Covers reminders the device never raised, for instance because it was off
   /// or its clock moved forward past the scheduled time.
   Future<List<Reminder>> getPendingRemindersDueBy(DateTime instant) {
@@ -102,6 +96,12 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
 
   /// Notification ids are handed to the device, so they must be unique across
   /// the whole table rather than per child or per due.
+  ///
+  /// max+1 is safe here because the app opens a single connection to the
+  /// SQLite file (see `_openConnection` in app_database.dart), so drift
+  /// serializes every statement onto it — there is no concurrent writer to
+  /// race against. The `notificationId` unique key is a backstop if that
+  /// ever stops being true.
   Future<int> _nextNotificationId() async {
     final highest = reminders.notificationId.max();
     final row =
