@@ -17,6 +17,11 @@ class ChildProfilesDao extends DatabaseAccessor<AppDatabase>
     return select(childProfiles).get();
   }
 
+  Future<ChildProfile?> getChildProfileById(String id) {
+    return (select(childProfiles)..where((row) => row.id.equals(id)))
+        .getSingleOrNull();
+  }
+
   Future<int> updateChildProfile({
     required String id,
     required String name,
