@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:drift/native.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
+import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_bottom_navigation_bar.dart';
@@ -39,5 +40,41 @@ void main() {
 
     expect(find.byType(AppBottomNavigationBar), findsOneWidget);
     expect(find.byKey(const Key('home-title')), findsOneWidget);
+  });
+
+  testWidgets('AppLocalizations resolves English and Nepali locales',
+      (WidgetTester tester) async {
+    const englishLocale = Locale('en');
+    const nepaliLocale = Locale('ne');
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        locale: englishLocale,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: SizedBox(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final englishContext = tester.element(find.byType(SizedBox));
+    expect(AppLocalizations.of(englishContext)!.appTitle, 'TikaSathi');
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        locale: nepaliLocale,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: SizedBox(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final nepaliContext = tester.element(find.byType(SizedBox));
+    expect(AppLocalizations.of(nepaliContext)!.appTitle, 'टीकासाथी');
   });
 }
