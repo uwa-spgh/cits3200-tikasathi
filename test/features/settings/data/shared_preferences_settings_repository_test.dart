@@ -1,8 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tikasathi/features/settings/data/settings_keys.dart';
 import 'package:tikasathi/features/settings/data/shared_preferences_settings_repository.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
+
+class _MockSharedPreferences extends Mock implements SharedPreferences {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -63,6 +66,20 @@ void main() {
       await repository.setLanguage(AppLanguage.nepali);
 
       expect(await repository.getLanguage(), AppLanguage.nepali);
+    });
+
+    test('throws when the platform fails to persist', () async {
+      final _MockSharedPreferences prefs = _MockSharedPreferences();
+      when(() => prefs.setString(SettingsKeys.language, 'ne'))
+          .thenAnswer((_) async => false);
+
+      final SharedPreferencesSettingsRepository repository =
+          SharedPreferencesSettingsRepository(prefs);
+
+      await expectLater(
+        repository.setLanguage(AppLanguage.nepali),
+        throwsA(isA<Exception>()),
+      );
     });
   });
 }

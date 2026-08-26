@@ -17,6 +17,10 @@ class SharedPreferencesSettingsRepository implements SettingsRepository {
 
   @override
   Future<void> setLanguage(AppLanguage language) async {
-    await _prefs.setString(SettingsKeys.language, language.code);
+    final bool saved =
+        await _prefs.setString(SettingsKeys.language, language.code);
+    if (!saved) {
+      throw Exception('Failed to persist language "${language.code}"');
+    }
   }
 }
