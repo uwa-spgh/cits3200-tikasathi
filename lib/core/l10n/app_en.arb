@@ -3,5 +3,119 @@
   "appTitle": "TikaSathi",
   "@appTitle": {
     "description": "The title of the application"
+  },
+  "childPageTitle": "Child Page",
+  "@childPageTitle": {
+    "description": "Title shown at the top of the child profile screen"
+  },
+  "childPageTitleWithName": "{childName}'s page",
+  "@childPageTitleWithName": {
+    "description": "Title shown at the top of the child profile screen with child name",
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "childLoading": "Loading child details...",
+  "@childLoading": {
+    "description": "Loading message while the child details are being fetched"
+  },
+  "childNotFound": "Child profile not found.",
+  "@childNotFound": {
+    "description": "Shown when the selected child cannot be loaded"
+  },
+  "childVaccinationDueToday": "Vaccination due today",
+  "@childVaccinationDueToday": {
+    "description": "Status label for a child who has a vaccine due today"
+  },
+  "childVaccinationDueSoon": "Due soon",
+  "@childVaccinationDueSoon": {
+    "description": "Status label for a child with a vaccine due within a short period"
+  },
+  "childVaccinationUpToDate": "Up to date",
+  "@childVaccinationUpToDate": {
+    "description": "Status label for a child with no current due vaccines"
+  },
+  "childNextVaccine": "Next vaccine",
+  "@childNextVaccine": {
+    "description": "Label for the next scheduled vaccine"
+  },
+  "childNoUpcomingVaccines": "No upcoming vaccines",
+  "@childNoUpcomingVaccines": {
+    "description": "Shown in next vaccine card when there is no upcoming vaccine"
+  },
+  "childBornOn": "Born {dateText}",
+  "@childBornOn": {
+    "description": "Born date label in child summary card",
+    "placeholders": {
+      "dateText": {
+        "type": "String"
+      }
+    }
+  },
+  "childDueOn": "Due on",
+  "@childDueOn": {
+    "description": "Label for the date on which the next vaccine is due"
+  },
+  "childSexLabel": "Sex",
+  "@childSexLabel": {
+    "description": "Label for the child's sex"
+  },
+  "childDobLabel": "Date of birth",
+  "@childDobLabel": {
+    "description": "Label for the child's date of birth"
+  },
+  "childSexMale": "Male",
+  "@childSexMale": {
+    "description": "Male sex option"
+  },
+  "childSexFemale": "Female",
+  "@childSexFemale": {
+    "description": "Female sex option"
+  },
+  "childNoDueVaccines": "No due vaccines",
+  "@childNoDueVaccines": {
+    "description": "Shown when a child has no due vaccines"
+  },
+  "childReadAloudUnavailable": "Read aloud is not available yet.",
+  "@childReadAloudUnavailable": {
+    "description": "Snack bar message for the unavailable read-aloud action"
+  },
+  "childReadAloudTooltip": "Read aloud",
+  "@childReadAloudTooltip": {
+    "description": "Tooltip text for the read-aloud action"
+  },
+  "childBackTooltip": "Back",
+  "@childBackTooltip": {
+    "description": "Tooltip for the back button on child page"
+  },
+  "childVaccineSchedule": "Vaccine schedule",
+  "@childVaccineSchedule": {
+    "description": "Title for vaccine schedule quick action card"
+  },
+  "childVaccineHistory": "Vaccine history",
+  "@childVaccineHistory": {
+    "description": "Title for vaccine history quick action card"
+  },
+  "childScheduleNotImplemented": "Vaccine schedule is not implemented yet.",
+  "@childScheduleNotImplemented": {
+    "description": "Snack bar message for vaccine schedule action not implemented"
+  },
+  "childHistoryNotImplemented": "Vaccine history is not implemented yet.",
+  "@childHistoryNotImplemented": {
+    "description": "Snack bar message for vaccine history action not implemented"
+  },
+  "childNotImplementedYet": "Not implemented yet.",
+  "@childNotImplementedYet": {
+    "description": "Generic message for not-yet-implemented features"
+  },
+  "childDialogOk": "OK",
+  "@childDialogOk": {
+    "description": "Confirmation button text for simple dialogs"
+  },
+  "childMissingFeatureNote": "Record vaccine and clinic lookup are not available yet in this version.",
+  "@childMissingFeatureNote": {
+    "description": "Clear note about unavailable functionality on the child screen"
   }
 }

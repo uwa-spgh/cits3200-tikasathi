@@ -103,6 +103,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'TikaSathi'**
   String get appTitle;
+
+  /// Title shown at the top of the child profile screen
+  ///
+  /// In en, this message translates to:
+  /// **'Child Page'**
+  String get childPageTitle;
+
+  /// Title shown at the top of the child profile screen with child name
+  ///
+  /// In en, this message translates to:
+  /// **'{childName}\'s page'**
+  String childPageTitleWithName(String childName);
+
+  /// Loading message while the child details are being fetched
+  ///
+  /// In en, this message translates to:
+  /// **'Loading child details...'**
+  String get childLoading;
+
+  /// Shown when the selected child cannot be loaded
+  ///
+  /// In en, this message translates to:
+  /// **'Child profile not found.'**
+  String get childNotFound;
+
+  /// Status label for a child who has a vaccine due today
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccination due today'**
+  String get childVaccinationDueToday;
+
+  /// Status label for a child with a vaccine due within a short period
+  ///
+  /// In en, this message translates to:
+  /// **'Due soon'**
+  String get childVaccinationDueSoon;
+
+  /// Status label for a child with no current due vaccines
+  ///
+  /// In en, this message translates to:
+  /// **'Up to date'**
+  String get childVaccinationUpToDate;
+
+  /// Label for the next scheduled vaccine
+  ///
+  /// In en, this message translates to:
+  /// **'Next vaccine'**
+  String get childNextVaccine;
+
+  /// Shown in next vaccine card when there is no upcoming vaccine
+  ///
+  /// In en, this message translates to:
+  /// **'No upcoming vaccines'**
+  String get childNoUpcomingVaccines;
+
+  /// Born date label in child summary card
+  ///
+  /// In en, this message translates to:
+  /// **'Born {dateText}'**
+  String childBornOn(String dateText);
+
+  /// Label for the date on which the next vaccine is due
+  ///
+  /// In en, this message translates to:
+  /// **'Due on'**
+  String get childDueOn;
+
+  /// Label for the child's sex
+  ///
+  /// In en, this message translates to:
+  /// **'Sex'**
+  String get childSexLabel;
+
+  /// Label for the child's date of birth
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth'**
+  String get childDobLabel;
+
+  /// Male sex option
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get childSexMale;
+
+  /// Female sex option
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get childSexFemale;
+
+  /// Shown when a child has no due vaccines
+  ///
+  /// In en, this message translates to:
+  /// **'No due vaccines'**
+  String get childNoDueVaccines;
+
+  /// Snack bar message for the unavailable read-aloud action
+  ///
+  /// In en, this message translates to:
+  /// **'Read aloud is not available yet.'**
+  String get childReadAloudUnavailable;
+
+  /// Tooltip text for the read-aloud action
+  ///
+  /// In en, this message translates to:
+  /// **'Read aloud'**
+  String get childReadAloudTooltip;
+
+  /// Tooltip for the back button on child page
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get childBackTooltip;
+
+  /// Title for vaccine schedule quick action card
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine schedule'**
+  String get childVaccineSchedule;
+
+  /// Title for vaccine history quick action card
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine history'**
+  String get childVaccineHistory;
+
+  /// Snack bar message for vaccine schedule action not implemented
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine schedule is not implemented yet.'**
+  String get childScheduleNotImplemented;
+
+  /// Snack bar message for vaccine history action not implemented
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine history is not implemented yet.'**
+  String get childHistoryNotImplemented;
+
+  /// Generic message for not-yet-implemented features
+  ///
+  /// In en, this message translates to:
+  /// **'Not implemented yet.'**
+  String get childNotImplementedYet;
+
+  /// Confirmation button text for simple dialogs
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get childDialogOk;
+
+  /// Clear note about unavailable functionality on the child screen
+  ///
+  /// In en, this message translates to:
+  /// **'Record vaccine and clinic lookup are not available yet in this version.'**
+  String get childMissingFeatureNote;
 }
 
 class _AppLocalizationsDelegate

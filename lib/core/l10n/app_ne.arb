@@ -3,5 +3,119 @@
   "appTitle": "टीकासाथी",
   "@appTitle": {
     "description": "The title of the application"
+  },
+  "childPageTitle": "बच्चा पृष्ठ",
+  "@childPageTitle": {
+    "description": "Title shown at the top of the child profile screen"
+  },
+  "childPageTitleWithName": "{childName} को पृष्ठ",
+  "@childPageTitleWithName": {
+    "description": "Title shown at the top of the child profile screen with child name",
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "childLoading": "बच्चाको विवरण लोड हुँदैछ...",
+  "@childLoading": {
+    "description": "Loading message while the child details are being fetched"
+  },
+  "childNotFound": "बच्चाको प्रोफाइल फेला परेन।",
+  "@childNotFound": {
+    "description": "Shown when the selected child cannot be loaded"
+  },
+  "childVaccinationDueToday": "आज खोप लाग्नुपर्ने",
+  "@childVaccinationDueToday": {
+    "description": "Status label for a child who has a vaccine due today"
+  },
+  "childVaccinationDueSoon": "चाँडै",
+  "@childVaccinationDueSoon": {
+    "description": "Status label for a child with a vaccine due within a short period"
+  },
+  "childVaccinationUpToDate": "पूरा भएको",
+  "@childVaccinationUpToDate": {
+    "description": "Status label for a child with no current due vaccines"
+  },
+  "childNextVaccine": "अर्को खोप",
+  "@childNextVaccine": {
+    "description": "Label for the next scheduled vaccine"
+  },
+  "childNoUpcomingVaccines": "अर्को खोप छैन",
+  "@childNoUpcomingVaccines": {
+    "description": "Shown in next vaccine card when there is no upcoming vaccine"
+  },
+  "childBornOn": "जन्म {dateText}",
+  "@childBornOn": {
+    "description": "Born date label in child summary card",
+    "placeholders": {
+      "dateText": {
+        "type": "String"
+      }
+    }
+  },
+  "childDueOn": "मिति",
+  "@childDueOn": {
+    "description": "Label for the date on which the next vaccine is due"
+  },
+  "childSexLabel": "लिङ्ग",
+  "@childSexLabel": {
+    "description": "Label for the child's sex"
+  },
+  "childDobLabel": "जन्म मिति",
+  "@childDobLabel": {
+    "description": "Label for the child's date of birth"
+  },
+  "childSexMale": "पुरुष",
+  "@childSexMale": {
+    "description": "Male sex option"
+  },
+  "childSexFemale": "महिला",
+  "@childSexFemale": {
+    "description": "Female sex option"
+  },
+  "childNoDueVaccines": "कुनै पाइने खोप छैन",
+  "@childNoDueVaccines": {
+    "description": "Shown when a child has no due vaccines"
+  },
+  "childReadAloudUnavailable": "पढाइ सुन्न उपलब्ध छैन।",
+  "@childReadAloudUnavailable": {
+    "description": "Snack bar message for the unavailable read-aloud action"
+  },
+  "childReadAloudTooltip": "पढाइ सुन्नुहोस्",
+  "@childReadAloudTooltip": {
+    "description": "Tooltip text for the read-aloud action"
+  },
+  "childBackTooltip": "फर्कनुहोस्",
+  "@childBackTooltip": {
+    "description": "Tooltip for the back button on child page"
+  },
+  "childVaccineSchedule": "खोप तालिका",
+  "@childVaccineSchedule": {
+    "description": "Title for vaccine schedule quick action card"
+  },
+  "childVaccineHistory": "खोप इतिहास",
+  "@childVaccineHistory": {
+    "description": "Title for vaccine history quick action card"
+  },
+  "childScheduleNotImplemented": "खोप तालिका अझै कार्यान्वयन गरिएको छैन।",
+  "@childScheduleNotImplemented": {
+    "description": "Snack bar message for vaccine schedule action not implemented"
+  },
+  "childHistoryNotImplemented": "खोप इतिहास अझै कार्यान्वयन गरिएको छैन।",
+  "@childHistoryNotImplemented": {
+    "description": "Snack bar message for vaccine history action not implemented"
+  },
+  "childNotImplementedYet": "अहिलेसम्म कार्यान्वयन गरिएको छैन।",
+  "@childNotImplementedYet": {
+    "description": "Generic message for not-yet-implemented features"
+  },
+  "childDialogOk": "ठीक छ",
+  "@childDialogOk": {
+    "description": "Confirmation button text for simple dialogs"
+  },
+  "childMissingFeatureNote": "यस संस्करणमा खोप रेकर्ड र क्लिनिक खोजी उपलब्ध छैन।",
+  "@childMissingFeatureNote": {
+    "description": "Clear note about unavailable functionality on the child screen"
   }
 }
