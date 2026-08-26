@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:tikasathi/core/providers/language_provider.dart';
+
 import '../domain/home_models.dart';
 import '../domain/home_status_groups_provider.dart';
 import 'register_child_dialog.dart';
@@ -26,6 +28,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final List<HomeStatusGroup> resolvedGroups;
+    final isNp = ref.watch(languageProvider) == 'np';
 
     if (groups != null) {
       resolvedGroups = groups!;
@@ -40,6 +43,7 @@ class HomeScreen extends ConsumerWidget {
     }
 
     return _HomeScreenContent(
+      isNp: isNp,
       groups: resolvedGroups,
       onAddChildPressed: onAddChildPressed,
       onRecordVaccinePressed: onRecordVaccinePressed,
@@ -69,6 +73,7 @@ class HomeScreen extends ConsumerWidget {
 
 class _HomeScreenContent extends StatelessWidget {
   const _HomeScreenContent({
+    required this.isNp,
     required this.groups,
     required this.onAddChildPressed,
     required this.onRecordVaccinePressed,
@@ -76,6 +81,7 @@ class _HomeScreenContent extends StatelessWidget {
     required this.onChildPressed,
   });
 
+  final bool isNp;
   final List<HomeStatusGroup> groups;
   final VoidCallback? onAddChildPressed;
   final HomeChildActionCallback? onRecordVaccinePressed;
@@ -106,7 +112,7 @@ class _HomeScreenContent extends StatelessWidget {
                     final bool compactHeader = headerConstraints.maxWidth < 340;
 
                     final Widget title = Text(
-                      'Your children',
+                      isNp ? 'तपाईंको बच्चाहरू' : 'Your children',
                       key: const Key('home-title'),
                       style:
                           Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -131,9 +137,9 @@ class _HomeScreenContent extends StatelessWidget {
                         ),
                         minimumSize: const Size(0, 44),
                       ),
-                      child: const Text(
-                        '+ Add child',
-                        style: TextStyle(fontWeight: FontWeight.w700),
+                      child: Text(
+                        isNp ? '+ बच्चा थप्नुहोस्' : '+ Add child',
+                        style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                     );
 
@@ -160,6 +166,7 @@ class _HomeScreenContent extends StatelessWidget {
                 const SizedBox(height: 18),
                 if (groups.isEmpty)
                   _HomeEmptyState(
+                    isNp: isNp,
                     onAddChildPressed: onAddChildPressed ??
                         () => HomeScreen._openRegisterChildDialog(context),
                   )
@@ -168,13 +175,15 @@ class _HomeScreenContent extends StatelessWidget {
                     (HomeStatusGroup group) => Padding(
                       padding: const EdgeInsets.only(bottom: 22),
                       child: _StatusGroupCard(
+                        isNp: isNp,
                         group: group,
                         onChildPressed: (HomeChildSummary child) {
                           if (onChildPressed != null) {
                             onChildPressed!(child);
                             return;
                           }
-                          HomeScreen._showPlaceholder(context, 'Child details');
+                          HomeScreen._showPlaceholder(context,
+                              isNp ? 'बच्चाको विवरण' : 'Child details');
                         },
                         onRecordVaccinePressed: (HomeChildSummary child) {
                           if (onRecordVaccinePressed != null) {
@@ -182,14 +191,15 @@ class _HomeScreenContent extends StatelessWidget {
                             return;
                           }
                           HomeScreen._showPlaceholder(
-                              context, 'Record vaccine');
+                              context, isNp ? 'खोप रेकर्ड' : 'Record vaccine');
                         },
                         onFindClinicPressed: (HomeChildSummary child) {
                           if (onFindClinicPressed != null) {
                             onFindClinicPressed!(child);
                             return;
                           }
-                          HomeScreen._showPlaceholder(context, 'Find clinic');
+                          HomeScreen._showPlaceholder(context,
+                              isNp ? 'क्लिनिक खोज्नुहोस्' : 'Find clinic');
                         },
                       ),
                     ),
@@ -205,12 +215,14 @@ class _HomeScreenContent extends StatelessWidget {
 
 class _StatusGroupCard extends StatelessWidget {
   const _StatusGroupCard({
+    required this.isNp,
     required this.group,
     required this.onChildPressed,
     required this.onRecordVaccinePressed,
     required this.onFindClinicPressed,
   });
 
+  final bool isNp;
   final HomeStatusGroup group;
   final HomeChildActionCallback onChildPressed;
   final HomeChildActionCallback onRecordVaccinePressed;
@@ -219,6 +231,19 @@ class _StatusGroupCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _GroupStyle style = _GroupStyle.fromGroup(group.group);
+
+    String groupHeader = group.headerLabel;
+    if (isNp) {
+      if (group.group == HomeVaccinationGroup.dueToday) {
+        groupHeader = 'आज दिइने';
+      }
+      if (group.group == HomeVaccinationGroup.dueSoon) {
+        groupHeader = 'चाँडै दिइने';
+      }
+      if (group.group == HomeVaccinationGroup.upToDate) {
+        groupHeader = 'पूरा भएको';
+      }
+    }
 
     return Container(
       key: Key('home-group-${group.group.name}'),
@@ -245,7 +270,7 @@ class _StatusGroupCard extends StatelessWidget {
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    group.headerLabel,
+                    groupHeader,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w800,
@@ -263,6 +288,7 @@ class _StatusGroupCard extends StatelessWidget {
                     (HomeChildSummary child) => Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: _HomeChildCard(
+                        isNp: isNp,
                         child: child,
                         onChildPressed: () => onChildPressed(child),
                         onRecordVaccinePressed: () =>
@@ -282,12 +308,14 @@ class _StatusGroupCard extends StatelessWidget {
 
 class _HomeChildCard extends StatelessWidget {
   const _HomeChildCard({
+    required this.isNp,
     required this.child,
     required this.onChildPressed,
     required this.onRecordVaccinePressed,
     required this.onFindClinicPressed,
   });
 
+  final bool isNp;
   final HomeChildSummary child;
   final VoidCallback onChildPressed;
   final VoidCallback onRecordVaccinePressed;
@@ -318,7 +346,7 @@ class _HomeChildCard extends StatelessWidget {
                 ),
               ),
               icon: const Icon(Icons.edit, size: 18),
-              label: const Text('Record vaccine'),
+              label: Text(isNp ? 'खोप रेकर्ड' : 'Record vaccine'),
             ),
           if (child.canFindClinic)
             FilledButton.icon(
@@ -338,7 +366,7 @@ class _HomeChildCard extends StatelessWidget {
                 ),
               ),
               icon: const Icon(Icons.location_on_outlined, size: 18),
-              label: const Text('Find clinic'),
+              label: Text(isNp ? 'क्लिनिक खोज्नुहोस्' : 'Find clinic'),
             ),
         ];
 
@@ -434,9 +462,11 @@ class _HomeChildCard extends StatelessWidget {
 
 class _HomeEmptyState extends StatelessWidget {
   const _HomeEmptyState({
+    required this.isNp,
     required this.onAddChildPressed,
   });
 
+  final bool isNp;
   final VoidCallback onAddChildPressed;
 
   @override
@@ -453,14 +483,18 @@ class _HomeEmptyState extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            'No children added yet.',
+            isNp
+                ? 'अहिलेसम्म कुनै बच्चा थपिएको छैन।'
+                : 'No children added yet.',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Add your first child to see upcoming vaccines here.',
+            isNp
+                ? 'यहाँ आगामी खोपहरू हेर्न आफ्नो पहिलो बच्चा थप्नुहोस्।'
+                : 'Add your first child to see upcoming vaccines here.',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: const Color(0xFF495D7D),
                 ),
@@ -468,7 +502,7 @@ class _HomeEmptyState extends StatelessWidget {
           const SizedBox(height: 14),
           FilledButton(
             onPressed: onAddChildPressed,
-            child: const Text('Add child'),
+            child: Text(isNp ? 'बच्चा थप्नुहोस्' : 'Add child'),
           ),
         ],
       ),
