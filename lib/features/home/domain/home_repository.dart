@@ -30,10 +30,10 @@ class HomeRepository {
       final List<VaccinationDue> outstandingDues = dueRows;
 
       final status = _describeStatus(outstandingDues, currentTime);
-      final vaccineLabel =
-          _nextVaccineLabel(outstandingDues, currentTime, isNp: isNp);
+      final vaccineLabel = _nextVaccineLabel(outstandingDues, isNp: isNp);
       final child = HomeChildSummary(
         name: profile.name,
+        childId: profile.id,
         ageLabel: formatAge(profile.dateOfBirth, isNp: isNp),
         vaccineLabel: vaccineLabel,
         avatarEmoji: getChildAvatar(
@@ -112,8 +112,7 @@ class HomeRepository {
     return HomeVaccinationGroup.upToDate;
   }
 
-  String _nextVaccineLabel(List<VaccinationDue> dueRows, DateTime now,
-      {bool isNp = false}) {
+  String _nextVaccineLabel(List<VaccinationDue> dueRows, {bool isNp = false}) {
     if (dueRows.isEmpty) {
       return isNp ? 'पूरा भएको' : 'Up to date';
     }
