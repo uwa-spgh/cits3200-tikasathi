@@ -14,12 +14,15 @@ class LanguageController extends _$LanguageController {
     return repository.getLanguage();
   }
 
-  Future<void> setLanguage(AppLanguage language) async {
+  Future<bool> setLanguage(AppLanguage language) async {
     final SettingsRepository repository =
         await ref.read(settingsRepositoryProvider.future);
-    state = await AsyncValue.guard(() async {
+    try {
       await repository.setLanguage(language);
-      return language;
-    });
+      state = AsyncData<AppLanguage>(language);
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 }

@@ -12,11 +12,11 @@ enum AppLanguage {
 
   Locale get locale => Locale(code);
 
-  /// Parses a stored code. Unknown or null values fall back to English.
+  /// Parses a stored code. Unknown or null values fall back to Nepali.
   static AppLanguage fromCode(String? code) {
     return AppLanguage.values.firstWhere(
       (language) => language.code == code,
-      orElse: () => AppLanguage.english,
+      orElse: () => AppLanguage.nepali,
     );
   }
 }

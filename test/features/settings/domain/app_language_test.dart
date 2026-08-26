@@ -12,13 +12,13 @@ void main() {
       expect(AppLanguage.fromCode('ne'), AppLanguage.nepali);
     });
 
-    test('falls back to english when the code is null', () {
-      expect(AppLanguage.fromCode(null), AppLanguage.english);
+    test('falls back to nepali when the code is null', () {
+      expect(AppLanguage.fromCode(null), AppLanguage.nepali);
     });
 
-    test('falls back to english when the code is unknown', () {
-      expect(AppLanguage.fromCode('fr'), AppLanguage.english);
-      expect(AppLanguage.fromCode(''), AppLanguage.english);
+    test('falls back to nepali when the code is unknown', () {
+      expect(AppLanguage.fromCode('fr'), AppLanguage.nepali);
+      expect(AppLanguage.fromCode(''), AppLanguage.nepali);
     });
   });
 

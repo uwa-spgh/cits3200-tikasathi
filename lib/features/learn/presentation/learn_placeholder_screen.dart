@@ -1,16 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tikasathi/core/providers/language_provider.dart';
+import 'package:tikasathi/features/settings/domain/app_language.dart';
+import 'package:tikasathi/features/settings/domain/language_controller.dart';
 
 class LearnPlaceholderScreen extends ConsumerWidget {
   const LearnPlaceholderScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isNp = ref.watch(languageProvider) == 'np';
+    final AsyncValue<AppLanguage> languageState =
+        ref.watch(languageControllerProvider);
 
-    return Center(
-      child: Text(isNp ? 'सिक्नुहोस् (Placeholder)' : 'Learn placeholder'),
+    return languageState.when(
+      data: (AppLanguage language) => Center(
+        child: Text(
+          language == AppLanguage.nepali
+              ? 'सिक्नुहोस् (Placeholder)'
+              : 'Learn placeholder',
+        ),
+      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (Object error, StackTrace stackTrace) => Center(
+        child: Text('Unable to load language settings: $error'),
+      ),
     );
   }
 }

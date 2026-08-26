@@ -7,7 +7,7 @@ part of 'language_controller.dart';
 // **************************************************************************
 
 String _$languageControllerHash() =>
-    r'8b618635226419ae3823b01230cc5dd022be87b9';
+    r'b8c2bf9cbb7b423ad47a066d3cf5ebe5aa565612';
 
 /// See also [LanguageController].
 @ProviderFor(LanguageController)

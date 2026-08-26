@@ -8,7 +8,10 @@ import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_bottom_navigation_bar.dart';
+import 'package:tikasathi/features/settings/data/settings_providers.dart';
 import 'package:tikasathi/main.dart';
+
+import 'helpers/fake_settings_repository.dart';
 
 class MockSecureStorageService extends Mock implements SecureStorageService {}
 
@@ -18,7 +21,6 @@ void main() {
     final mockStorage = MockSecureStorageService();
     when(() => mockStorage.hasCompletedOnboarding())
         .thenAnswer((_) async => true);
-    when(() => mockStorage.getLanguage()).thenAnswer((_) async => 'en');
 
     // Wrap in ProviderScope as required by Riverpod
     await tester.pumpWidget(
@@ -30,6 +32,9 @@ void main() {
             return db;
           }),
           secureStorageServiceProvider.overrideWithValue(mockStorage),
+          settingsRepositoryProvider.overrideWith(
+            (ref) => FakeSettingsRepository(),
+          ),
         ],
         child: const TikaSathiApp(),
       ),

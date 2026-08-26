@@ -6,6 +6,9 @@ import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart'
 import 'package:drift/native.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
+import 'package:tikasathi/features/settings/data/settings_providers.dart';
+
+import '../../../helpers/fake_settings_repository.dart';
 
 void main() {
   group('AppShellScreen', () {
@@ -18,6 +21,9 @@ void main() {
               ref.onDispose(db.close);
               return db;
             }),
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(),
+            ),
           ],
           child: const MaterialApp(
             home: AppShellScreen(),
@@ -43,6 +49,9 @@ void main() {
               ref.onDispose(db.close);
               return db;
             }),
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(),
+            ),
           ],
           child: const MaterialApp(
             home: AppShellScreen(),
@@ -72,6 +81,9 @@ void main() {
               ref.onDispose(db.close);
               return db;
             }),
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(),
+            ),
           ],
           child: const MaterialApp(
             home: AppShellScreen(),

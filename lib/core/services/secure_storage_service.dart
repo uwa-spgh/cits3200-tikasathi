@@ -40,14 +40,6 @@ class SecureStorageService {
     };
   }
 
-  Future<void> saveLanguage(String lang) async {
-    await _storage.write(key: 'app_language', value: lang);
-  }
-
-  Future<String?> getLanguage() async {
-    return await _storage.read(key: 'app_language');
-  }
-
   Future<void> clearAll() async {
     await _storage.deleteAll();
   }

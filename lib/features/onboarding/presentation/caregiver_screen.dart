@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/onboarding/presentation/child_screen.dart';
+import 'package:tikasathi/features/settings/domain/app_language.dart';
 
 class CaregiverScreen extends ConsumerStatefulWidget {
   const CaregiverScreen({super.key});
@@ -41,7 +42,7 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(onboardingControllerProvider);
-    final isNp = state.selectedLanguage == 'np';
+    final bool isNp = state.selectedLanguage == AppLanguage.nepali;
 
     final title = isNp ? 'हेरचाहकर्ताको विवरण' : 'Caregiver Details';
     final subtitle = isNp

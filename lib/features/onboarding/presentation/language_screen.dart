@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/onboarding/presentation/caregiver_screen.dart';
+import 'package:tikasathi/features/settings/domain/app_language.dart';
 
 class LanguageScreen extends ConsumerWidget {
   const LanguageScreen({super.key});
@@ -38,7 +39,9 @@ class LanguageScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 32),
               Text(
-                state.selectedLanguage == 'np' ? 'स्वागत छ!' : 'Welcome!',
+                state.selectedLanguage == AppLanguage.nepali
+                    ? 'स्वागत छ!'
+                    : 'Welcome!',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 32,
@@ -61,8 +64,8 @@ class LanguageScreen extends ConsumerWidget {
               _LanguageButton(
                 title: 'नेपाली',
                 flag: '🇳🇵',
-                isSelected: state.selectedLanguage == 'np',
-                onTap: () => controller.updateLanguage('np'),
+                isSelected: state.selectedLanguage == AppLanguage.nepali,
+                onTap: () => controller.updateLanguage(AppLanguage.nepali),
               ),
               const SizedBox(height: 16),
 
@@ -70,8 +73,8 @@ class LanguageScreen extends ConsumerWidget {
               _LanguageButton(
                 title: 'English',
                 flag: '🇬🇧',
-                isSelected: state.selectedLanguage == 'en',
-                onTap: () => controller.updateLanguage('en'),
+                isSelected: state.selectedLanguage == AppLanguage.english,
+                onTap: () => controller.updateLanguage(AppLanguage.english),
               ),
 
               const Spacer(),

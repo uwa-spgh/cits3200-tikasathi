@@ -19,11 +19,11 @@ void main() {
   }
 
   group('SharedPreferencesSettingsRepository', () {
-    test('reads english when no language is stored', () async {
+    test('reads nepali when no language is stored', () async {
       final SharedPreferencesSettingsRepository repository =
           await repositoryWith();
 
-      expect(await repository.getLanguage(), AppLanguage.english);
+      expect(await repository.getLanguage(), AppLanguage.nepali);
     });
 
     test('reads a stored language', () async {
@@ -35,13 +35,13 @@ void main() {
       expect(await repository.getLanguage(), AppLanguage.nepali);
     });
 
-    test('falls back to english when the stored code is invalid', () async {
+    test('falls back to nepali when the stored code is invalid', () async {
       final SharedPreferencesSettingsRepository repository =
           await repositoryWith(
         values: <String, Object>{SettingsKeys.language: 'xx'},
       );
 
-      expect(await repository.getLanguage(), AppLanguage.english);
+      expect(await repository.getLanguage(), AppLanguage.nepali);
     });
 
     test('writes the language code', () async {

@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tikasathi/features/home/domain/home_models.dart';
 import 'package:tikasathi/features/home/presentation/home_screen.dart';
+import 'package:tikasathi/features/settings/data/settings_providers.dart';
+
+import '../../../helpers/fake_settings_repository.dart';
 
 void main() {
   group('HomeScreen', () {
@@ -60,6 +63,11 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
+          overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(),
+            ),
+          ],
           child: MaterialApp(
             home: Scaffold(
               body: HomeScreen(groups: groups),
@@ -95,6 +103,11 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
+          overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(),
+            ),
+          ],
           child: MaterialApp(
             home: Scaffold(
               body: HomeScreen(groups: groups),
@@ -126,8 +139,13 @@ void main() {
     testWidgets('renders empty state when no children are available',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(
+        ProviderScope(
+          overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(),
+            ),
+          ],
+          child: const MaterialApp(
             home: Scaffold(
               body: HomeScreen(groups: <HomeStatusGroup>[]),
             ),
@@ -152,6 +170,11 @@ void main() {
       // Pump the HomeScreen with test groups and settle
       await tester.pumpWidget(
         ProviderScope(
+          overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(),
+            ),
+          ],
           child: MaterialApp(
             home: Scaffold(
               body: HomeScreen(groups: buildHomeGroups()),

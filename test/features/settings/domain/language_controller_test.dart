@@ -72,10 +72,11 @@ void main() {
       );
 
       await container.read(languageControllerProvider.future);
-      await container
+      final bool saved = await container
           .read(languageControllerProvider.notifier)
           .setLanguage(AppLanguage.nepali);
 
+      expect(saved, isTrue);
       expect(await repository.getLanguage(), AppLanguage.nepali);
       expect(
         container.read(languageControllerProvider).requireValue,
@@ -96,17 +97,22 @@ void main() {
       expect(container.read(languageControllerProvider).hasError, isTrue);
     });
 
-    test('surfaces a write error as AsyncError', () async {
+    test('keeps the loaded language when persist fails', () async {
       final ProviderContainer container = containerWith(
         _FakeSettingsRepository(writeError: Exception('write failed')),
       );
 
       await container.read(languageControllerProvider.future);
-      await container
+      final bool saved = await container
           .read(languageControllerProvider.notifier)
           .setLanguage(AppLanguage.nepali);
 
-      expect(container.read(languageControllerProvider).hasError, isTrue);
+      expect(saved, isFalse);
+      expect(container.read(languageControllerProvider).hasError, isFalse);
+      expect(
+        container.read(languageControllerProvider).requireValue,
+        AppLanguage.english,
+      );
     });
   });
 }

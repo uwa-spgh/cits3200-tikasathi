@@ -2,15 +2,55 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
-import 'package:tikasathi/core/providers/language_provider.dart';
+import 'package:tikasathi/features/settings/domain/app_language.dart';
+import 'package:tikasathi/features/settings/domain/language_controller.dart';
 
 class SettingsPlaceholderScreen extends ConsumerWidget {
   const SettingsPlaceholderScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isNp = ref.watch(languageProvider) == 'np';
+    final AsyncValue<AppLanguage> languageState =
+        ref.watch(languageControllerProvider);
 
+    return languageState.when(
+      data: (AppLanguage language) => _buildContent(
+        context,
+        ref,
+        isNp: language == AppLanguage.nepali,
+      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (Object error, StackTrace stackTrace) => Center(
+        child: Text('Unable to load language settings: $error'),
+      ),
+    );
+  }
+
+  Future<void> _saveLanguage(
+    BuildContext context,
+    WidgetRef ref, {
+    required AppLanguage language,
+    required bool isNp,
+  }) async {
+    final bool saved = await ref
+        .read(languageControllerProvider.notifier)
+        .setLanguage(language);
+    if (!saved && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            isNp ? 'भाषा सेव गर्न सकिएन।' : 'Could not save language.',
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget _buildContent(
+    BuildContext context,
+    WidgetRef ref, {
+    required bool isNp,
+  }) {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -41,16 +81,24 @@ class SettingsPlaceholderScreen extends ConsumerWidget {
               title: 'नेपाली',
               flag: '🇳🇵',
               isSelected: isNp,
-              onTap: () =>
-                  ref.read(languageProvider.notifier).setLanguage('np'),
+              onTap: () => _saveLanguage(
+                context,
+                ref,
+                language: AppLanguage.nepali,
+                isNp: isNp,
+              ),
             ),
             const SizedBox(height: 16),
             _LanguageButton(
               title: 'English',
               flag: '🇬🇧',
               isSelected: !isNp,
-              onTap: () =>
-                  ref.read(languageProvider.notifier).setLanguage('en'),
+              onTap: () => _saveLanguage(
+                context,
+                ref,
+                language: AppLanguage.english,
+                isNp: isNp,
+              ),
             ),
 
             const Spacer(),
