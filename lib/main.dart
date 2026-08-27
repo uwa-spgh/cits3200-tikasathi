@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
@@ -47,10 +48,21 @@ class _TikaSathiAppState extends ConsumerState<TikaSathiApp> {
   Widget build(BuildContext context) {
     final AsyncValue<AppLanguage> languageState =
         ref.watch(languageControllerProvider);
+    final Locale locale =
+        languageState.asData?.value.locale ?? AppLanguage.nepali.locale;
 
     return MaterialApp(
       title: 'TikaSathi',
       theme: AppTheme.light,
+      locale: locale,
+      supportedLocales: AppLanguage.values
+          .map((AppLanguage language) => language.locale)
+          .toList(),
+      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       home: languageState.when(
         data: (AppLanguage language) {
           if (_hasCompletedOnboarding == null) {
