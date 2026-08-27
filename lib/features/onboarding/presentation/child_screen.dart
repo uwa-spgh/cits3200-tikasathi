@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
+import 'package:tikasathi/features/settings/domain/app_language.dart';
 
 class ChildScreen extends ConsumerStatefulWidget {
   const ChildScreen({super.key});
@@ -93,7 +94,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(onboardingControllerProvider);
-    final isNp = state.selectedLanguage == 'np';
+    final bool isNp = state.selectedLanguage == AppLanguage.nepali;
 
     final stepText = isNp ? 'चरण २/२' : 'Step 2 of 2';
     final childNameLabel = isNp ? '👶 बच्चाको नाम' : '👶 Child\'s name';

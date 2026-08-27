@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$OnboardingStateData {
-  String get selectedLanguage => throw _privateConstructorUsedError;
+  AppLanguage get selectedLanguage => throw _privateConstructorUsedError;
   String get caregiverName => throw _privateConstructorUsedError;
   String get caregiverPhone => throw _privateConstructorUsedError;
   String get caregiverAddress => throw _privateConstructorUsedError;
@@ -40,7 +40,7 @@ abstract class $OnboardingStateDataCopyWith<$Res> {
       _$OnboardingStateDataCopyWithImpl<$Res, OnboardingStateData>;
   @useResult
   $Res call(
-      {String selectedLanguage,
+      {AppLanguage selectedLanguage,
       String caregiverName,
       String caregiverPhone,
       String caregiverAddress,
@@ -80,7 +80,7 @@ class _$OnboardingStateDataCopyWithImpl<$Res, $Val extends OnboardingStateData>
       selectedLanguage: null == selectedLanguage
           ? _value.selectedLanguage
           : selectedLanguage // ignore: cast_nullable_to_non_nullable
-              as String,
+              as AppLanguage,
       caregiverName: null == caregiverName
           ? _value.caregiverName
           : caregiverName // ignore: cast_nullable_to_non_nullable
@@ -126,7 +126,7 @@ abstract class _$$OnboardingStateDataImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String selectedLanguage,
+      {AppLanguage selectedLanguage,
       String caregiverName,
       String caregiverPhone,
       String caregiverAddress,
@@ -164,7 +164,7 @@ class __$$OnboardingStateDataImplCopyWithImpl<$Res>
       selectedLanguage: null == selectedLanguage
           ? _value.selectedLanguage
           : selectedLanguage // ignore: cast_nullable_to_non_nullable
-              as String,
+              as AppLanguage,
       caregiverName: null == caregiverName
           ? _value.caregiverName
           : caregiverName // ignore: cast_nullable_to_non_nullable
@@ -205,7 +205,7 @@ class __$$OnboardingStateDataImplCopyWithImpl<$Res>
 
 class _$OnboardingStateDataImpl implements _OnboardingStateData {
   const _$OnboardingStateDataImpl(
-      {this.selectedLanguage = 'np',
+      {this.selectedLanguage = AppLanguage.nepali,
       this.caregiverName = '',
       this.caregiverPhone = '',
       this.caregiverAddress = '',
@@ -217,7 +217,7 @@ class _$OnboardingStateDataImpl implements _OnboardingStateData {
 
   @override
   @JsonKey()
-  final String selectedLanguage;
+  final AppLanguage selectedLanguage;
   @override
   @JsonKey()
   final String caregiverName;
@@ -295,7 +295,7 @@ class _$OnboardingStateDataImpl implements _OnboardingStateData {
 
 abstract class _OnboardingStateData implements OnboardingStateData {
   const factory _OnboardingStateData(
-      {final String selectedLanguage,
+      {final AppLanguage selectedLanguage,
       final String caregiverName,
       final String caregiverPhone,
       final String caregiverAddress,
@@ -306,7 +306,7 @@ abstract class _OnboardingStateData implements OnboardingStateData {
       final String? error}) = _$OnboardingStateDataImpl;
 
   @override
-  String get selectedLanguage;
+  AppLanguage get selectedLanguage;
   @override
   String get caregiverName;
   @override

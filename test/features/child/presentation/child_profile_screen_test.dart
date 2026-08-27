@@ -5,6 +5,10 @@ import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/child/presentation/child_profile_screen.dart';
+import 'package:tikasathi/features/settings/data/settings_providers.dart';
+import 'package:tikasathi/features/settings/domain/app_language.dart';
+
+import '../../../helpers/fake_settings_repository.dart';
 
 void main() {
   group('ChildProfileScreen', () {
@@ -17,6 +21,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(language: AppLanguage.english),
+            ),
             childProfileProvider(childId).overrideWith(
               (ref) => Future.value(
                 ChildProfileDetails(
@@ -81,6 +88,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(language: AppLanguage.english),
+            ),
             childProfileProvider(childId).overrideWith(
               (ref) => Future.value(
                 ChildProfileDetails(
@@ -132,6 +142,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(language: AppLanguage.english),
+            ),
             childProfileProvider(childId).overrideWith(
               (ref) => Future<ChildProfileDetails>.delayed(
                 const Duration(seconds: 1),
@@ -148,8 +161,11 @@ void main() {
         ),
       );
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
       expect(find.text('Loading child details...'), findsOneWidget);
+      expect(
+        find.byType(CircularProgressIndicator),
+        findsAtLeastNWidgets(1),
+      );
 
       await tester.pump(const Duration(seconds: 1));
     });
@@ -162,6 +178,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(language: AppLanguage.english),
+            ),
             childProfileProvider(childId).overrideWith(
               (ref) => Future.value(
                 ChildProfileDetails(
@@ -206,6 +225,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(language: AppLanguage.english),
+            ),
             childProfileProvider(childId).overrideWith(
               (ref) => Future<ChildProfileDetails>.error('missing'),
             ),

@@ -3,6 +3,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
+import 'package:tikasathi/features/settings/domain/app_language.dart';
+import 'package:tikasathi/features/settings/domain/language_controller.dart';
 import 'package:uuid/uuid.dart';
 
 part 'onboarding_state.freezed.dart';
@@ -11,7 +13,7 @@ part 'onboarding_state.g.dart';
 @freezed
 class OnboardingStateData with _$OnboardingStateData {
   const factory OnboardingStateData({
-    @Default('np') String selectedLanguage,
+    @Default(AppLanguage.nepali) AppLanguage selectedLanguage,
     @Default('') String caregiverName,
     @Default('') String caregiverPhone,
     @Default('') String caregiverAddress,
@@ -30,8 +32,8 @@ class OnboardingController extends _$OnboardingController {
     return const OnboardingStateData();
   }
 
-  void updateLanguage(String lang) {
-    state = state.copyWith(selectedLanguage: lang);
+  void updateLanguage(AppLanguage language) {
+    state = state.copyWith(selectedLanguage: language);
   }
 
   void updateCaregiverInfo({
@@ -85,8 +87,13 @@ class OnboardingController extends _$OnboardingController {
         );
       }
 
-      // 3. Save Language & Mark completed
-      await secureStorage.saveLanguage(state.selectedLanguage);
+      // 3. Save language and mark onboarding as completed.
+      final bool languageSaved = await ref
+          .read(languageControllerProvider.notifier)
+          .setLanguage(state.selectedLanguage);
+      if (!languageSaved) {
+        throw StateError('Failed to save language preference');
+      }
       await secureStorage.setOnboardingCompleted();
 
       state = state.copyWith(isSaving: false);

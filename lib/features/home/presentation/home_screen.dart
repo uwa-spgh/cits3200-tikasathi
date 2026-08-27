@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:tikasathi/core/providers/language_provider.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/child/presentation/child_profile_screen.dart';
+import 'package:tikasathi/features/settings/domain/app_language.dart';
+import 'package:tikasathi/features/settings/domain/language_controller.dart';
 
 import '../domain/home_models.dart';
 import '../domain/home_status_groups_provider.dart';
@@ -29,28 +30,39 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final List<HomeStatusGroup> resolvedGroups;
-    final isNp = ref.watch(languageProvider) == 'np';
+    final AsyncValue<AppLanguage> languageState =
+        ref.watch(languageControllerProvider);
 
-    if (groups != null) {
-      resolvedGroups = groups!;
-    } else {
-      final homeGroupsState = ref.watch(homeStatusGroupsProvider);
-      resolvedGroups = homeGroupsState.when(
-        data: (List<HomeStatusGroup> data) => data,
-        loading: () => const <HomeStatusGroup>[],
-        error: (Object error, StackTrace stackTrace) =>
-            const <HomeStatusGroup>[],
-      );
-    }
+    return languageState.when(
+      data: (AppLanguage language) {
+        final List<HomeStatusGroup> resolvedGroups;
 
-    return _HomeScreenContent(
-      isNp: isNp,
-      groups: resolvedGroups,
-      onAddChildPressed: onAddChildPressed,
-      onRecordVaccinePressed: onRecordVaccinePressed,
-      onFindClinicPressed: onFindClinicPressed,
-      onChildPressed: onChildPressed,
+        if (groups != null) {
+          resolvedGroups = groups!;
+        } else {
+          final AsyncValue<List<HomeStatusGroup>> homeGroupsState =
+              ref.watch(homeStatusGroupsProvider);
+          resolvedGroups = homeGroupsState.when(
+            data: (List<HomeStatusGroup> data) => data,
+            loading: () => const <HomeStatusGroup>[],
+            error: (Object error, StackTrace stackTrace) =>
+                const <HomeStatusGroup>[],
+          );
+        }
+
+        return _HomeScreenContent(
+          isNp: language == AppLanguage.nepali,
+          groups: resolvedGroups,
+          onAddChildPressed: onAddChildPressed,
+          onRecordVaccinePressed: onRecordVaccinePressed,
+          onFindClinicPressed: onFindClinicPressed,
+          onChildPressed: onChildPressed,
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (Object error, StackTrace stackTrace) => Center(
+        child: Text('Unable to load language settings: $error'),
+      ),
     );
   }
 
