@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Supported app display languages.
-/// Stored as BCP-47 language codes (`en`, `ne`) in SharedPreferences.
+/// Stored as BCP-47 language codes (`en`, `ne`).
 enum AppLanguage {
   english('en'),
   nepali('ne');

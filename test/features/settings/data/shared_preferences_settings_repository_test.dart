@@ -1,43 +1,41 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:tikasathi/features/settings/data/settings_keys.dart';
 import 'package:tikasathi/features/settings/data/shared_preferences_settings_repository.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 
-class _MockSharedPreferences extends Mock implements SharedPreferences {}
+class _MockSharedPreferencesAsync extends Mock
+    implements SharedPreferencesAsync {}
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
-
-  Future<SharedPreferencesSettingsRepository> repositoryWith({
+  SharedPreferencesSettingsRepository repositoryWith({
     Map<String, Object> values = const <String, Object>{},
-  }) async {
-    SharedPreferences.setMockInitialValues(values);
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return SharedPreferencesSettingsRepository(prefs);
+  }) {
+    SharedPreferencesAsyncPlatform.instance =
+        InMemorySharedPreferencesAsync.withData(values);
+    return SharedPreferencesSettingsRepository(SharedPreferencesAsync());
   }
 
   group('SharedPreferencesSettingsRepository', () {
     test('reads nepali when no language is stored', () async {
-      final SharedPreferencesSettingsRepository repository =
-          await repositoryWith();
+      final SharedPreferencesSettingsRepository repository = repositoryWith();
 
       expect(await repository.getLanguage(), AppLanguage.nepali);
     });
 
     test('reads a stored language', () async {
-      final SharedPreferencesSettingsRepository repository =
-          await repositoryWith(
-        values: <String, Object>{SettingsKeys.language: 'ne'},
+      final SharedPreferencesSettingsRepository repository = repositoryWith(
+        values: <String, Object>{SettingsKeys.language: 'en'},
       );
 
-      expect(await repository.getLanguage(), AppLanguage.nepali);
+      expect(await repository.getLanguage(), AppLanguage.english);
     });
 
     test('falls back to nepali when the stored code is invalid', () async {
-      final SharedPreferencesSettingsRepository repository =
-          await repositoryWith(
+      final SharedPreferencesSettingsRepository repository = repositoryWith(
         values: <String, Object>{SettingsKeys.language: 'xx'},
       );
 
@@ -45,19 +43,19 @@ void main() {
     });
 
     test('writes the language code', () async {
-      final SharedPreferencesSettingsRepository repository =
-          await repositoryWith();
+      final SharedPreferencesSettingsRepository repository = repositoryWith();
 
-      await repository.setLanguage(AppLanguage.nepali);
+      await repository.setLanguage(AppLanguage.english);
 
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      expect(prefs.getString(SettingsKeys.language), 'ne');
-      expect(await repository.getLanguage(), AppLanguage.nepali);
+      expect(
+        await SharedPreferencesAsync().getString(SettingsKeys.language),
+        'en',
+      );
+      expect(await repository.getLanguage(), AppLanguage.english);
     });
 
     test('updates a previously stored language', () async {
-      final SharedPreferencesSettingsRepository repository =
-          await repositoryWith(
+      final SharedPreferencesSettingsRepository repository = repositoryWith(
         values: <String, Object>{SettingsKeys.language: 'en'},
       );
 
@@ -69,15 +67,16 @@ void main() {
     });
 
     test('throws when the platform fails to persist', () async {
-      final _MockSharedPreferences prefs = _MockSharedPreferences();
-      when(() => prefs.setString(SettingsKeys.language, 'ne'))
-          .thenAnswer((_) async => false);
+      final _MockSharedPreferencesAsync prefs = _MockSharedPreferencesAsync();
+      when(() => prefs.setString(SettingsKeys.language, 'en')).thenAnswer(
+        (_) => Future<void>.error(Exception('persist failed')),
+      );
 
       final SharedPreferencesSettingsRepository repository =
           SharedPreferencesSettingsRepository(prefs);
 
       await expectLater(
-        repository.setLanguage(AppLanguage.nepali),
+        repository.setLanguage(AppLanguage.english),
         throwsA(isA<Exception>()),
       );
     });

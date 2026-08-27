@@ -6,11 +6,11 @@ part of 'settings_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$sharedPreferencesHash() => r'd0f94d4bd61259b4c06d24df95d1afc7eb5bd1c6';
+String _$sharedPreferencesHash() => r'48617596aec10e6c5acbc2b0c07d55d59cd9a4c6';
 
 /// See also [sharedPreferences].
 @ProviderFor(sharedPreferences)
-final sharedPreferencesProvider = FutureProvider<SharedPreferences>.internal(
+final sharedPreferencesProvider = Provider<SharedPreferencesAsync>.internal(
   sharedPreferences,
   name: r'sharedPreferencesProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -22,13 +22,13 @@ final sharedPreferencesProvider = FutureProvider<SharedPreferences>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef SharedPreferencesRef = FutureProviderRef<SharedPreferences>;
+typedef SharedPreferencesRef = ProviderRef<SharedPreferencesAsync>;
 String _$settingsRepositoryHash() =>
-    r'017fbe8de0500eff90a4dd6dab25d5f08cdcf274';
+    r'87d63161ba79da570ee79a6adabd1b093ff74a99';
 
 /// See also [settingsRepository].
 @ProviderFor(settingsRepository)
-final settingsRepositoryProvider = FutureProvider<SettingsRepository>.internal(
+final settingsRepositoryProvider = Provider<SettingsRepository>.internal(
   settingsRepository,
   name: r'settingsRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -40,6 +40,6 @@ final settingsRepositoryProvider = FutureProvider<SettingsRepository>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef SettingsRepositoryRef = FutureProviderRef<SettingsRepository>;
+typedef SettingsRepositoryRef = ProviderRef<SettingsRepository>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

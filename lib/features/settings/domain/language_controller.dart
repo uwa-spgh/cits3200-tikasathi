@@ -9,14 +9,12 @@ part 'language_controller.g.dart';
 class LanguageController extends _$LanguageController {
   @override
   Future<AppLanguage> build() async {
-    final SettingsRepository repository =
-        await ref.watch(settingsRepositoryProvider.future);
+    final SettingsRepository repository = ref.watch(settingsRepositoryProvider);
     return repository.getLanguage();
   }
 
   Future<bool> setLanguage(AppLanguage language) async {
-    final SettingsRepository repository =
-        await ref.read(settingsRepositoryProvider.future);
+    final SettingsRepository repository = ref.read(settingsRepositoryProvider);
     try {
       await repository.setLanguage(language);
       state = AsyncData<AppLanguage>(language);

@@ -3,24 +3,19 @@ import 'package:tikasathi/features/settings/data/settings_keys.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/settings_repository.dart';
 
-/// implementation of [SettingsRepository]
 class SharedPreferencesSettingsRepository implements SettingsRepository {
   SharedPreferencesSettingsRepository(this._prefs);
 
-  final SharedPreferences _prefs;
+  final SharedPreferencesAsync _prefs;
 
   @override
   Future<AppLanguage> getLanguage() async {
-    final code = _prefs.getString(SettingsKeys.language);
+    final String? code = await _prefs.getString(SettingsKeys.language);
     return AppLanguage.fromCode(code);
   }
 
   @override
   Future<void> setLanguage(AppLanguage language) async {
-    final bool saved =
-        await _prefs.setString(SettingsKeys.language, language.code);
-    if (!saved) {
-      throw Exception('Failed to persist language "${language.code}"');
-    }
+    await _prefs.setString(SettingsKeys.language, language.code);
   }
 }

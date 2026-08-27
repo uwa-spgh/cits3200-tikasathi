@@ -49,6 +49,7 @@ dev_dependencies:
   # Testing
   mockito: ^5.4.4
   mocktail: ^1.0.2
+  shared_preferences_platform_interface: ^2.4.2
 
 flutter:
   uses-material-design: true
