@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
@@ -55,14 +55,8 @@ class _TikaSathiAppState extends ConsumerState<TikaSathiApp> {
       title: 'TikaSathi',
       theme: AppTheme.light,
       locale: locale,
-      supportedLocales: AppLanguage.values
-          .map((AppLanguage language) => language.locale)
-          .toList(),
-      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: languageState.when(
         data: (AppLanguage language) {
           if (_hasCompletedOnboarding == null) {

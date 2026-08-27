@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:tikasathi/core/theme/app_theme.dart';
+import 'package:tikasathi/features/child/presentation/child_profile_screen.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
 
@@ -194,8 +196,19 @@ class _HomeScreenContent extends StatelessWidget {
                             onChildPressed!(child);
                             return;
                           }
-                          HomeScreen._showPlaceholder(context,
-                              isNp ? 'बच्चाको विवरण' : 'Child details');
+                          if (child.childId.isEmpty) {
+                            HomeScreen._showPlaceholder(
+                              context,
+                              isNp ? 'बच्चाको विवरण' : 'Child details',
+                            );
+                            return;
+                          }
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (BuildContext childContext) =>
+                                  ChildProfileScreen(childId: child.childId),
+                            ),
+                          );
                         },
                         onRecordVaccinePressed: (HomeChildSummary child) {
                           if (onRecordVaccinePressed != null) {
@@ -554,9 +567,9 @@ class _GroupStyle {
         );
       case HomeVaccinationGroup.upToDate:
         return const _GroupStyle(
-          headerColor: Color(0xFF6EA773),
+          headerColor: AppTheme.statusUpToDate,
           bodyColor: Colors.white,
-          borderColor: Color(0xFF6EA773),
+          borderColor: AppTheme.statusUpToDate,
           icon: Icons.check_circle_rounded,
         );
     }
