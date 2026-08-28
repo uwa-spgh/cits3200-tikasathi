@@ -17,6 +17,8 @@ part 'tables/child_profiles.dart';
 part 'tables/vaccination_records.dart';
 part 'tables/vaccination_dues.dart';
 part 'tables/reminders.dart';
+part 'tables/health_facilitators.dart';
+part 'daos/health_facilitators_dao.dart';
 part 'app_database.g.dart';
 
 /// The central Drift database for TikaSathi.
@@ -31,21 +33,25 @@ part 'app_database.g.dart';
 ///
 /// See the `proven_drift_sqlite` skill in `.agents/skills/` for the full pattern.
 @DriftDatabase(
-  tables: [ChildProfiles, VaccinationRecords, VaccinationDues, Reminders],
+  tables: [
+    ChildProfiles,
+    VaccinationRecords,
+    VaccinationDues,
+    Reminders,
+    HealthFacilitators,
+  ],
   daos: [
     ChildProfilesDao,
     VaccinationRecordsDao,
     VaccinationDuesDao,
     RemindersDao,
+    HealthFacilitatorsDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
   AppDatabase.forTesting(super.e);
 
-  /// Pre-release: stay at 1. Do not add onUpgrade yet.
-  /// After a schema change, wipe the local app / delete `tikasathi.sqlite`.
-  /// Start versioned migrations after the first user release.
   @override
   int get schemaVersion => 1;
 

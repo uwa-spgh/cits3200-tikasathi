@@ -1381,6 +1381,273 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
   }
 }
 
+class $HealthFacilitatorsTable extends HealthFacilitators
+    with TableInfo<$HealthFacilitatorsTable, HealthFacilitator> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HealthFacilitatorsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _addressMeta =
+      const VerificationMeta('address');
+  @override
+  late final GeneratedColumn<String> address = GeneratedColumn<String>(
+      'address', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  @override
+  late final GeneratedColumn<String> phone = GeneratedColumn<String>(
+      'phone', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [id, name, address, phone];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'health_facilitators';
+  @override
+  VerificationContext validateIntegrity(Insertable<HealthFacilitator> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    }
+    if (data.containsKey('address')) {
+      context.handle(_addressMeta,
+          address.isAcceptableOrUnknown(data['address']!, _addressMeta));
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+          _phoneMeta, phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  HealthFacilitator map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HealthFacilitator(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name']),
+      address: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}address']),
+      phone: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}phone']),
+    );
+  }
+
+  @override
+  $HealthFacilitatorsTable createAlias(String alias) {
+    return $HealthFacilitatorsTable(attachedDatabase, alias);
+  }
+}
+
+class HealthFacilitator extends DataClass
+    implements Insertable<HealthFacilitator> {
+  final String id;
+  final String? name;
+  final String? address;
+  final String? phone;
+  const HealthFacilitator(
+      {required this.id, this.name, this.address, this.phone});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    if (!nullToAbsent || address != null) {
+      map['address'] = Variable<String>(address);
+    }
+    if (!nullToAbsent || phone != null) {
+      map['phone'] = Variable<String>(phone);
+    }
+    return map;
+  }
+
+  HealthFacilitatorsCompanion toCompanion(bool nullToAbsent) {
+    return HealthFacilitatorsCompanion(
+      id: Value(id),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      address: address == null && nullToAbsent
+          ? const Value.absent()
+          : Value(address),
+      phone:
+          phone == null && nullToAbsent ? const Value.absent() : Value(phone),
+    );
+  }
+
+  factory HealthFacilitator.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HealthFacilitator(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String?>(json['name']),
+      address: serializer.fromJson<String?>(json['address']),
+      phone: serializer.fromJson<String?>(json['phone']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String?>(name),
+      'address': serializer.toJson<String?>(address),
+      'phone': serializer.toJson<String?>(phone),
+    };
+  }
+
+  HealthFacilitator copyWith(
+          {String? id,
+          Value<String?> name = const Value.absent(),
+          Value<String?> address = const Value.absent(),
+          Value<String?> phone = const Value.absent()}) =>
+      HealthFacilitator(
+        id: id ?? this.id,
+        name: name.present ? name.value : this.name,
+        address: address.present ? address.value : this.address,
+        phone: phone.present ? phone.value : this.phone,
+      );
+  HealthFacilitator copyWithCompanion(HealthFacilitatorsCompanion data) {
+    return HealthFacilitator(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      address: data.address.present ? data.address.value : this.address,
+      phone: data.phone.present ? data.phone.value : this.phone,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HealthFacilitator(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('address: $address, ')
+          ..write('phone: $phone')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, address, phone);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HealthFacilitator &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.address == this.address &&
+          other.phone == this.phone);
+}
+
+class HealthFacilitatorsCompanion extends UpdateCompanion<HealthFacilitator> {
+  final Value<String> id;
+  final Value<String?> name;
+  final Value<String?> address;
+  final Value<String?> phone;
+  final Value<int> rowid;
+  const HealthFacilitatorsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.address = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  HealthFacilitatorsCompanion.insert({
+    required String id,
+    this.name = const Value.absent(),
+    this.address = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id);
+  static Insertable<HealthFacilitator> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? address,
+    Expression<String>? phone,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (address != null) 'address': address,
+      if (phone != null) 'phone': phone,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  HealthFacilitatorsCompanion copyWith(
+      {Value<String>? id,
+      Value<String?>? name,
+      Value<String?>? address,
+      Value<String?>? phone,
+      Value<int>? rowid}) {
+    return HealthFacilitatorsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      address: address ?? this.address,
+      phone: phone ?? this.phone,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (address.present) {
+      map['address'] = Variable<String>(address.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HealthFacilitatorsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('address: $address, ')
+          ..write('phone: $phone, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -1390,6 +1657,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $VaccinationDuesTable vaccinationDues =
       $VaccinationDuesTable(this);
   late final $RemindersTable reminders = $RemindersTable(this);
+  late final $HealthFacilitatorsTable healthFacilitators =
+      $HealthFacilitatorsTable(this);
   late final ChildProfilesDao childProfilesDao =
       ChildProfilesDao(this as AppDatabase);
   late final VaccinationRecordsDao vaccinationRecordsDao =
@@ -1397,12 +1666,19 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final VaccinationDuesDao vaccinationDuesDao =
       VaccinationDuesDao(this as AppDatabase);
   late final RemindersDao remindersDao = RemindersDao(this as AppDatabase);
+  late final HealthFacilitatorsDao healthFacilitatorsDao =
+      HealthFacilitatorsDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [childProfiles, vaccinationRecords, vaccinationDues, reminders];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        childProfiles,
+        vaccinationRecords,
+        vaccinationDues,
+        reminders,
+        healthFacilitators
+      ];
 }
 
 typedef $$ChildProfilesTableCreateCompanionBuilder = ChildProfilesCompanion
@@ -2832,6 +3108,166 @@ typedef $$RemindersTableProcessedTableManager = ProcessedTableManager<
     (Reminder, $$RemindersTableReferences),
     Reminder,
     PrefetchHooks Function({bool childId, bool dueId})>;
+typedef $$HealthFacilitatorsTableCreateCompanionBuilder
+    = HealthFacilitatorsCompanion Function({
+  required String id,
+  Value<String?> name,
+  Value<String?> address,
+  Value<String?> phone,
+  Value<int> rowid,
+});
+typedef $$HealthFacilitatorsTableUpdateCompanionBuilder
+    = HealthFacilitatorsCompanion Function({
+  Value<String> id,
+  Value<String?> name,
+  Value<String?> address,
+  Value<String?> phone,
+  Value<int> rowid,
+});
+
+class $$HealthFacilitatorsTableFilterComposer
+    extends Composer<_$AppDatabase, $HealthFacilitatorsTable> {
+  $$HealthFacilitatorsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get address => $composableBuilder(
+      column: $table.address, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get phone => $composableBuilder(
+      column: $table.phone, builder: (column) => ColumnFilters(column));
+}
+
+class $$HealthFacilitatorsTableOrderingComposer
+    extends Composer<_$AppDatabase, $HealthFacilitatorsTable> {
+  $$HealthFacilitatorsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get address => $composableBuilder(
+      column: $table.address, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get phone => $composableBuilder(
+      column: $table.phone, builder: (column) => ColumnOrderings(column));
+}
+
+class $$HealthFacilitatorsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $HealthFacilitatorsTable> {
+  $$HealthFacilitatorsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get address =>
+      $composableBuilder(column: $table.address, builder: (column) => column);
+
+  GeneratedColumn<String> get phone =>
+      $composableBuilder(column: $table.phone, builder: (column) => column);
+}
+
+class $$HealthFacilitatorsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $HealthFacilitatorsTable,
+    HealthFacilitator,
+    $$HealthFacilitatorsTableFilterComposer,
+    $$HealthFacilitatorsTableOrderingComposer,
+    $$HealthFacilitatorsTableAnnotationComposer,
+    $$HealthFacilitatorsTableCreateCompanionBuilder,
+    $$HealthFacilitatorsTableUpdateCompanionBuilder,
+    (
+      HealthFacilitator,
+      BaseReferences<_$AppDatabase, $HealthFacilitatorsTable, HealthFacilitator>
+    ),
+    HealthFacilitator,
+    PrefetchHooks Function()> {
+  $$HealthFacilitatorsTableTableManager(
+      _$AppDatabase db, $HealthFacilitatorsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$HealthFacilitatorsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$HealthFacilitatorsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$HealthFacilitatorsTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String?> name = const Value.absent(),
+            Value<String?> address = const Value.absent(),
+            Value<String?> phone = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              HealthFacilitatorsCompanion(
+            id: id,
+            name: name,
+            address: address,
+            phone: phone,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            Value<String?> name = const Value.absent(),
+            Value<String?> address = const Value.absent(),
+            Value<String?> phone = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              HealthFacilitatorsCompanion.insert(
+            id: id,
+            name: name,
+            address: address,
+            phone: phone,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$HealthFacilitatorsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $HealthFacilitatorsTable,
+    HealthFacilitator,
+    $$HealthFacilitatorsTableFilterComposer,
+    $$HealthFacilitatorsTableOrderingComposer,
+    $$HealthFacilitatorsTableAnnotationComposer,
+    $$HealthFacilitatorsTableCreateCompanionBuilder,
+    $$HealthFacilitatorsTableUpdateCompanionBuilder,
+    (
+      HealthFacilitator,
+      BaseReferences<_$AppDatabase, $HealthFacilitatorsTable, HealthFacilitator>
+    ),
+    HealthFacilitator,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2844,6 +3280,8 @@ class $AppDatabaseManager {
       $$VaccinationDuesTableTableManager(_db, _db.vaccinationDues);
   $$RemindersTableTableManager get reminders =>
       $$RemindersTableTableManager(_db, _db.reminders);
+  $$HealthFacilitatorsTableTableManager get healthFacilitators =>
+      $$HealthFacilitatorsTableTableManager(_db, _db.healthFacilitators);
 }
 
 mixin _$ChildProfilesDaoMixin on DatabaseAccessor<AppDatabase> {
@@ -2868,4 +3306,8 @@ mixin _$RemindersDaoMixin on DatabaseAccessor<AppDatabase> {
   $ChildProfilesTable get childProfiles => attachedDatabase.childProfiles;
   $VaccinationDuesTable get vaccinationDues => attachedDatabase.vaccinationDues;
   $RemindersTable get reminders => attachedDatabase.reminders;
+}
+mixin _$HealthFacilitatorsDaoMixin on DatabaseAccessor<AppDatabase> {
+  $HealthFacilitatorsTable get healthFacilitators =>
+      attachedDatabase.healthFacilitators;
 }
