@@ -95,4 +95,62 @@ class AppLocalizationsNe extends AppLocalizations {
   @override
   String get childMissingFeatureNote =>
       'यस संस्करणमा खोप रेकर्ड र क्लिनिक खोजी उपलब्ध छैन।';
+
+  @override
+  String get healthFacilitatorSaveAction =>
+      'आफ्नो नजिकको स्वास्थ्य सहजकर्ता बचत गर्नुहोस्';
+
+  @override
+  String get healthFacilitatorSavedHeading =>
+      'तपाईंको स्थानीय स्वास्थ्य सहजकर्ता';
+
+  @override
+  String get healthFacilitatorSectionTitle => 'स्थानीय स्वास्थ्य सहजकर्ता';
+
+  @override
+  String get healthFacilitatorTitle => 'स्वास्थ्य सहजकर्ता';
+
+  @override
+  String get healthFacilitatorSubtitle =>
+      'आफ्नो नजिकको स्वास्थ्य सहजकर्ताको विवरण बचत गर्नुहोस्।';
+
+  @override
+  String get healthFacilitatorName => 'सहजकर्ताको नाम';
+
+  @override
+  String get healthFacilitatorNameHint => 'सहजकर्ताको नाम लेख्नुहोस्';
+
+  @override
+  String get healthFacilitatorAddress => 'ठेगाना';
+
+  @override
+  String get healthFacilitatorAddressHint => 'ठेगाना लेख्नुहोस्';
+
+  @override
+  String get healthFacilitatorPhone => 'फोन नम्बर';
+
+  @override
+  String get healthFacilitatorPhoneHint => 'फोन नम्बर लेख्नुहोस्';
+
+  @override
+  String get healthFacilitatorSave => 'बचत गर्नुहोस्';
+
+  @override
+  String get healthFacilitatorSaveError =>
+      'स्वास्थ्य सहजकर्ताको विवरण बचत गर्न सकिएन।';
+
+  @override
+  String get healthFacilitatorBack => 'फर्कनुहोस्';
+
+  @override
+  String get settingsTitle => 'सेटिङहरू';
+
+  @override
+  String get settingsLanguageTitle => 'भाषा छान्नुहोस्';
+
+  @override
+  String get settingsNepali => 'नेपाली';
+
+  @override
+  String get settingsEnglish => 'अङ्ग्रेजी';
 }

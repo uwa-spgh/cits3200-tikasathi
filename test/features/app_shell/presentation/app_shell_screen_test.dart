@@ -6,6 +6,8 @@ import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart'
 import 'package:drift/native.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
+import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/features/settings/domain/health_facilitator_controller.dart';
 import 'package:tikasathi/features/settings/data/settings_providers.dart';
 
 import '../../../helpers/fake_settings_repository.dart';
@@ -24,8 +26,11 @@ void main() {
             settingsRepositoryProvider.overrideWith(
               (ref) => FakeSettingsRepository(),
             ),
+            healthFacilitatorProvider.overrideWith((ref) => Stream.value(null)),
           ],
           child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: AppShellScreen(),
           ),
         ),
@@ -52,8 +57,11 @@ void main() {
             settingsRepositoryProvider.overrideWith(
               (ref) => FakeSettingsRepository(),
             ),
+            healthFacilitatorProvider.overrideWith((ref) => Stream.value(null)),
           ],
           child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: AppShellScreen(),
           ),
         ),
@@ -67,7 +75,7 @@ void main() {
 
       await tester.tap(find.byIcon(Icons.settings_outlined));
       await tester.pumpAndSettle();
-      expect(find.text('भाषा चयन गर्नुहोस्'), findsOneWidget);
+      expect(find.text('Choose language'), findsOneWidget);
       expect(find.text('सिक्नुहोस् (Placeholder)'), findsNothing);
     });
 
@@ -84,8 +92,11 @@ void main() {
             settingsRepositoryProvider.overrideWith(
               (ref) => FakeSettingsRepository(),
             ),
+            healthFacilitatorProvider.overrideWith((ref) => Stream.value(null)),
           ],
           child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: AppShellScreen(),
           ),
         ),
