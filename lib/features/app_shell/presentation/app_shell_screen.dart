@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/home/presentation/home_screen.dart';
 import 'package:tikasathi/features/learn/presentation/learn_placeholder_screen.dart';
-import 'package:tikasathi/features/settings/presentation/settings_placeholder_screen.dart';
+import 'package:tikasathi/features/settings/presentation/settings_screen.dart';
 
 import '../domain/app_navigation_controller.dart';
 import 'app_bottom_navigation_bar.dart';
@@ -44,7 +44,7 @@ class AppShellScreen extends ConsumerWidget {
                 children: const <Widget>[
                   HomeScreen(),
                   LearnPlaceholderScreen(),
-                  SettingsPlaceholderScreen(),
+                  SettingsScreen(),
                 ],
               ),
             ),

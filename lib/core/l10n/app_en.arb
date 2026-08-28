@@ -117,5 +117,24 @@
   "childMissingFeatureNote": "Record vaccine and clinic lookup are not available yet in this version.",
   "@childMissingFeatureNote": {
     "description": "Clear note about unavailable functionality on the child screen"
-  }
+  },
+  "healthFacilitatorSaveAction": "Save your closest health facilitator",
+  "healthFacilitatorSavedHeading": "Your local health facilitator",
+  "healthFacilitatorSectionTitle": "Local health facilitator",
+  "healthFacilitatorTitle": "Health Facilitator",
+  "healthFacilitatorSubtitle": "Save the details of your closest health facilitator.",
+  "healthFacilitatorName": "Facilitator Name",
+  "healthFacilitatorNameHint": "Enter the facilitator's name",
+  "healthFacilitatorAddress": "Address",
+  "healthFacilitatorAddressHint": "Enter the address",
+  "healthFacilitatorPhone": "Phone Number",
+  "healthFacilitatorPhoneHint": "Enter the phone number",
+  "healthFacilitatorSave": "Save",
+  "healthFacilitatorSaveError": "Could not save health facilitator details.",
+  "healthFacilitatorBack": "Back"
+  ,
+  "settingsTitle": "Settings",
+  "settingsLanguageTitle": "Choose language",
+  "settingsNepali": "Nepali",
+  "settingsEnglish": "English"
 }

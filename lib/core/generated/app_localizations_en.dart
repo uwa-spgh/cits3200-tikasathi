@@ -95,4 +95,61 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get childMissingFeatureNote =>
       'Record vaccine and clinic lookup are not available yet in this version.';
+
+  @override
+  String get healthFacilitatorSaveAction =>
+      'Save your closest health facilitator';
+
+  @override
+  String get healthFacilitatorSavedHeading => 'Your local health facilitator';
+
+  @override
+  String get healthFacilitatorSectionTitle => 'Local health facilitator';
+
+  @override
+  String get healthFacilitatorTitle => 'Health Facilitator';
+
+  @override
+  String get healthFacilitatorSubtitle =>
+      'Save the details of your closest health facilitator.';
+
+  @override
+  String get healthFacilitatorName => 'Facilitator Name';
+
+  @override
+  String get healthFacilitatorNameHint => 'Enter the facilitator\'s name';
+
+  @override
+  String get healthFacilitatorAddress => 'Address';
+
+  @override
+  String get healthFacilitatorAddressHint => 'Enter the address';
+
+  @override
+  String get healthFacilitatorPhone => 'Phone Number';
+
+  @override
+  String get healthFacilitatorPhoneHint => 'Enter the phone number';
+
+  @override
+  String get healthFacilitatorSave => 'Save';
+
+  @override
+  String get healthFacilitatorSaveError =>
+      'Could not save health facilitator details.';
+
+  @override
+  String get healthFacilitatorBack => 'Back';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsLanguageTitle => 'Choose language';
+
+  @override
+  String get settingsNepali => 'Nepali';
+
+  @override
+  String get settingsEnglish => 'English';
 }

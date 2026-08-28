@@ -259,6 +259,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Record vaccine and clinic lookup are not available yet in this version.'**
   String get childMissingFeatureNote;
+
+  /// No description provided for @healthFacilitatorSaveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Save your closest health facilitator'**
+  String get healthFacilitatorSaveAction;
+
+  /// No description provided for @healthFacilitatorSavedHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Your local health facilitator'**
+  String get healthFacilitatorSavedHeading;
+
+  /// No description provided for @healthFacilitatorSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Local health facilitator'**
+  String get healthFacilitatorSectionTitle;
+
+  /// No description provided for @healthFacilitatorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Facilitator'**
+  String get healthFacilitatorTitle;
+
+  /// No description provided for @healthFacilitatorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the details of your closest health facilitator.'**
+  String get healthFacilitatorSubtitle;
+
+  /// No description provided for @healthFacilitatorName.
+  ///
+  /// In en, this message translates to:
+  /// **'Facilitator Name'**
+  String get healthFacilitatorName;
+
+  /// No description provided for @healthFacilitatorNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the facilitator\'s name'**
+  String get healthFacilitatorNameHint;
+
+  /// No description provided for @healthFacilitatorAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get healthFacilitatorAddress;
+
+  /// No description provided for @healthFacilitatorAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the address'**
+  String get healthFacilitatorAddressHint;
+
+  /// No description provided for @healthFacilitatorPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get healthFacilitatorPhone;
+
+  /// No description provided for @healthFacilitatorPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the phone number'**
+  String get healthFacilitatorPhoneHint;
+
+  /// No description provided for @healthFacilitatorSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get healthFacilitatorSave;
+
+  /// No description provided for @healthFacilitatorSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save health facilitator details.'**
+  String get healthFacilitatorSaveError;
+
+  /// No description provided for @healthFacilitatorBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get healthFacilitatorBack;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsLanguageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose language'**
+  String get settingsLanguageTitle;
+
+  /// No description provided for @settingsNepali.
+  ///
+  /// In en, this message translates to:
+  /// **'Nepali'**
+  String get settingsNepali;
+
+  /// No description provided for @settingsEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get settingsEnglish;
 }
 
 class _AppLocalizationsDelegate

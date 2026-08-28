@@ -11,6 +11,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_bottom_navigation_bar.dart';
 import 'package:tikasathi/features/settings/data/settings_providers.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
+import 'package:tikasathi/features/settings/domain/health_facilitator_controller.dart';
 import 'package:tikasathi/main.dart';
 
 import 'helpers/fake_settings_repository.dart';
@@ -39,6 +40,7 @@ void main() {
           settingsRepositoryProvider.overrideWith(
             (ref) => FakeSettingsRepository(language: language),
           ),
+          healthFacilitatorProvider.overrideWith((ref) => Stream.value(null)),
         ],
         child: const TikaSathiApp(),
       ),

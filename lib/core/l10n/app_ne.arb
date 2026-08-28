@@ -117,5 +117,24 @@
   "childMissingFeatureNote": "यस संस्करणमा खोप रेकर्ड र क्लिनिक खोजी उपलब्ध छैन।",
   "@childMissingFeatureNote": {
     "description": "Clear note about unavailable functionality on the child screen"
-  }
+  },
+  "healthFacilitatorSaveAction": "आफ्नो नजिकको स्वास्थ्य सहजकर्ता बचत गर्नुहोस्",
+  "healthFacilitatorSavedHeading": "तपाईंको स्थानीय स्वास्थ्य सहजकर्ता",
+  "healthFacilitatorSectionTitle": "स्थानीय स्वास्थ्य सहजकर्ता",
+  "healthFacilitatorTitle": "स्वास्थ्य सहजकर्ता",
+  "healthFacilitatorSubtitle": "आफ्नो नजिकको स्वास्थ्य सहजकर्ताको विवरण बचत गर्नुहोस्।",
+  "healthFacilitatorName": "सहजकर्ताको नाम",
+  "healthFacilitatorNameHint": "सहजकर्ताको नाम लेख्नुहोस्",
+  "healthFacilitatorAddress": "ठेगाना",
+  "healthFacilitatorAddressHint": "ठेगाना लेख्नुहोस्",
+  "healthFacilitatorPhone": "फोन नम्बर",
+  "healthFacilitatorPhoneHint": "फोन नम्बर लेख्नुहोस्",
+  "healthFacilitatorSave": "बचत गर्नुहोस्",
+  "healthFacilitatorSaveError": "स्वास्थ्य सहजकर्ताको विवरण बचत गर्न सकिएन।",
+  "healthFacilitatorBack": "फर्कनुहोस्"
+  ,
+  "settingsTitle": "सेटिङहरू",
+  "settingsLanguageTitle": "भाषा छान्नुहोस्",
+  "settingsNepali": "नेपाली",
+  "settingsEnglish": "अङ्ग्रेजी"
 }
