@@ -14,6 +14,7 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
     final AsyncValue<AppLanguage> languageState =
         ref.watch(languageControllerProvider);
     final AsyncValue<HealthFacilitator?> facilitatorState =
@@ -28,10 +29,12 @@ class SettingsScreen extends ConsumerWidget {
           facilitator: facilitator,
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => Center(child: Text('$error')),
+        error: (error, stackTrace) => Center(
+            child: Text(localizations.appLanguageLoadError(error.toString()))),
       ),
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stackTrace) => Center(child: Text('$error')),
+      error: (error, stackTrace) => Center(
+          child: Text(localizations.appLanguageLoadError(error.toString()))),
     );
   }
 
@@ -39,17 +42,15 @@ class SettingsScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref, {
     required AppLanguage language,
-    required bool isNp,
   }) async {
     final bool saved = await ref
         .read(languageControllerProvider.notifier)
         .setLanguage(language);
     if (!saved && context.mounted) {
+      final AppLocalizations localizations = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            isNp ? 'भाषा सेव गर्न सकिएन।' : 'Could not save language.',
-          ),
+          content: Text(localizations.settingsLanguageSaveError),
         ),
       );
     }
@@ -95,7 +96,6 @@ class SettingsScreen extends ConsumerWidget {
                   context,
                   ref,
                   language: AppLanguage.nepali,
-                  isNp: isNp,
                 ),
               ),
               const SizedBox(height: 16),
@@ -107,7 +107,6 @@ class SettingsScreen extends ConsumerWidget {
                   context,
                   ref,
                   language: AppLanguage.english,
-                  isNp: isNp,
                 ),
               ),
               const SizedBox(height: 32),

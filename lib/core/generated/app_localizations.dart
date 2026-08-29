@@ -367,6 +367,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'English'**
   String get settingsEnglish;
+
+  /// No description provided for @settingsLanguageSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save language.'**
+  String get settingsLanguageSaveError;
+
+  /// No description provided for @appLanguageLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load language settings: {error}'**
+  String appLanguageLoadError(Object error);
+
+  /// No description provided for @navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get navHome;
+
+  /// No description provided for @navLearn.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn'**
+  String get navLearn;
+
+  /// No description provided for @navSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get navSettings;
+
+  /// No description provided for @onboardingWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome!'**
+  String get onboardingWelcome;
+
+  /// No description provided for @onboardingLanguagePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select your language / कृपया आफ्नो भाषा छान्नुहोस्'**
+  String get onboardingLanguagePrompt;
+
+  /// No description provided for @onboardingContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get onboardingContinue;
+
+  /// No description provided for @onboardingCaregiverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Caregiver Details'**
+  String get onboardingCaregiverTitle;
+
+  /// No description provided for @onboardingCaregiverSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your information so we can set up the app.'**
+  String get onboardingCaregiverSubtitle;
+
+  /// No description provided for @onboardingCaregiverNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'👩‍🦰 Full Name'**
+  String get onboardingCaregiverNameLabel;
+
+  /// No description provided for @onboardingCaregiverNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your full name'**
+  String get onboardingCaregiverNameHint;
+
+  /// No description provided for @onboardingCaregiverPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'📱 Phone Number'**
+  String get onboardingCaregiverPhoneLabel;
+
+  /// No description provided for @onboardingCaregiverPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your phone number'**
+  String get onboardingCaregiverPhoneHint;
+
+  /// No description provided for @onboardingCaregiverAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'🏠 Address (Optional)'**
+  String get onboardingCaregiverAddressLabel;
+
+  /// No description provided for @onboardingCaregiverAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your street address'**
+  String get onboardingCaregiverAddressHint;
+
+  /// No description provided for @onboardingStepLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {current} of {total}'**
+  String onboardingStepLabel(Object current, Object total);
+
+  /// No description provided for @onboardingChildNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'👶 Child\'s name'**
+  String get onboardingChildNameLabel;
+
+  /// No description provided for @onboardingChildNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter full name'**
+  String get onboardingChildNameHint;
+
+  /// No description provided for @onboardingChildDobLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'📅 Date of Birth'**
+  String get onboardingChildDobLabel;
+
+  /// No description provided for @onboardingChildDateDayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'DD'**
+  String get onboardingChildDateDayHint;
+
+  /// No description provided for @onboardingChildDateMonthHint.
+  ///
+  /// In en, this message translates to:
+  /// **'MM'**
+  String get onboardingChildDateMonthHint;
+
+  /// No description provided for @onboardingChildDateYearHint.
+  ///
+  /// In en, this message translates to:
+  /// **'YYYY'**
+  String get onboardingChildDateYearHint;
+
+  /// No description provided for @onboardingChildGenderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'⚥ Gender'**
+  String get onboardingChildGenderLabel;
+
+  /// No description provided for @onboardingChildGenderGirl.
+  ///
+  /// In en, this message translates to:
+  /// **'Girl'**
+  String get onboardingChildGenderGirl;
+
+  /// No description provided for @onboardingChildGenderBoy.
+  ///
+  /// In en, this message translates to:
+  /// **'Boy'**
+  String get onboardingChildGenderBoy;
+
+  /// No description provided for @onboardingFinishSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish Setup'**
+  String get onboardingFinishSetup;
+
+  /// No description provided for @onboardingErrorEmptyName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter child\'s name'**
+  String get onboardingErrorEmptyName;
+
+  /// No description provided for @onboardingErrorInvalidDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid Date of Birth'**
+  String get onboardingErrorInvalidDate;
+
+  /// No description provided for @onboardingErrorInvalidDob.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid Date of Birth'**
+  String get onboardingErrorInvalidDob;
+
+  /// No description provided for @onboardingErrorSaveSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving setup: {error}'**
+  String onboardingErrorSaveSetup(Object error);
+
+  /// No description provided for @homeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your children'**
+  String get homeTitle;
+
+  /// No description provided for @homeAddChildButton.
+  ///
+  /// In en, this message translates to:
+  /// **'+ Add child'**
+  String get homeAddChildButton;
+
+  /// No description provided for @homeActionAddChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Add child'**
+  String get homeActionAddChild;
+
+  /// No description provided for @homeActionChildDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Child details'**
+  String get homeActionChildDetails;
+
+  /// No description provided for @homeActionRecordVaccine.
+  ///
+  /// In en, this message translates to:
+  /// **'Record vaccine'**
+  String get homeActionRecordVaccine;
+
+  /// No description provided for @homeActionFindClinic.
+  ///
+  /// In en, this message translates to:
+  /// **'Find clinic'**
+  String get homeActionFindClinic;
+
+  /// Fallback snack bar message for an unimplemented home action
+  ///
+  /// In en, this message translates to:
+  /// **'Placeholder action: {action}'**
+  String homeActionPlaceholder(String action);
+
+  /// Age label in days for a child
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1 {1 day old} other {{count} days old}}'**
+  String ageInDays(int count);
+
+  /// Age label in months for a child
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1 {1 month old} other {{count} months old}}'**
+  String ageInMonths(int count);
+
+  /// Age label in years for a child
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1 {1 year old} other {{count} years old}}'**
+  String ageInYears(int count);
+
+  /// No description provided for @homeSectionDueToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Due today'**
+  String get homeSectionDueToday;
+
+  /// No description provided for @homeSectionDueSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Due soon'**
+  String get homeSectionDueSoon;
+
+  /// No description provided for @homeSectionUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to date'**
+  String get homeSectionUpToDate;
+
+  /// No description provided for @homeEmptyStateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No children added yet.'**
+  String get homeEmptyStateTitle;
+
+  /// No description provided for @homeEmptyStateSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first child to see upcoming vaccines here.'**
+  String get homeEmptyStateSubtitle;
+
+  /// No description provided for @learnPlaceholderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn'**
+  String get learnPlaceholderTitle;
+
+  /// No description provided for @learnPlaceholderTitleNp.
+  ///
+  /// In en, this message translates to:
+  /// **'सिक्नुहोस्'**
+  String get learnPlaceholderTitleNp;
 }
 
 class _AppLocalizationsDelegate

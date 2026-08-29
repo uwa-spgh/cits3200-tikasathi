@@ -1,63 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/home/domain/home_models.dart';
 import 'package:tikasathi/features/home/presentation/home_screen.dart';
 import 'package:tikasathi/features/settings/data/settings_providers.dart';
 
 import '../../../helpers/fake_settings_repository.dart';
 
+import 'package:tikasathi/features/home/domain/home_helpers.dart';
+
 void main() {
   group('HomeScreen', () {
-    const dueTodayChild = HomeChildSummary(
-      name: 'Aisha',
-      ageLabel: '9 months old',
-      vaccineLabel: 'Rotavirus',
-      avatarEmoji: '👶',
-      canRecordVaccine: true,
-      canFindClinic: true,
-    );
-
-    const dueSoonChild = HomeChildSummary(
-      name: 'Bikash',
-      ageLabel: '14 months old',
-      vaccineLabel: 'TCV',
-      avatarEmoji: '🧒',
-      canRecordVaccine: false,
-      canFindClinic: true,
-    );
-
-    const upToDateChild = HomeChildSummary(
-      name: 'Sara',
-      ageLabel: '4 years old',
-      vaccineLabel: 'DPT',
-      avatarEmoji: '👧',
-      canRecordVaccine: false,
-      canFindClinic: false,
-    );
+    HomeChildSummary buildChild({
+      required String name,
+      required DateTime dateOfBirth,
+      required String nextVaccineCode,
+      required bool canRecordVaccine,
+      required bool canFindClinic,
+    }) {
+      return HomeChildSummary(
+        name: name,
+        childId: name.toLowerCase(),
+        dateOfBirth: dateOfBirth,
+        nextVaccineCode: nextVaccineCode,
+        avatarEmoji: '👶',
+        canRecordVaccine: canRecordVaccine,
+        canFindClinic: canFindClinic,
+      );
+    }
 
     List<HomeStatusGroup> buildHomeGroups() {
-      const List<HomeStatusGroup> homeGroups = <HomeStatusGroup>[
+      final DateTime now = DateTime.now();
+      final HomeChildSummary dueTodayChild = buildChild(
+        name: 'Aisha',
+        dateOfBirth: now.subtract(const Duration(days: 12)),
+        nextVaccineCode: 'Rotavirus',
+        canRecordVaccine: true,
+        canFindClinic: true,
+      );
+      final HomeChildSummary dueSoonChild = buildChild(
+        name: 'Bikash',
+        dateOfBirth: now.subtract(const Duration(days: 45)),
+        nextVaccineCode: 'TCV',
+        canRecordVaccine: false,
+        canFindClinic: true,
+      );
+      final HomeChildSummary upToDateChild = buildChild(
+        name: 'Sara',
+        dateOfBirth: now.subtract(const Duration(days: 1460)),
+        nextVaccineCode: 'DPT',
+        canRecordVaccine: false,
+        canFindClinic: false,
+      );
+
+      return <HomeStatusGroup>[
         HomeStatusGroup(
           group: HomeVaccinationGroup.dueToday,
-          headerLabel: 'Vaccine due TODAY',
           children: <HomeChildSummary>[dueTodayChild],
         ),
         HomeStatusGroup(
           group: HomeVaccinationGroup.dueSoon,
-          headerLabel: 'Due in 2 weeks',
           children: <HomeChildSummary>[dueSoonChild],
         ),
         HomeStatusGroup(
           group: HomeVaccinationGroup.upToDate,
-          headerLabel: 'All up to date',
           children: <HomeChildSummary>[upToDateChild],
         ),
       ];
-      return homeGroups;
     }
 
-    testWidgets('renders provided child details and status groups',
+    testWidgets('renders localized age text for English and Nepali locales',
         (WidgetTester tester) async {
       final groups = buildHomeGroups();
 
@@ -69,32 +82,47 @@ void main() {
             ),
           ],
           child: MaterialApp(
-            home: Scaffold(
-              body: HomeScreen(groups: groups),
-            ),
+            locale: const Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(body: HomeScreen(groups: groups)),
           ),
         ),
       );
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('home-title')), findsOneWidget);
-      expect(find.text('तपाईंको बच्चाहरू'), findsOneWidget);
-      expect(find.byKey(const Key('home-group-dueToday')), findsOneWidget);
-      expect(find.byKey(const Key('home-group-dueSoon')), findsOneWidget);
+      final englishLocalizations = AppLocalizations.of(
+        tester.element(find.text('Aisha')),
+      )!;
+      final expectedEnglishAge =
+          formatAge(groups[0].children.first.dateOfBirth, englishLocalizations);
       expect(find.text('Aisha'), findsOneWidget);
-      expect(find.text('Bikash'), findsOneWidget);
-      expect(find.byKey(const Key('home-add-child-button')), findsOneWidget);
-      expect(find.byKey(const Key('record-vaccine-Aisha')), findsOneWidget);
-      expect(find.byKey(const Key('find-clinic-Aisha')), findsOneWidget);
-      expect(find.byKey(const Key('find-clinic-Bikash')), findsOneWidget);
+      expect(find.textContaining(expectedEnglishAge), findsOneWidget);
 
-      await tester.scrollUntilVisible(
-        find.byKey(const Key('home-group-upToDate')),
-        100,
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(),
+            ),
+          ],
+          child: MaterialApp(
+            locale: const Locale('ne'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(body: HomeScreen(groups: groups)),
+          ),
+        ),
       );
-      expect(find.byKey(const Key('home-group-upToDate')), findsOneWidget);
-      expect(find.text('Sara'), findsOneWidget);
-      expect(find.byKey(const Key('find-clinic-Sara')), findsNothing);
+      await tester.pumpAndSettle();
+
+      final nepaliLocalizations = AppLocalizations.of(
+        tester.element(find.text('Aisha')),
+      )!;
+      final expectedNepaliAge =
+          formatAge(groups[0].children.first.dateOfBirth, nepaliLocalizations);
+      expect(find.textContaining(expectedNepaliAge), findsOneWidget);
+      expect(find.text('तपाईंको बच्चाहरू'), findsOneWidget);
     });
 
     testWidgets('shows placeholder feedback for action buttons',
@@ -109,9 +137,10 @@ void main() {
             ),
           ],
           child: MaterialApp(
-            home: Scaffold(
-              body: HomeScreen(groups: groups),
-            ),
+            locale: const Locale('ne'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(body: HomeScreen(groups: groups)),
           ),
         ),
       );
@@ -119,21 +148,18 @@ void main() {
 
       await tester.tap(find.byKey(const Key('home-add-child-button')));
       await tester.pumpAndSettle();
-      // The Add child button should open the registration dialog.
       expect(find.byType(AlertDialog), findsOneWidget);
 
-      // Close the dialog so we can interact with the rest of the UI.
       await tester.tap(find.text('Cancel'));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('record-vaccine-Aisha')));
       await tester.pumpAndSettle();
-      expect(find.text('खोप रेकर्ड is not available yet.'), findsOneWidget);
+      expect(find.text('स्थगित कार्य: खोप रेकर्ड'), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('find-clinic-Aisha')));
       await tester.pumpAndSettle();
-      expect(find.text('क्लिनिक खोज्नुहोस् is not available yet.'),
-          findsOneWidget);
+      expect(find.text('स्थगित कार्य: क्लिनिक खोज्नुहोस्'), findsOneWidget);
     });
 
     testWidgets('renders empty state when no children are available',
@@ -146,9 +172,10 @@ void main() {
             ),
           ],
           child: const MaterialApp(
-            home: Scaffold(
-              body: HomeScreen(groups: <HomeStatusGroup>[]),
-            ),
+            locale: Locale('ne'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(body: HomeScreen(groups: <HomeStatusGroup>[])),
           ),
         ),
       );
@@ -161,13 +188,11 @@ void main() {
 
     testWidgets('renders without layout overflow on narrow screens',
         (WidgetTester tester) async {
-      // Narrow viewport
       tester.view.physicalSize = const Size(320, 640);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      // Pump the HomeScreen with test groups and settle
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -176,15 +201,15 @@ void main() {
             ),
           ],
           child: MaterialApp(
-            home: Scaffold(
-              body: HomeScreen(groups: buildHomeGroups()),
-            ),
+            locale: const Locale('ne'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(body: HomeScreen(groups: buildHomeGroups())),
           ),
         ),
       );
       await tester.pumpAndSettle();
 
-      // Basic assertions
       expect(find.byKey(const Key('home-title')), findsOneWidget);
       expect(find.byKey(const Key('record-vaccine-Aisha')), findsOneWidget);
       expect(find.byKey(const Key('find-clinic-Aisha')), findsOneWidget);

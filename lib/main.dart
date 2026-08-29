@@ -67,11 +67,14 @@ class _TikaSathiAppState extends ConsumerState<TikaSathiApp> {
               : const LanguageScreen();
         },
         loading: () => const _StartupProgress(),
-        error: (Object error, StackTrace stackTrace) => Scaffold(
-          body: Center(
-            child: Text('Unable to load language settings: $error'),
-          ),
-        ),
+        error: (Object error, StackTrace stackTrace) {
+          final AppLocalizations localizations = AppLocalizations.of(context)!;
+          return Scaffold(
+            body: Center(
+              child: Text(localizations.appLanguageLoadError(error.toString())),
+            ),
+          );
+        },
       ),
     );
   }

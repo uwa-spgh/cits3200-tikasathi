@@ -136,5 +136,85 @@
   "settingsTitle": "सेटिङहरू",
   "settingsLanguageTitle": "भाषा छान्नुहोस्",
   "settingsNepali": "नेपाली",
-  "settingsEnglish": "अङ्ग्रेजी"
+  "settingsEnglish": "अङ्ग्रेजी",
+  "settingsLanguageSaveError": "भाषा सेव गर्न सकिएन।",
+  "appLanguageLoadError": "भाषा सेटिङहरू लोड गर्न सकिएन: {error}",
+  "navHome": "गृहपृष्ठ",
+  "navLearn": "सिक्नुहोस्",
+  "navSettings": "सेटिङहरू",
+  "onboardingWelcome": "स्वागत छ!",
+  "onboardingLanguagePrompt": "कृपया आफ्नो भाषा छान्नुहोस् / Please select your language",
+  "onboardingContinue": "अगाडि बढ्नुहोस्",
+  "onboardingCaregiverTitle": "हेरचाहकर्ताको विवरण",
+  "onboardingCaregiverSubtitle": "कृपया आफ्नो विवरण भर्नुहोस्।",
+  "onboardingCaregiverNameLabel": "👩‍🦰 पूरा नाम",
+  "onboardingCaregiverNameHint": "तपाईंको पूरा नाम प्रविष्ट गर्नुहोस्",
+  "onboardingCaregiverPhoneLabel": "📱 फोन नम्बर",
+  "onboardingCaregiverPhoneHint": "तपाईंको फोन नम्बर प्रविष्ट गर्नुहोस्",
+  "onboardingCaregiverAddressLabel": "🏠 ठेगाना (वैकल्पिक)",
+  "onboardingCaregiverAddressHint": "तपाईंको ठेगाना प्रविष्ट गर्नुहोस्",
+  "onboardingStepLabel": "चरण {current}\/ {total}",
+  "onboardingChildNameLabel": "👶 बच्चाको नाम",
+  "onboardingChildNameHint": "पूरा नाम प्रविष्ट गर्नुहोस्",
+  "onboardingChildDobLabel": "📅 जन्म मिति",
+  "onboardingChildDateDayHint": "गते",
+  "onboardingChildDateMonthHint": "महिना",
+  "onboardingChildDateYearHint": "वर्ष",
+  "onboardingChildGenderLabel": "⚥ लिङ्ग",
+  "onboardingChildGenderGirl": "छोरी",
+  "onboardingChildGenderBoy": "छोरा",
+  "onboardingFinishSetup": "सेटअप पूरा गर्नुहोस्",
+  "onboardingErrorEmptyName": "कृपया बच्चाको नाम प्रविष्ट गर्नुहोस्",
+  "onboardingErrorInvalidDate": "कृपया मान्य जन्म मिति प्रविष्ट गर्नुहोस्",
+  "onboardingErrorInvalidDob": "अवैध जन्म मिति",
+  "onboardingErrorSaveSetup": "सेटअप बचत गर्दा त्रुटि: {error}",
+  "homeTitle": "तपाईंको बच्चाहरू",
+  "homeAddChildButton": "+ बच्चा थप्नुहोस्",
+  "homeActionAddChild": "बच्चा थप्नुहोस्",
+  "homeActionChildDetails": "बच्चाको विवरण",
+  "homeActionRecordVaccine": "खोप रेकर्ड",
+  "homeActionFindClinic": "क्लिनिक खोज्नुहोस्",
+  "homeActionPlaceholder": "स्थगित कार्य: {action}",
+  "@homeActionPlaceholder": {
+    "description": "Fallback snack bar message for an unimplemented home action",
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "ageInDays": "{count, plural, =1 {१ दिन पुरानो} other {{count} दिन पुरानो}}",
+  "@ageInDays": {
+    "description": "Age label in days for a child",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ageInMonths": "{count, plural, =1 {१ महिना पुरानो} other {{count} महिना पुरानो}}",
+  "@ageInMonths": {
+    "description": "Age label in months for a child",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ageInYears": "{count, plural, =1 {१ वर्ष पुरानो} other {{count} वर्ष पुरानो}}",
+  "@ageInYears": {
+    "description": "Age label in years for a child",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeSectionDueToday": "आज दिइने",
+  "homeSectionDueSoon": "चाँडै दिइने",
+  "homeSectionUpToDate": "पूरा भएको",
+  "homeEmptyStateTitle": "अहिलेसम्म कुनै बच्चा थपिएको छैन।",
+  "homeEmptyStateSubtitle": "यहाँ आगामी खोपहरू हेर्न आफ्नो पहिलो बच्चा थप्नुहोस्।",
+  "learnPlaceholderTitle": "सिक्नुहोस्",
+  "learnPlaceholderTitleNp": "सिक्नुहोस्"
 }

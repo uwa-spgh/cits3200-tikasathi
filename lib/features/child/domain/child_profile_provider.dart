@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
+import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/home/domain/home_helpers.dart';
 
 part 'child_profile_provider.g.dart';
@@ -47,7 +48,8 @@ class ChildProfileDetails {
             ..sort((a, b) => a.dueDate.compareTo(b.dueDate)))
           .first;
 
-  String get ageLabel => formatAge(child.dateOfBirth);
+  String ageLabel(AppLocalizations localizations) =>
+      formatAge(child.dateOfBirth, localizations);
 
   String get avatarEmoji => getChildAvatar(
         sex: _sexFromString(child.sex),

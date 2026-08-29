@@ -153,4 +153,186 @@ class AppLocalizationsNe extends AppLocalizations {
 
   @override
   String get settingsEnglish => 'अङ्ग्रेजी';
+
+  @override
+  String get settingsLanguageSaveError => 'भाषा सेव गर्न सकिएन।';
+
+  @override
+  String appLanguageLoadError(Object error) {
+    return 'भाषा सेटिङहरू लोड गर्न सकिएन: $error';
+  }
+
+  @override
+  String get navHome => 'गृहपृष्ठ';
+
+  @override
+  String get navLearn => 'सिक्नुहोस्';
+
+  @override
+  String get navSettings => 'सेटिङहरू';
+
+  @override
+  String get onboardingWelcome => 'स्वागत छ!';
+
+  @override
+  String get onboardingLanguagePrompt =>
+      'कृपया आफ्नो भाषा छान्नुहोस् / Please select your language';
+
+  @override
+  String get onboardingContinue => 'अगाडि बढ्नुहोस्';
+
+  @override
+  String get onboardingCaregiverTitle => 'हेरचाहकर्ताको विवरण';
+
+  @override
+  String get onboardingCaregiverSubtitle => 'कृपया आफ्नो विवरण भर्नुहोस्।';
+
+  @override
+  String get onboardingCaregiverNameLabel => '👩‍🦰 पूरा नाम';
+
+  @override
+  String get onboardingCaregiverNameHint =>
+      'तपाईंको पूरा नाम प्रविष्ट गर्नुहोस्';
+
+  @override
+  String get onboardingCaregiverPhoneLabel => '📱 फोन नम्बर';
+
+  @override
+  String get onboardingCaregiverPhoneHint =>
+      'तपाईंको फोन नम्बर प्रविष्ट गर्नुहोस्';
+
+  @override
+  String get onboardingCaregiverAddressLabel => '🏠 ठेगाना (वैकल्पिक)';
+
+  @override
+  String get onboardingCaregiverAddressHint =>
+      'तपाईंको ठेगाना प्रविष्ट गर्नुहोस्';
+
+  @override
+  String onboardingStepLabel(Object current, Object total) {
+    return 'चरण $current/ $total';
+  }
+
+  @override
+  String get onboardingChildNameLabel => '👶 बच्चाको नाम';
+
+  @override
+  String get onboardingChildNameHint => 'पूरा नाम प्रविष्ट गर्नुहोस्';
+
+  @override
+  String get onboardingChildDobLabel => '📅 जन्म मिति';
+
+  @override
+  String get onboardingChildDateDayHint => 'गते';
+
+  @override
+  String get onboardingChildDateMonthHint => 'महिना';
+
+  @override
+  String get onboardingChildDateYearHint => 'वर्ष';
+
+  @override
+  String get onboardingChildGenderLabel => '⚥ लिङ्ग';
+
+  @override
+  String get onboardingChildGenderGirl => 'छोरी';
+
+  @override
+  String get onboardingChildGenderBoy => 'छोरा';
+
+  @override
+  String get onboardingFinishSetup => 'सेटअप पूरा गर्नुहोस्';
+
+  @override
+  String get onboardingErrorEmptyName => 'कृपया बच्चाको नाम प्रविष्ट गर्नुहोस्';
+
+  @override
+  String get onboardingErrorInvalidDate =>
+      'कृपया मान्य जन्म मिति प्रविष्ट गर्नुहोस्';
+
+  @override
+  String get onboardingErrorInvalidDob => 'अवैध जन्म मिति';
+
+  @override
+  String onboardingErrorSaveSetup(Object error) {
+    return 'सेटअप बचत गर्दा त्रुटि: $error';
+  }
+
+  @override
+  String get homeTitle => 'तपाईंको बच्चाहरू';
+
+  @override
+  String get homeAddChildButton => '+ बच्चा थप्नुहोस्';
+
+  @override
+  String get homeActionAddChild => 'बच्चा थप्नुहोस्';
+
+  @override
+  String get homeActionChildDetails => 'बच्चाको विवरण';
+
+  @override
+  String get homeActionRecordVaccine => 'खोप रेकर्ड';
+
+  @override
+  String get homeActionFindClinic => 'क्लिनिक खोज्नुहोस्';
+
+  @override
+  String homeActionPlaceholder(String action) {
+    return 'स्थगित कार्य: $action';
+  }
+
+  @override
+  String ageInDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count दिन पुरानो',
+      one: '१ दिन पुरानो',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ageInMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count महिना पुरानो',
+      one: '१ महिना पुरानो',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ageInYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count वर्ष पुरानो',
+      one: '१ वर्ष पुरानो',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeSectionDueToday => 'आज दिइने';
+
+  @override
+  String get homeSectionDueSoon => 'चाँडै दिइने';
+
+  @override
+  String get homeSectionUpToDate => 'पूरा भएको';
+
+  @override
+  String get homeEmptyStateTitle => 'अहिलेसम्म कुनै बच्चा थपिएको छैन।';
+
+  @override
+  String get homeEmptyStateSubtitle =>
+      'यहाँ आगामी खोपहरू हेर्न आफ्नो पहिलो बच्चा थप्नुहोस्।';
+
+  @override
+  String get learnPlaceholderTitle => 'सिक्नुहोस्';
+
+  @override
+  String get learnPlaceholderTitleNp => 'सिक्नुहोस्';
 }

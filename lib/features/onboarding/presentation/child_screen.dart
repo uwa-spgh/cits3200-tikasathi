@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
-import 'package:tikasathi/features/settings/domain/app_language.dart';
 
 class ChildScreen extends ConsumerStatefulWidget {
   const ChildScreen({super.key});
@@ -28,18 +28,12 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
     super.dispose();
   }
 
-  Future<void> _onFinish(bool isNp) async {
-    final errorEmptyName = isNp
-        ? 'कृपया बच्चाको नाम प्रविष्ट गर्नुहोस्'
-        : 'Please enter child\'s name';
-    final errorInvalidDate = isNp
-        ? 'कृपया मान्य जन्म मिति प्रविष्ट गर्नुहोस्'
-        : 'Please enter a valid Date of Birth';
-    final errorDate = isNp ? 'अवैध जन्म मिति' : 'Invalid Date of Birth';
+  Future<void> _onFinish() async {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
 
     if (_nameController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorEmptyName)),
+        SnackBar(content: Text(localizations.onboardingErrorEmptyName)),
       );
       return;
     }
@@ -50,7 +44,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
 
     if (dd == null || mm == null || yy == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorInvalidDate)),
+        SnackBar(content: Text(localizations.onboardingErrorInvalidDate)),
       );
       return;
     }
@@ -62,7 +56,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
       dob = DateTime(year, mm, dd);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorDate)),
+        SnackBar(content: Text(localizations.onboardingErrorInvalidDob)),
       );
       return;
     }
@@ -86,28 +80,19 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
     } else if (mounted) {
       final error = ref.read(onboardingControllerProvider).error;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving setup: $error')),
+        SnackBar(
+          content:
+              Text(localizations.onboardingErrorSaveSetup(error.toString())),
+        ),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
     final state = ref.watch(onboardingControllerProvider);
-    final bool isNp = state.selectedLanguage == AppLanguage.nepali;
-
-    final stepText = isNp ? 'चरण २/२' : 'Step 2 of 2';
-    final childNameLabel = isNp ? '👶 बच्चाको नाम' : '👶 Child\'s name';
-    final childNameHint =
-        isNp ? 'पूरा नाम प्रविष्ट गर्नुहोस्' : 'Enter full name';
-    final dobLabel = isNp ? '📅 जन्म मिति' : '📅 Date of Birth';
-    final ddHint = isNp ? 'गते' : 'DD';
-    final mmHint = isNp ? 'महिना' : 'MM';
-    final yyyyHint = isNp ? 'वर्ष' : 'YYYY';
-    final genderLabel = isNp ? '⚥ लिङ्ग' : '⚥ Gender';
-    final girlText = isNp ? 'छोरी' : 'Girl';
-    final boyText = isNp ? 'छोरा' : 'Boy';
-    final finishText = isNp ? 'सेटअप पूरा गर्नुहोस्' : 'Finish Setup';
+    final stepText = localizations.onboardingStepLabel(2, 2);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F9FC),
@@ -177,7 +162,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      childNameLabel,
+                      localizations.onboardingChildNameLabel,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -189,7 +174,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
                       controller: _nameController,
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                        hintText: childNameHint,
+                        hintText: localizations.onboardingChildNameHint,
                         hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -205,7 +190,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      dobLabel,
+                      localizations.onboardingChildDobLabel,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -215,18 +200,29 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        Expanded(child: _buildDateBox(ddHint, _ddController)),
-                        const SizedBox(width: 12),
-                        Expanded(child: _buildDateBox(mmHint, _mmController)),
+                        Expanded(
+                          child: _buildDateBox(
+                              localizations.onboardingChildDateDayHint,
+                              _ddController),
+                        ),
                         const SizedBox(width: 12),
                         Expanded(
-                            child: _buildDateBox(yyyyHint, _yyController,
-                                maxLength: 4)),
+                          child: _buildDateBox(
+                              localizations.onboardingChildDateMonthHint,
+                              _mmController),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildDateBox(
+                              localizations.onboardingChildDateYearHint,
+                              _yyController,
+                              maxLength: 4),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      genderLabel,
+                      localizations.onboardingChildGenderLabel,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -238,12 +234,12 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
                       children: [
                         Expanded(
                           child: _buildGenderButton('Girl', '👱‍♀️',
-                              label: girlText),
+                              label: localizations.onboardingChildGenderGirl),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
                           child: _buildGenderButton('Boy', '👱‍♂️',
-                              label: boyText),
+                              label: localizations.onboardingChildGenderBoy),
                         ),
                       ],
                     ),
@@ -253,7 +249,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
               const SizedBox(height: 48),
 
               ElevatedButton(
-                onPressed: state.isSaving ? null : () => _onFinish(isNp),
+                onPressed: state.isSaving ? null : _onFinish,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0F52BA),
                   foregroundColor: Colors.white,
@@ -269,7 +265,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            finishText,
+                            localizations.onboardingFinishSetup,
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,

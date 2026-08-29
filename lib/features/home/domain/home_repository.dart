@@ -7,8 +7,7 @@ class HomeRepository {
 
   final AppDatabase _database;
 
-  Future<List<HomeStatusGroup>> loadHomeStatusGroups(
-      {DateTime? now, bool isNp = false}) async {
+  Future<List<HomeStatusGroup>> loadHomeStatusGroups({DateTime? now}) async {
     final DateTime currentTime = now ?? DateTime.now();
     final profiles = await _database.childProfilesDao.getAllChildProfiles();
 
@@ -30,12 +29,11 @@ class HomeRepository {
       final List<VaccinationDue> outstandingDues = dueRows;
 
       final status = _describeStatus(outstandingDues, currentTime);
-      final vaccineLabel = _nextVaccineLabel(outstandingDues, isNp: isNp);
       final child = HomeChildSummary(
         name: profile.name,
         childId: profile.id,
-        ageLabel: formatAge(profile.dateOfBirth, isNp: isNp),
-        vaccineLabel: vaccineLabel,
+        dateOfBirth: profile.dateOfBirth,
+        nextVaccineCode: _nextVaccineCode(outstandingDues),
         avatarEmoji: getChildAvatar(
           sex: _sexFromString(profile.sex),
           dateOfBirth: profile.dateOfBirth,
@@ -61,7 +59,6 @@ class HomeRepository {
       statusGroups.add(
         HomeStatusGroup(
           group: group,
-          headerLabel: _groupHeaderLabel(group),
           children: children,
         ),
       );
@@ -112,9 +109,9 @@ class HomeRepository {
     return HomeVaccinationGroup.upToDate;
   }
 
-  String _nextVaccineLabel(List<VaccinationDue> dueRows, {bool isNp = false}) {
+  String? _nextVaccineCode(List<VaccinationDue> dueRows) {
     if (dueRows.isEmpty) {
-      return isNp ? 'पूरा भएको' : 'Up to date';
+      return null;
     }
 
     final sortedDues = List<VaccinationDue>.from(dueRows)
@@ -122,17 +119,6 @@ class HomeRepository {
           a.dueDate.compareTo(b.dueDate));
     final nextDue = sortedDues.first;
     return nextDue.vaccineCode;
-  }
-
-  String _groupHeaderLabel(HomeVaccinationGroup group) {
-    switch (group) {
-      case HomeVaccinationGroup.dueToday:
-        return 'Vaccine due TODAY';
-      case HomeVaccinationGroup.dueSoon:
-        return 'Due in 2 weeks';
-      case HomeVaccinationGroup.upToDate:
-        return 'All up to date';
-    }
   }
 
   ChildSex _sexFromString(String value) {

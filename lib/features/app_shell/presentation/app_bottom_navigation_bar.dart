@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
 
@@ -22,7 +23,7 @@ class AppBottomNavigationBar extends ConsumerWidget {
 
     return languageState.when(
       data: (AppLanguage language) {
-        final bool isNp = language == AppLanguage.nepali;
+        final AppLocalizations localizations = AppLocalizations.of(context)!;
         return BottomNavigationBar(
           currentIndex: selectedSection.index,
           onTap: (int index) {
@@ -36,17 +37,17 @@ class AppBottomNavigationBar extends ConsumerWidget {
             BottomNavigationBarItem(
               icon: const Icon(Icons.home_outlined),
               activeIcon: const Icon(Icons.home_filled),
-              label: isNp ? 'गृहपृष्ठ' : 'Home',
+              label: localizations.navHome,
             ),
             BottomNavigationBarItem(
               icon: const Icon(Icons.menu_book_outlined),
               activeIcon: const Icon(Icons.menu_book),
-              label: isNp ? 'सिक्नुहोस्' : 'Learn',
+              label: localizations.navLearn,
             ),
             BottomNavigationBarItem(
               icon: const Icon(Icons.settings_outlined),
               activeIcon: const Icon(Icons.settings),
-              label: isNp ? 'सेटिङहरू' : 'Settings',
+              label: localizations.navSettings,
             ),
           ],
         );
@@ -55,12 +56,15 @@ class AppBottomNavigationBar extends ConsumerWidget {
         height: 80,
         child: Center(child: CircularProgressIndicator()),
       ),
-      error: (Object error, StackTrace stackTrace) => SizedBox(
-        height: 80,
-        child: Center(
-          child: Text('Unable to load language settings: $error'),
-        ),
-      ),
+      error: (Object error, StackTrace stackTrace) {
+        final AppLocalizations localizations = AppLocalizations.of(context)!;
+        return SizedBox(
+          height: 80,
+          child: Center(
+            child: Text(localizations.appLanguageLoadError(error.toString())),
+          ),
+        );
+      },
     );
   }
 }

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/child/presentation/child_profile_screen.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
 
+import '../domain/home_helpers.dart';
 import '../domain/home_models.dart';
 import '../domain/home_status_groups_provider.dart';
 import 'register_child_dialog.dart';
@@ -34,7 +36,7 @@ class HomeScreen extends ConsumerWidget {
         ref.watch(languageControllerProvider);
 
     return languageState.when(
-      data: (AppLanguage language) {
+      data: (AppLanguage _) {
         final List<HomeStatusGroup> resolvedGroups;
 
         if (groups != null) {
@@ -51,7 +53,6 @@ class HomeScreen extends ConsumerWidget {
         }
 
         return _HomeScreenContent(
-          isNp: language == AppLanguage.nepali,
           groups: resolvedGroups,
           onAddChildPressed: onAddChildPressed,
           onRecordVaccinePressed: onRecordVaccinePressed,
@@ -60,19 +61,23 @@ class HomeScreen extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (Object error, StackTrace stackTrace) => Center(
-        child: Text('Unable to load language settings: $error'),
-      ),
+      error: (Object error, StackTrace stackTrace) {
+        final AppLocalizations localizations = AppLocalizations.of(context)!;
+        return Center(
+          child: Text(localizations.appLanguageLoadError(error.toString())),
+        );
+      },
     );
   }
 
   static void _showPlaceholder(BuildContext context, String action) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
     final ScaffoldMessengerState scaffoldMessenger =
         ScaffoldMessenger.of(context);
     scaffoldMessenger.hideCurrentSnackBar();
     scaffoldMessenger.showSnackBar(
       SnackBar(
-        content: Text('$action is not available yet.'),
+        content: Text(localizations.homeActionPlaceholder(action)),
       ),
     );
   }
@@ -85,9 +90,19 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
+String _childSummaryLabel({
+  required HomeChildSummary child,
+  required AppLocalizations localizations,
+}) {
+  final String ageText = formatAge(child.dateOfBirth, localizations);
+  if (child.nextVaccineCode == null || child.nextVaccineCode!.isEmpty) {
+    return ageText;
+  }
+  return '${child.nextVaccineCode} - $ageText';
+}
+
 class _HomeScreenContent extends StatelessWidget {
   const _HomeScreenContent({
-    required this.isNp,
     required this.groups,
     required this.onAddChildPressed,
     required this.onRecordVaccinePressed,
@@ -95,7 +110,6 @@ class _HomeScreenContent extends StatelessWidget {
     required this.onChildPressed,
   });
 
-  final bool isNp;
   final List<HomeStatusGroup> groups;
   final VoidCallback? onAddChildPressed;
   final HomeChildActionCallback? onRecordVaccinePressed;
@@ -104,6 +118,8 @@ class _HomeScreenContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         final double horizontalPadding = constraints.maxWidth >= 600 ? 24 : 16;
@@ -126,7 +142,7 @@ class _HomeScreenContent extends StatelessWidget {
                     final bool compactHeader = headerConstraints.maxWidth < 340;
 
                     final Widget title = Text(
-                      isNp ? 'तपाईंको बच्चाहरू' : 'Your children',
+                      localizations.homeTitle,
                       key: const Key('home-title'),
                       style:
                           Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -152,7 +168,7 @@ class _HomeScreenContent extends StatelessWidget {
                         minimumSize: const Size(0, 44),
                       ),
                       child: Text(
-                        isNp ? '+ बच्चा थप्नुहोस्' : '+ Add child',
+                        localizations.homeAddChildButton,
                         style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                     );
@@ -180,7 +196,6 @@ class _HomeScreenContent extends StatelessWidget {
                 const SizedBox(height: 18),
                 if (groups.isEmpty)
                   _HomeEmptyState(
-                    isNp: isNp,
                     onAddChildPressed: onAddChildPressed ??
                         () => HomeScreen._openRegisterChildDialog(context),
                   )
@@ -189,7 +204,6 @@ class _HomeScreenContent extends StatelessWidget {
                     (HomeStatusGroup group) => Padding(
                       padding: const EdgeInsets.only(bottom: 22),
                       child: _StatusGroupCard(
-                        isNp: isNp,
                         group: group,
                         onChildPressed: (HomeChildSummary child) {
                           if (onChildPressed != null) {
@@ -199,7 +213,7 @@ class _HomeScreenContent extends StatelessWidget {
                           if (child.childId.isEmpty) {
                             HomeScreen._showPlaceholder(
                               context,
-                              isNp ? 'बच्चाको विवरण' : 'Child details',
+                              localizations.homeActionChildDetails,
                             );
                             return;
                           }
@@ -216,15 +230,17 @@ class _HomeScreenContent extends StatelessWidget {
                             return;
                           }
                           HomeScreen._showPlaceholder(
-                              context, isNp ? 'खोप रेकर्ड' : 'Record vaccine');
+                              context, localizations.homeActionRecordVaccine);
                         },
                         onFindClinicPressed: (HomeChildSummary child) {
                           if (onFindClinicPressed != null) {
                             onFindClinicPressed!(child);
                             return;
                           }
-                          HomeScreen._showPlaceholder(context,
-                              isNp ? 'क्लिनिक खोज्नुहोस्' : 'Find clinic');
+                          HomeScreen._showPlaceholder(
+                            context,
+                            localizations.homeActionFindClinic,
+                          );
                         },
                       ),
                     ),
@@ -240,14 +256,12 @@ class _HomeScreenContent extends StatelessWidget {
 
 class _StatusGroupCard extends StatelessWidget {
   const _StatusGroupCard({
-    required this.isNp,
     required this.group,
     required this.onChildPressed,
     required this.onRecordVaccinePressed,
     required this.onFindClinicPressed,
   });
 
-  final bool isNp;
   final HomeStatusGroup group;
   final HomeChildActionCallback onChildPressed;
   final HomeChildActionCallback onRecordVaccinePressed;
@@ -255,20 +269,14 @@ class _StatusGroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
     final _GroupStyle style = _GroupStyle.fromGroup(group.group);
 
-    String groupHeader = group.headerLabel;
-    if (isNp) {
-      if (group.group == HomeVaccinationGroup.dueToday) {
-        groupHeader = 'आज दिइने';
-      }
-      if (group.group == HomeVaccinationGroup.dueSoon) {
-        groupHeader = 'चाँडै दिइने';
-      }
-      if (group.group == HomeVaccinationGroup.upToDate) {
-        groupHeader = 'पूरा भएको';
-      }
-    }
+    final String groupHeader = switch (group.group) {
+      HomeVaccinationGroup.dueToday => localizations.homeSectionDueToday,
+      HomeVaccinationGroup.dueSoon => localizations.homeSectionDueSoon,
+      HomeVaccinationGroup.upToDate => localizations.homeSectionUpToDate,
+    };
 
     return Container(
       key: Key('home-group-${group.group.name}'),
@@ -313,7 +321,6 @@ class _StatusGroupCard extends StatelessWidget {
                     (HomeChildSummary child) => Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: _HomeChildCard(
-                        isNp: isNp,
                         child: child,
                         onChildPressed: () => onChildPressed(child),
                         onRecordVaccinePressed: () =>
@@ -333,14 +340,12 @@ class _StatusGroupCard extends StatelessWidget {
 
 class _HomeChildCard extends StatelessWidget {
   const _HomeChildCard({
-    required this.isNp,
     required this.child,
     required this.onChildPressed,
     required this.onRecordVaccinePressed,
     required this.onFindClinicPressed,
   });
 
-  final bool isNp;
   final HomeChildSummary child;
   final VoidCallback onChildPressed;
   final VoidCallback onRecordVaccinePressed;
@@ -348,6 +353,8 @@ class _HomeChildCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints childConstraints) {
         final bool compactActions = childConstraints.maxWidth < 420;
@@ -371,7 +378,7 @@ class _HomeChildCard extends StatelessWidget {
                 ),
               ),
               icon: const Icon(Icons.edit, size: 18),
-              label: Text(isNp ? 'खोप रेकर्ड' : 'Record vaccine'),
+              label: Text(localizations.homeActionRecordVaccine),
             ),
           if (child.canFindClinic)
             FilledButton.icon(
@@ -391,7 +398,7 @@ class _HomeChildCard extends StatelessWidget {
                 ),
               ),
               icon: const Icon(Icons.location_on_outlined, size: 18),
-              label: Text(isNp ? 'क्लिनिक खोज्नुहोस्' : 'Find clinic'),
+              label: Text(localizations.homeActionFindClinic),
             ),
         ];
 
@@ -451,7 +458,10 @@ class _HomeChildCard extends StatelessWidget {
                                   ),
                             ),
                             Text(
-                              '${child.vaccineLabel} - ${child.ageLabel}',
+                              _childSummaryLabel(
+                                child: child,
+                                localizations: localizations,
+                              ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               softWrap: true,
@@ -487,15 +497,15 @@ class _HomeChildCard extends StatelessWidget {
 
 class _HomeEmptyState extends StatelessWidget {
   const _HomeEmptyState({
-    required this.isNp,
     required this.onAddChildPressed,
   });
 
-  final bool isNp;
   final VoidCallback onAddChildPressed;
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+
     return Container(
       key: const Key('home-empty-state'),
       padding: const EdgeInsets.all(20),
@@ -508,18 +518,14 @@ class _HomeEmptyState extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            isNp
-                ? 'अहिलेसम्म कुनै बच्चा थपिएको छैन।'
-                : 'No children added yet.',
+            localizations.homeEmptyStateTitle,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
           ),
           const SizedBox(height: 8),
           Text(
-            isNp
-                ? 'यहाँ आगामी खोपहरू हेर्न आफ्नो पहिलो बच्चा थप्नुहोस्।'
-                : 'Add your first child to see upcoming vaccines here.',
+            localizations.homeEmptyStateSubtitle,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: const Color(0xFF495D7D),
                 ),
@@ -527,7 +533,7 @@ class _HomeEmptyState extends StatelessWidget {
           const SizedBox(height: 14),
           FilledButton(
             onPressed: onAddChildPressed,
-            child: Text(isNp ? 'बच्चा थप्नुहोस्' : 'Add child'),
+            child: Text(localizations.homeActionAddChild),
           ),
         ],
       ),

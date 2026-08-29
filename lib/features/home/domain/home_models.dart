@@ -11,8 +11,8 @@ class HomeChildSummary {
   const HomeChildSummary({
     required this.name,
     this.childId = '',
-    required this.ageLabel,
-    required this.vaccineLabel,
+    required this.dateOfBirth,
+    this.nextVaccineCode,
     required this.avatarEmoji,
     required this.canRecordVaccine,
     required this.canFindClinic,
@@ -20,8 +20,8 @@ class HomeChildSummary {
 
   final String name;
   final String childId;
-  final String ageLabel;
-  final String vaccineLabel;
+  final DateTime dateOfBirth;
+  final String? nextVaccineCode;
   final String avatarEmoji;
   final bool canRecordVaccine;
   final bool canFindClinic;
@@ -31,11 +31,9 @@ class HomeChildSummary {
 class HomeStatusGroup {
   const HomeStatusGroup({
     required this.group,
-    required this.headerLabel,
     required this.children,
   });
 
   final HomeVaccinationGroup group;
-  final String headerLabel;
   final List<HomeChildSummary> children;
 }
