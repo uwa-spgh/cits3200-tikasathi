@@ -96,7 +96,7 @@ class _ChildContent extends StatelessWidget {
             const SizedBox(height: 14),
             _ChildHeaderCard(
               name: details.child.name,
-              ageLabel: details.ageLabel,
+              ageLabel: details.ageLabel(localizations),
               bornLabel: localizations.childBornOn(bornDateLabel),
               avatarEmoji: details.avatarEmoji,
             ),

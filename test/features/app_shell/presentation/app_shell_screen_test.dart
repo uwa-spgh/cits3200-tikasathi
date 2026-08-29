@@ -29,6 +29,7 @@ void main() {
             healthFacilitatorProvider.overrideWith((ref) => Stream.value(null)),
           ],
           child: const MaterialApp(
+            locale: Locale('ne'),
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: AppShellScreen(),
@@ -39,8 +40,8 @@ void main() {
 
       expect(find.byType(AppBottomNavigationBar), findsOneWidget);
       expect(find.byKey(const Key('home-title')), findsOneWidget);
-      expect(find.text('सिक्नुहोस् (Placeholder)'), findsNothing);
-      expect(find.text('भाषा चयन गर्नुहोस्'), findsNothing);
+      expect(find.text('सिक्नुहोस्'), findsWidgets);
+      expect(find.text('भाषा छान्नुहोस्'), findsNothing);
       expect(find.byIcon(Icons.record_voice_over), findsOneWidget);
     });
 
@@ -60,6 +61,7 @@ void main() {
             healthFacilitatorProvider.overrideWith((ref) => Stream.value(null)),
           ],
           child: const MaterialApp(
+            locale: Locale('ne'),
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: AppShellScreen(),
@@ -70,13 +72,13 @@ void main() {
 
       await tester.tap(find.byIcon(Icons.menu_book_outlined));
       await tester.pumpAndSettle();
-      expect(find.text('सिक्नुहोस् (Placeholder)'), findsOneWidget);
+      expect(find.text('सिक्नुहोस्'), findsWidgets);
       expect(find.byKey(const Key('home-title')), findsNothing);
 
       await tester.tap(find.byIcon(Icons.settings_outlined));
       await tester.pumpAndSettle();
-      expect(find.text('Choose language'), findsOneWidget);
-      expect(find.text('सिक्नुहोस् (Placeholder)'), findsNothing);
+      expect(find.text('भाषा छान्नुहोस्'), findsOneWidget);
+      expect(find.text('सिक्नुहोस्'), findsWidgets);
     });
 
     testWidgets('shows read-aloud action feedback when pressed',
@@ -95,6 +97,7 @@ void main() {
             healthFacilitatorProvider.overrideWith((ref) => Stream.value(null)),
           ],
           child: const MaterialApp(
+            locale: Locale('ne'),
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: AppShellScreen(),
@@ -103,11 +106,11 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byTooltip('Read aloud'), findsOneWidget);
+      expect(find.byTooltip('पढाइ सुन्नुहोस्'), findsOneWidget);
       await tester.tap(find.byIcon(Icons.record_voice_over));
       await tester.pump();
 
-      expect(find.text('Read aloud is not available yet.'), findsOneWidget);
+      expect(find.text('पढाइ सुन्न उपलब्ध छैन।'), findsOneWidget);
     });
   });
 }

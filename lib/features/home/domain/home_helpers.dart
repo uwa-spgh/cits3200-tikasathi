@@ -1,15 +1,16 @@
+import 'package:tikasathi/core/generated/app_localizations.dart';
+
 enum ChildSex {
   male,
   female,
 }
 
-String formatAge(DateTime dateOfBirth, {bool isNp = false}) {
+String formatAge(DateTime dateOfBirth, AppLocalizations localizations) {
   final DateTime today = DateTime.now();
   final int totalDays = today.difference(dateOfBirth).inDays;
 
   if (totalDays < 30) {
-    if (isNp) return '$totalDays दिन';
-    return '$totalDays ${totalDays == 1 ? 'day' : 'days'} old';
+    return localizations.ageInDays(totalDays);
   }
 
   int years = today.year - dateOfBirth.year;
@@ -25,12 +26,10 @@ String formatAge(DateTime dateOfBirth, {bool isNp = false}) {
       (today.day < dateOfBirth.day ? 1 : 0);
 
   if (totalMonths < 24) {
-    if (isNp) return '$totalMonths महिना';
-    return '$totalMonths ${totalMonths == 1 ? 'month' : 'months'} old';
+    return localizations.ageInMonths(totalMonths);
   }
 
-  if (isNp) return '$years वर्ष';
-  return '$years ${years == 1 ? 'year' : 'years'} old';
+  return localizations.ageInYears(years);
 }
 
 String getChildAvatar({

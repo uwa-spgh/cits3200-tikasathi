@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/onboarding/presentation/child_screen.dart';
-import 'package:tikasathi/features/settings/domain/app_language.dart';
 
 class CaregiverScreen extends ConsumerStatefulWidget {
   const CaregiverScreen({super.key});
@@ -41,27 +41,9 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(onboardingControllerProvider);
-    final bool isNp = state.selectedLanguage == AppLanguage.nepali;
-
-    final title = isNp ? 'हेरचाहकर्ताको विवरण' : 'Caregiver Details';
-    final subtitle = isNp
-        ? 'कृपया आफ्नो विवरण भर्नुहोस्।'
-        : 'Please enter your information so we can set up the app.';
-    final nameLabel = isNp ? '👩‍🦰 पूरा नाम' : '👩‍🦰 Full Name';
-    final nameHint =
-        isNp ? 'तपाईंको पूरा नाम प्रविष्ट गर्नुहोस्' : 'Enter your full name';
-    final phoneLabel = isNp ? '📱 फोन नम्बर' : '📱 Phone Number';
-    final phoneHint = isNp
-        ? 'तपाईंको फोन नम्बर प्रविष्ट गर्नुहोस्'
-        : 'Enter your phone number';
-    final addressLabel =
-        isNp ? '🏠 ठेगाना (वैकल्पिक)' : '🏠 Address (Optional)';
-    final addressHint = isNp
-        ? 'तपाईंको ठेगाना प्रविष्ट गर्नुहोस्'
-        : 'Enter your street address';
-    final continueText = isNp ? 'अगाडि बढ्नुहोस्' : 'Continue';
-    final stepText = isNp ? 'चरण १/२' : 'Step 1 of 2';
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+    ref.watch(onboardingControllerProvider);
+    final stepText = localizations.onboardingStepLabel(1, 2);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F9FC),
@@ -114,7 +96,7 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
               const SizedBox(height: 32),
 
               Text(
-                title,
+                localizations.onboardingCaregiverTitle,
                 style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -123,7 +105,7 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                subtitle,
+                localizations.onboardingCaregiverSubtitle,
                 style: const TextStyle(
                   fontSize: 16,
                   color: Color(0xFF64748B),
@@ -132,16 +114,16 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
               const SizedBox(height: 32),
 
               _buildTextField(
-                label: nameLabel,
-                hint: nameHint,
+                label: localizations.onboardingCaregiverNameLabel,
+                hint: localizations.onboardingCaregiverNameHint,
                 controller: _nameController,
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 24),
 
               _buildTextField(
-                label: phoneLabel,
-                hint: phoneHint,
+                label: localizations.onboardingCaregiverPhoneLabel,
+                hint: localizations.onboardingCaregiverPhoneHint,
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
                 textInputAction: TextInputAction.next,
@@ -149,8 +131,8 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
               const SizedBox(height: 24),
 
               _buildTextField(
-                label: addressLabel,
-                hint: addressHint,
+                label: localizations.onboardingCaregiverAddressLabel,
+                hint: localizations.onboardingCaregiverAddressHint,
                 controller: _addressController,
                 textInputAction: TextInputAction.done,
               ),
@@ -171,7 +153,7 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      continueText,
+                      localizations.onboardingContinue,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,

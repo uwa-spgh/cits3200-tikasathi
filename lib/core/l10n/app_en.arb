@@ -136,5 +136,85 @@
   "settingsTitle": "Settings",
   "settingsLanguageTitle": "Choose language",
   "settingsNepali": "Nepali",
-  "settingsEnglish": "English"
+  "settingsEnglish": "English",
+  "settingsLanguageSaveError": "Could not save language.",
+  "appLanguageLoadError": "Unable to load language settings: {error}",
+  "navHome": "Home",
+  "navLearn": "Learn",
+  "navSettings": "Settings",
+  "onboardingWelcome": "Welcome!",
+  "onboardingLanguagePrompt": "Please select your language / कृपया आफ्नो भाषा छान्नुहोस्",
+  "onboardingContinue": "Continue",
+  "onboardingCaregiverTitle": "Caregiver Details",
+  "onboardingCaregiverSubtitle": "Please enter your information so we can set up the app.",
+  "onboardingCaregiverNameLabel": "👩‍🦰 Full Name",
+  "onboardingCaregiverNameHint": "Enter your full name",
+  "onboardingCaregiverPhoneLabel": "📱 Phone Number",
+  "onboardingCaregiverPhoneHint": "Enter your phone number",
+  "onboardingCaregiverAddressLabel": "🏠 Address (Optional)",
+  "onboardingCaregiverAddressHint": "Enter your street address",
+  "onboardingStepLabel": "Step {current} of {total}",
+  "onboardingChildNameLabel": "👶 Child's name",
+  "onboardingChildNameHint": "Enter full name",
+  "onboardingChildDobLabel": "📅 Date of Birth",
+  "onboardingChildDateDayHint": "DD",
+  "onboardingChildDateMonthHint": "MM",
+  "onboardingChildDateYearHint": "YYYY",
+  "onboardingChildGenderLabel": "⚥ Gender",
+  "onboardingChildGenderGirl": "Girl",
+  "onboardingChildGenderBoy": "Boy",
+  "onboardingFinishSetup": "Finish Setup",
+  "onboardingErrorEmptyName": "Please enter child's name",
+  "onboardingErrorInvalidDate": "Please enter a valid Date of Birth",
+  "onboardingErrorInvalidDob": "Invalid Date of Birth",
+  "onboardingErrorSaveSetup": "Error saving setup: {error}",
+  "homeTitle": "Your children",
+  "homeAddChildButton": "+ Add child",
+  "homeActionAddChild": "Add child",
+  "homeActionChildDetails": "Child details",
+  "homeActionRecordVaccine": "Record vaccine",
+  "homeActionFindClinic": "Find clinic",
+  "homeActionPlaceholder": "Placeholder action: {action}",
+  "@homeActionPlaceholder": {
+    "description": "Fallback snack bar message for an unimplemented home action",
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "ageInDays": "{count, plural, =1 {1 day old} other {{count} days old}}",
+  "@ageInDays": {
+    "description": "Age label in days for a child",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ageInMonths": "{count, plural, =1 {1 month old} other {{count} months old}}",
+  "@ageInMonths": {
+    "description": "Age label in months for a child",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ageInYears": "{count, plural, =1 {1 year old} other {{count} years old}}",
+  "@ageInYears": {
+    "description": "Age label in years for a child",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeSectionDueToday": "Due today",
+  "homeSectionDueSoon": "Due soon",
+  "homeSectionUpToDate": "Up to date",
+  "homeEmptyStateTitle": "No children added yet.",
+  "homeEmptyStateSubtitle": "Add your first child to see upcoming vaccines here.",
+  "learnPlaceholderTitle": "Learn",
+  "learnPlaceholderTitleNp": "सिक्नुहोस्"
 }

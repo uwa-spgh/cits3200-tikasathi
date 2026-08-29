@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/onboarding/presentation/caregiver_screen.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
@@ -9,6 +10,7 @@ class LanguageScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
     final state = ref.watch(onboardingControllerProvider);
     final controller = ref.read(onboardingControllerProvider.notifier);
 
@@ -22,7 +24,6 @@ class LanguageScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Spacer(),
-              // Baby avatar representation
               Container(
                 height: 120,
                 width: 120,
@@ -39,9 +40,7 @@ class LanguageScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 32),
               Text(
-                state.selectedLanguage == AppLanguage.nepali
-                    ? 'स्वागत छ!'
-                    : 'Welcome!',
+                localizations.onboardingWelcome,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 32,
@@ -50,36 +49,29 @@ class LanguageScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Please select your language / कृपया आफ्नो भाषा छान्नुहोस्',
+              Text(
+                localizations.onboardingLanguagePrompt,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   color: Color(0xFF64748B),
                 ),
               ),
               const SizedBox(height: 48),
-
-              // Nepali Button
               _LanguageButton(
-                title: 'नेपाली',
+                title: localizations.settingsNepali,
                 flag: '🇳🇵',
                 isSelected: state.selectedLanguage == AppLanguage.nepali,
                 onTap: () => controller.updateLanguage(AppLanguage.nepali),
               ),
               const SizedBox(height: 16),
-
-              // English Button
               _LanguageButton(
-                title: 'English',
+                title: localizations.settingsEnglish,
                 flag: '🇬🇧',
                 isSelected: state.selectedLanguage == AppLanguage.english,
                 onTap: () => controller.updateLanguage(AppLanguage.english),
               ),
-
               const Spacer(),
-
-              // Continue Button
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -98,18 +90,18 @@ class LanguageScreen extends ConsumerWidget {
                   ),
                   minimumSize: const Size(double.infinity, 56),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Continue',
-                      style: TextStyle(
+                      localizations.onboardingContinue,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(width: 8),
-                    Icon(Icons.arrow_forward, size: 20),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.arrow_forward, size: 20),
                   ],
                 ),
               ),

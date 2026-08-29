@@ -1,14 +1,14 @@
 import 'home_models.dart';
 
-const List<HomeStatusGroup> homeDemoGroups = <HomeStatusGroup>[
+final List<HomeStatusGroup> homeDemoGroups = <HomeStatusGroup>[
   HomeStatusGroup(
     group: HomeVaccinationGroup.dueToday,
-    headerLabel: 'Vaccine due TODAY',
     children: <HomeChildSummary>[
       HomeChildSummary(
         name: 'Maya',
-        ageLabel: '9 months old',
-        vaccineLabel: 'Rotavirus',
+        childId: 'maya',
+        dateOfBirth: DateTime(2024, 1, 15),
+        nextVaccineCode: 'Rotavirus',
         avatarEmoji: '👶',
         canRecordVaccine: true,
         canFindClinic: true,
@@ -17,12 +17,12 @@ const List<HomeStatusGroup> homeDemoGroups = <HomeStatusGroup>[
   ),
   HomeStatusGroup(
     group: HomeVaccinationGroup.dueSoon,
-    headerLabel: 'Due in 2 weeks',
     children: <HomeChildSummary>[
       HomeChildSummary(
         name: 'Oscar',
-        ageLabel: '14 months old',
-        vaccineLabel: 'TCV',
+        childId: 'oscar',
+        dateOfBirth: DateTime(2023, 7, 5),
+        nextVaccineCode: 'TCV',
         avatarEmoji: '🧒',
         canRecordVaccine: false,
         canFindClinic: true,
@@ -31,12 +31,12 @@ const List<HomeStatusGroup> homeDemoGroups = <HomeStatusGroup>[
   ),
   HomeStatusGroup(
     group: HomeVaccinationGroup.upToDate,
-    headerLabel: 'All up to date',
     children: <HomeChildSummary>[
       HomeChildSummary(
         name: 'Sofia',
-        ageLabel: '4 years old',
-        vaccineLabel: 'DPT',
+        childId: 'sofia',
+        dateOfBirth: DateTime(2021, 4, 10),
+        nextVaccineCode: 'DPT',
         avatarEmoji: '👧',
         canRecordVaccine: false,
         canFindClinic: false,
