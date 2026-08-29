@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
+
+import 'package:tikasathi/core/database/app_database.dart';
+import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
+import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 
 class ChildScreen extends ConsumerStatefulWidget {
-  const ChildScreen({super.key});
+  const ChildScreen({
+    super.key,
+    this.isOnboardingFlow = true,
+  });
+
+  final bool isOnboardingFlow;
 
   @override
   ConsumerState<ChildScreen> createState() => _ChildScreenState();
@@ -18,6 +28,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
   final _yyController = TextEditingController();
 
   String _selectedGender = 'Girl';
+  bool _isSaving = false;
 
   @override
   void dispose() {
@@ -61,6 +72,40 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
       return;
     }
 
+    if (!widget.isOnboardingFlow) {
+      setState(() => _isSaving = true);
+      try {
+        final db = ref.read(appDatabaseProvider);
+        await db.childProfilesDao.insertChildProfile(
+          ChildProfilesCompanion.insert(
+            id: const Uuid().v4(),
+            name: _nameController.text.trim(),
+            dateOfBirth: dob,
+            sex: _selectedGender,
+          ),
+        );
+        ref.invalidate(homeStatusGroupsProvider);
+        if (mounted) {
+          Navigator.pop(context);
+        }
+      } catch (error) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                localizations.onboardingErrorSaveSetup(error.toString()),
+              ),
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isSaving = false);
+        }
+      }
+      return;
+    }
+
     final controller = ref.read(onboardingControllerProvider.notifier);
 
     controller.updateChildInfo(
@@ -92,7 +137,57 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
     final state = ref.watch(onboardingControllerProvider);
-    final stepText = localizations.onboardingStepLabel(2, 2);
+    final bool isSaving = widget.isOnboardingFlow ? state.isSaving : _isSaving;
+    final String submitLabel = widget.isOnboardingFlow
+        ? localizations.onboardingFinishSetup
+        : 'Save child';
+
+    final List<Widget> headerWidgets = widget.isOnboardingFlow
+        ? <Widget>[
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0F52BA),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Container(
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0F52BA),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Text(
+                  localizations.onboardingStepLabel(2, 2),
+                  style: const TextStyle(
+                    color: Color(0xFF64748B),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 32),
+          ]
+        : <Widget>[
+            const Text(
+              'Add a new child',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF0F172A),
+              ),
+            ),
+            const SizedBox(height: 32),
+          ];
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F9FC),
@@ -110,39 +205,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Step indicator
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF0F52BA),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Container(
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF0F52BA),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Text(
-                    stepText,
-                    style: const TextStyle(
-                      color: Color(0xFF64748B),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
+              ...headerWidgets,
 
               // Form Card
               Container(
@@ -249,7 +312,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
               const SizedBox(height: 48),
 
               ElevatedButton(
-                onPressed: state.isSaving ? null : _onFinish,
+                onPressed: isSaving ? null : _onFinish,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0F52BA),
                   foregroundColor: Colors.white,
@@ -259,21 +322,14 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
                   ),
                   minimumSize: const Size(double.infinity, 56),
                 ),
-                child: state.isSaving
+                child: isSaving
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            localizations.onboardingFinishSetup,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          const Icon(Icons.arrow_forward, size: 20),
-                        ],
+                    : Text(
+                        submitLabel,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
               ),
             ],

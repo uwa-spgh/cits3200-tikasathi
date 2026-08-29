@@ -4,13 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/child/presentation/child_profile_screen.dart';
+import 'package:tikasathi/features/onboarding/presentation/child_screen.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
 
 import '../domain/home_helpers.dart';
 import '../domain/home_models.dart';
 import '../domain/home_status_groups_provider.dart';
-import 'register_child_dialog.dart';
 
 typedef HomeChildActionCallback = void Function(HomeChildSummary child);
 
@@ -82,10 +82,12 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  static Future<void> _openRegisterChildDialog(BuildContext context) {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext _) => const RegisterChildDialog(),
+  static Future<void> _openAddChildPage(BuildContext context) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (BuildContext _) => const ChildScreen(isOnboardingFlow: false),
+      ),
     );
   }
 }
@@ -154,7 +156,7 @@ class _HomeScreenContent extends StatelessWidget {
                     final Widget addChildButton = OutlinedButton(
                       key: const Key('home-add-child-button'),
                       onPressed: onAddChildPressed ??
-                          () => HomeScreen._openRegisterChildDialog(context),
+                          () => HomeScreen._openAddChildPage(context),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: const Color(0xFF0E64C5),
                         side: const BorderSide(color: Color(0xFF0E64C5)),
@@ -197,7 +199,7 @@ class _HomeScreenContent extends StatelessWidget {
                 if (groups.isEmpty)
                   _HomeEmptyState(
                     onAddChildPressed: onAddChildPressed ??
-                        () => HomeScreen._openRegisterChildDialog(context),
+                        () => HomeScreen._openAddChildPage(context),
                   )
                 else
                   ...groups.map(
