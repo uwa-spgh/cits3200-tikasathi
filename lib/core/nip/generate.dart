@@ -21,8 +21,8 @@ typedef GenerateDues = List<GeneratedDue> Function(
 enum VaccineStatus { completed, ongoing, overdue }
 
 /// A map of the vaccination catch-up schedule.
-/// 
-/// Each vaccination is a list of CatchUpRule, where each rule defines an age range that it is applicable to, 
+///
+/// Each vaccination is a list of CatchUpRule, where each rule defines an age range that it is applicable to,
 /// the number of doses needed in that age range, and the minimum interval between each dose.
 final Map<String, List<CatchUpRule>> _catchUp = Map.unmodifiable({
   'BCG': [CatchUpRule(maxAge: DayDuration(years: 5))],
@@ -60,7 +60,7 @@ final Map<String, List<CatchUpRule>> _catchUp = Map.unmodifiable({
 });
 
 /// Represents a part of the catch-up schedule for a particular vaccination.
-/// 
+///
 /// Contains fields for the number of required doses, the minimum interval between doses, and the minimum and maximum age that this schedule applies to,
 /// The default values, when nothing is passed, is 0 - 100 years for the age range, 1 required dose, and no minimum interval.
 class CatchUpRule {
@@ -80,7 +80,7 @@ class CatchUpRule {
 }
 
 /// Produces a vaccination schedule, automatically applying the catch-up schedule for overdue vaccinations.
-/// 
+///
 /// Takes the date of birth, today's date, and a list of vaccination records as input,
 /// and produces a list of vaccination due dates as outputs.
 /// Completed vaccinations do not generate any due dates.
@@ -120,7 +120,7 @@ List<GeneratedDue> generate(
 }
 
 /// The status of a particular vaccine.
-/// 
+///
 /// Takes a vaccination due dates and filters for doses that match the given vaccine code,
 /// then compares them with today's date to return if a vaccine is completed, ongoing, or overdue.
 VaccineStatus status(
@@ -138,7 +138,7 @@ VaccineStatus status(
 }
 
 /// Generates the catch-up schedule for an overdue vaccine.
-/// 
+///
 /// Schedules the first overdue dose's due date to tomorrow, then schedules following due dates with the vaccine's minimum interval between each one.
 /// Doses that exceed the maximum age for the catch-up schedule are excluded.
 List<GeneratedDue> _generateCatchUp(

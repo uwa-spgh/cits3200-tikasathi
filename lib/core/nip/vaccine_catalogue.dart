@@ -3,8 +3,8 @@ import 'dart:core';
 part 'generate.dart';
 
 /// A map of the National Immunisation Program
-/// 
-/// Each vaccination is a list of durations representing the age of the child each dose should be administered by, 
+///
+/// Each vaccination is a list of durations representing the age of the child each dose should be administered by,
 /// where the first age corresponds to the first dose, the second age to the second dose, etc.
 final Map<String, List<DayDuration>> _niP = Map.unmodifiable({
   // Note: The dose of a vaccine corresponds to the index of each due-at-age. Ergo, to determine if a particular doseNumber exists,
@@ -34,7 +34,7 @@ final Map<String, List<DayDuration>> _niP = Map.unmodifiable({
 });
 
 /// A wrapper around Duration to input days, weeks, months, and years.
-/// 
+///
 /// Stores a Duration field that is calculated using the average number of days for each period of time.
 /// This means that a duration of 1 month added to a particular day may not result in the same day one month later,
 /// since the length of each month varies.
