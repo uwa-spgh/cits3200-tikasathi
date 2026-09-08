@@ -335,4 +335,36 @@ class AppLocalizationsNe extends AppLocalizations {
 
   @override
   String get learnPlaceholderTitleNp => 'सिक्नुहोस्';
+
+  @override
+  String get childStatusSetupIncomplete => 'सेटअप अधुरो';
+
+  @override
+  String get retroactiveVaccineTitle => 'खोप इतिहास';
+
+  @override
+  String retroactiveVaccineSubtitle(String childName) {
+    return 'कृपया $childName ले पहिले नै लगाइसकेका खोपहरू भर्नुहोस्।';
+  }
+
+  @override
+  String get retroactiveVaccineShowAll => 'सबै खोपहरू देखाउनुहोस्';
+
+  @override
+  String get retroactiveVaccineShowAllSubtitle =>
+      'उमेर-उपयुक्त खोपहरू मात्र देखाइएको छ।\nसबै देखाउन टगल गर्नुहोस्।';
+
+  @override
+  String retroactiveVaccineDateLabel(String date) {
+    return 'मिति: $date';
+  }
+
+  @override
+  String get retroactiveVaccineChangeDate => 'परिवर्तन गर्नुहोस्';
+
+  @override
+  String get retroactiveVaccineFinish => 'समाप्त';
+
+  @override
+  String get retroactiveVaccineSkip => 'अहिलेको लागि छोड्नुहोस्';
 }

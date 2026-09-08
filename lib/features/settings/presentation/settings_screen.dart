@@ -204,9 +204,10 @@ class SettingsScreen extends ConsumerWidget {
 
                   // Debug: Clear database tables
                   final db = ref.read(appDatabaseProvider);
-                  await db.delete(db.childProfiles).go();
+                  await db.delete(db.reminders).go();
                   await db.delete(db.vaccinationRecords).go();
                   await db.delete(db.vaccinationDues).go();
+                  await db.delete(db.childProfiles).go();
                   await db.delete(db.healthFacilitators).go();
 
                   if (context.mounted) {

@@ -60,7 +60,7 @@ class OnboardingController extends _$OnboardingController {
     );
   }
 
-  Future<bool> finishSetup() async {
+  Future<String?> finishSetup() async {
     state = state.copyWith(isSaving: true, error: null);
     try {
       final secureStorage = ref.read(secureStorageServiceProvider);
@@ -73,9 +73,11 @@ class OnboardingController extends _$OnboardingController {
       );
 
       // 2. Save Child
+      String? createdChildId;
       if (state.childName.isNotEmpty && state.childDob != null) {
         final db = ref.read(appDatabaseProvider);
         final id = const Uuid().v4();
+        createdChildId = id;
 
         await db.childProfilesDao.insertChildProfile(
           ChildProfilesCompanion.insert(
@@ -85,6 +87,8 @@ class OnboardingController extends _$OnboardingController {
             sex: state.childSex,
           ),
         );
+        
+        await db.vaccinationDuesDao.recalculateDuesForChild(id);
       }
 
       // 3. Save language and mark onboarding as completed.
@@ -97,10 +101,10 @@ class OnboardingController extends _$OnboardingController {
       await secureStorage.setOnboardingCompleted();
 
       state = state.copyWith(isSaving: false);
-      return true;
+      return createdChildId ?? 'completed_without_child';
     } catch (e) {
       state = state.copyWith(isSaving: false, error: e.toString());
-      return false;
+      return null;
     }
   }
 }

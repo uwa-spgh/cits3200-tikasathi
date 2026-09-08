@@ -655,6 +655,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'सिक्नुहोस्'**
   String get learnPlaceholderTitleNp;
+
+  /// No description provided for @childStatusSetupIncomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup incomplete'**
+  String get childStatusSetupIncomplete;
+
+  /// No description provided for @retroactiveVaccineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine History'**
+  String get retroactiveVaccineTitle;
+
+  /// No description provided for @retroactiveVaccineSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill out the vaccines that {childName} has already had.'**
+  String retroactiveVaccineSubtitle(String childName);
+
+  /// No description provided for @retroactiveVaccineShowAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all vaccines'**
+  String get retroactiveVaccineShowAll;
+
+  /// No description provided for @retroactiveVaccineShowAllSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing age-appropriate vaccines only.\nToggle to show all.'**
+  String get retroactiveVaccineShowAllSubtitle;
+
+  /// No description provided for @retroactiveVaccineDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date: {date}'**
+  String retroactiveVaccineDateLabel(String date);
+
+  /// No description provided for @retroactiveVaccineChangeDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get retroactiveVaccineChangeDate;
+
+  /// No description provided for @retroactiveVaccineFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get retroactiveVaccineFinish;
+
+  /// No description provided for @retroactiveVaccineSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip for now'**
+  String get retroactiveVaccineSkip;
 }
 
 class _AppLocalizationsDelegate

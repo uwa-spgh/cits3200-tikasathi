@@ -216,5 +216,28 @@
   "homeEmptyStateTitle": "अहिलेसम्म कुनै बच्चा थपिएको छैन।",
   "homeEmptyStateSubtitle": "यहाँ आगामी खोपहरू हेर्न आफ्नो पहिलो बच्चा थप्नुहोस्।",
   "learnPlaceholderTitle": "सिक्नुहोस्",
-  "learnPlaceholderTitleNp": "सिक्नुहोस्"
+  "learnPlaceholderTitleNp": "सिक्नुहोस्",
+  "childStatusSetupIncomplete": "सेटअप अधुरो",
+  "retroactiveVaccineTitle": "खोप इतिहास",
+  "retroactiveVaccineSubtitle": "कृपया {childName} ले पहिले नै लगाइसकेका खोपहरू भर्नुहोस्।",
+  "@retroactiveVaccineSubtitle": {
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "retroactiveVaccineShowAll": "सबै खोपहरू देखाउनुहोस्",
+  "retroactiveVaccineShowAllSubtitle": "उमेर-उपयुक्त खोपहरू मात्र देखाइएको छ।\nसबै देखाउन टगल गर्नुहोस्।",
+  "retroactiveVaccineDateLabel": "मिति: {date}",
+  "@retroactiveVaccineDateLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "retroactiveVaccineChangeDate": "परिवर्तन गर्नुहोस्",
+  "retroactiveVaccineFinish": "समाप्त",
+  "retroactiveVaccineSkip": "अहिलेको लागि छोड्नुहोस्"
 }

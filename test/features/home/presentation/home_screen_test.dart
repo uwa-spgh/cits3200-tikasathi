@@ -146,8 +146,8 @@ void main() {
       final AppLocalizations localizations =
           AppLocalizations.of(tester.element(find.byType(ChildScreen)))!;
       expect(
-          find.text(localizations.onboardingStepLabel(2, 2)), findsOneWidget);
-      expect(find.text(localizations.onboardingFinishSetup), findsOneWidget);
+          find.text(localizations.onboardingStepLabel(2, 3)), findsOneWidget);
+      expect(find.text(localizations.onboardingContinue), findsOneWidget);
       expect(find.text('Add a new child'), findsNothing);
       expect(find.text('Save child'), findsNothing);
     });

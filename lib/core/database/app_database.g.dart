@@ -30,8 +30,19 @@ class $ChildProfilesTable extends ChildProfiles
   late final GeneratedColumn<String> sex = GeneratedColumn<String>(
       'sex', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _isSetupCompleteMeta =
+      const VerificationMeta('isSetupComplete');
   @override
-  List<GeneratedColumn> get $columns => [id, name, dateOfBirth, sex];
+  late final GeneratedColumn<bool> isSetupComplete = GeneratedColumn<bool>(
+      'is_setup_complete', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("is_setup_complete" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, name, dateOfBirth, sex, isSetupComplete];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -67,6 +78,12 @@ class $ChildProfilesTable extends ChildProfiles
     } else if (isInserting) {
       context.missing(_sexMeta);
     }
+    if (data.containsKey('is_setup_complete')) {
+      context.handle(
+          _isSetupCompleteMeta,
+          isSetupComplete.isAcceptableOrUnknown(
+              data['is_setup_complete']!, _isSetupCompleteMeta));
+    }
     return context;
   }
 
@@ -84,6 +101,8 @@ class $ChildProfilesTable extends ChildProfiles
           DriftSqlType.dateTime, data['${effectivePrefix}date_of_birth'])!,
       sex: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}sex'])!,
+      isSetupComplete: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}is_setup_complete'])!,
     );
   }
 
@@ -98,11 +117,13 @@ class ChildProfile extends DataClass implements Insertable<ChildProfile> {
   final String name;
   final DateTime dateOfBirth;
   final String sex;
+  final bool isSetupComplete;
   const ChildProfile(
       {required this.id,
       required this.name,
       required this.dateOfBirth,
-      required this.sex});
+      required this.sex,
+      required this.isSetupComplete});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -110,6 +131,7 @@ class ChildProfile extends DataClass implements Insertable<ChildProfile> {
     map['name'] = Variable<String>(name);
     map['date_of_birth'] = Variable<DateTime>(dateOfBirth);
     map['sex'] = Variable<String>(sex);
+    map['is_setup_complete'] = Variable<bool>(isSetupComplete);
     return map;
   }
 
@@ -119,6 +141,7 @@ class ChildProfile extends DataClass implements Insertable<ChildProfile> {
       name: Value(name),
       dateOfBirth: Value(dateOfBirth),
       sex: Value(sex),
+      isSetupComplete: Value(isSetupComplete),
     );
   }
 
@@ -130,6 +153,7 @@ class ChildProfile extends DataClass implements Insertable<ChildProfile> {
       name: serializer.fromJson<String>(json['name']),
       dateOfBirth: serializer.fromJson<DateTime>(json['dateOfBirth']),
       sex: serializer.fromJson<String>(json['sex']),
+      isSetupComplete: serializer.fromJson<bool>(json['isSetupComplete']),
     );
   }
   @override
@@ -140,16 +164,22 @@ class ChildProfile extends DataClass implements Insertable<ChildProfile> {
       'name': serializer.toJson<String>(name),
       'dateOfBirth': serializer.toJson<DateTime>(dateOfBirth),
       'sex': serializer.toJson<String>(sex),
+      'isSetupComplete': serializer.toJson<bool>(isSetupComplete),
     };
   }
 
   ChildProfile copyWith(
-          {String? id, String? name, DateTime? dateOfBirth, String? sex}) =>
+          {String? id,
+          String? name,
+          DateTime? dateOfBirth,
+          String? sex,
+          bool? isSetupComplete}) =>
       ChildProfile(
         id: id ?? this.id,
         name: name ?? this.name,
         dateOfBirth: dateOfBirth ?? this.dateOfBirth,
         sex: sex ?? this.sex,
+        isSetupComplete: isSetupComplete ?? this.isSetupComplete,
       );
   ChildProfile copyWithCompanion(ChildProfilesCompanion data) {
     return ChildProfile(
@@ -158,6 +188,9 @@ class ChildProfile extends DataClass implements Insertable<ChildProfile> {
       dateOfBirth:
           data.dateOfBirth.present ? data.dateOfBirth.value : this.dateOfBirth,
       sex: data.sex.present ? data.sex.value : this.sex,
+      isSetupComplete: data.isSetupComplete.present
+          ? data.isSetupComplete.value
+          : this.isSetupComplete,
     );
   }
 
@@ -167,13 +200,14 @@ class ChildProfile extends DataClass implements Insertable<ChildProfile> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('dateOfBirth: $dateOfBirth, ')
-          ..write('sex: $sex')
+          ..write('sex: $sex, ')
+          ..write('isSetupComplete: $isSetupComplete')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, dateOfBirth, sex);
+  int get hashCode => Object.hash(id, name, dateOfBirth, sex, isSetupComplete);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -181,7 +215,8 @@ class ChildProfile extends DataClass implements Insertable<ChildProfile> {
           other.id == this.id &&
           other.name == this.name &&
           other.dateOfBirth == this.dateOfBirth &&
-          other.sex == this.sex);
+          other.sex == this.sex &&
+          other.isSetupComplete == this.isSetupComplete);
 }
 
 class ChildProfilesCompanion extends UpdateCompanion<ChildProfile> {
@@ -189,12 +224,14 @@ class ChildProfilesCompanion extends UpdateCompanion<ChildProfile> {
   final Value<String> name;
   final Value<DateTime> dateOfBirth;
   final Value<String> sex;
+  final Value<bool> isSetupComplete;
   final Value<int> rowid;
   const ChildProfilesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.dateOfBirth = const Value.absent(),
     this.sex = const Value.absent(),
+    this.isSetupComplete = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ChildProfilesCompanion.insert({
@@ -202,6 +239,7 @@ class ChildProfilesCompanion extends UpdateCompanion<ChildProfile> {
     required String name,
     required DateTime dateOfBirth,
     required String sex,
+    this.isSetupComplete = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         name = Value(name),
@@ -212,6 +250,7 @@ class ChildProfilesCompanion extends UpdateCompanion<ChildProfile> {
     Expression<String>? name,
     Expression<DateTime>? dateOfBirth,
     Expression<String>? sex,
+    Expression<bool>? isSetupComplete,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -219,6 +258,7 @@ class ChildProfilesCompanion extends UpdateCompanion<ChildProfile> {
       if (name != null) 'name': name,
       if (dateOfBirth != null) 'date_of_birth': dateOfBirth,
       if (sex != null) 'sex': sex,
+      if (isSetupComplete != null) 'is_setup_complete': isSetupComplete,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -228,12 +268,14 @@ class ChildProfilesCompanion extends UpdateCompanion<ChildProfile> {
       Value<String>? name,
       Value<DateTime>? dateOfBirth,
       Value<String>? sex,
+      Value<bool>? isSetupComplete,
       Value<int>? rowid}) {
     return ChildProfilesCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       dateOfBirth: dateOfBirth ?? this.dateOfBirth,
       sex: sex ?? this.sex,
+      isSetupComplete: isSetupComplete ?? this.isSetupComplete,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -253,6 +295,9 @@ class ChildProfilesCompanion extends UpdateCompanion<ChildProfile> {
     if (sex.present) {
       map['sex'] = Variable<String>(sex.value);
     }
+    if (isSetupComplete.present) {
+      map['is_setup_complete'] = Variable<bool>(isSetupComplete.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -266,6 +311,7 @@ class ChildProfilesCompanion extends UpdateCompanion<ChildProfile> {
           ..write('name: $name, ')
           ..write('dateOfBirth: $dateOfBirth, ')
           ..write('sex: $sex, ')
+          ..write('isSetupComplete: $isSetupComplete, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1687,6 +1733,7 @@ typedef $$ChildProfilesTableCreateCompanionBuilder = ChildProfilesCompanion
   required String name,
   required DateTime dateOfBirth,
   required String sex,
+  Value<bool> isSetupComplete,
   Value<int> rowid,
 });
 typedef $$ChildProfilesTableUpdateCompanionBuilder = ChildProfilesCompanion
@@ -1695,6 +1742,7 @@ typedef $$ChildProfilesTableUpdateCompanionBuilder = ChildProfilesCompanion
   Value<String> name,
   Value<DateTime> dateOfBirth,
   Value<String> sex,
+  Value<bool> isSetupComplete,
   Value<int> rowid,
 });
 
@@ -1773,6 +1821,10 @@ class $$ChildProfilesTableFilterComposer
 
   ColumnFilters<String> get sex => $composableBuilder(
       column: $table.sex, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isSetupComplete => $composableBuilder(
+      column: $table.isSetupComplete,
+      builder: (column) => ColumnFilters(column));
 
   Expression<bool> vaccinationRecordsRefs(
       Expression<bool> Function($$VaccinationRecordsTableFilterComposer f) f) {
@@ -1858,6 +1910,10 @@ class $$ChildProfilesTableOrderingComposer
 
   ColumnOrderings<String> get sex => $composableBuilder(
       column: $table.sex, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isSetupComplete => $composableBuilder(
+      column: $table.isSetupComplete,
+      builder: (column) => ColumnOrderings(column));
 }
 
 class $$ChildProfilesTableAnnotationComposer
@@ -1880,6 +1936,9 @@ class $$ChildProfilesTableAnnotationComposer
 
   GeneratedColumn<String> get sex =>
       $composableBuilder(column: $table.sex, builder: (column) => column);
+
+  GeneratedColumn<bool> get isSetupComplete => $composableBuilder(
+      column: $table.isSetupComplete, builder: (column) => column);
 
   Expression<T> vaccinationRecordsRefs<T extends Object>(
       Expression<T> Function($$VaccinationRecordsTableAnnotationComposer a) f) {
@@ -1976,6 +2035,7 @@ class $$ChildProfilesTableTableManager extends RootTableManager<
             Value<String> name = const Value.absent(),
             Value<DateTime> dateOfBirth = const Value.absent(),
             Value<String> sex = const Value.absent(),
+            Value<bool> isSetupComplete = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               ChildProfilesCompanion(
@@ -1983,6 +2043,7 @@ class $$ChildProfilesTableTableManager extends RootTableManager<
             name: name,
             dateOfBirth: dateOfBirth,
             sex: sex,
+            isSetupComplete: isSetupComplete,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -1990,6 +2051,7 @@ class $$ChildProfilesTableTableManager extends RootTableManager<
             required String name,
             required DateTime dateOfBirth,
             required String sex,
+            Value<bool> isSetupComplete = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               ChildProfilesCompanion.insert(
@@ -1997,6 +2059,7 @@ class $$ChildProfilesTableTableManager extends RootTableManager<
             name: name,
             dateOfBirth: dateOfBirth,
             sex: sex,
+            isSetupComplete: isSetupComplete,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

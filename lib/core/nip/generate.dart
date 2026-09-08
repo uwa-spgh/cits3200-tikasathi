@@ -80,7 +80,7 @@ List<GeneratedDue> generate(
   final List<GeneratedDue> result = [];
 
   final age = today.difference(dob);
-  _niP.forEach((vaccine, ages) {
+  nipCatalogue.forEach((vaccine, ages) {
     for (final (dose, doseAge) in ages.indexed) {
       // dose completed
       if (records.any((AdministeredDose record) =>

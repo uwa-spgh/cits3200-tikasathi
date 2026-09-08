@@ -331,4 +331,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get learnPlaceholderTitleNp => 'सिक्नुहोस्';
+
+  @override
+  String get childStatusSetupIncomplete => 'Setup incomplete';
+
+  @override
+  String get retroactiveVaccineTitle => 'Vaccine History';
+
+  @override
+  String retroactiveVaccineSubtitle(String childName) {
+    return 'Please fill out the vaccines that $childName has already had.';
+  }
+
+  @override
+  String get retroactiveVaccineShowAll => 'Show all vaccines';
+
+  @override
+  String get retroactiveVaccineShowAllSubtitle =>
+      'Showing age-appropriate vaccines only.\nToggle to show all.';
+
+  @override
+  String retroactiveVaccineDateLabel(String date) {
+    return 'Date: $date';
+  }
+
+  @override
+  String get retroactiveVaccineChangeDate => 'Change';
+
+  @override
+  String get retroactiveVaccineFinish => 'Finish';
+
+  @override
+  String get retroactiveVaccineSkip => 'Skip for now';
 }

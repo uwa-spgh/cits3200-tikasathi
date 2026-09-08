@@ -216,5 +216,28 @@
   "homeEmptyStateTitle": "No children added yet.",
   "homeEmptyStateSubtitle": "Add your first child to see upcoming vaccines here.",
   "learnPlaceholderTitle": "Learn",
-  "learnPlaceholderTitleNp": "सिक्नुहोस्"
+  "learnPlaceholderTitleNp": "सिक्नुहोस्",
+  "childStatusSetupIncomplete": "Setup incomplete",
+  "retroactiveVaccineTitle": "Vaccine History",
+  "retroactiveVaccineSubtitle": "Please fill out the vaccines that {childName} has already had.",
+  "@retroactiveVaccineSubtitle": {
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "retroactiveVaccineShowAll": "Show all vaccines",
+  "retroactiveVaccineShowAllSubtitle": "Showing age-appropriate vaccines only.\nToggle to show all.",
+  "retroactiveVaccineDateLabel": "Date: {date}",
+  "@retroactiveVaccineDateLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "retroactiveVaccineChangeDate": "Change",
+  "retroactiveVaccineFinish": "Finish",
+  "retroactiveVaccineSkip": "Skip for now"
 }

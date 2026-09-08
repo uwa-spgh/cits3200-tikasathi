@@ -47,4 +47,12 @@ class ChildProfilesDao extends DatabaseAccessor<AppDatabase>
       return (delete(childProfiles)..where((row) => row.id.equals(id))).go();
     });
   }
+
+  Future<int> setSetupComplete(String id, bool isComplete) {
+    return (update(childProfiles)..where((row) => row.id.equals(id))).write(
+      ChildProfilesCompanion(
+        isSetupComplete: Value(isComplete),
+      ),
+    );
+  }
 }

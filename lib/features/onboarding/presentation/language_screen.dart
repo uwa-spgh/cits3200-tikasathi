@@ -4,6 +4,7 @@ import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/onboarding/presentation/caregiver_screen.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
+import 'package:tikasathi/features/settings/domain/language_controller.dart';
 
 class LanguageScreen extends ConsumerWidget {
   const LanguageScreen({super.key});
@@ -62,14 +63,20 @@ class LanguageScreen extends ConsumerWidget {
                 title: localizations.settingsNepali,
                 flag: '🇳🇵',
                 isSelected: state.selectedLanguage == AppLanguage.nepali,
-                onTap: () => controller.updateLanguage(AppLanguage.nepali),
+                onTap: () {
+                  controller.updateLanguage(AppLanguage.nepali);
+                  ref.read(languageControllerProvider.notifier).setLanguage(AppLanguage.nepali);
+                },
               ),
               const SizedBox(height: 16),
               _LanguageButton(
                 title: localizations.settingsEnglish,
                 flag: '🇬🇧',
                 isSelected: state.selectedLanguage == AppLanguage.english,
-                onTap: () => controller.updateLanguage(AppLanguage.english),
+                onTap: () {
+                  controller.updateLanguage(AppLanguage.english);
+                  ref.read(languageControllerProvider.notifier).setLanguage(AppLanguage.english);
+                },
               ),
               const Spacer(),
               ElevatedButton(
