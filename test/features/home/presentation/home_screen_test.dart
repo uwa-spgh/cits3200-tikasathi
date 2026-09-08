@@ -203,7 +203,7 @@ void main() {
       final profiles = await database.childProfilesDao.getAllChildProfiles();
       expect(profiles, hasLength(1));
       expect(profiles.single.name, 'Kiran');
-      expect(profiles.single.sex, 'Girl');
+      expect(profiles.single.sex, 'female');
     });
 
     testWidgets('shows placeholder feedback for non-add-child action buttons',
