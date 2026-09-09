@@ -87,7 +87,6 @@ class OnboardingController extends _$OnboardingController {
             sex: state.childSex,
           ),
         );
-        
         await db.vaccinationDuesDao.recalculateDuesForChild(id);
       }
 

@@ -65,7 +65,9 @@ class VaccinationDuesDao extends DatabaseAccessor<AppDatabase>
 
   Future<void> recalculateDuesForChild(String childId) async {
     await transaction(() async {
-      await (delete(vaccinationDues)..where((row) => row.childId.equals(childId))).go();
+      await (delete(vaccinationDues)
+            ..where((row) => row.childId.equals(childId)))
+          .go();
       await insertDuesForChild(childId);
     });
   }

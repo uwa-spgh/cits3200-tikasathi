@@ -43,7 +43,6 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
     ref.watch(onboardingControllerProvider);
-    final stepText = localizations.onboardingStepLabel(1, 2);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F9FC),
@@ -103,7 +102,6 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
                 ],
               ),
               const SizedBox(height: 32),
-
               Text(
                 localizations.onboardingCaregiverTitle,
                 style: const TextStyle(
@@ -121,7 +119,6 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
                 ),
               ),
               const SizedBox(height: 32),
-
               _buildTextField(
                 label: localizations.onboardingCaregiverNameLabel,
                 hint: localizations.onboardingCaregiverNameHint,
@@ -129,7 +126,6 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 24),
-
               _buildTextField(
                 label: localizations.onboardingCaregiverPhoneLabel,
                 hint: localizations.onboardingCaregiverPhoneHint,
@@ -138,7 +134,6 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 24),
-
               _buildTextField(
                 label: localizations.onboardingCaregiverAddressLabel,
                 hint: localizations.onboardingCaregiverAddressHint,
@@ -146,7 +141,6 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
                 textInputAction: TextInputAction.done,
               ),
               const SizedBox(height: 48),
-
               ElevatedButton(
                 onPressed: _onContinue,
                 style: ElevatedButton.styleFrom(

@@ -65,7 +65,9 @@ class LanguageScreen extends ConsumerWidget {
                 isSelected: state.selectedLanguage == AppLanguage.nepali,
                 onTap: () {
                   controller.updateLanguage(AppLanguage.nepali);
-                  ref.read(languageControllerProvider.notifier).setLanguage(AppLanguage.nepali);
+                  ref
+                      .read(languageControllerProvider.notifier)
+                      .setLanguage(AppLanguage.nepali);
                 },
               ),
               const SizedBox(height: 16),
@@ -75,7 +77,9 @@ class LanguageScreen extends ConsumerWidget {
                 isSelected: state.selectedLanguage == AppLanguage.english,
                 onTap: () {
                   controller.updateLanguage(AppLanguage.english);
-                  ref.read(languageControllerProvider.notifier).setLanguage(AppLanguage.english);
+                  ref
+                      .read(languageControllerProvider.notifier)
+                      .setLanguage(AppLanguage.english);
                 },
               ),
               const Spacer(),

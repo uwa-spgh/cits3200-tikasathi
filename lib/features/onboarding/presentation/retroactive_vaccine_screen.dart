@@ -38,7 +38,8 @@ class _RetroactiveVaccineScreenState
     });
   }
 
-  void _toggleDose(String vaccineCode, int doseNumber, bool isChecked, DateTime defaultDate) {
+  void _toggleDose(String vaccineCode, int doseNumber, bool isChecked,
+      DateTime defaultDate) {
     setState(() {
       final key = '$vaccineCode-$doseNumber';
       if (isChecked) {
@@ -49,7 +50,8 @@ class _RetroactiveVaccineScreenState
     });
   }
 
-  Future<void> _selectDate(BuildContext context, String key, DateTime initialDate, DateTime dob) async {
+  Future<void> _selectDate(BuildContext context, String key,
+      DateTime initialDate, DateTime dob) async {
     final picked = await showDatePicker(
       context: context,
       initialDate: initialDate,
@@ -84,7 +86,6 @@ class _RetroactiveVaccineScreenState
 
       if (markComplete) {
         final recordsDao = db.vaccinationRecordsDao;
-        final now = DateTime.now();
         // First delete any existing records for this child to avoid unique constraint issues
         await (db.delete(db.vaccinationRecords)
               ..where((row) => row.childId.equals(widget.childId)))
@@ -167,7 +168,8 @@ class _RetroactiveVaccineScreenState
 
             if (!_initialized) {
               for (var record in details.records) {
-                _checkedDoses['${record.vaccineCode}-${record.doseNumber}'] = record.administeredDate;
+                _checkedDoses['${record.vaccineCode}-${record.doseNumber}'] =
+                    record.administeredDate;
               }
               _initialized = true;
             }
@@ -184,7 +186,8 @@ class _RetroactiveVaccineScreenState
                   final key = '$vaccineCode-$doseNumber';
                   final isChecked = _checkedDoses.containsKey(key);
                   final defaultDate = child.dateOfBirth.add(doseAge.duration);
-                  final cappedDate = defaultDate.isAfter(now) ? now : defaultDate;
+                  final cappedDate =
+                      defaultDate.isAfter(now) ? now : defaultDate;
 
                   vaccineCheckboxes.add(
                     Column(
@@ -198,23 +201,29 @@ class _RetroactiveVaccineScreenState
                           activeColor: const Color(0xFF0F52BA),
                           onChanged: (bool? value) {
                             if (value != null) {
-                              _toggleDose(vaccineCode, doseNumber, value, cappedDate);
+                              _toggleDose(
+                                  vaccineCode, doseNumber, value, cappedDate);
                             }
                           },
                         ),
                         if (isChecked)
                           Padding(
-                            padding: const EdgeInsets.only(left: 32, right: 16, bottom: 8),
+                            padding: const EdgeInsets.only(
+                                left: 32, right: 16, bottom: 8),
                             child: Row(
                               children: [
                                 Text(
-                                  localizations.retroactiveVaccineDateLabel(_formatDate(_checkedDoses[key]!)),
-                                  style: const TextStyle(fontSize: 14, color: Color(0xFF475569)),
+                                  localizations.retroactiveVaccineDateLabel(
+                                      _formatDate(_checkedDoses[key]!)),
+                                  style: const TextStyle(
+                                      fontSize: 14, color: Color(0xFF475569)),
                                 ),
                                 const Spacer(),
                                 TextButton(
-                                  onPressed: () => _selectDate(context, key, _checkedDoses[key]!, child.dateOfBirth),
-                                  child: Text(localizations.retroactiveVaccineChangeDate),
+                                  onPressed: () => _selectDate(context, key,
+                                      _checkedDoses[key]!, child.dateOfBirth),
+                                  child: Text(localizations
+                                      .retroactiveVaccineChangeDate),
                                 ),
                               ],
                             ),
@@ -296,9 +305,9 @@ class _RetroactiveVaccineScreenState
                         ),
                         const SizedBox(height: 24),
                         if (vaccineCheckboxes.isEmpty)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 32),
-                            child: const Center(
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 32),
+                            child: Center(
                               child: Text(
                                 'No past vaccines for this age.',
                                 style: TextStyle(
@@ -315,25 +324,31 @@ class _RetroactiveVaccineScreenState
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: const Color(0xFFE2E8F0)),
+                                border:
+                                    Border.all(color: const Color(0xFFE2E8F0)),
                               ),
                               child: Column(
                                 children: [
                                   ...vaccineCheckboxes,
                                   const Divider(height: 1),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16.0, vertical: 8.0),
                                     child: Row(
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            localizations.retroactiveVaccineShowAllSubtitle,
-                                            style: const TextStyle(fontSize: 14, color: Color(0xFF64748B)),
+                                            localizations
+                                                .retroactiveVaccineShowAllSubtitle,
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Color(0xFF64748B)),
                                           ),
                                         ),
                                         Switch(
                                           value: _showAll,
-                                          activeThumbColor: const Color(0xFF0F52BA),
+                                          activeThumbColor:
+                                              const Color(0xFF0F52BA),
                                           onChanged: _toggleShowAll,
                                         ),
                                       ],
