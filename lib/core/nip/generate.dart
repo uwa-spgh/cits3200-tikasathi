@@ -94,7 +94,7 @@ List<GeneratedDue> generate(
   final List<GeneratedDue> result = [];
 
   final age = today.difference(dob);
-  _niP.forEach((vaccine, ages) {
+  nipCatalogue.forEach((vaccine, ages) {
     for (final (dose, doseAge) in ages.indexed) {
       if (records.any((AdministeredDose record) =>
           record.vaccineCode == vaccine && record.doseNumber == dose + 1)) {

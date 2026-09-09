@@ -56,9 +56,9 @@ void main() {
         container.read(onboardingControllerProvider.notifier);
 
     controller.updateLanguage(AppLanguage.nepali);
-    final bool completed = await controller.finishSetup();
+    final String? success = await controller.finishSetup();
 
-    expect(completed, isTrue);
+    expect(success, isNotNull);
     expect(repository.language, AppLanguage.nepali);
     verify(secureStorage.setOnboardingCompleted).called(1);
   });
@@ -70,9 +70,9 @@ void main() {
     final OnboardingController controller =
         container.read(onboardingControllerProvider.notifier);
 
-    final bool completed = await controller.finishSetup();
+    final String? success = await controller.finishSetup();
 
-    expect(completed, isFalse);
+    expect(success, isNull);
     expect(container.read(onboardingControllerProvider).error, isNotNull);
     verifyNever(secureStorage.setOnboardingCompleted);
   });

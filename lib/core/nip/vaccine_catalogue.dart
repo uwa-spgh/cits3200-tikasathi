@@ -6,10 +6,11 @@ part 'generate.dart';
 ///
 /// Each vaccination is a list of durations representing the age of the child each dose should be administered by,
 /// where the first age corresponds to the first dose, the second age to the second dose, etc.
-final Map<String, List<DayDuration>> _niP = Map.unmodifiable({
-  // Note: The dose of a vaccine corresponds to the index of each due-at-age. Ergo, to determine if a particular doseNumber exists,
-  // check if it is within the length of the list for the particular vaccine. Likewise, to determine if a particular vaccineCode exists,
-  // check if the key exists in the NIP map
+///
+/// Note: The dose of a vaccine corresponds to the index of each due-at-age. Ergo, to determine if a particular doseNumber exists,
+/// check if it is within the length of the list for the particular vaccine. Likewise, to determine if a particular vaccineCode exists,
+/// check if the key exists in the NIP map
+final Map<String, List<DayDuration>> nipCatalogue = Map.unmodifiable({
   'BCG': [DayDuration()],
   'PENTA': [
     DayDuration(weeks: 6),
@@ -66,5 +67,5 @@ bool doesDoseExist(String vaccineCode, int doseNumber) {
 
 /// Queries the NIP to find the required age for a particular dosage, or null if that dosage doesn't exist.
 DayDuration? getDoseAge(String vaccineCode, int doseNumber) {
-  return _niP[vaccineCode]?.elementAtOrNull(doseNumber - 1);
+  return nipCatalogue[vaccineCode]?.elementAtOrNull(doseNumber - 1);
 }

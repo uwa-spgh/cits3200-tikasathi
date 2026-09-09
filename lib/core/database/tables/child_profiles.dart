@@ -9,6 +9,9 @@ class ChildProfiles extends Table {
 
   TextColumn get sex => text()();
 
+  BoolColumn get isSetupComplete =>
+      boolean().withDefault(const Constant(false))();
+
   @override
   Set<Column<Object>> get primaryKey => {id};
 }

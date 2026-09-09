@@ -8,6 +8,7 @@ import 'package:tikasathi/features/app_shell/domain/app_navigation_controller.da
 import 'package:tikasathi/features/app_shell/presentation/app_bottom_navigation_bar.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
+import 'package:tikasathi/features/onboarding/presentation/retroactive_vaccine_screen.dart';
 
 class ChildProfileScreen extends ConsumerWidget {
   const ChildProfileScreen({
@@ -105,11 +106,14 @@ class _ChildContent extends StatelessWidget {
               title: status.label(localizations),
               vaccineCode: nextDue?.vaccineCode,
               dueDateLabel: nextDue == null
-                  ? localizations.childNoDueVaccines
+                  ? (status.isNeutral
+                      ? 'Pending Setup'
+                      : localizations.childNoDueVaccines)
                   : DateFormat(
                           'd MMM', Localizations.localeOf(context).languageCode)
                       .format(nextDue.dueDate),
               isDue: status.isDue,
+              isNeutral: status.isNeutral,
             ),
             const SizedBox(height: 20),
             _NextVaccineCard(
@@ -145,10 +149,16 @@ class _ChildContent extends StatelessWidget {
               borderColor: const Color(0xFFD2EEC6),
               iconBackgroundColor: const Color(0xFFE0F5D6),
               iconColor: const Color(0xFF2D7A2C),
-              onTap: () => showFeedbackSnackBar(
-                context,
-                localizations.childHistoryNotImplemented,
-              ),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => RetroactiveVaccineScreen(
+                      childId: details.child.id,
+                      isOnboardingFlow: false,
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -157,6 +167,9 @@ class _ChildContent extends StatelessWidget {
   }
 
   ChildStatus _statusFor(ChildProfileDetails details) {
+    if (!details.isSetupComplete) {
+      return const ChildStatus.setupIncomplete();
+    }
     if (details.isUpToDate) {
       return const ChildStatus.upToDate();
     }
@@ -241,25 +254,42 @@ class _StatusCard extends StatelessWidget {
     required this.vaccineCode,
     required this.dueDateLabel,
     required this.isDue,
+    required this.isNeutral,
   });
 
   final String title;
   final String? vaccineCode;
   final String dueDateLabel;
   final bool isDue;
+  final bool isNeutral;
 
   @override
   Widget build(BuildContext context) {
-    final Color backgroundColor =
-        isDue ? const Color(0xFFF9E0E0) : const Color(0xFFEAF8EF);
-    final Color borderColor =
-        isDue ? const Color(0xFFCD2E2E) : AppTheme.statusUpToDate;
-    final Color headerColor =
-        isDue ? const Color(0xFFCD2E2E) : AppTheme.statusUpToDate;
-    final Color textColor =
-        isDue ? const Color(0xFFB51D1D) : AppTheme.statusUpToDateText;
-    final IconData icon =
-        isDue ? Icons.warning_amber_rounded : Icons.check_circle_rounded;
+    final Color backgroundColor = isNeutral
+        ? const Color(0xFFF1F5F9)
+        : isDue
+            ? const Color(0xFFF9E0E0)
+            : const Color(0xFFEAF8EF);
+    final Color borderColor = isNeutral
+        ? const Color(0xFF94A3B8)
+        : isDue
+            ? const Color(0xFFCD2E2E)
+            : AppTheme.statusUpToDate;
+    final Color headerColor = isNeutral
+        ? const Color(0xFF64748B)
+        : isDue
+            ? const Color(0xFFCD2E2E)
+            : AppTheme.statusUpToDate;
+    final Color textColor = isNeutral
+        ? const Color(0xFF475569)
+        : isDue
+            ? const Color(0xFFB51D1D)
+            : AppTheme.statusUpToDateText;
+    final IconData icon = isNeutral
+        ? Icons.help_outline_rounded
+        : isDue
+            ? Icons.warning_amber_rounded
+            : Icons.check_circle_rounded;
 
     return Container(
       decoration: BoxDecoration(
@@ -516,17 +546,26 @@ class _ErrorState extends StatelessWidget {
 }
 
 class ChildStatus {
-  const ChildStatus._({required this.isDue, required this.key});
+  const ChildStatus._(
+      {required this.isDue, required this.isNeutral, required this.key});
 
-  const ChildStatus.upToDate() : this._(isDue: false, key: 'upToDate');
-  const ChildStatus.dueToday() : this._(isDue: true, key: 'dueToday');
-  const ChildStatus.dueSoon() : this._(isDue: true, key: 'dueSoon');
+  const ChildStatus.setupIncomplete()
+      : this._(isDue: false, isNeutral: true, key: 'setupIncomplete');
+  const ChildStatus.upToDate()
+      : this._(isDue: false, isNeutral: false, key: 'upToDate');
+  const ChildStatus.dueToday()
+      : this._(isDue: true, isNeutral: false, key: 'dueToday');
+  const ChildStatus.dueSoon()
+      : this._(isDue: true, isNeutral: false, key: 'dueSoon');
 
   final bool isDue;
+  final bool isNeutral;
   final String key;
 
   String label(AppLocalizations localizations) {
     switch (key) {
+      case 'setupIncomplete':
+        return localizations.childStatusSetupIncomplete;
       case 'upToDate':
         return localizations.childVaccinationUpToDate;
       case 'dueToday':

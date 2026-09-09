@@ -22,6 +22,8 @@ class ChildProfileDetails {
   final List<VaccinationRecord> records;
   final DateTime now;
 
+  bool get isSetupComplete => child.isSetupComplete;
+
   bool get isUpToDate => dueVaccines.isEmpty;
 
   bool get isDueToday {

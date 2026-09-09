@@ -8,6 +8,7 @@ import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
+import 'package:tikasathi/features/onboarding/presentation/retroactive_vaccine_screen.dart';
 
 class ChildScreen extends ConsumerStatefulWidget {
   const ChildScreen({
@@ -114,14 +115,26 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
       sex: _selectedGender,
     );
 
-    final success = await controller.finishSetup();
+    final String? childId = await controller.finishSetup();
 
-    if (success && mounted) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute<void>(builder: (context) => const AppShellScreen()),
-        (route) => false,
-      );
+    if (childId != null && mounted) {
+      if (childId == 'completed_without_child') {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute<void>(builder: (context) => const AppShellScreen()),
+          (route) => false,
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute<void>(
+            builder: (context) => RetroactiveVaccineScreen(
+              childId: childId,
+              isOnboardingFlow: true,
+            ),
+          ),
+        );
+      }
     } else if (mounted) {
       final error = ref.read(onboardingControllerProvider).error;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -139,7 +152,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
     final state = ref.watch(onboardingControllerProvider);
     final bool isSaving = widget.isOnboardingFlow ? state.isSaving : _isSaving;
     final String submitLabel = widget.isOnboardingFlow
-        ? localizations.onboardingFinishSetup
+        ? localizations.onboardingContinue
         : 'Save child';
 
     final List<Widget> headerWidgets = widget.isOnboardingFlow
@@ -165,9 +178,19 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
                     ),
                   ),
                 ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Container(
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE2E8F0),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
                 const SizedBox(width: 16),
                 Text(
-                  localizations.onboardingStepLabel(2, 2),
+                  localizations.onboardingStepLabel(2, 3),
                   style: const TextStyle(
                     color: Color(0xFF64748B),
                     fontWeight: FontWeight.w500,

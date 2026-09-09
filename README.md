@@ -51,8 +51,9 @@ Every pull request to the `main` or `develop` branch will trigger a workflow tha
 ## 4. Core Modules & Data Architecture
 
 ### Child Profile Management
-- Store UUID, Name, DOB and Sex.
+- Store UUID, Name, DOB, Sex, and `isSetupComplete` status.
 - **Validation:** Gracefully handle future dates or invalid inputs.
+- **Onboarding:** Includes a Retroactive Vaccine Checklist. Children remain in a neutral "Setup Incomplete" state until their past vaccine history is explicitly confirmed or skipped.
 
 ### Caregiver Profile Management
 - Store UUID, Name, Phone Number and Address.

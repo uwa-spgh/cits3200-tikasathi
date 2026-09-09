@@ -5,6 +5,7 @@ import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/child/presentation/child_profile_screen.dart';
+import 'package:tikasathi/features/onboarding/presentation/retroactive_vaccine_screen.dart';
 import 'package:tikasathi/features/settings/data/settings_providers.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 
@@ -32,6 +33,7 @@ void main() {
                     name: 'Maya',
                     dateOfBirth: now.subtract(const Duration(days: 270)),
                     sex: 'female',
+                    isSetupComplete: true,
                   ),
                   dueVaccines: <VaccinationDue>[
                     VaccinationDue(
@@ -99,6 +101,7 @@ void main() {
                     name: 'Nima',
                     dateOfBirth: now.subtract(const Duration(days: 200)),
                     sex: 'male',
+                    isSetupComplete: true,
                   ),
                   dueVaccines: const <VaccinationDue>[],
                   records: const <VaccinationRecord>[],
@@ -130,9 +133,9 @@ void main() {
       await tester.scrollUntilVisible(historyCard, 120);
       final historyRect = tester.getRect(historyCard);
       await tester.tapAt(historyRect.topLeft + const Offset(24, 24));
-      await tester.pump();
-      expect(
-          find.text('Vaccine history is not implemented yet.'), findsOneWidget);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(RetroactiveVaccineScreen), findsOneWidget);
     });
 
     testWidgets('shows the loading indicator while child data is loading',
@@ -189,6 +192,7 @@ void main() {
                     name: 'Asha',
                     dateOfBirth: now.subtract(const Duration(days: 120)),
                     sex: 'female',
+                    isSetupComplete: true,
                   ),
                   dueVaccines: const <VaccinationDue>[],
                   records: const <VaccinationRecord>[],
