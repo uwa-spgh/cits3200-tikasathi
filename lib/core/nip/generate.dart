@@ -20,7 +20,10 @@ typedef GenerateDues = List<GeneratedDue> Function(
 
 enum VaccineStatus { completed, ongoing, overdue }
 
-// minAge inclusive, maxAge exclusive
+/// A map of the vaccination catch-up schedule.
+///
+/// Each vaccination is a list of CatchUpRule, where each rule defines an age range that it is applicable to,
+/// the number of doses needed in that age range, and the minimum interval between each dose.
 final Map<String, List<CatchUpRule>> _catchUp = Map.unmodifiable({
   'BCG': [CatchUpRule(maxAge: DayDuration(years: 5))],
   'PENTA': <CatchUpRule>[], // no catch-up mentioned
@@ -56,6 +59,10 @@ final Map<String, List<CatchUpRule>> _catchUp = Map.unmodifiable({
   ]
 });
 
+/// Represents a part of the catch-up schedule for a particular vaccination.
+///
+/// Contains fields for the number of required doses, the minimum interval between doses, and the minimum and maximum age that this schedule applies to,
+/// The default values, when nothing is passed, is 0 - 100 years for the age range, 1 required dose, and no minimum interval.
 class CatchUpRule {
   final DayDuration minAge;
   final DayDuration maxAge;
@@ -72,6 +79,13 @@ class CatchUpRule {
         minInterval = minInterval ?? DayDuration();
 }
 
+/// Produces a vaccination schedule, automatically applying the catch-up schedule for overdue vaccinations.
+///
+/// Takes the date of birth, today's date, and a list of vaccination records as input,
+/// and produces a list of vaccination due dates as outputs.
+/// Completed vaccinations do not generate any due dates.
+/// Ongoing vaccinations only generate upcoming due dates.
+/// Overdue vaccinations generate due dates via _generateCatchUp()
 List<GeneratedDue> generate(
   DateTime dob,
   DateTime today,
@@ -82,13 +96,13 @@ List<GeneratedDue> generate(
   final age = today.difference(dob);
   nipCatalogue.forEach((vaccine, ages) {
     for (final (dose, doseAge) in ages.indexed) {
-      // dose completed
       if (records.any((AdministeredDose record) =>
           record.vaccineCode == vaccine && record.doseNumber == dose + 1)) {
+        // dose is completed, ignore
         continue;
       }
-      // dose ongoing
       if (age <= doseAge.duration) {
+        // dose is ongoing and on-time, add due date according to NIP schedule
         result.add((
           vaccineCode: vaccine,
           doseNumber: dose + 1,
@@ -96,7 +110,7 @@ List<GeneratedDue> generate(
         ));
         continue;
       }
-      // dose overdue
+      // dose is overdue, replace all overdue doses with the catch-up schedule
       result.addAll(_generateCatchUp(vaccine, dose, age, today));
       break;
     }
@@ -105,18 +119,28 @@ List<GeneratedDue> generate(
   return result;
 }
 
+/// The status of a particular vaccine.
+///
+/// Takes a vaccination due dates and filters for doses that match the given vaccine code,
+/// then compares them with today's date to return if a vaccine is completed, ongoing, or overdue.
 VaccineStatus status(
     DateTime today,
     List<GeneratedDue> dues, // better name for GeneratedDue?
     String vaccineCode) {
   final vaccineDues =
       dues.where((GeneratedDue due) => due.vaccineCode == vaccineCode);
+  // no due dates, vaccine is completed
   if (vaccineDues.isEmpty) return VaccineStatus.completed;
   final isOverdue =
       vaccineDues.any((GeneratedDue due) => due.dueDate.isBefore(today));
+  //if any due date exists that is before today, then it is overdue, otherwise it is ongoing
   return isOverdue ? VaccineStatus.overdue : VaccineStatus.ongoing;
 }
 
+/// Generates the catch-up schedule for an overdue vaccine.
+///
+/// Schedules the first overdue dose's due date to tomorrow, then schedules following due dates with the vaccine's minimum interval between each one.
+/// Doses that exceed the maximum age for the catch-up schedule are excluded.
 List<GeneratedDue> _generateCatchUp(
     String vaccineCode, int dosesTaken, Duration age, DateTime today) {
   final List<GeneratedDue> result = [];
@@ -127,6 +151,7 @@ List<GeneratedDue> _generateCatchUp(
       return rule.minAge.duration <= age && age < rule.maxAge.duration;
     });
   } on StateError catch (_) {
+    // vaccination has no catch-up schedule, return early with no due dates.
     return result;
   }
 

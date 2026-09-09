@@ -28,7 +28,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
   final _mmController = TextEditingController();
   final _yyController = TextEditingController();
 
-  String _selectedGender = 'Girl';
+  String _selectedGender = 'female';
   bool _isSaving = false;
 
   @override
@@ -319,12 +319,12 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: _buildGenderButton('Girl', '👱‍♀️',
+                          child: _buildGenderButton('female', '👱‍♀️',
                               label: localizations.onboardingChildGenderGirl),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
-                          child: _buildGenderButton('Boy', '👱‍♂️',
+                          child: _buildGenderButton('male', '👱‍♂️',
                               label: localizations.onboardingChildGenderBoy),
                         ),
                       ],

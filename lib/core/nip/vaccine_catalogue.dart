@@ -2,9 +2,14 @@ import 'dart:core';
 
 part 'generate.dart';
 
-// Note: The dose of a vaccine corresponds to the index of each due-at-age. Ergo, to determine if a particular doseNumber exists,
-// check if it is within the length of the list for the particular vaccine. Likewise, to determine if a particular vaccineCode exists,
-// check if the key exists in the NIP map
+/// A map of the National Immunisation Program
+///
+/// Each vaccination is a list of durations representing the age of the child each dose should be administered by,
+/// where the first age corresponds to the first dose, the second age to the second dose, etc.
+///
+/// Note: The dose of a vaccine corresponds to the index of each due-at-age. Ergo, to determine if a particular doseNumber exists,
+/// check if it is within the length of the list for the particular vaccine. Likewise, to determine if a particular vaccineCode exists,
+/// check if the key exists in the NIP map
 final Map<String, List<DayDuration>> nipCatalogue = Map.unmodifiable({
   'BCG': [DayDuration()],
   'PENTA': [
@@ -29,6 +34,11 @@ final Map<String, List<DayDuration>> nipCatalogue = Map.unmodifiable({
   'TCV': [DayDuration(months: 15)],
 });
 
+/// A wrapper around Duration to input days, weeks, months, and years.
+///
+/// Stores a Duration field that is calculated using the average number of days for each period of time.
+/// This means that a duration of 1 month added to a particular day may not result in the same day one month later,
+/// since the length of each month varies.
 class DayDuration {
   final Duration duration;
 
@@ -50,10 +60,12 @@ class DayDuration {
   int get hashCode => duration.hashCode;
 }
 
+/// Queries the NIP to determine if a particular combination of vaccine code and dose number exists.
 bool doesDoseExist(String vaccineCode, int doseNumber) {
   return getDoseAge(vaccineCode, doseNumber) != null;
 }
 
+/// Queries the NIP to find the required age for a particular dosage, or null if that dosage doesn't exist.
 DayDuration? getDoseAge(String vaccineCode, int doseNumber) {
   return nipCatalogue[vaccineCode]?.elementAtOrNull(doseNumber - 1);
 }
