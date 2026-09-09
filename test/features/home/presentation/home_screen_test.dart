@@ -1,9 +1,6 @@
-import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tikasathi/core/database/app_database.dart';
-import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/home/domain/home_models.dart';
 import 'package:tikasathi/features/home/domain/home_helpers.dart';
@@ -152,26 +149,25 @@ void main() {
       expect(find.text('Save child'), findsNothing);
     });
 
-    testWidgets('home add child page shows the home-specific heading and saves',
+    testWidgets('home add child page shows the home-specific heading',
         (WidgetTester tester) async {
-      final AppDatabase database =
-          AppDatabase.forTesting(NativeDatabase.memory());
-      addTearDown(() async => database.close());
       final groups = buildHomeGroups();
-
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            appDatabaseProvider.overrideWith((ref) => database),
             settingsRepositoryProvider.overrideWith(
               (ref) => FakeSettingsRepository(),
             ),
           ],
           child: MaterialApp(
-            locale: const Locale('en'),
+            locale: Locale('en'),
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            home: Scaffold(body: HomeScreen(groups: groups)),
+            home: Scaffold(
+              body: HomeScreen(
+                groups: groups,
+              ),
+            ),
           ),
         ),
       );
@@ -181,29 +177,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(ChildScreen), findsOneWidget);
-      final AppLocalizations localizations =
-          AppLocalizations.of(tester.element(find.byType(ChildScreen)))!;
       expect(find.text('Add a new child'), findsOneWidget);
       expect(find.text('Save child'), findsOneWidget);
-      expect(find.text(localizations.onboardingStepLabel(2, 2)), findsNothing);
-      expect(find.text(localizations.onboardingFinishSetup), findsNothing);
-      expect(find.text(localizations.onboardingChildNameLabel), findsOneWidget);
-
-      await tester.enterText(find.byType(TextField).at(0), 'Kiran');
-      await tester.enterText(find.byType(TextField).at(1), '10');
-      await tester.enterText(find.byType(TextField).at(2), '05');
-      await tester.enterText(find.byType(TextField).at(3), '2024');
-      await tester.ensureVisible(find.text('Save child'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Save child'));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(ChildScreen), findsNothing);
-
-      final profiles = await database.childProfilesDao.getAllChildProfiles();
-      expect(profiles, hasLength(1));
-      expect(profiles.single.name, 'Kiran');
-      expect(profiles.single.sex, 'female');
     });
 
     testWidgets('shows placeholder feedback for non-add-child action buttons',

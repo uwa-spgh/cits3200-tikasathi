@@ -77,17 +77,27 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
       setState(() => _isSaving = true);
       try {
         final db = ref.read(appDatabaseProvider);
+        final childId = const Uuid().v4();
         await db.childProfilesDao.insertChildProfile(
           ChildProfilesCompanion.insert(
-            id: const Uuid().v4(),
+            id: childId,
             name: _nameController.text.trim(),
             dateOfBirth: dob,
             sex: _selectedGender,
           ),
         );
+        await db.vaccinationDuesDao.insertDuesForChild(childId);
         ref.invalidate(homeStatusGroupsProvider);
         if (mounted) {
-          Navigator.pop(context);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute<void>(
+              builder: (context) => RetroactiveVaccineScreen(
+                childId: childId,
+                isOnboardingFlow: false,
+              ),
+            ),
+          );
         }
       } catch (error) {
         if (mounted) {

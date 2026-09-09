@@ -502,5 +502,16 @@ void main() {
         expect(await duesFor('child-b'), isEmpty);
       });
     });
+
+    test('recalculates dues without nesting transactions', () async {
+      await insertChild('recalculate-child');
+
+      await vaccinationDuesDao.recalculateDuesForChild('recalculate-child');
+
+      final dues = await (database.select(database.vaccinationDues)
+            ..where((row) => row.childId.equals('recalculate-child')))
+          .get();
+      expect(dues, isNotEmpty);
+    });
   });
 }
