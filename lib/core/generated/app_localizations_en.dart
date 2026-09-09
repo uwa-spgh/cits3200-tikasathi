@@ -104,9 +104,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get healthFacilitatorSavedHeading => 'Your local health facilitator';
 
   @override
-  String get healthFacilitatorSectionTitle => 'Local health facilitator';
-
-  @override
   String get healthFacilitatorTitle => 'Health Facilitator';
 
   @override
@@ -268,9 +265,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeActionRecordVaccine => 'Record vaccine';
-
-  @override
-  String get homeActionFindClinic => 'Find clinic';
 
   @override
   String homeActionPlaceholder(String action) {

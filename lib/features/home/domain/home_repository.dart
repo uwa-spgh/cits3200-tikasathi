@@ -39,7 +39,6 @@ class HomeRepository {
           dateOfBirth: profile.dateOfBirth,
         ),
         canRecordVaccine: status != HomeVaccinationGroup.upToDate,
-        canFindClinic: status != HomeVaccinationGroup.upToDate,
       );
 
       groupedChildren[status]!.add(child);

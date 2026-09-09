@@ -105,9 +105,6 @@ class AppLocalizationsNe extends AppLocalizations {
       'तपाईंको स्थानीय स्वास्थ्य सहजकर्ता';
 
   @override
-  String get healthFacilitatorSectionTitle => 'स्थानीय स्वास्थ्य सहजकर्ता';
-
-  @override
   String get healthFacilitatorTitle => 'स्वास्थ्य सहजकर्ता';
 
   @override
@@ -272,9 +269,6 @@ class AppLocalizationsNe extends AppLocalizations {
 
   @override
   String get homeActionRecordVaccine => 'खोप रेकर्ड';
-
-  @override
-  String get homeActionFindClinic => 'क्लिनिक खोज्नुहोस्';
 
   @override
   String homeActionPlaceholder(String action) {

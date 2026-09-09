@@ -120,7 +120,6 @@
   },
   "healthFacilitatorSaveAction": "Save your closest health facilitator",
   "healthFacilitatorSavedHeading": "Your local health facilitator",
-  "healthFacilitatorSectionTitle": "Local health facilitator",
   "healthFacilitatorTitle": "Health Facilitator",
   "healthFacilitatorSubtitle": "Save the details of your closest health facilitator.",
   "healthFacilitatorName": "Facilitator Name",
@@ -173,7 +172,6 @@
   "homeActionAddChild": "Add child",
   "homeActionChildDetails": "Child details",
   "homeActionRecordVaccine": "Record vaccine",
-  "homeActionFindClinic": "Find clinic",
   "homeActionPlaceholder": "Placeholder action: {action}",
   "@homeActionPlaceholder": {
     "description": "Fallback snack bar message for an unimplemented home action",

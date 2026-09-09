@@ -120,7 +120,6 @@
   },
   "healthFacilitatorSaveAction": "आफ्नो नजिकको स्वास्थ्य सहजकर्ता बचत गर्नुहोस्",
   "healthFacilitatorSavedHeading": "तपाईंको स्थानीय स्वास्थ्य सहजकर्ता",
-  "healthFacilitatorSectionTitle": "स्थानीय स्वास्थ्य सहजकर्ता",
   "healthFacilitatorTitle": "स्वास्थ्य सहजकर्ता",
   "healthFacilitatorSubtitle": "आफ्नो नजिकको स्वास्थ्य सहजकर्ताको विवरण बचत गर्नुहोस्।",
   "healthFacilitatorName": "सहजकर्ताको नाम",
@@ -173,7 +172,6 @@
   "homeActionAddChild": "बच्चा थप्नुहोस्",
   "homeActionChildDetails": "बच्चाको विवरण",
   "homeActionRecordVaccine": "खोप रेकर्ड",
-  "homeActionFindClinic": "क्लिनिक खोज्नुहोस्",
   "homeActionPlaceholder": "स्थगित कार्य: {action}",
   "@homeActionPlaceholder": {
     "description": "Fallback snack bar message for an unimplemented home action",

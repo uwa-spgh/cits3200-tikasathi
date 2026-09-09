@@ -272,12 +272,6 @@ abstract class AppLocalizations {
   /// **'Your local health facilitator'**
   String get healthFacilitatorSavedHeading;
 
-  /// No description provided for @healthFacilitatorSectionTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Local health facilitator'**
-  String get healthFacilitatorSectionTitle;
-
   /// No description provided for @healthFacilitatorTitle.
   ///
   /// In en, this message translates to:
@@ -583,12 +577,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Record vaccine'**
   String get homeActionRecordVaccine;
-
-  /// No description provided for @homeActionFindClinic.
-  ///
-  /// In en, this message translates to:
-  /// **'Find clinic'**
-  String get homeActionFindClinic;
 
   /// Fallback snack bar message for an unimplemented home action
   ///

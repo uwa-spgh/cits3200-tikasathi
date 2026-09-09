@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/child/presentation/child_profile_screen.dart';
 import 'package:tikasathi/features/onboarding/presentation/child_screen.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
+import 'package:tikasathi/features/settings/domain/health_facilitator_controller.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
+import 'package:tikasathi/features/settings/presentation/health_facilitator_card.dart';
 
 import '../domain/home_helpers.dart';
 import '../domain/home_models.dart';
@@ -20,20 +23,20 @@ class HomeScreen extends ConsumerWidget {
     this.groups,
     this.onAddChildPressed,
     this.onRecordVaccinePressed,
-    this.onFindClinicPressed,
     this.onChildPressed,
   });
 
   final List<HomeStatusGroup>? groups;
   final VoidCallback? onAddChildPressed;
   final HomeChildActionCallback? onRecordVaccinePressed;
-  final HomeChildActionCallback? onFindClinicPressed;
   final HomeChildActionCallback? onChildPressed;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<AppLanguage> languageState =
         ref.watch(languageControllerProvider);
+    final AsyncValue<HealthFacilitator?> facilitatorState =
+        ref.watch(healthFacilitatorProvider);
 
     return languageState.when(
       data: (AppLanguage _) {
@@ -52,12 +55,18 @@ class HomeScreen extends ConsumerWidget {
           );
         }
 
-        return _HomeScreenContent(
-          groups: resolvedGroups,
-          onAddChildPressed: onAddChildPressed,
-          onRecordVaccinePressed: onRecordVaccinePressed,
-          onFindClinicPressed: onFindClinicPressed,
-          onChildPressed: onChildPressed,
+        return facilitatorState.when(
+          data: (HealthFacilitator? facilitator) => _HomeScreenContent(
+            groups: resolvedGroups,
+            facilitator: facilitator,
+            onAddChildPressed: onAddChildPressed,
+            onRecordVaccinePressed: onRecordVaccinePressed,
+            onChildPressed: onChildPressed,
+          ),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (Object error, StackTrace stackTrace) => Center(
+            child: Text(error.toString()),
+          ),
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -106,16 +115,16 @@ String _childSummaryLabel({
 class _HomeScreenContent extends StatelessWidget {
   const _HomeScreenContent({
     required this.groups,
+    required this.facilitator,
     required this.onAddChildPressed,
     required this.onRecordVaccinePressed,
-    required this.onFindClinicPressed,
     required this.onChildPressed,
   });
 
   final List<HomeStatusGroup> groups;
+  final HealthFacilitator? facilitator;
   final VoidCallback? onAddChildPressed;
   final HomeChildActionCallback? onRecordVaccinePressed;
-  final HomeChildActionCallback? onFindClinicPressed;
   final HomeChildActionCallback? onChildPressed;
 
   @override
@@ -234,19 +243,14 @@ class _HomeScreenContent extends StatelessWidget {
                           HomeScreen._showPlaceholder(
                               context, localizations.homeActionRecordVaccine);
                         },
-                        onFindClinicPressed: (HomeChildSummary child) {
-                          if (onFindClinicPressed != null) {
-                            onFindClinicPressed!(child);
-                            return;
-                          }
-                          HomeScreen._showPlaceholder(
-                            context,
-                            localizations.homeActionFindClinic,
-                          );
-                        },
                       ),
                     ),
                   ),
+                const SizedBox(height: 22),
+                HealthFacilitatorCard(
+                  key: const Key('home-health-facilitator-card'),
+                  facilitator: facilitator,
+                ),
               ],
             ),
           ),
@@ -261,13 +265,11 @@ class _StatusGroupCard extends StatelessWidget {
     required this.group,
     required this.onChildPressed,
     required this.onRecordVaccinePressed,
-    required this.onFindClinicPressed,
   });
 
   final HomeStatusGroup group;
   final HomeChildActionCallback onChildPressed;
   final HomeChildActionCallback onRecordVaccinePressed;
-  final HomeChildActionCallback onFindClinicPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -327,7 +329,6 @@ class _StatusGroupCard extends StatelessWidget {
                         onChildPressed: () => onChildPressed(child),
                         onRecordVaccinePressed: () =>
                             onRecordVaccinePressed(child),
-                        onFindClinicPressed: () => onFindClinicPressed(child),
                       ),
                     ),
                   )
@@ -345,13 +346,11 @@ class _HomeChildCard extends StatelessWidget {
     required this.child,
     required this.onChildPressed,
     required this.onRecordVaccinePressed,
-    required this.onFindClinicPressed,
   });
 
   final HomeChildSummary child;
   final VoidCallback onChildPressed;
   final VoidCallback onRecordVaccinePressed;
-  final VoidCallback onFindClinicPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -381,26 +380,6 @@ class _HomeChildCard extends StatelessWidget {
               ),
               icon: const Icon(Icons.edit, size: 18),
               label: Text(localizations.homeActionRecordVaccine),
-            ),
-          if (child.canFindClinic)
-            FilledButton.icon(
-              key: Key('find-clinic-${child.name}'),
-              onPressed: onFindClinicPressed,
-              style: FilledButton.styleFrom(
-                backgroundColor: const Color(0xFFD9ECFF),
-                foregroundColor: const Color(0xFF0E64C5),
-                minimumSize: const Size(0, 44),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 10,
-                ),
-                textStyle: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                ),
-              ),
-              icon: const Icon(Icons.location_on_outlined, size: 18),
-              label: Text(localizations.homeActionFindClinic),
             ),
         ];
 
