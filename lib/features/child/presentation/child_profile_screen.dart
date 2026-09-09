@@ -62,6 +62,7 @@ class _ChildContent extends StatelessWidget {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
     final ChildStatus status = _statusFor(details);
     final nextDue = details.nextDue;
+    final followingDue = details.followingDue;
     final String bornDateLabel =
         DateFormat('d MMMM y', Localizations.localeOf(context).languageCode)
             .format(details.child.dateOfBirth);
@@ -120,13 +121,13 @@ class _ChildContent extends StatelessWidget {
             const SizedBox(height: 20),
             _NextVaccineCard(
               title: localizations.childNextVaccine,
-              vaccineLabel:
-                  nextDue?.vaccineCode ?? localizations.childNoUpcomingVaccines,
-              dateLabel: nextDue == null
+              vaccineLabel: followingDue?.vaccineCode ??
+                  localizations.childNoUpcomingVaccines,
+              dateLabel: followingDue == null
                   ? null
                   : DateFormat(
                           'd MMM', Localizations.localeOf(context).languageCode)
-                      .format(nextDue.dueDate),
+                      .format(followingDue.dueDate),
             ),
             const SizedBox(height: 30),
             _FeatureCard(

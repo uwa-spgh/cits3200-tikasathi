@@ -43,6 +43,13 @@ void main() {
                       doseNumber: 1,
                       dueDate: now,
                     ),
+                    VaccinationDue(
+                      id: 'due-2',
+                      childId: childId,
+                      vaccineCode: 'BOPV',
+                      doseNumber: 1,
+                      dueDate: now.add(const Duration(days: 14)),
+                    ),
                   ],
                   records: const <VaccinationRecord>[],
                   now: now,
@@ -68,11 +75,8 @@ void main() {
       expect(find.text('Vaccination due today'), findsOneWidget);
       expect(find.byIcon(Icons.arrow_back), findsOneWidget);
       expect(find.byIcon(Icons.record_voice_over), findsOneWidget);
-      expect(
-          find.byWidgetPredicate(
-            (widget) => widget is Text && widget.data == 'ROTA',
-          ),
-          findsAtLeastNWidgets(1));
+      expect(find.text('ROTA'), findsOneWidget);
+      expect(find.text('BOPV'), findsOneWidget);
       expect(find.text('Next vaccine'), findsOneWidget);
       expect(find.byType(BottomNavigationBar), findsOneWidget);
       expect(
