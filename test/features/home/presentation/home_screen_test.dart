@@ -20,12 +20,14 @@ void main() {
       required DateTime dateOfBirth,
       required String nextVaccineCode,
       required bool canRecordVaccine,
+      String sex = 'female',
     }) {
       return HomeChildSummary(
         name: name,
         childId: name.toLowerCase(),
         dateOfBirth: dateOfBirth,
         nextVaccineCode: nextVaccineCode,
+        sex: sex,
         avatarEmoji: '👶',
         canRecordVaccine: canRecordVaccine,
       );
@@ -38,6 +40,7 @@ void main() {
         dateOfBirth: now.subtract(const Duration(days: 12)),
         nextVaccineCode: 'Rotavirus',
         canRecordVaccine: true,
+        sex: 'male',
       );
       final HomeChildSummary dueSoonChild = buildChild(
         name: 'Bikash',
@@ -99,6 +102,7 @@ void main() {
           formatAge(groups[0].children.first.dateOfBirth, englishLocalizations);
       expect(find.text('Aisha'), findsOneWidget);
       expect(find.textContaining(expectedEnglishAge), findsOneWidget);
+      expect(find.textContaining('Male'), findsOneWidget);
 
       await tester.pumpWidget(
         ProviderScope(
@@ -188,7 +192,7 @@ void main() {
       expect(find.text('Save child'), findsOneWidget);
     });
 
-    testWidgets('shows record action and facilitator setup card',
+    testWidgets('shows record action and unsaved facilitator card',
         (WidgetTester tester) async {
       final groups = buildHomeGroups();
 
@@ -221,6 +225,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      expect(find.byKey(const Key('home-health-facilitator-card')),
+          findsOneWidget);
       expect(
         find.text('आफ्नो नजिकको स्वास्थ्य सहजकर्ता बचत गर्नुहोस्'),
         findsOneWidget,
@@ -313,7 +319,7 @@ void main() {
       expect(find.text('555-0100'), findsOneWidget);
     });
 
-    testWidgets('opens facilitator setup screen when no facilitator is saved',
+    testWidgets('shows facilitator setup card when none is saved',
         (WidgetTester tester) async {
       await tester.pumpWidget(
         ProviderScope(
@@ -342,9 +348,16 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      expect(find.byKey(const Key('home-health-facilitator-card')),
+          findsOneWidget);
+      expect(find.text('Save your closest health facilitator'), findsOneWidget);
       expect(
-        find.text('Save your closest health facilitator'),
-        findsOneWidget,
+        tester
+            .getTopLeft(find.byKey(const Key('home-health-facilitator-card')))
+            .dy,
+        greaterThan(
+          tester.getBottomLeft(find.byKey(const Key('home-group-upToDate'))).dy,
+        ),
       );
       await tester.tap(find.byKey(const Key('home-health-facilitator-card')));
       await tester.pumpAndSettle();
@@ -387,10 +400,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('record-vaccine-Aisha')), findsOneWidget);
-      expect(
-        find.byKey(const Key('home-health-facilitator-card')),
-        findsOneWidget,
-      );
+      expect(find.byKey(const Key('home-health-facilitator-card')),
+          findsOneWidget);
 
       expect(tester.takeException(), isNull);
     });

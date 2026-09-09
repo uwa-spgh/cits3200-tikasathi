@@ -106,10 +106,11 @@ String _childSummaryLabel({
   required AppLocalizations localizations,
 }) {
   final String ageText = formatAge(child.dateOfBirth, localizations);
+  final String sexText = childSexLabel(child.sex, localizations);
   if (child.nextVaccineCode == null || child.nextVaccineCode!.isEmpty) {
-    return ageText;
+    return '$sexText - $ageText';
   }
-  return '${child.nextVaccineCode} - $ageText';
+  return '${child.nextVaccineCode} - $sexText - $ageText';
 }
 
 class _HomeScreenContent extends StatelessWidget {
