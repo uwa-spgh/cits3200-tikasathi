@@ -26,6 +26,11 @@ class ChildProfileDetails {
 
   bool get isUpToDate => dueVaccines.isEmpty;
 
+  List<VaccinationDue> get orderedDueVaccines =>
+      List<VaccinationDue>.from(dueVaccines)
+        ..sort((VaccinationDue a, VaccinationDue b) =>
+            a.dueDate.compareTo(b.dueDate));
+
   bool get isDueToday {
     if (dueVaccines.isEmpty) {
       return false;
@@ -44,30 +49,19 @@ class ChildProfileDetails {
     return !nextDueDate.isAfter(today);
   }
 
-  VaccinationDue? get nextDue => dueVaccines.isEmpty
-      ? null
-      : (List<VaccinationDue>.from(dueVaccines)
-            ..sort((a, b) => a.dueDate.compareTo(b.dueDate)))
-          .first;
+  VaccinationDue? get nextDue =>
+      dueVaccines.isEmpty ? null : orderedDueVaccines.first;
+
+  VaccinationDue? get followingDue =>
+      orderedDueVaccines.length > 1 ? orderedDueVaccines[1] : null;
 
   String ageLabel(AppLocalizations localizations) =>
       formatAge(child.dateOfBirth, localizations);
 
   String get avatarEmoji => getChildAvatar(
-        sex: _sexFromString(child.sex),
+        sex: childSexFromString(child.sex),
         dateOfBirth: child.dateOfBirth,
       );
-
-  ChildSex _sexFromString(String value) {
-    switch (value.toLowerCase()) {
-      case 'male':
-        return ChildSex.male;
-      case 'female':
-        return ChildSex.female;
-      default:
-        return ChildSex.female;
-    }
-  }
 }
 
 @riverpod

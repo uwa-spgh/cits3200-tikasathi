@@ -13,18 +13,18 @@ class HomeChildSummary {
     this.childId = '',
     required this.dateOfBirth,
     this.nextVaccineCode,
+    this.sex,
     required this.avatarEmoji,
     required this.canRecordVaccine,
-    required this.canFindClinic,
   });
 
   final String name;
   final String childId;
   final DateTime dateOfBirth;
   final String? nextVaccineCode;
+  final String? sex;
   final String avatarEmoji;
   final bool canRecordVaccine;
-  final bool canFindClinic;
 }
 
 @immutable

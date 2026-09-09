@@ -36,6 +36,73 @@ void main() {
       expect(groups.single.group, HomeVaccinationGroup.upToDate);
     });
 
+    test('preserves persisted male sex and avatar in the Home summary',
+        () async {
+      await database.childProfilesDao.insertChildProfile(
+        ChildProfilesCompanion.insert(
+          id: 'male-child',
+          name: 'Nima',
+          dateOfBirth: DateTime(2020, 1, 1),
+          sex: 'male',
+        ),
+      );
+
+      final groups = await repository.loadHomeStatusGroups(now: now);
+      final child = groups.single.children.single;
+
+      expect(child.sex, 'male');
+      expect(child.avatarEmoji, '👦');
+    });
+
+    test('preserves persisted female sex and avatar in the Home summary',
+        () async {
+      await database.childProfilesDao.insertChildProfile(
+        ChildProfilesCompanion.insert(
+          id: 'female-child',
+          name: 'Maya',
+          dateOfBirth: DateTime(2020, 1, 1),
+          sex: 'female',
+        ),
+      );
+
+      final groups = await repository.loadHomeStatusGroups(now: now);
+      final child = groups.single.children.single;
+
+      expect(child.sex, 'female');
+      expect(child.avatarEmoji, '👧');
+    });
+
+    test('keeps the infant avatar for a persisted male child', () async {
+      await database.childProfilesDao.insertChildProfile(
+        ChildProfilesCompanion.insert(
+          id: 'infant-child',
+          name: 'Asha',
+          dateOfBirth: DateTime(2026, 7, 1),
+          sex: 'male',
+        ),
+      );
+
+      final groups = await repository.loadHomeStatusGroups(now: now);
+
+      expect(groups.single.children.single.avatarEmoji, '👶');
+    });
+
+    test('uses the neutral avatar for an unknown persisted sex', () async {
+      await database.childProfilesDao.insertChildProfile(
+        ChildProfilesCompanion.insert(
+          id: 'unknown-child',
+          name: 'Ravi',
+          dateOfBirth: DateTime(2020, 1, 1),
+          sex: 'unknown',
+        ),
+      );
+
+      final groups = await repository.loadHomeStatusGroups(now: now);
+
+      expect(groups.single.children.single.sex, 'unknown');
+      expect(groups.single.children.single.avatarEmoji, '🧒');
+    });
+
     test('overdue due date is classified as dueToday (not upToDate)', () async {
       await database.childProfilesDao.insertChildProfile(
         ChildProfilesCompanion.insert(

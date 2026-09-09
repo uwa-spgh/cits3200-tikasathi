@@ -1,7 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:drift/native.dart';
+import 'package:tikasathi/core/database/app_database.dart';
+import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
+import 'package:tikasathi/features/home/domain/home_helpers.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/settings/data/settings_providers.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
@@ -75,5 +79,44 @@ void main() {
     expect(success, isNull);
     expect(container.read(onboardingControllerProvider).error, isNotNull);
     verifyNever(secureStorage.setOnboardingCompleted);
+  });
+
+  test('finishSetup persists the selected boy value and avatar mapping',
+      () async {
+    final AppDatabase database =
+        AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(database.close);
+    final ProviderContainer container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(database),
+        secureStorageServiceProvider.overrideWithValue(secureStorage),
+        settingsRepositoryProvider.overrideWith(
+          (ref) => FakeSettingsRepository(language: AppLanguage.english),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final OnboardingController controller =
+        container.read(onboardingControllerProvider.notifier);
+    controller.updateChildInfo(
+      name: 'Nima',
+      dob: DateTime(2020),
+      sex: 'Boy',
+    );
+
+    final String? childId = await controller.finishSetup();
+    final ChildProfile? profile =
+        await database.childProfilesDao.getChildProfileById(childId!);
+
+    expect(profile?.sex, 'Boy');
+    expect(childSexFromString(profile?.sex), ChildSex.male);
+    expect(
+      getChildAvatar(
+        sex: childSexFromString(profile?.sex),
+        dateOfBirth: profile!.dateOfBirth,
+      ),
+      '👦',
+    );
   });
 }

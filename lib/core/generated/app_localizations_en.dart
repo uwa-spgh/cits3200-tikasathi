@@ -61,6 +61,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get childSexFemale => 'Female';
 
   @override
+  String get childSexUnknown => 'Not specified';
+
+  @override
   String get childNoDueVaccines => 'No due vaccines';
 
   @override
@@ -102,9 +105,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get healthFacilitatorSavedHeading => 'Your local health facilitator';
-
-  @override
-  String get healthFacilitatorSectionTitle => 'Local health facilitator';
 
   @override
   String get healthFacilitatorTitle => 'Health Facilitator';
@@ -268,9 +268,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeActionRecordVaccine => 'Record vaccine';
-
-  @override
-  String get homeActionFindClinic => 'Find clinic';
 
   @override
   String homeActionPlaceholder(String action) {

@@ -20,7 +20,20 @@ class VaccinationDuesDao extends DatabaseAccessor<AppDatabase>
     DateTime? today,
     GenerateDues generateDues = generate,
   }) async {
-    // 1: Get child info
+    final generatedDues = await _generateDuesForChild(
+      childId,
+      today: today,
+      generateDues: generateDues,
+    );
+
+    await _insertGeneratedDues(childId, generatedDues);
+  }
+
+  Future<List<GeneratedDue>> _generateDuesForChild(
+    String childId, {
+    DateTime? today,
+    GenerateDues generateDues = generate,
+  }) async {
     final child = await (select(childProfiles)
           ..where((row) => row.id.equals(childId)))
         .getSingleOrNull();
@@ -40,35 +53,46 @@ class VaccinationDuesDao extends DatabaseAccessor<AppDatabase>
         ),
     ];
 
-    // 2. get child generated VaccinationDue
-    final generatedDues = generateDues(
+    return generateDues(
       child.dateOfBirth,
       today ?? DateTime.now(),
       records,
     );
+  }
 
-    // 3. insert child's generatedDues
-    await transaction(() async {
-      for (final generatedDue in generatedDues) {
-        await insertVaccinationDue(
-          VaccinationDuesCompanion.insert(
-            id: const Uuid().v4(),
-            childId: childId,
-            vaccineCode: generatedDue.vaccineCode,
-            doseNumber: generatedDue.doseNumber,
-            dueDate: generatedDue.dueDate,
-          ),
-        );
-      }
-    });
+  Future<void> _insertGeneratedDues(
+    String childId,
+    List<GeneratedDue> generatedDues,
+  ) async {
+    await transaction(
+      () => _insertGeneratedDuesInTransaction(childId, generatedDues),
+    );
+  }
+
+  Future<void> _insertGeneratedDuesInTransaction(
+    String childId,
+    List<GeneratedDue> generatedDues,
+  ) async {
+    for (final generatedDue in generatedDues) {
+      await insertVaccinationDue(
+        VaccinationDuesCompanion.insert(
+          id: const Uuid().v4(),
+          childId: childId,
+          vaccineCode: generatedDue.vaccineCode,
+          doseNumber: generatedDue.doseNumber,
+          dueDate: generatedDue.dueDate,
+        ),
+      );
+    }
   }
 
   Future<void> recalculateDuesForChild(String childId) async {
+    final generatedDues = await _generateDuesForChild(childId);
     await transaction(() async {
       await (delete(vaccinationDues)
             ..where((row) => row.childId.equals(childId)))
           .go();
-      await insertDuesForChild(childId);
+      await _insertGeneratedDuesInTransaction(childId, generatedDues);
     });
   }
 

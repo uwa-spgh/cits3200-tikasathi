@@ -74,6 +74,10 @@
   "@childSexFemale": {
     "description": "Female sex option"
   },
+  "childSexUnknown": "Not specified",
+  "@childSexUnknown": {
+    "description": "Fallback label when a child's sex is unavailable"
+  },
   "childNoDueVaccines": "No due vaccines",
   "@childNoDueVaccines": {
     "description": "Shown when a child has no due vaccines"
@@ -120,7 +124,6 @@
   },
   "healthFacilitatorSaveAction": "Save your closest health facilitator",
   "healthFacilitatorSavedHeading": "Your local health facilitator",
-  "healthFacilitatorSectionTitle": "Local health facilitator",
   "healthFacilitatorTitle": "Health Facilitator",
   "healthFacilitatorSubtitle": "Save the details of your closest health facilitator.",
   "healthFacilitatorName": "Facilitator Name",
@@ -173,7 +176,6 @@
   "homeActionAddChild": "Add child",
   "homeActionChildDetails": "Child details",
   "homeActionRecordVaccine": "Record vaccine",
-  "homeActionFindClinic": "Find clinic",
   "homeActionPlaceholder": "Placeholder action: {action}",
   "@homeActionPlaceholder": {
     "description": "Fallback snack bar message for an unimplemented home action",

@@ -1,14 +1,14 @@
-import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tikasathi/core/database/app_database.dart';
-import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/home/domain/home_models.dart';
 import 'package:tikasathi/features/home/domain/home_helpers.dart';
 import 'package:tikasathi/features/home/presentation/home_screen.dart';
 import 'package:tikasathi/features/onboarding/presentation/child_screen.dart';
+import 'package:tikasathi/features/settings/domain/health_facilitator_controller.dart';
+import 'package:tikasathi/features/settings/presentation/health_facilitator_screen.dart';
 import 'package:tikasathi/features/settings/data/settings_providers.dart';
 
 import '../../../helpers/fake_settings_repository.dart';
@@ -20,16 +20,16 @@ void main() {
       required DateTime dateOfBirth,
       required String nextVaccineCode,
       required bool canRecordVaccine,
-      required bool canFindClinic,
+      String sex = 'female',
     }) {
       return HomeChildSummary(
         name: name,
         childId: name.toLowerCase(),
         dateOfBirth: dateOfBirth,
         nextVaccineCode: nextVaccineCode,
+        sex: sex,
         avatarEmoji: '👶',
         canRecordVaccine: canRecordVaccine,
-        canFindClinic: canFindClinic,
       );
     }
 
@@ -40,21 +40,19 @@ void main() {
         dateOfBirth: now.subtract(const Duration(days: 12)),
         nextVaccineCode: 'Rotavirus',
         canRecordVaccine: true,
-        canFindClinic: true,
+        sex: 'male',
       );
       final HomeChildSummary dueSoonChild = buildChild(
         name: 'Bikash',
         dateOfBirth: now.subtract(const Duration(days: 45)),
         nextVaccineCode: 'TCV',
         canRecordVaccine: false,
-        canFindClinic: true,
       );
       final HomeChildSummary upToDateChild = buildChild(
         name: 'Sara',
         dateOfBirth: now.subtract(const Duration(days: 1460)),
         nextVaccineCode: 'DPT',
         canRecordVaccine: false,
-        canFindClinic: false,
       );
 
       return <HomeStatusGroup>[
@@ -83,6 +81,9 @@ void main() {
             settingsRepositoryProvider.overrideWith(
               (ref) => FakeSettingsRepository(),
             ),
+            healthFacilitatorProvider.overrideWith(
+              (ref) => Stream.value(null),
+            ),
           ],
           child: MaterialApp(
             locale: const Locale('en'),
@@ -101,12 +102,16 @@ void main() {
           formatAge(groups[0].children.first.dateOfBirth, englishLocalizations);
       expect(find.text('Aisha'), findsOneWidget);
       expect(find.textContaining(expectedEnglishAge), findsOneWidget);
+      expect(find.textContaining('Male'), findsOneWidget);
 
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
             settingsRepositoryProvider.overrideWith(
               (ref) => FakeSettingsRepository(),
+            ),
+            healthFacilitatorProvider.overrideWith(
+              (ref) => Stream.value(null),
             ),
           ],
           child: MaterialApp(
@@ -152,26 +157,28 @@ void main() {
       expect(find.text('Save child'), findsNothing);
     });
 
-    testWidgets('home add child page shows the home-specific heading and saves',
+    testWidgets('home add child page shows the home-specific heading',
         (WidgetTester tester) async {
-      final AppDatabase database =
-          AppDatabase.forTesting(NativeDatabase.memory());
-      addTearDown(() async => database.close());
       final groups = buildHomeGroups();
-
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            appDatabaseProvider.overrideWith((ref) => database),
             settingsRepositoryProvider.overrideWith(
               (ref) => FakeSettingsRepository(),
+            ),
+            healthFacilitatorProvider.overrideWith(
+              (ref) => Stream.value(null),
             ),
           ],
           child: MaterialApp(
             locale: const Locale('en'),
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            home: Scaffold(body: HomeScreen(groups: groups)),
+            home: Scaffold(
+              body: HomeScreen(
+                groups: groups,
+              ),
+            ),
           ),
         ),
       );
@@ -181,32 +188,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(ChildScreen), findsOneWidget);
-      final AppLocalizations localizations =
-          AppLocalizations.of(tester.element(find.byType(ChildScreen)))!;
       expect(find.text('Add a new child'), findsOneWidget);
       expect(find.text('Save child'), findsOneWidget);
-      expect(find.text(localizations.onboardingStepLabel(2, 2)), findsNothing);
-      expect(find.text(localizations.onboardingFinishSetup), findsNothing);
-      expect(find.text(localizations.onboardingChildNameLabel), findsOneWidget);
-
-      await tester.enterText(find.byType(TextField).at(0), 'Kiran');
-      await tester.enterText(find.byType(TextField).at(1), '10');
-      await tester.enterText(find.byType(TextField).at(2), '05');
-      await tester.enterText(find.byType(TextField).at(3), '2024');
-      await tester.ensureVisible(find.text('Save child'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Save child'));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(ChildScreen), findsNothing);
-
-      final profiles = await database.childProfilesDao.getAllChildProfiles();
-      expect(profiles, hasLength(1));
-      expect(profiles.single.name, 'Kiran');
-      expect(profiles.single.sex, 'female');
     });
 
-    testWidgets('shows placeholder feedback for non-add-child action buttons',
+    testWidgets('shows record action and unsaved facilitator card',
         (WidgetTester tester) async {
       final groups = buildHomeGroups();
 
@@ -215,6 +201,9 @@ void main() {
           overrides: [
             settingsRepositoryProvider.overrideWith(
               (ref) => FakeSettingsRepository(),
+            ),
+            healthFacilitatorProvider.overrideWith(
+              (ref) => Stream.value(null),
             ),
           ],
           child: MaterialApp(
@@ -230,10 +219,18 @@ void main() {
       await tester.tap(find.byKey(const Key('record-vaccine-Aisha')));
       await tester.pumpAndSettle();
       expect(find.text('स्थगित कार्य: खोप रेकर्ड'), findsOneWidget);
-
-      await tester.tap(find.byKey(const Key('find-clinic-Aisha')));
+      await tester.drag(
+        find.byType(ListView).first,
+        const Offset(0, -600),
+      );
       await tester.pumpAndSettle();
-      expect(find.text('स्थगित कार्य: क्लिनिक खोज्नुहोस्'), findsOneWidget);
+
+      expect(find.byKey(const Key('home-health-facilitator-card')),
+          findsOneWidget);
+      expect(
+        find.text('आफ्नो नजिकको स्वास्थ्य सहजकर्ता बचत गर्नुहोस्'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders empty state when no children are available',
@@ -243,6 +240,9 @@ void main() {
           overrides: [
             settingsRepositoryProvider.overrideWith(
               (ref) => FakeSettingsRepository(),
+            ),
+            healthFacilitatorProvider.overrideWith(
+              (ref) => Stream.value(null),
             ),
           ],
           child: const MaterialApp(
@@ -260,6 +260,112 @@ void main() {
       expect(find.byKey(const Key('home-add-child-button')), findsOneWidget);
     });
 
+    testWidgets('displays saved facilitator details and opens edit screen',
+        (WidgetTester tester) async {
+      const facilitator = HealthFacilitator(
+        id: 'local',
+        name: 'Maya Health Post',
+        address: 'Main Street',
+        phone: '555-0100',
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(),
+            ),
+            healthFacilitatorProvider.overrideWith(
+              (ref) => Stream.value(facilitator),
+            ),
+          ],
+          child: MaterialApp(
+            locale: const Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: HomeScreen(groups: buildHomeGroups()),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.drag(
+        find.byType(ListView).first,
+        const Offset(0, -600),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Your local health facilitator'), findsOneWidget);
+      expect(find.textContaining('Facilitator Name: Maya Health Post'),
+          findsOneWidget);
+      expect(find.textContaining('Address: Main Street'), findsOneWidget);
+      expect(find.textContaining('Phone Number: 555-0100'), findsOneWidget);
+      expect(
+        tester
+            .getTopLeft(find.byKey(const Key('home-health-facilitator-card')))
+            .dy,
+        greaterThan(
+          tester.getBottomLeft(find.byKey(const Key('home-group-upToDate'))).dy,
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('home-health-facilitator-card')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(HealthFacilitatorScreen), findsOneWidget);
+      expect(find.text('Maya Health Post'), findsOneWidget);
+      expect(find.text('Main Street'), findsOneWidget);
+      expect(find.text('555-0100'), findsOneWidget);
+    });
+
+    testWidgets('shows facilitator setup card when none is saved',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(),
+            ),
+            healthFacilitatorProvider.overrideWith(
+              (ref) => Stream.value(null),
+            ),
+          ],
+          child: MaterialApp(
+            locale: const Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: HomeScreen(groups: buildHomeGroups()),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.drag(
+        find.byType(ListView).first,
+        const Offset(0, -600),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('home-health-facilitator-card')),
+          findsOneWidget);
+      expect(find.text('Save your closest health facilitator'), findsOneWidget);
+      expect(
+        tester
+            .getTopLeft(find.byKey(const Key('home-health-facilitator-card')))
+            .dy,
+        greaterThan(
+          tester.getBottomLeft(find.byKey(const Key('home-group-upToDate'))).dy,
+        ),
+      );
+      await tester.tap(find.byKey(const Key('home-health-facilitator-card')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(HealthFacilitatorScreen), findsOneWidget);
+      expect(find.text('Enter the facilitator\'s name'), findsOneWidget);
+    });
+
     testWidgets('renders without layout overflow on narrow screens',
         (WidgetTester tester) async {
       tester.view.physicalSize = const Size(320, 640);
@@ -273,6 +379,9 @@ void main() {
             settingsRepositoryProvider.overrideWith(
               (ref) => FakeSettingsRepository(),
             ),
+            healthFacilitatorProvider.overrideWith(
+              (ref) => Stream.value(null),
+            ),
           ],
           child: MaterialApp(
             locale: const Locale('ne'),
@@ -283,10 +392,16 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-
       expect(find.byKey(const Key('home-title')), findsOneWidget);
+      await tester.drag(
+        find.byType(ListView).first,
+        const Offset(0, -600),
+      );
+      await tester.pumpAndSettle();
+
       expect(find.byKey(const Key('record-vaccine-Aisha')), findsOneWidget);
-      expect(find.byKey(const Key('find-clinic-Aisha')), findsOneWidget);
+      expect(find.byKey(const Key('home-health-facilitator-card')),
+          findsOneWidget);
 
       expect(tester.takeException(), isNull);
     });
