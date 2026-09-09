@@ -74,6 +74,10 @@
   "@childSexFemale": {
     "description": "Female sex option"
   },
+  "childSexUnknown": "Not specified",
+  "@childSexUnknown": {
+    "description": "Fallback label when a child's sex is unavailable"
+  },
   "childNoDueVaccines": "No due vaccines",
   "@childNoDueVaccines": {
     "description": "Shown when a child has no due vaccines"

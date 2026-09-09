@@ -62,6 +62,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.textContaining('Maya'), findsAtLeastNWidgets(1));
+      expect(find.text('Female'), findsOneWidget);
       expect(find.text("Maya's page"), findsOneWidget);
       expect(find.textContaining('Born'), findsOneWidget);
       expect(find.text('Vaccination due today'), findsOneWidget);

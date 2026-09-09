@@ -3,6 +3,31 @@ import 'package:tikasathi/core/generated/app_localizations.dart';
 enum ChildSex {
   male,
   female,
+  unknown,
+}
+
+ChildSex childSexFromString(String? value) {
+  switch (value?.trim().toLowerCase()) {
+    case 'male':
+    case 'boy':
+      return ChildSex.male;
+    case 'female':
+    case 'girl':
+      return ChildSex.female;
+    default:
+      return ChildSex.unknown;
+  }
+}
+
+String childSexLabel(String? value, AppLocalizations localizations) {
+  switch (childSexFromString(value)) {
+    case ChildSex.male:
+      return localizations.childSexMale;
+    case ChildSex.female:
+      return localizations.childSexFemale;
+    case ChildSex.unknown:
+      return localizations.childSexUnknown;
+  }
 }
 
 String formatAge(DateTime dateOfBirth, AppLocalizations localizations) {
@@ -51,5 +76,7 @@ String getChildAvatar({
       return '👦';
     case ChildSex.female:
       return '👧';
+    case ChildSex.unknown:
+      return '🧒';
   }
 }

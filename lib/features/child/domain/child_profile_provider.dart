@@ -54,20 +54,9 @@ class ChildProfileDetails {
       formatAge(child.dateOfBirth, localizations);
 
   String get avatarEmoji => getChildAvatar(
-        sex: _sexFromString(child.sex),
+        sex: childSexFromString(child.sex),
         dateOfBirth: child.dateOfBirth,
       );
-
-  ChildSex _sexFromString(String value) {
-    switch (value.toLowerCase()) {
-      case 'male':
-        return ChildSex.male;
-      case 'female':
-        return ChildSex.female;
-      default:
-        return ChildSex.female;
-    }
-  }
 }
 
 @riverpod

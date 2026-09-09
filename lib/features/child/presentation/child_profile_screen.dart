@@ -8,6 +8,7 @@ import 'package:tikasathi/features/app_shell/domain/app_navigation_controller.da
 import 'package:tikasathi/features/app_shell/presentation/app_bottom_navigation_bar.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
+import 'package:tikasathi/features/home/domain/home_helpers.dart';
 import 'package:tikasathi/features/onboarding/presentation/retroactive_vaccine_screen.dart';
 
 class ChildProfileScreen extends ConsumerWidget {
@@ -98,6 +99,7 @@ class _ChildContent extends StatelessWidget {
             _ChildHeaderCard(
               name: details.child.name,
               ageLabel: details.ageLabel(localizations),
+              sexLabel: childSexLabel(details.child.sex, localizations),
               bornLabel: localizations.childBornOn(bornDateLabel),
               avatarEmoji: details.avatarEmoji,
             ),
@@ -183,12 +185,14 @@ class _ChildHeaderCard extends StatelessWidget {
   const _ChildHeaderCard({
     required this.name,
     required this.ageLabel,
+    required this.sexLabel,
     required this.bornLabel,
     required this.avatarEmoji,
   });
 
   final String name;
   final String ageLabel;
+  final String sexLabel;
   final String bornLabel;
   final String avatarEmoji;
 
@@ -229,6 +233,14 @@ class _ChildHeaderCard extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: const Color(0xFF4B5E7B),
                         fontWeight: FontWeight.w600,
+                      ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  sexLabel,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: const Color(0xFF6B7A92),
+                        fontWeight: FontWeight.w500,
                       ),
                 ),
                 const SizedBox(height: 2),

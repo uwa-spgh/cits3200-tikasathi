@@ -13,6 +13,7 @@ class HomeChildSummary {
     this.childId = '',
     required this.dateOfBirth,
     this.nextVaccineCode,
+    this.sex,
     required this.avatarEmoji,
     required this.canRecordVaccine,
   });
@@ -21,6 +22,7 @@ class HomeChildSummary {
   final String childId;
   final DateTime dateOfBirth;
   final String? nextVaccineCode;
+  final String? sex;
   final String avatarEmoji;
   final bool canRecordVaccine;
 }

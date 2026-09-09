@@ -74,6 +74,10 @@
   "@childSexFemale": {
     "description": "Female sex option"
   },
+  "childSexUnknown": "उल्लेख गरिएको छैन",
+  "@childSexUnknown": {
+    "description": "Fallback label when a child's sex is unavailable"
+  },
   "childNoDueVaccines": "कुनै पाइने खोप छैन",
   "@childNoDueVaccines": {
     "description": "Shown when a child has no due vaccines"

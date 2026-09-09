@@ -61,6 +61,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get childSexFemale => 'Female';
 
   @override
+  String get childSexUnknown => 'Not specified';
+
+  @override
   String get childNoDueVaccines => 'No due vaccines';
 
   @override

@@ -61,6 +61,9 @@ class AppLocalizationsNe extends AppLocalizations {
   String get childSexFemale => 'महिला';
 
   @override
+  String get childSexUnknown => 'उल्लेख गरिएको छैन';
+
+  @override
   String get childNoDueVaccines => 'कुनै पाइने खोप छैन';
 
   @override

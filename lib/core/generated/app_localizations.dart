@@ -194,6 +194,12 @@ abstract class AppLocalizations {
   /// **'Female'**
   String get childSexFemale;
 
+  /// Fallback label when a child's sex is unavailable
+  ///
+  /// In en, this message translates to:
+  /// **'Not specified'**
+  String get childSexUnknown;
+
   /// Shown when a child has no due vaccines
   ///
   /// In en, this message translates to:

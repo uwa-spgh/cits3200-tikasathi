@@ -34,8 +34,9 @@ class HomeRepository {
         childId: profile.id,
         dateOfBirth: profile.dateOfBirth,
         nextVaccineCode: _nextVaccineCode(outstandingDues),
+        sex: profile.sex,
         avatarEmoji: getChildAvatar(
-          sex: _sexFromString(profile.sex),
+          sex: childSexFromString(profile.sex),
           dateOfBirth: profile.dateOfBirth,
         ),
         canRecordVaccine: status != HomeVaccinationGroup.upToDate,
@@ -118,16 +119,5 @@ class HomeRepository {
           a.dueDate.compareTo(b.dueDate));
     final nextDue = sortedDues.first;
     return nextDue.vaccineCode;
-  }
-
-  ChildSex _sexFromString(String value) {
-    switch (value.toLowerCase()) {
-      case 'male':
-        return ChildSex.male;
-      case 'female':
-        return ChildSex.female;
-      default:
-        return ChildSex.female;
-    }
   }
 }
