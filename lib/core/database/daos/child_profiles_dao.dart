@@ -1,6 +1,7 @@
 part of '../app_database.dart';
 
-@DriftAccessor(tables: [ChildProfiles, VaccinationDues, VaccinationRecords])
+@DriftAccessor(
+    tables: [ChildProfiles, VaccinationDues, VaccinationRecords, Reminders])
 class ChildProfilesDao extends DatabaseAccessor<AppDatabase>
     with _$ChildProfilesDaoMixin {
   ChildProfilesDao(super.db);
@@ -37,9 +38,13 @@ class ChildProfilesDao extends DatabaseAccessor<AppDatabase>
     );
   }
 
-  /// Removes the child and that child's dues and records.
+  /// Removes the child and that child's reminders, dues and records.
+  ///
+  /// Reminders go first: they reference both the child and its dues, so
+  /// deleting either one out from under them trips the foreign key.
   Future<int> deleteChildProfile(String id) {
     return transaction(() async {
+      await (delete(reminders)..where((row) => row.childId.equals(id))).go();
       await (delete(vaccinationDues)..where((row) => row.childId.equals(id)))
           .go();
       await (delete(vaccinationRecords)..where((row) => row.childId.equals(id)))

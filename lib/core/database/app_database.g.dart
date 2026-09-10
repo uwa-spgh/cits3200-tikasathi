@@ -3352,12 +3352,14 @@ mixin _$ChildProfilesDaoMixin on DatabaseAccessor<AppDatabase> {
   $VaccinationDuesTable get vaccinationDues => attachedDatabase.vaccinationDues;
   $VaccinationRecordsTable get vaccinationRecords =>
       attachedDatabase.vaccinationRecords;
+  $RemindersTable get reminders => attachedDatabase.reminders;
 }
 mixin _$VaccinationRecordsDaoMixin on DatabaseAccessor<AppDatabase> {
   $ChildProfilesTable get childProfiles => attachedDatabase.childProfiles;
   $VaccinationRecordsTable get vaccinationRecords =>
       attachedDatabase.vaccinationRecords;
   $VaccinationDuesTable get vaccinationDues => attachedDatabase.vaccinationDues;
+  $RemindersTable get reminders => attachedDatabase.reminders;
 }
 mixin _$VaccinationDuesDaoMixin on DatabaseAccessor<AppDatabase> {
   $ChildProfilesTable get childProfiles => attachedDatabase.childProfiles;
