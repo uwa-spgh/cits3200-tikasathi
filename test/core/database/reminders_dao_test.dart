@@ -8,6 +8,7 @@ void main() {
     late AppDatabase database;
     late ChildProfilesDao childProfilesDao;
     late VaccinationDuesDao vaccinationDuesDao;
+    late VaccinationRecordsDao vaccinationRecordsDao;
     late RemindersDao remindersDao;
 
     final DateTime dueDate = DateTime(2024, 6, 20);
@@ -17,6 +18,7 @@ void main() {
       database = AppDatabase.forTesting(NativeDatabase.memory());
       childProfilesDao = database.childProfilesDao;
       vaccinationDuesDao = database.vaccinationDuesDao;
+      vaccinationRecordsDao = database.vaccinationRecordsDao;
       remindersDao = database.remindersDao;
     });
 
@@ -285,6 +287,98 @@ void main() {
             ),
         throwsA(isA<Exception>()),
       );
+    });
+
+    group('cascade deletes', () {
+      test("deleting a child drops that child's reminders", () async {
+        await insertChildWithDue();
+        await remindersDao.scheduleRemindersForDue('due-1', from: wellBefore);
+
+        await childProfilesDao.deleteChildProfile('child-1');
+
+        expect(await remindersDao.getPendingReminders(), isEmpty);
+      });
+
+      test("deleting a child leaves another child's reminders", () async {
+        await insertChildWithDue();
+        await insertChildWithDue(
+          childId: 'child-2',
+          dueId: 'due-2',
+          vaccineCode: 'MR',
+        );
+        await remindersDao.scheduleRemindersForDue('due-1', from: wellBefore);
+        await remindersDao.scheduleRemindersForDue('due-2', from: wellBefore);
+
+        await childProfilesDao.deleteChildProfile('child-1');
+
+        final remaining = await remindersDao.getPendingReminders();
+        expect(remaining, isNotEmpty);
+        expect(
+          remaining.every((reminder) => reminder.childId == 'child-2'),
+          isTrue,
+        );
+      });
+
+      test("recording a dose drops that due's reminders", () async {
+        await insertChildWithDue();
+        await remindersDao.scheduleRemindersForDue('due-1', from: wellBefore);
+
+        await vaccinationRecordsDao.insertVaccinationRecord(
+          VaccinationRecordsCompanion.insert(
+            id: 'record-1',
+            childId: 'child-1',
+            vaccineCode: 'BCG',
+            doseNumber: 1,
+            administeredDate: DateTime(2024, 6, 20),
+          ),
+        );
+
+        expect(await remindersDao.getPendingReminders(), isEmpty);
+      });
+
+      test("recording a dose leaves another due's reminders", () async {
+        await insertChildWithDue();
+        await insertDue(id: 'due-2', childId: 'child-1', vaccineCode: 'MR');
+        await remindersDao.scheduleRemindersForDue('due-1', from: wellBefore);
+        await remindersDao.scheduleRemindersForDue('due-2', from: wellBefore);
+
+        await vaccinationRecordsDao.insertVaccinationRecord(
+          VaccinationRecordsCompanion.insert(
+            id: 'record-1',
+            childId: 'child-1',
+            vaccineCode: 'BCG',
+            doseNumber: 1,
+            administeredDate: DateTime(2024, 6, 20),
+          ),
+        );
+
+        final remaining = await remindersDao.getPendingReminders();
+        expect(remaining, isNotEmpty);
+        expect(
+          remaining.every((reminder) => reminder.dueId == 'due-2'),
+          isTrue,
+        );
+      });
+
+      test('recording a dose with no matching due still stores the record',
+          () async {
+        await insertChild('child-1');
+
+        await vaccinationRecordsDao.insertVaccinationRecord(
+          VaccinationRecordsCompanion.insert(
+            id: 'record-1',
+            childId: 'child-1',
+            vaccineCode: 'BCG',
+            doseNumber: 1,
+            administeredDate: DateTime(2024, 6, 20),
+          ),
+        );
+
+        final records = await vaccinationRecordsDao
+            .watchVaccinationRecordsForChild('child-1')
+            .first;
+        expect(records, hasLength(1));
+      });
     });
   });
 }
