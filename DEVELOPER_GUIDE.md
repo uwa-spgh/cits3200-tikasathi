@@ -95,5 +95,5 @@ The app supports English and Nepali. Translation strings live in ARB files insid
 - `app_en.arb` — English strings
 - `app_ne.arb` — Nepali strings
 
-When you add a new user-facing string, add it to **both** ARB files. See Flutter's [Internationalizing Flutter apps](https://docs.flutter.dev/accessibility-and-internationalization/internationalization) guide for more details.
+When you add a new user-facing string, add it to **both** ARB files. See Flutter's [Internationalizing Flutter apps](https://docs.flutter.dev/ui/internationalization) guide for more details.
 
