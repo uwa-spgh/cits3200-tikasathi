@@ -9,9 +9,14 @@ import 'package:tikasathi/features/record_dose/presentation/record_dose_screen.d
 /// Serves a fixed [RecordDoseState] so the screen can be exercised without a
 /// database. The controller's own behaviour is covered by its unit tests.
 class _StubRecordDoseController extends RecordDoseController {
-  _StubRecordDoseController(this._initialState);
+  _StubRecordDoseController(this._initialState, {this.saveFails = false});
 
   final RecordDoseState _initialState;
+
+  /// Reproduces what the real controller does when the batch cannot be
+  /// written: an error on [state] that keeps the loaded value.
+  final bool saveFails;
+
   int saveCount = 0;
 
   @override
@@ -20,6 +25,13 @@ class _StubRecordDoseController extends RecordDoseController {
   @override
   Future<bool> save() async {
     saveCount += 1;
+    if (saveFails) {
+      state = AsyncError<RecordDoseState>(
+        Exception('save failed'),
+        StackTrace.empty,
+      ).copyWithPrevious(state);
+      return false;
+    }
     return true;
   }
 }
@@ -59,8 +71,9 @@ void main() {
 
     Future<_StubRecordDoseController> pumpScreen(
       WidgetTester tester,
-      List<VaccinationDue> dues,
-    ) async {
+      List<VaccinationDue> dues, {
+      bool saveFails = false,
+    }) async {
       tester.view.physicalSize = const Size(800, 2000);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -73,6 +86,7 @@ void main() {
           administeredDate: today,
           today: today,
         ),
+        saveFails: saveFails,
       );
 
       await tester.pumpWidget(
@@ -216,6 +230,27 @@ void main() {
       ]);
 
       expect(find.text('Aarav has no doses due right now.'), findsOneWidget);
+    });
+
+    testWidgets('stays on the form when the save fails',
+        (WidgetTester tester) async {
+      await pumpScreen(
+        tester,
+        <VaccinationDue>[due('due-today', 'BOPV', 1, today)],
+        saveFails: true,
+      );
+
+      await tester.tap(find.byKey(const Key('record-dose-item-BOPV-1')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('record-dose-save')));
+      await tester.pumpAndSettle();
+
+      // The failure is reported by the snackbar. Replacing the page with a
+      // bare error message would strand the caregiver with no way back and no
+      // ticks to retry from.
+      expect(find.text('Could not save. Please try again.'), findsOneWidget);
+      expect(find.byKey(const Key('record-dose-item-BOPV-1')), findsOneWidget);
+      expect(find.byKey(const Key('record-dose-save')), findsOneWidget);
     });
   });
 }

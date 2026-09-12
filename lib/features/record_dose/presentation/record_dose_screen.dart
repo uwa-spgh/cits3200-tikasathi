@@ -107,6 +107,11 @@ class _RecordDoseScreenState extends ConsumerState<RecordDoseScreen> {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 560),
             child: recordDoseAsync.when(
+              // A failed save keeps its data, so the screen stays on the form
+              // with the ticks intact; the snackbar reports the failure. Only a
+              // failed initial load, which has no data, falls through to
+              // [_ErrorBody].
+              skipError: true,
               data: (RecordDoseState recordDoseState) => _RecordDoseBody(
                 recordDoseState: recordDoseState,
                 localizations: localizations,
@@ -121,16 +126,7 @@ class _RecordDoseScreenState extends ConsumerState<RecordDoseScreen> {
                 onSave: () => _save(recordDoseState),
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, __) => Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Text(
-                    localizations.recordDoseError,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ),
-              ),
+              error: (_, __) => _ErrorBody(localizations: localizations),
             ),
           ),
         ),
@@ -225,6 +221,39 @@ class _RecordDoseBody extends StatelessWidget {
           localizations: localizations,
           isSaving: isSaving,
           onSave: onSave,
+        ),
+      ],
+    );
+  }
+}
+
+/// Shown when the child could not be loaded at all. It keeps the header so the
+/// caregiver always has a way back out — an error with no exit reads as a
+/// broken app.
+class _ErrorBody extends StatelessWidget {
+  const _ErrorBody({required this.localizations});
+
+  final AppLocalizations localizations;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          child: _Header(localizations: localizations),
+        ),
+        Expanded(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text(
+                localizations.recordDoseError,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+          ),
         ),
       ],
     );
