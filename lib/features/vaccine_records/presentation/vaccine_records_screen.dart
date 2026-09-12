@@ -27,22 +27,59 @@ class VaccineRecordsScreen extends ConsumerWidget {
   }
 }
 
-class _VaccineRecordsTable extends StatelessWidget {
+class _VaccineRecordsTable extends StatefulWidget {
   const _VaccineRecordsTable({required this.records});
 
   final List<VaccinationRecord> records;
 
   @override
+  State<StatefulWidget> createState() => _VaccineRecordsState();
+}
+
+class _VaccineRecordsState extends State<_VaccineRecordsTable> {
+  bool _sortDate = true;
+  bool _sortAscending = false;
+
+  void _sortColumn(int columnIndex, bool ascending) {
+    setState(() {
+      _sortDate = columnIndex == 1;
+      _sortAscending = ascending;
+
+      if (_sortDate) {
+        if (_sortAscending) {
+          widget.records.sort((a, b) => a.administeredDate.compareTo(b.administeredDate));
+        } else {
+          widget.records.sort((a, b) => b.administeredDate.compareTo(a.administeredDate));
+        }
+      } else {
+        if (_sortAscending) {
+          widget.records.sort((a, b) {
+            final sortCode = a.vaccineCode.compareTo(b.vaccineCode);
+            final sortDose = a.doseNumber.compareTo(b.doseNumber);
+            return sortCode == 0 ? sortDose : sortCode;
+          });
+        } else {
+          widget.records.sort((a, b) {
+            final sortCode = b.vaccineCode.compareTo(a.vaccineCode);
+            final sortDose = b.doseNumber.compareTo(a.doseNumber);
+            return sortCode == 0 ? sortDose : sortCode;
+          });
+        }
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final tableColumns = <DataColumn>[
-      DataColumn(label: Text(localizations.vaccineRecordsDoseHeader)),
-      DataColumn(label: Text(localizations.vaccineRecordsDateHeader)),
+      DataColumn(label: Text(localizations.vaccineRecordsDoseHeader), onSort: _sortColumn),
+      DataColumn(label: Text(localizations.vaccineRecordsDateHeader), onSort: _sortColumn),
     ];
-    final List<DataRow> tableRows = records
+    final List<DataRow> tableRows = widget.records
         .map((record) => DataRow(cells: <DataCell>[
               DataCell(
-                  Text('${record.vaccineCode} - ${localizations.dose} ${record.doseNumber}')),
+                  Text('${record.vaccineCode} (${localizations.dose} ${record.doseNumber})')),
               DataCell(Text(DateFormat(
                       'd MMMM y', Localizations.localeOf(context).languageCode)
                   .format(record.administeredDate))),
@@ -54,10 +91,11 @@ class _VaccineRecordsTable extends StatelessWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 560),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
                   child: SingleChildScrollView(
-                child: DataTable(columns: tableColumns, rows: tableRows, sortColumnIndex: 1, sortAscending: true,),
+                child: DataTable(columns: tableColumns, rows: tableRows, sortColumnIndex: _sortDate ? 1 : 0, sortAscending: _sortAscending,),
               )),
               Container(
                   padding: const EdgeInsets.all(24.0),
@@ -74,7 +112,7 @@ class _VaccineRecordsTable extends StatelessWidget {
                   child: TextButton(
                       onPressed: () => {Navigator.pop(context)},
                       child: Text(
-                        'L10N - Return',
+                        localizations.vaccineRecordsReturn,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
