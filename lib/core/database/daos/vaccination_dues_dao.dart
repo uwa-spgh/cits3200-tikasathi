@@ -1,6 +1,7 @@
 part of '../app_database.dart';
 
-@DriftAccessor(tables: [VaccinationDues, ChildProfiles, VaccinationRecords])
+@DriftAccessor(
+    tables: [VaccinationDues, ChildProfiles, VaccinationRecords, Reminders])
 class VaccinationDuesDao extends DatabaseAccessor<AppDatabase>
     with _$VaccinationDuesDaoMixin {
   VaccinationDuesDao(super.db);
@@ -86,9 +87,16 @@ class VaccinationDuesDao extends DatabaseAccessor<AppDatabase>
     }
   }
 
+  /// Replaces the child's dues with a freshly generated set.
+  ///
+  /// The regenerated dues get new ids, so the old dues' reminders cannot carry
+  /// over. They are dropped first — reminders reference the due, so deleting a
+  /// due out from under them trips the foreign key.
   Future<void> recalculateDuesForChild(String childId) async {
     final generatedDues = await _generateDuesForChild(childId);
     await transaction(() async {
+      await (delete(reminders)..where((row) => row.childId.equals(childId)))
+          .go();
       await (delete(vaccinationDues)
             ..where((row) => row.childId.equals(childId)))
           .go();
