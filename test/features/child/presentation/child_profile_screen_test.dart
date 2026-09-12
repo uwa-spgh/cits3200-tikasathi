@@ -17,6 +17,10 @@ void main() {
         'shows child details and vaccination status for a populated profile',
         (WidgetTester tester) async {
       const childId = 'child-1';
+      tester.view.physicalSize = const Size(800, 2000);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
       final now = DateTime.now();
 
       await tester.pumpWidget(
