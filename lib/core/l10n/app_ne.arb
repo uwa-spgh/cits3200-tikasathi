@@ -249,5 +249,6 @@
   "vaccineRecordsDoseHeader": "खोपको खुराक",
   "vaccineRecordsDateHeader": "प्रशासित मिति",
   "vaccineRecordsReturn": "फिर्ता",
+  "vaccineRecordsEmpty": "खोप लगाइएको कुनै रेकर्ड छैन।",
   "dose": "खुराक"
 }

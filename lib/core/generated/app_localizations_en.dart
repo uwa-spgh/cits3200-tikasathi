@@ -374,5 +374,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vaccineRecordsReturn => 'Return';
 
   @override
+  String get vaccineRecordsEmpty => 'There are no recorded vaccinations.';
+
+  @override
   String get dose => 'Dose';
 }

@@ -728,6 +728,12 @@ abstract class AppLocalizations {
   /// **'Return'**
   String get vaccineRecordsReturn;
 
+  /// No description provided for @vaccineRecordsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no recorded vaccinations.'**
+  String get vaccineRecordsEmpty;
+
   /// No description provided for @dose.
   ///
   /// In en, this message translates to:

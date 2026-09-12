@@ -249,5 +249,6 @@
   "vaccineRecordsDoseHeader": "Vaccine dose",
   "vaccineRecordsDateHeader": "Date administered",
   "vaccineRecordsReturn": "Return",
+  "vaccineRecordsEmpty": "There are no recorded vaccinations.",
   "dose": "Dose"
 }

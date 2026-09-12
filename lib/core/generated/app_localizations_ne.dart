@@ -378,5 +378,8 @@ class AppLocalizationsNe extends AppLocalizations {
   String get vaccineRecordsReturn => 'फिर्ता';
 
   @override
+  String get vaccineRecordsEmpty => 'खोप लगाइएको कुनै रेकर्ड छैन।';
+
+  @override
   String get dose => 'खुराक';
 }

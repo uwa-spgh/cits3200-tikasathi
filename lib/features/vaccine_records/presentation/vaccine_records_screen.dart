@@ -72,6 +72,44 @@ class _VaccineRecordsState extends State<_VaccineRecordsTable> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+
+    if (widget.records.isEmpty) {
+      return Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 560),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                  child: Align(alignment: Alignment.center, child: Text(localizations.vaccineRecordsEmpty),)
+              ),
+              Container(
+                  padding: const EdgeInsets.all(24.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        offset: const Offset(0, -4),
+                        blurRadius: 10,
+                      )
+                    ],
+                  ),
+                  child: TextButton(
+                      onPressed: () => {Navigator.pop(context)},
+                      child: Text(
+                        localizations.vaccineRecordsReturn,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      )))
+            ],
+          ),
+        ));
+    }
+
     final tableColumns = <DataColumn>[
       DataColumn(label: Text(localizations.vaccineRecordsDoseHeader), onSort: _sortColumn),
       DataColumn(label: Text(localizations.vaccineRecordsDateHeader), onSort: _sortColumn),
@@ -95,7 +133,7 @@ class _VaccineRecordsState extends State<_VaccineRecordsTable> {
             children: [
               Expanded(
                   child: SingleChildScrollView(
-                child: DataTable(columns: tableColumns, rows: tableRows, sortColumnIndex: _sortDate ? 1 : 0, sortAscending: _sortAscending,),
+                child: DataTable(columns: tableColumns, rows: tableRows, sortColumnIndex: _sortDate ? 1 : 0, sortAscending: _sortAscending, columnSpacing: 10,),
               )),
               Container(
                   padding: const EdgeInsets.all(24.0),
