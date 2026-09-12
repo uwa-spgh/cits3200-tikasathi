@@ -13,7 +13,6 @@ import '../../../helpers/fake_settings_repository.dart';
 void main() {
   group('VaccineRecordsScreen', () {
     testWidgets('shows all recorded vaccinations', (WidgetTester tester) async {
-
       const childId = 'child-1';
       final now = DateTime.now();
       final dob = now.subtract(const Duration(days: 105));
@@ -36,18 +35,78 @@ void main() {
                   ),
                   dueVaccines: const <VaccinationDue>[],
                   records: <VaccinationRecord>[
-                    VaccinationRecord(id: 'rec-1', childId: childId, vaccineCode: 'BCG', doseNumber: 1, administeredDate: dob.add(const Duration(days: 1))),
-                    VaccinationRecord(id: 'rec-2', childId: childId, vaccineCode: 'PENTA', doseNumber: 1, administeredDate: dob.add(const Duration(days: 42))),
-                    VaccinationRecord(id: 'rec-3', childId: childId, vaccineCode: 'PENTA', doseNumber: 2, administeredDate: dob.add(const Duration(days: 70))),
-                    VaccinationRecord(id: 'rec-4', childId: childId, vaccineCode: 'PENTA', doseNumber: 3, administeredDate: dob.add(const Duration(days: 98))),
-                    VaccinationRecord(id: 'rec-5', childId: childId, vaccineCode: 'BOPV', doseNumber: 1, administeredDate: dob.add(const Duration(days: 42))),
-                    VaccinationRecord(id: 'rec-6', childId: childId, vaccineCode: 'BOPV', doseNumber: 2, administeredDate: dob.add(const Duration(days: 70))),
-                    VaccinationRecord(id: 'rec-7', childId: childId, vaccineCode: 'BOPV', doseNumber: 3, administeredDate: dob.add(const Duration(days: 98))),
-                    VaccinationRecord(id: 'rec-8', childId: childId, vaccineCode: 'FIPV', doseNumber: 1, administeredDate: dob.add(const Duration(days: 98))),
-                    VaccinationRecord(id: 'rec-9', childId: childId, vaccineCode: 'ROTA', doseNumber: 1, administeredDate: dob.add(const Duration(days: 42))),
-                    VaccinationRecord(id: 'rec-10', childId: childId, vaccineCode: 'ROTA', doseNumber: 2, administeredDate: dob.add(const Duration(days: 70))),
-                    VaccinationRecord(id: 'rec-11', childId: childId, vaccineCode: 'PCV', doseNumber: 1, administeredDate: dob.add(const Duration(days: 42))),
-                    VaccinationRecord(id: 'rec-12', childId: childId, vaccineCode: 'PCV', doseNumber: 2, administeredDate: dob.add(const Duration(days: 70))),
+                    VaccinationRecord(
+                        id: 'rec-1',
+                        childId: childId,
+                        vaccineCode: 'BCG',
+                        doseNumber: 1,
+                        administeredDate: dob.add(const Duration(days: 1))),
+                    VaccinationRecord(
+                        id: 'rec-2',
+                        childId: childId,
+                        vaccineCode: 'PENTA',
+                        doseNumber: 1,
+                        administeredDate: dob.add(const Duration(days: 42))),
+                    VaccinationRecord(
+                        id: 'rec-3',
+                        childId: childId,
+                        vaccineCode: 'PENTA',
+                        doseNumber: 2,
+                        administeredDate: dob.add(const Duration(days: 70))),
+                    VaccinationRecord(
+                        id: 'rec-4',
+                        childId: childId,
+                        vaccineCode: 'PENTA',
+                        doseNumber: 3,
+                        administeredDate: dob.add(const Duration(days: 98))),
+                    VaccinationRecord(
+                        id: 'rec-5',
+                        childId: childId,
+                        vaccineCode: 'BOPV',
+                        doseNumber: 1,
+                        administeredDate: dob.add(const Duration(days: 42))),
+                    VaccinationRecord(
+                        id: 'rec-6',
+                        childId: childId,
+                        vaccineCode: 'BOPV',
+                        doseNumber: 2,
+                        administeredDate: dob.add(const Duration(days: 70))),
+                    VaccinationRecord(
+                        id: 'rec-7',
+                        childId: childId,
+                        vaccineCode: 'BOPV',
+                        doseNumber: 3,
+                        administeredDate: dob.add(const Duration(days: 98))),
+                    VaccinationRecord(
+                        id: 'rec-8',
+                        childId: childId,
+                        vaccineCode: 'FIPV',
+                        doseNumber: 1,
+                        administeredDate: dob.add(const Duration(days: 98))),
+                    VaccinationRecord(
+                        id: 'rec-9',
+                        childId: childId,
+                        vaccineCode: 'ROTA',
+                        doseNumber: 1,
+                        administeredDate: dob.add(const Duration(days: 42))),
+                    VaccinationRecord(
+                        id: 'rec-10',
+                        childId: childId,
+                        vaccineCode: 'ROTA',
+                        doseNumber: 2,
+                        administeredDate: dob.add(const Duration(days: 70))),
+                    VaccinationRecord(
+                        id: 'rec-11',
+                        childId: childId,
+                        vaccineCode: 'PCV',
+                        doseNumber: 1,
+                        administeredDate: dob.add(const Duration(days: 42))),
+                    VaccinationRecord(
+                        id: 'rec-12',
+                        childId: childId,
+                        vaccineCode: 'PCV',
+                        doseNumber: 2,
+                        administeredDate: dob.add(const Duration(days: 70))),
                   ],
                   now: now,
                 ),
@@ -121,5 +180,4 @@ void main() {
       expect(find.text('Return'), findsOneWidget);
     });
   });
-
 }
