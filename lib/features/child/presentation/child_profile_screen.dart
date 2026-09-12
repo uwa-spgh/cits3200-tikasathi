@@ -145,6 +145,20 @@ class _ChildContent extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             _FeatureCard(
+              key: const Key('child-vaccine-record-card'),
+              icon: Icons.menu_book_rounded,
+              title: localizations.childVaccineRecord,
+              cardColor: const Color(0xFFF5EFFF),
+              borderColor: const Color(0xFFE3CFFA),
+              iconBackgroundColor: const Color(0xFFF0DDFF),
+              iconColor: const Color(0xFF730EC5),
+              onTap: () => showFeedbackSnackBar(
+                context,
+                localizations.childScheduleNotImplemented,
+              ),
+            ),
+            const SizedBox(height: 20),
+            _FeatureCard(
               key: const Key('child-vaccine-history-card'),
               icon: Icons.assignment_rounded,
               title: localizations.childVaccineHistory,

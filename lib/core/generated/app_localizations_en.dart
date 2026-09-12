@@ -79,6 +79,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get childVaccineSchedule => 'Vaccine schedule';
 
   @override
+  String get childVaccineRecord => 'Vaccine record';
+
+  @override
   String get childVaccineHistory => 'Vaccine history';
 
   @override
@@ -360,4 +363,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retroactiveVaccineSkip => 'Skip for now';
+
+  @override
+  String get vaccineRecordsDoseHeader => 'Vaccine dose';
+
+  @override
+  String get vaccineRecordsDateHeader => 'Date administered';
+
+  @override
+  String get vaccineRecordsReturn => 'Return';
+
+  @override
+  String get dose => 'Dose';
 }

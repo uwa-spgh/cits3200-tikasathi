@@ -98,6 +98,10 @@
   "@childVaccineSchedule": {
     "description": "Title for vaccine schedule quick action card"
   },
+  "childVaccineRecord": "खोप रेकर्ड",
+  "@childVaccineRecord": {
+    "description": "Title for vaccine record quick action card"
+  },
   "childVaccineHistory": "खोप इतिहास",
   "@childVaccineHistory": {
     "description": "Title for vaccine history quick action card"
@@ -241,5 +245,9 @@
   },
   "retroactiveVaccineChangeDate": "परिवर्तन गर्नुहोस्",
   "retroactiveVaccineFinish": "समाप्त",
-  "retroactiveVaccineSkip": "अहिलेको लागि छोड्नुहोस्"
+  "retroactiveVaccineSkip": "अहिलेको लागि छोड्नुहोस्",
+  "vaccineRecordsDoseHeader": "खोपको खुराक",
+  "vaccineRecordsDateHeader": "प्रशासित मिति",
+  "vaccineRecordsReturn": "फिर्ता",
+  "dose": "खुराक"
 }

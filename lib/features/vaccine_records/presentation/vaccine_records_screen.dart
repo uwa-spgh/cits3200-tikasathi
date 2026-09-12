@@ -36,13 +36,13 @@ class _VaccineRecordsTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final tableColumns = <DataColumn>[
-      DataColumn(label: Text('L10N - Vaccine Dose')),
-      DataColumn(label: Text('L10N - Date Administered')),
+      DataColumn(label: Text(localizations.vaccineRecordsDoseHeader)),
+      DataColumn(label: Text(localizations.vaccineRecordsDateHeader)),
     ];
     final List<DataRow> tableRows = records
         .map((record) => DataRow(cells: <DataCell>[
               DataCell(
-                  Text('${record.vaccineCode} - Dose ${record.doseNumber}')),
+                  Text('${record.vaccineCode} - ${localizations.dose} ${record.doseNumber}')),
               DataCell(Text(DateFormat(
                       'd MMMM y', Localizations.localeOf(context).languageCode)
                   .format(record.administeredDate))),
@@ -57,7 +57,7 @@ class _VaccineRecordsTable extends StatelessWidget {
             children: [
               Expanded(
                   child: SingleChildScrollView(
-                child: DataTable(columns: tableColumns, rows: tableRows),
+                child: DataTable(columns: tableColumns, rows: tableRows, sortColumnIndex: 1, sortAscending: true,),
               )),
               Container(
                   padding: const EdgeInsets.all(24.0),
