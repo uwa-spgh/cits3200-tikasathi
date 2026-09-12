@@ -154,8 +154,15 @@ class RecordDoseController extends _$RecordDoseController {
     });
   }
 
-  /// Writes a [VaccinationRecord] for every ticked dose. Returns false and
-  /// leaves the error on [state] if any insert fails.
+  /// Writes a [VaccinationRecord] for every ticked dose.
+  ///
+  /// The whole batch is one transaction: a clinic visit either lands in full or
+  /// not at all. A partial write would leave records the caregiver cannot
+  /// reconcile, and retrying would fail forever on the unique key over
+  /// (child, vaccine, dose).
+  ///
+  /// Returns false and leaves the error on [state] if the batch fails, keeping
+  /// the previous data so the screen stays usable.
   Future<bool> save() async {
     final RecordDoseState? current = state.valueOrNull;
     if (current == null || !current.canSave) {
@@ -169,17 +176,19 @@ class RecordDoseController extends _$RecordDoseController {
     state = const AsyncLoading<RecordDoseState>().copyWithPrevious(state);
     try {
       final AppDatabase database = ref.read(appDatabaseProvider);
-      for (final VaccinationDue due in selected) {
-        await database.vaccinationRecordsDao.insertVaccinationRecord(
-          VaccinationRecordsCompanion.insert(
-            id: const Uuid().v4(),
-            childId: current.child.id,
-            vaccineCode: due.vaccineCode,
-            doseNumber: due.doseNumber,
-            administeredDate: current.administeredDate,
-          ),
-        );
-      }
+      await database.transaction(() async {
+        for (final VaccinationDue due in selected) {
+          await database.vaccinationRecordsDao.insertVaccinationRecord(
+            VaccinationRecordsCompanion.insert(
+              id: const Uuid().v4(),
+              childId: current.child.id,
+              vaccineCode: due.vaccineCode,
+              doseNumber: due.doseNumber,
+              administeredDate: current.administeredDate,
+            ),
+          );
+        }
+      });
 
       ref.invalidate(homeStatusGroupsProvider);
       ref.invalidate(childProfileProvider(current.child.id));
@@ -188,7 +197,13 @@ class RecordDoseController extends _$RecordDoseController {
       );
       return true;
     } catch (error, stackTrace) {
-      state = AsyncError<RecordDoseState>(error, stackTrace);
+      // Carry the loaded data onto the error so the screen keeps its ticks and
+      // its way back out; the failure is reported by the caller's snackbar.
+      // Stated explicitly rather than leaning on Riverpod retaining the value
+      // for us, so the screen's `skipError` does not depend on a detail that
+      // is easy to miss here.
+      state = AsyncError<RecordDoseState>(error, stackTrace)
+          .copyWithPrevious(state);
       return false;
     }
   }

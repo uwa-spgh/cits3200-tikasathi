@@ -195,5 +195,76 @@ void main() {
           .first;
       expect(records, isEmpty);
     });
+
+    test('a dose that cannot be written rolls the whole batch back', () async {
+      // BOPV 1 is already recorded, so writing it again violates the unique key
+      // over (child, vaccine, dose). Its due row is inserted afterwards to
+      // recreate the stale state a caregiver can actually reach.
+      await database.vaccinationRecordsDao.insertVaccinationRecord(
+        VaccinationRecordsCompanion.insert(
+          id: 'record-existing',
+          childId: childId,
+          vaccineCode: 'BOPV',
+          doseNumber: 1,
+          administeredDate: today.subtract(const Duration(days: 30)),
+        ),
+      );
+      await insertDue(
+          'due-penta', 'PENTA', 1, today.subtract(const Duration(days: 2)));
+      await insertDue('due-bopv', 'BOPV', 1, today);
+      await readState();
+
+      controller()
+        ..toggleDose('due-penta')
+        ..toggleDose('due-bopv');
+
+      expect(await controller().save(), isFalse);
+
+      // PENTA is written before BOPV fails, so it only stays out of the
+      // database if the batch really is one transaction.
+      final List<VaccinationRecord> records = await database
+          .vaccinationRecordsDao
+          .watchVaccinationRecordsForChild(childId)
+          .first;
+      expect(
+        records.map((VaccinationRecord record) => record.id),
+        <String>['record-existing'],
+      );
+
+      final List<VaccinationDue> remainingDues = await database
+          .vaccinationDuesDao
+          .watchVaccinationDuesForChild(childId)
+          .first;
+      expect(
+        remainingDues.map((VaccinationDue due) => due.id).toSet(),
+        <String>{'due-penta', 'due-bopv'},
+      );
+    });
+
+    test('a failed save keeps the loaded data and the ticks', () async {
+      await database.vaccinationRecordsDao.insertVaccinationRecord(
+        VaccinationRecordsCompanion.insert(
+          id: 'record-existing',
+          childId: childId,
+          vaccineCode: 'BOPV',
+          doseNumber: 1,
+          administeredDate: today.subtract(const Duration(days: 30)),
+        ),
+      );
+      await insertDue('due-bopv', 'BOPV', 1, today);
+      await readState();
+
+      controller().toggleDose('due-bopv');
+
+      expect(await controller().save(), isFalse);
+
+      // Without the retained value the screen would drop to a dead-end error
+      // page with no way back and no ticks to retry from.
+      final AsyncValue<RecordDoseState> state =
+          container.read(recordDoseControllerProvider(childId));
+      expect(state.hasError, isTrue);
+      expect(state.hasValue, isTrue);
+      expect(state.value!.selectedDueIds, <String>{'due-bopv'});
+    });
   });
 }
