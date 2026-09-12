@@ -9,6 +9,7 @@ import 'package:tikasathi/features/app_shell/presentation/app_bottom_navigation_
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_helpers.dart';
+import 'package:tikasathi/features/record_dose/presentation/record_dose_screen.dart';
 import 'package:tikasathi/features/onboarding/presentation/retroactive_vaccine_screen.dart';
 
 class ChildProfileScreen extends ConsumerWidget {
@@ -130,6 +131,24 @@ class _ChildContent extends StatelessWidget {
                       .format(followingDue.dueDate),
             ),
             const SizedBox(height: 30),
+            _FeatureCard(
+              key: const Key('child-record-dose-card'),
+              icon: Icons.vaccines_rounded,
+              title: localizations.childActionRecordDose,
+              cardColor: const Color(0xFFFFF6EC),
+              borderColor: const Color(0xFFF6DFC4),
+              iconBackgroundColor: const Color(0xFFFCEBD8),
+              iconColor: const Color(0xFFB2691B),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) =>
+                        RecordDoseScreen(childId: details.child.id),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 20),
             _FeatureCard(
               key: const Key('child-vaccine-schedule-card'),
               icon: Icons.calendar_month_rounded,

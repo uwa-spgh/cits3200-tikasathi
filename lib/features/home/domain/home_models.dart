@@ -15,7 +15,7 @@ class HomeChildSummary {
     this.nextVaccineCode,
     this.sex,
     required this.avatarEmoji,
-    required this.canRecordVaccine,
+    required this.canRecordDose,
   });
 
   final String name;
@@ -24,7 +24,7 @@ class HomeChildSummary {
   final String? nextVaccineCode;
   final String? sex;
   final String avatarEmoji;
-  final bool canRecordVaccine;
+  final bool canRecordDose;
 }
 
 @immutable
