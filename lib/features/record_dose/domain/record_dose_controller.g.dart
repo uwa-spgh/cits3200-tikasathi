@@ -7,7 +7,7 @@ part of 'record_dose_controller.dart';
 // **************************************************************************
 
 String _$recordDoseControllerHash() =>
-    r'78d2312bf788680dcbfd3113b981bd06e21164da';
+    r'f82a54766ffe86718f1d8c9752abc5238b210e64';
 
 /// Copied from Dart SDK
 class _SystemHash {
