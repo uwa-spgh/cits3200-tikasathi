@@ -102,6 +102,7 @@
   "@childVaccineHistory": {
     "description": "Title for vaccine history quick action card"
   },
+  "childActionRecordDose": "खोप दर्ता गर्नुहोस्",
   "childScheduleNotImplemented": "खोप तालिका अझै कार्यान्वयन गरिएको छैन।",
   "@childScheduleNotImplemented": {
     "description": "Snack bar message for vaccine schedule action not implemented"
@@ -134,8 +135,7 @@
   "healthFacilitatorPhoneHint": "फोन नम्बर लेख्नुहोस्",
   "healthFacilitatorSave": "बचत गर्नुहोस्",
   "healthFacilitatorSaveError": "स्वास्थ्य सहजकर्ताको विवरण बचत गर्न सकिएन।",
-  "healthFacilitatorBack": "फर्कनुहोस्"
-  ,
+  "healthFacilitatorBack": "फर्कनुहोस्",
   "settingsTitle": "सेटिङहरू",
   "settingsLanguageTitle": "भाषा छान्नुहोस्",
   "settingsNepali": "नेपाली",
@@ -156,7 +156,7 @@
   "onboardingCaregiverPhoneHint": "तपाईंको फोन नम्बर प्रविष्ट गर्नुहोस्",
   "onboardingCaregiverAddressLabel": "🏠 ठेगाना (वैकल्पिक)",
   "onboardingCaregiverAddressHint": "तपाईंको ठेगाना प्रविष्ट गर्नुहोस्",
-  "onboardingStepLabel": "चरण {current}\/ {total}",
+  "onboardingStepLabel": "चरण {current}/ {total}",
   "onboardingChildNameLabel": "👶 बच्चाको नाम",
   "onboardingChildNameHint": "पूरा नाम प्रविष्ट गर्नुहोस्",
   "onboardingChildDobLabel": "📅 जन्म मिति",
@@ -175,7 +175,7 @@
   "homeAddChildButton": "+ बच्चा थप्नुहोस्",
   "homeActionAddChild": "बच्चा थप्नुहोस्",
   "homeActionChildDetails": "बच्चाको विवरण",
-  "homeActionRecordVaccine": "खोप रेकर्ड",
+  "homeActionRecordDose": "खोप दर्ता गर्नुहोस्",
   "homeActionPlaceholder": "स्थगित कार्य: {action}",
   "@homeActionPlaceholder": {
     "description": "Fallback snack bar message for an unimplemented home action",
@@ -185,6 +185,27 @@
       }
     }
   },
+  "recordDoseTitle": "खोप दर्ता गर्नुहोस्",
+  "recordDoseSubtitle": "{childName} लाई आज दिइएको प्रत्येक खोपमा चिन्ह लगाउनुहोस्।",
+  "recordDoseChangeDate": "परिवर्तन",
+  "recordDoseDoseLabel": "{vaccineCode} (मात्रा {doseNumber})",
+  "recordDoseDueLabel": "लाग्नुपर्ने मिति {date}",
+  "recordDoseOverdueLabel": "{date} देखि ढिलो",
+  "recordDoseNoneDue": "{childName} लाई अहिले कुनै खोप लाग्नुपर्ने छैन।",
+  "recordDoseSaveEmpty": "पहिले खोपमा चिन्ह लगाउनुहोस्",
+  "recordDoseSaveCount": "{count, plural, =1{१ मात्रा सुरक्षित गर्नुहोस्} other{{count} मात्रा सुरक्षित गर्नुहोस्}}",
+  "recordDoseSuccess": "{count, plural, =1{{childName} को १ मात्रा दर्ता गरियो} other{{childName} का {count} मात्रा दर्ता गरियो}}",
+  "recordDoseError": "सुरक्षित गर्न सकिएन। कृपया फेरि प्रयास गर्नुहोस्।",
+  "recordDoseDateTitle": "दिइएको मिति",
+  "recordDoseDoseChip": "मात्रा {doseNumber}",
+  "recordDoseSelectedSummary": "{count, plural, =0{कुनै मात्रा छानिएको छैन} =1{१ मात्रा छानियो} other{{count} मात्रा छानियो}}",
+  "recordDoseStepDate": "चरण १ — मिति जाँच्नुहोस्",
+  "recordDoseStepSelect": "चरण २ — दिइएको प्रत्येक खोपमा चिन्ह लगाउनुहोस्",
+  "recordDoseTapToChange": "परिवर्तन गर्न थिच्नुहोस्",
+  "recordDoseTickedLabel": "चिन्ह लगाइयो",
+  "recordDoseShowMore": "थप खोपहरू देखाउनुहोस्",
+  "recordDoseShowFewer": "कम खोपहरू देखाउनुहोस्",
+  "recordDoseToday": "आज",
   "ageInDays": "{count, plural, =1 {१ दिन पुरानो} other {{count} दिन पुरानो}}",
   "@ageInDays": {
     "description": "Age label in days for a child",
