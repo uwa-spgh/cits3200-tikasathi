@@ -101,4 +101,12 @@ class VaccinationDuesDao extends DatabaseAccessor<AppDatabase>
           ..where((row) => row.childId.equals(childId)))
         .watch();
   }
+
+  /// Reads the outstanding dues once, for callers that hold their own state
+  /// rather than rebuilding from a live query.
+  Future<List<VaccinationDue>> getVaccinationDuesForChild(String childId) {
+    return (select(vaccinationDues)
+          ..where((row) => row.childId.equals(childId)))
+        .get();
+  }
 }
