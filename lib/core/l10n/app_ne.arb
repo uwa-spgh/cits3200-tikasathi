@@ -342,5 +342,10 @@
   "vaccineRecordsDateHeader": "प्रशासित मिति",
   "vaccineRecordsReturn": "फिर्ता",
   "vaccineRecordsEmpty": "खोप लगाइएको कुनै रेकर्ड छैन।",
-  "dose": "खुराक"
+  "dose": "खुराक",
+  "onboardingErrorFutureDob": "जन्म मिति भविष्यको हुन सक्दैन",
+  "overdueVaccinesDialogTitle": "खोपको म्याद नाघेको",
+  "overdueVaccinesDialogMessage": "तपाईंको बच्चाको तालिका अनुसारको खोप छुटेको छ। छुटेका खोपहरू लगाउन र थप जानकारी लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।",
+  "overdueVaccinesNoticeBanner": "छुटेका खोपहरूका बारेमा परामर्श लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।",
+  "actionUnderstand": "बुझें"
 }

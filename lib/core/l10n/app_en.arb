@@ -459,5 +459,10 @@
   "vaccineRecordsDateHeader": "Date administered",
   "vaccineRecordsReturn": "Return",
   "vaccineRecordsEmpty": "There are no recorded vaccinations.",
-  "dose": "Dose"
+  "dose": "Dose",
+  "onboardingErrorFutureDob": "Date of Birth cannot be in the future",
+  "overdueVaccinesDialogTitle": "Vaccines Overdue",
+  "overdueVaccinesDialogMessage": "Your child has missed scheduled vaccinations. Please visit your nearest health facility to get information and catch up on missed doses.",
+  "overdueVaccinesNoticeBanner": "Please visit your nearest health facility to consult a health worker about catch-up vaccinations.",
+  "actionUnderstand": "I understand"
 }

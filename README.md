@@ -52,9 +52,9 @@ Every pull request to the `main` or `develop` branch will trigger a workflow tha
 
 ### Child Profile Management
 - Store UUID, Name, DOB, Sex, and `isSetupComplete` status.
-- **Validation:** Gracefully handle future dates or invalid inputs.
-- **Vaccine Status & Timeline:** Unified status card with accurate color-coded indicators (Green for Up to date / All completed, Amber for Due today / Due soon, Red for Overdue, Grey for Setup incomplete). Delineates the immediate **Next vaccine** (due soon) and **Following vaccine** (scheduled later).
-- **Vaccine Records & History:** A unified screen that merges past vaccine history logging with record viewing. Features an age-appropriate filter toggle, interactive checkboxes, date picker for administered doses, and top-left back navigation.
+- **Validation:** Enforces date of birth integrity by preventing future dates with localized alerts.
+- **Vaccine Status & Timeline:** Unified status card with accurate color-coded indicators (Green for Up to date / All completed, Amber for Due today / Due soon, Red for Overdue, Grey for Setup incomplete). Delineates the immediate **Next vaccine** and **Following vaccine**, highlighting overdue dates in red with an advisory banner directing caregivers to their nearest health facility.
+- **Vaccine Records & History:** A unified screen that merges past vaccine history logging with record viewing. Features an age-appropriate filter toggle, interactive checkboxes, date picker for administered doses, top-left back navigation, and an advisory popup prompting caregivers to visit a health facility if missed or overdue vaccines are present after registration.
 
 ### Caregiver Profile Management
 - Store UUID, Name, Phone Number and Address.

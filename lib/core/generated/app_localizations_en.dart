@@ -564,4 +564,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dose => 'Dose';
+
+  @override
+  String get onboardingErrorFutureDob =>
+      'Date of Birth cannot be in the future';
+
+  @override
+  String get overdueVaccinesDialogTitle => 'Vaccines Overdue';
+
+  @override
+  String get overdueVaccinesDialogMessage =>
+      'Your child has missed scheduled vaccinations. Please visit your nearest health facility to get information and catch up on missed doses.';
+
+  @override
+  String get overdueVaccinesNoticeBanner =>
+      'Please visit your nearest health facility to consult a health worker about catch-up vaccinations.';
+
+  @override
+  String get actionUnderstand => 'I understand';
 }

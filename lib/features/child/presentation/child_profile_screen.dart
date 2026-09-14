@@ -383,12 +383,23 @@ class _VaccineStatusAndTimelineCard extends StatelessWidget {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                dateFormat.format(nextDue!.dueDate),
+                                nextDue!.dueDate.isBefore(DateTime(
+                                        DateTime.now().year,
+                                        DateTime.now().month,
+                                        DateTime.now().day))
+                                    ? localizations.recordDoseOverdueLabel(
+                                        dateFormat.format(nextDue!.dueDate))
+                                    : dateFormat.format(nextDue!.dueDate),
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
                                     ?.copyWith(
-                                      color: const Color(0xFF64748B),
+                                      color: nextDue!.dueDate.isBefore(DateTime(
+                                              DateTime.now().year,
+                                              DateTime.now().month,
+                                              DateTime.now().day))
+                                          ? const Color(0xFFB91C1C)
+                                          : const Color(0xFF64748B),
                                       fontWeight: FontWeight.w600,
                                     ),
                               ),
@@ -513,6 +524,39 @@ class _VaccineStatusAndTimelineCard extends StatelessWidget {
                     ),
                   ),
                 ],
+                if (status.key == 'overdue') ...<Widget>[
+                  const SizedBox(height: 14),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF1F2),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: const Color(0xFFFECDD3)),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        const Icon(
+                          Icons.info_outline_rounded,
+                          color: Color(0xFFBE123C),
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            localizations.overdueVaccinesNoticeBanner,
+                            style: const TextStyle(
+                              color: Color(0xFF9F1239),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              height: 1.3,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -545,19 +589,19 @@ class _UrgencyPill extends StatelessWidget {
     if (differenceDays < 0) {
       bgColor = const Color(0xFFFEE2E2);
       textColor = const Color(0xFFB91C1C);
-      label = 'Overdue';
+      label = localizations.childVaccinationOverdue;
     } else if (differenceDays == 0) {
       bgColor = const Color(0xFFFEF3C7);
       textColor = const Color(0xFFB45309);
-      label = 'Today';
+      label = localizations.recordDoseToday;
     } else if (differenceDays <= 14) {
       bgColor = const Color(0xFFFEF3C7);
       textColor = const Color(0xFFB45309);
-      label = 'Soon';
+      label = localizations.childVaccinationDueSoon;
     } else {
       bgColor = const Color(0xFFEAF2FF);
       textColor = const Color(0xFF0E64C5);
-      label = 'Scheduled';
+      label = localizations.childVaccineSchedule;
     }
 
     return Container(

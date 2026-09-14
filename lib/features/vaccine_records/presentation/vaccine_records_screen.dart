@@ -132,23 +132,82 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
       ref.invalidate(homeStatusGroupsProvider);
       ref.invalidate(childProfileProvider(widget.childId));
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(localizations.vaccineHistorySavedSuccess),
-          ),
-        );
+      final List<VaccinationDue> dues = await db.vaccinationDuesDao
+          .getVaccinationDuesForChild(widget.childId);
+      final DateTime now = DateTime.now();
+      final DateTime today = DateTime(now.year, now.month, now.day);
+      final bool hasOverdue = dues.any((VaccinationDue due) {
+        final DateTime dueDay =
+            DateTime(due.dueDate.year, due.dueDate.month, due.dueDate.day);
+        return dueDay.isBefore(today);
+      });
 
-        if (widget.isOnboardingFlow) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute<void>(
-              builder: (BuildContext context) => const AppShellScreen(),
-            ),
-            (Route<dynamic> route) => false,
+      if (mounted) {
+        setState(() => _isSaving = false);
+        if (hasOverdue) {
+          await showDialog<void>(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext dialogContext) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                title: Row(
+                  children: [
+                    const Icon(
+                      Icons.warning_amber_rounded,
+                      color: Color(0xFFCD2E2E),
+                      size: 28,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        localizations.overdueVaccinesDialogTitle,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+                content: Text(
+                  localizations.overdueVaccinesDialogMessage,
+                  style: const TextStyle(fontSize: 15, height: 1.4),
+                ),
+                actions: [
+                  FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xFF0F52BA),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () => Navigator.of(dialogContext).pop(),
+                    child: Text(localizations.actionUnderstand),
+                  ),
+                ],
+              );
+            },
           );
         } else {
-          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(localizations.vaccineHistorySavedSuccess),
+            ),
+          );
+        }
+
+        if (mounted) {
+          if (widget.isOnboardingFlow) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute<void>(
+                builder: (BuildContext context) => const AppShellScreen(),
+              ),
+              (Route<dynamic> route) => false,
+            );
+          } else {
+            Navigator.pop(context);
+          }
         }
       }
     } catch (error) {

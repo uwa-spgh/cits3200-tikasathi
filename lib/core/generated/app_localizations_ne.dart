@@ -571,4 +571,21 @@ class AppLocalizationsNe extends AppLocalizations {
 
   @override
   String get dose => 'खुराक';
+
+  @override
+  String get onboardingErrorFutureDob => 'जन्म मिति भविष्यको हुन सक्दैन';
+
+  @override
+  String get overdueVaccinesDialogTitle => 'खोपको म्याद नाघेको';
+
+  @override
+  String get overdueVaccinesDialogMessage =>
+      'तपाईंको बच्चाको तालिका अनुसारको खोप छुटेको छ। छुटेका खोपहरू लगाउन र थप जानकारी लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।';
+
+  @override
+  String get overdueVaccinesNoticeBanner =>
+      'छुटेका खोपहरूका बारेमा परामर्श लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।';
+
+  @override
+  String get actionUnderstand => 'बुझें';
 }

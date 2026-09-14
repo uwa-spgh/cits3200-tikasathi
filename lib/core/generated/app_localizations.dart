@@ -1021,6 +1021,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dose'**
   String get dose;
+
+  /// No description provided for @onboardingErrorFutureDob.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of Birth cannot be in the future'**
+  String get onboardingErrorFutureDob;
+
+  /// No description provided for @overdueVaccinesDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccines Overdue'**
+  String get overdueVaccinesDialogTitle;
+
+  /// No description provided for @overdueVaccinesDialogMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your child has missed scheduled vaccinations. Please visit your nearest health facility to get information and catch up on missed doses.'**
+  String get overdueVaccinesDialogMessage;
+
+  /// No description provided for @overdueVaccinesNoticeBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Please visit your nearest health facility to consult a health worker about catch-up vaccinations.'**
+  String get overdueVaccinesNoticeBanner;
+
+  /// No description provided for @actionUnderstand.
+  ///
+  /// In en, this message translates to:
+  /// **'I understand'**
+  String get actionUnderstand;
 }
 
 class _AppLocalizationsDelegate
