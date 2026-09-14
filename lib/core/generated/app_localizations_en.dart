@@ -85,6 +85,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get childVaccineHistory => 'Vaccine history';
 
   @override
+  String get childActionRecordDose => 'Log Vaccine';
+
+  @override
   String get childScheduleNotImplemented =>
       'Vaccine schedule is not implemented yet.';
 
@@ -270,12 +273,112 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeActionChildDetails => 'Child details';
 
   @override
-  String get homeActionRecordVaccine => 'Record vaccine';
+  String get homeActionRecordDose => 'Log vaccine';
 
   @override
   String homeActionPlaceholder(String action) {
     return 'Placeholder action: $action';
   }
+
+  @override
+  String get recordDoseTitle => 'Log vaccine';
+
+  @override
+  String recordDoseSubtitle(String childName) {
+    return 'Tick each vaccine $childName was given today.';
+  }
+
+  @override
+  String get recordDoseChangeDate => 'Change';
+
+  @override
+  String recordDoseDoseLabel(String vaccineCode, int doseNumber) {
+    return '$vaccineCode (Dose $doseNumber)';
+  }
+
+  @override
+  String recordDoseDueLabel(String date) {
+    return 'Due $date';
+  }
+
+  @override
+  String recordDoseOverdueLabel(String date) {
+    return 'Overdue since $date';
+  }
+
+  @override
+  String recordDoseNoneDue(String childName) {
+    return '$childName has no doses due right now.';
+  }
+
+  @override
+  String get recordDoseSaveEmpty => 'Tick a vaccine first';
+
+  @override
+  String recordDoseSaveCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Save $count doses',
+      one: 'Save 1 dose',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String recordDoseSuccess(int count, String childName) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count doses logged for $childName',
+      one: '1 dose logged for $childName',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recordDoseError => 'Could not save. Please try again.';
+
+  @override
+  String get recordDoseDateTitle => 'Date given';
+
+  @override
+  String recordDoseDoseChip(int doseNumber) {
+    return 'Dose $doseNumber';
+  }
+
+  @override
+  String recordDoseSelectedSummary(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count doses selected',
+      one: '1 dose selected',
+      zero: 'No doses selected',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recordDoseStepDate => 'Step 1 — Check the date';
+
+  @override
+  String get recordDoseStepSelect => 'Step 2 — Tick each vaccine given';
+
+  @override
+  String get recordDoseTapToChange => 'Tap to change';
+
+  @override
+  String get recordDoseTickedLabel => 'Ticked';
+
+  @override
+  String get recordDoseShowMore => 'Show more vaccines';
+
+  @override
+  String get recordDoseShowFewer => 'Show fewer vaccines';
+
+  @override
+  String get recordDoseToday => 'Today';
 
   @override
   String ageInDays(int count) {

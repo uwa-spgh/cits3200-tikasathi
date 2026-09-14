@@ -242,6 +242,12 @@ abstract class AppLocalizations {
   /// **'Vaccine history'**
   String get childVaccineHistory;
 
+  /// Title of the card on the child page that opens the log dose screen
+  ///
+  /// In en, this message translates to:
+  /// **'Log Vaccine'**
+  String get childActionRecordDose;
+
   /// Snack bar message for vaccine schedule action not implemented
   ///
   /// In en, this message translates to:
@@ -584,17 +590,143 @@ abstract class AppLocalizations {
   /// **'Child details'**
   String get homeActionChildDetails;
 
-  /// No description provided for @homeActionRecordVaccine.
+  /// No description provided for @homeActionRecordDose.
   ///
   /// In en, this message translates to:
-  /// **'Record vaccine'**
-  String get homeActionRecordVaccine;
+  /// **'Log vaccine'**
+  String get homeActionRecordDose;
 
   /// Fallback snack bar message for an unimplemented home action
   ///
   /// In en, this message translates to:
   /// **'Placeholder action: {action}'**
   String homeActionPlaceholder(String action);
+
+  /// Title of the screen where a caregiver records doses a child has just been given
+  ///
+  /// In en, this message translates to:
+  /// **'Log vaccine'**
+  String get recordDoseTitle;
+
+  /// Instruction shown under the log dose title
+  ///
+  /// In en, this message translates to:
+  /// **'Tick each vaccine {childName} was given today.'**
+  String recordDoseSubtitle(String childName);
+
+  /// Button that opens the date picker for the administered date
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get recordDoseChangeDate;
+
+  /// Label for a single vaccine dose in the list
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccineCode} (Dose {doseNumber})'**
+  String recordDoseDoseLabel(String vaccineCode, int doseNumber);
+
+  /// Secondary label showing when a dose was scheduled
+  ///
+  /// In en, this message translates to:
+  /// **'Due {date}'**
+  String recordDoseDueLabel(String date);
+
+  /// Secondary label for a dose whose due date has passed
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue since {date}'**
+  String recordDoseOverdueLabel(String date);
+
+  /// Empty state when the child has nothing due today
+  ///
+  /// In en, this message translates to:
+  /// **'{childName} has no doses due right now.'**
+  String recordDoseNoneDue(String childName);
+
+  /// Save button label while nothing is ticked
+  ///
+  /// In en, this message translates to:
+  /// **'Tick a vaccine first'**
+  String get recordDoseSaveEmpty;
+
+  /// Save button label showing how many doses will be recorded
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Save 1 dose} other{Save {count} doses}}'**
+  String recordDoseSaveCount(int count);
+
+  /// Confirmation shown after doses are saved
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 dose logged for {childName}} other{{count} doses logged for {childName}}}'**
+  String recordDoseSuccess(int count, String childName);
+
+  /// Shown when saving the doses fails
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save. Please try again.'**
+  String get recordDoseError;
+
+  /// Heading of the card holding the date the doses were administered
+  ///
+  /// In en, this message translates to:
+  /// **'Date given'**
+  String get recordDoseDateTitle;
+
+  /// Chip showing which dose of a vaccine a row refers to
+  ///
+  /// In en, this message translates to:
+  /// **'Dose {doseNumber}'**
+  String recordDoseDoseChip(int doseNumber);
+
+  /// Running count of ticked doses shown above the save button
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No doses selected} =1{1 dose selected} other{{count} doses selected}}'**
+  String recordDoseSelectedSummary(int count);
+
+  /// Heading above the administered date card
+  ///
+  /// In en, this message translates to:
+  /// **'Step 1 — Check the date'**
+  String get recordDoseStepDate;
+
+  /// Heading above the list of doses
+  ///
+  /// In en, this message translates to:
+  /// **'Step 2 — Tick each vaccine given'**
+  String get recordDoseStepSelect;
+
+  /// Hint telling the user the date card can be tapped
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to change'**
+  String get recordDoseTapToChange;
+
+  /// Badge shown on a dose row the user has ticked
+  ///
+  /// In en, this message translates to:
+  /// **'Ticked'**
+  String get recordDoseTickedLabel;
+
+  /// Button revealing doses that are not due yet
+  ///
+  /// In en, this message translates to:
+  /// **'Show more vaccines'**
+  String get recordDoseShowMore;
+
+  /// Button hiding doses that are not due yet
+  ///
+  /// In en, this message translates to:
+  /// **'Show fewer vaccines'**
+  String get recordDoseShowFewer;
+
+  /// Badge shown when the selected date is today
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get recordDoseToday;
 
   /// Age label in days for a child
   ///

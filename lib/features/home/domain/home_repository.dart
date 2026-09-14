@@ -39,7 +39,7 @@ class HomeRepository {
           sex: childSexFromString(profile.sex),
           dateOfBirth: profile.dateOfBirth,
         ),
-        canRecordVaccine: status != HomeVaccinationGroup.upToDate,
+        canRecordDose: status != HomeVaccinationGroup.upToDate,
       );
 
       groupedChildren[status]!.add(child);

@@ -19,7 +19,7 @@ void main() {
       required String name,
       required DateTime dateOfBirth,
       required String nextVaccineCode,
-      required bool canRecordVaccine,
+      required bool canRecordDose,
       String sex = 'female',
     }) {
       return HomeChildSummary(
@@ -29,7 +29,7 @@ void main() {
         nextVaccineCode: nextVaccineCode,
         sex: sex,
         avatarEmoji: '👶',
-        canRecordVaccine: canRecordVaccine,
+        canRecordDose: canRecordDose,
       );
     }
 
@@ -39,20 +39,20 @@ void main() {
         name: 'Aisha',
         dateOfBirth: now.subtract(const Duration(days: 12)),
         nextVaccineCode: 'Rotavirus',
-        canRecordVaccine: true,
+        canRecordDose: true,
         sex: 'male',
       );
       final HomeChildSummary dueSoonChild = buildChild(
         name: 'Bikash',
         dateOfBirth: now.subtract(const Duration(days: 45)),
         nextVaccineCode: 'TCV',
-        canRecordVaccine: false,
+        canRecordDose: false,
       );
       final HomeChildSummary upToDateChild = buildChild(
         name: 'Sara',
         dateOfBirth: now.subtract(const Duration(days: 1460)),
         nextVaccineCode: 'DPT',
-        canRecordVaccine: false,
+        canRecordDose: false,
       );
 
       return <HomeStatusGroup>[
@@ -192,7 +192,7 @@ void main() {
       expect(find.text('Save child'), findsOneWidget);
     });
 
-    testWidgets('shows record action and unsaved facilitator card',
+    testWidgets('shows record dose action and unsaved facilitator card',
         (WidgetTester tester) async {
       final groups = buildHomeGroups();
 
@@ -216,9 +216,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('record-vaccine-Aisha')));
-      await tester.pumpAndSettle();
-      expect(find.text('स्थगित कार्य: खोप रेकर्ड'), findsOneWidget);
+      expect(find.byKey(const Key('record-dose-Aisha')), findsOneWidget);
+      expect(find.text('खोप दर्ता गर्नुहोस्'), findsAtLeastNWidgets(1));
       await tester.drag(
         find.byType(ListView).first,
         const Offset(0, -600),
@@ -399,7 +398,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('record-vaccine-Aisha')), findsOneWidget);
+      expect(find.byKey(const Key('record-dose-Aisha')), findsOneWidget);
       expect(find.byKey(const Key('home-health-facilitator-card')),
           findsOneWidget);
 

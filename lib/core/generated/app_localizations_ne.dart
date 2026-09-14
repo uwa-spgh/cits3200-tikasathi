@@ -85,6 +85,9 @@ class AppLocalizationsNe extends AppLocalizations {
   String get childVaccineHistory => 'खोप इतिहास';
 
   @override
+  String get childActionRecordDose => 'खोप दर्ता गर्नुहोस्';
+
+  @override
   String get childScheduleNotImplemented =>
       'खोप तालिका अझै कार्यान्वयन गरिएको छैन।';
 
@@ -274,12 +277,114 @@ class AppLocalizationsNe extends AppLocalizations {
   String get homeActionChildDetails => 'बच्चाको विवरण';
 
   @override
-  String get homeActionRecordVaccine => 'खोप रेकर्ड';
+  String get homeActionRecordDose => 'खोप दर्ता गर्नुहोस्';
 
   @override
   String homeActionPlaceholder(String action) {
     return 'स्थगित कार्य: $action';
   }
+
+  @override
+  String get recordDoseTitle => 'खोप दर्ता गर्नुहोस्';
+
+  @override
+  String recordDoseSubtitle(String childName) {
+    return '$childName लाई आज दिइएको प्रत्येक खोपमा चिन्ह लगाउनुहोस्।';
+  }
+
+  @override
+  String get recordDoseChangeDate => 'परिवर्तन';
+
+  @override
+  String recordDoseDoseLabel(String vaccineCode, int doseNumber) {
+    return '$vaccineCode (मात्रा $doseNumber)';
+  }
+
+  @override
+  String recordDoseDueLabel(String date) {
+    return 'लाग्नुपर्ने मिति $date';
+  }
+
+  @override
+  String recordDoseOverdueLabel(String date) {
+    return '$date देखि ढिलो';
+  }
+
+  @override
+  String recordDoseNoneDue(String childName) {
+    return '$childName लाई अहिले कुनै खोप लाग्नुपर्ने छैन।';
+  }
+
+  @override
+  String get recordDoseSaveEmpty => 'पहिले खोपमा चिन्ह लगाउनुहोस्';
+
+  @override
+  String recordDoseSaveCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count मात्रा सुरक्षित गर्नुहोस्',
+      one: '१ मात्रा सुरक्षित गर्नुहोस्',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String recordDoseSuccess(int count, String childName) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$childName का $count मात्रा दर्ता गरियो',
+      one: '$childName को १ मात्रा दर्ता गरियो',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recordDoseError =>
+      'सुरक्षित गर्न सकिएन। कृपया फेरि प्रयास गर्नुहोस्।';
+
+  @override
+  String get recordDoseDateTitle => 'दिइएको मिति';
+
+  @override
+  String recordDoseDoseChip(int doseNumber) {
+    return 'मात्रा $doseNumber';
+  }
+
+  @override
+  String recordDoseSelectedSummary(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count मात्रा छानियो',
+      one: '१ मात्रा छानियो',
+      zero: 'कुनै मात्रा छानिएको छैन',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recordDoseStepDate => 'चरण १ — मिति जाँच्नुहोस्';
+
+  @override
+  String get recordDoseStepSelect =>
+      'चरण २ — दिइएको प्रत्येक खोपमा चिन्ह लगाउनुहोस्';
+
+  @override
+  String get recordDoseTapToChange => 'परिवर्तन गर्न थिच्नुहोस्';
+
+  @override
+  String get recordDoseTickedLabel => 'चिन्ह लगाइयो';
+
+  @override
+  String get recordDoseShowMore => 'थप खोपहरू देखाउनुहोस्';
+
+  @override
+  String get recordDoseShowFewer => 'कम खोपहरू देखाउनुहोस्';
+
+  @override
+  String get recordDoseToday => 'आज';
 
   @override
   String ageInDays(int count) {
