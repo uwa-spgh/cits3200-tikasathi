@@ -278,40 +278,112 @@ abstract class AppLocalizations {
   /// **'Record vaccine and clinic lookup are not available yet in this version.'**
   String get childMissingFeatureNote;
 
+  /// Status label for a child with an overdue vaccine
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccination overdue'**
+  String get childVaccinationOverdue;
+
+  /// Label for the subsequent scheduled vaccine after the next one
+  ///
+  /// In en, this message translates to:
+  /// **'Following vaccine (later)'**
+  String get childFollowingVaccine;
+
+  /// Shown when all vaccines in the schedule have been completed
+  ///
+  /// In en, this message translates to:
+  /// **'All childhood immunisations completed!'**
+  String get childAllVaccinesCompleted;
+
+  /// Shown when only one dose remains in the schedule
+  ///
+  /// In en, this message translates to:
+  /// **'Final scheduled vaccine'**
+  String get childFinalScheduledVaccine;
+
+  /// Title for the unified vaccine records and history quick action card
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine records & history'**
+  String get childVaccineRecordsAndHistory;
+
+  /// Subtitle for the unified vaccine records and history card
+  ///
+  /// In en, this message translates to:
+  /// **'Review and update recorded doses'**
+  String get childVaccineRecordsAndHistorySubtitle;
+
+  /// Toggle option to show only age-appropriate vaccines
+  ///
+  /// In en, this message translates to:
+  /// **'Age-appropriate only'**
+  String get vaccineHistoryFilterAgeAppropriate;
+
+  /// Toggle option to show all vaccines
+  ///
+  /// In en, this message translates to:
+  /// **'Show all vaccines'**
+  String get vaccineHistoryFilterAll;
+
+  /// Button to save changes made in vaccine history
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get vaccineHistorySaveChanges;
+
+  /// Snack bar message when vaccine history is saved
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine history updated successfully'**
+  String get vaccineHistorySavedSuccess;
+
+  /// Label showing when a vaccine was administered
+  ///
+  /// In en, this message translates to:
+  /// **'Given on {date}'**
+  String vaccineHistoryAdministeredOn(String date);
+
+  /// Label showing when an unadministered vaccine is due
+  ///
+  /// In en, this message translates to:
+  /// **'Due: {date}'**
+  String vaccineHistoryDueAt(String date);
+
   /// No description provided for @healthFacilitatorSaveAction.
   ///
   /// In en, this message translates to:
-  /// **'Save your closest health facilitator'**
+  /// **'Save your closest health facility'**
   String get healthFacilitatorSaveAction;
 
   /// No description provided for @healthFacilitatorSavedHeading.
   ///
   /// In en, this message translates to:
-  /// **'Your local health facilitator'**
+  /// **'Your local health facility'**
   String get healthFacilitatorSavedHeading;
 
   /// No description provided for @healthFacilitatorTitle.
   ///
   /// In en, this message translates to:
-  /// **'Health Facilitator'**
+  /// **'Health Facility'**
   String get healthFacilitatorTitle;
 
   /// No description provided for @healthFacilitatorSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Save the details of your closest health facilitator.'**
+  /// **'Save the details of your closest health facility.'**
   String get healthFacilitatorSubtitle;
 
   /// No description provided for @healthFacilitatorName.
   ///
   /// In en, this message translates to:
-  /// **'Facilitator Name'**
+  /// **'Facility Name'**
   String get healthFacilitatorName;
 
   /// No description provided for @healthFacilitatorNameHint.
   ///
   /// In en, this message translates to:
-  /// **'Enter the facilitator\'s name'**
+  /// **'Enter the facility\'s name'**
   String get healthFacilitatorNameHint;
 
   /// No description provided for @healthFacilitatorAddress.
@@ -347,7 +419,7 @@ abstract class AppLocalizations {
   /// No description provided for @healthFacilitatorSaveError.
   ///
   /// In en, this message translates to:
-  /// **'Could not save health facilitator details.'**
+  /// **'Could not save health facility details.'**
   String get healthFacilitatorSaveError;
 
   /// No description provided for @healthFacilitatorBack.
@@ -355,6 +427,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get healthFacilitatorBack;
+
+  /// No description provided for @healthFacilitySaveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Save your closest health facility'**
+  String get healthFacilitySaveAction;
+
+  /// No description provided for @healthFacilitySavedHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Your local health facility'**
+  String get healthFacilitySavedHeading;
+
+  /// No description provided for @healthFacilityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Facility'**
+  String get healthFacilityTitle;
+
+  /// No description provided for @healthFacilitySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the details of your closest health facility.'**
+  String get healthFacilitySubtitle;
+
+  /// No description provided for @healthFacilityName.
+  ///
+  /// In en, this message translates to:
+  /// **'Facility Name'**
+  String get healthFacilityName;
+
+  /// No description provided for @healthFacilityNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the facility\'s name'**
+  String get healthFacilityNameHint;
+
+  /// No description provided for @healthFacilityAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get healthFacilityAddress;
+
+  /// No description provided for @healthFacilityAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the address'**
+  String get healthFacilityAddressHint;
+
+  /// No description provided for @healthFacilityPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get healthFacilityPhone;
+
+  /// No description provided for @healthFacilityPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the phone number'**
+  String get healthFacilityPhoneHint;
+
+  /// No description provided for @healthFacilitySave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get healthFacilitySave;
+
+  /// No description provided for @healthFacilitySaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save health facility details.'**
+  String get healthFacilitySaveError;
+
+  /// No description provided for @healthFacilityBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get healthFacilityBack;
 
   /// No description provided for @settingsTitle.
   ///

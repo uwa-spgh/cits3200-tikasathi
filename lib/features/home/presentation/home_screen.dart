@@ -7,10 +7,11 @@ import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/child/presentation/child_profile_screen.dart';
 import 'package:tikasathi/features/record_dose/presentation/record_dose_screen.dart';
 import 'package:tikasathi/features/onboarding/presentation/child_screen.dart';
+import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
-import 'package:tikasathi/features/settings/domain/health_facilitator_controller.dart';
+import 'package:tikasathi/features/settings/domain/health_facility_controller.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
-import 'package:tikasathi/features/settings/presentation/health_facilitator_card.dart';
+import 'package:tikasathi/features/settings/presentation/health_facility_card.dart';
 
 import '../domain/home_helpers.dart';
 import '../domain/home_models.dart';
@@ -36,8 +37,8 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<AppLanguage> languageState =
         ref.watch(languageControllerProvider);
-    final AsyncValue<HealthFacilitator?> facilitatorState =
-        ref.watch(healthFacilitatorProvider);
+    final AsyncValue<HealthFacility?> facilitatorState =
+        ref.watch(healthFacilityProvider);
 
     return languageState.when(
       data: (AppLanguage _) {
@@ -186,11 +187,22 @@ class _HomeScreenContent extends StatelessWidget {
                       ),
                     );
 
+                    final Widget readAloudButton = ReadAloudButton(
+                      tooltip: localizations.childReadAloudTooltip,
+                      unavailableMessage:
+                          localizations.childReadAloudUnavailable,
+                    );
+
                     if (compactHeader) {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          title,
+                          Row(
+                            children: <Widget>[
+                              Expanded(child: title),
+                              readAloudButton,
+                            ],
+                          ),
                           const SizedBox(height: 8),
                           addChildButton,
                         ],
@@ -202,6 +214,8 @@ class _HomeScreenContent extends StatelessWidget {
                       children: <Widget>[
                         Expanded(child: title),
                         addChildButton,
+                        const SizedBox(width: 10),
+                        readAloudButton,
                       ],
                     );
                   },
@@ -253,9 +267,9 @@ class _HomeScreenContent extends StatelessWidget {
                     ),
                   ),
                 const SizedBox(height: 22),
-                HealthFacilitatorCard(
+                HealthFacilityCard(
                   key: const Key('home-health-facilitator-card'),
-                  facilitator: facilitator,
+                  facility: facilitator,
                 ),
               ],
             ),

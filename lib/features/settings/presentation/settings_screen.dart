@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
-import 'package:tikasathi/features/settings/domain/health_facilitator_controller.dart';
+import 'package:tikasathi/features/settings/domain/health_facility_controller.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
-import 'package:tikasathi/features/settings/presentation/health_facilitator_card.dart';
+import 'package:tikasathi/features/settings/presentation/health_facility_card.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -17,8 +17,8 @@ class SettingsScreen extends ConsumerWidget {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
     final AsyncValue<AppLanguage> languageState =
         ref.watch(languageControllerProvider);
-    final AsyncValue<HealthFacilitator?> facilitatorState =
-        ref.watch(healthFacilitatorProvider);
+    final AsyncValue<HealthFacility?> facilitatorState =
+        ref.watch(healthFacilityProvider);
 
     return languageState.when(
       data: (AppLanguage language) => facilitatorState.when(
@@ -60,7 +60,7 @@ class SettingsScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref, {
     required bool isNp,
-    required HealthFacilitator? facilitator,
+    required HealthFacility? facilitator,
   }) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
     return SafeArea(
@@ -70,13 +70,25 @@ class SettingsScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                localizations.settingsTitle,
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF0F172A),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Text(
+                      localizations.settingsTitle,
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0F172A),
+                      ),
+                    ),
+                  ),
+                  ReadAloudButton(
+                    tooltip: localizations.childReadAloudTooltip,
+                    unavailableMessage: localizations.childReadAloudUnavailable,
+                  ),
+                ],
               ),
               const SizedBox(height: 32),
               Text(
@@ -110,9 +122,9 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 32),
-              HealthFacilitatorCard(
+              HealthFacilityCard(
                 key: const Key('health-facilitator-action'),
-                facilitator: facilitator,
+                facility: facilitator,
               ),
               const SizedBox(height: 32),
               ElevatedButton(

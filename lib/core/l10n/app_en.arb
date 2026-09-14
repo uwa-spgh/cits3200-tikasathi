@@ -130,19 +130,90 @@
   "@childMissingFeatureNote": {
     "description": "Clear note about unavailable functionality on the child screen"
   },
-  "healthFacilitatorSaveAction": "Save your closest health facilitator",
-  "healthFacilitatorSavedHeading": "Your local health facilitator",
-  "healthFacilitatorTitle": "Health Facilitator",
-  "healthFacilitatorSubtitle": "Save the details of your closest health facilitator.",
-  "healthFacilitatorName": "Facilitator Name",
-  "healthFacilitatorNameHint": "Enter the facilitator's name",
+  "childVaccinationOverdue": "Vaccination overdue",
+  "@childVaccinationOverdue": {
+    "description": "Status label for a child with an overdue vaccine"
+  },
+  "childFollowingVaccine": "Following vaccine (later)",
+  "@childFollowingVaccine": {
+    "description": "Label for the subsequent scheduled vaccine after the next one"
+  },
+  "childAllVaccinesCompleted": "All childhood immunisations completed!",
+  "@childAllVaccinesCompleted": {
+    "description": "Shown when all vaccines in the schedule have been completed"
+  },
+  "childFinalScheduledVaccine": "Final scheduled vaccine",
+  "@childFinalScheduledVaccine": {
+    "description": "Shown when only one dose remains in the schedule"
+  },
+  "childVaccineRecordsAndHistory": "Vaccine records & history",
+  "@childVaccineRecordsAndHistory": {
+    "description": "Title for the unified vaccine records and history quick action card"
+  },
+  "childVaccineRecordsAndHistorySubtitle": "Review and update recorded doses",
+  "@childVaccineRecordsAndHistorySubtitle": {
+    "description": "Subtitle for the unified vaccine records and history card"
+  },
+  "vaccineHistoryFilterAgeAppropriate": "Age-appropriate only",
+  "@vaccineHistoryFilterAgeAppropriate": {
+    "description": "Toggle option to show only age-appropriate vaccines"
+  },
+  "vaccineHistoryFilterAll": "Show all vaccines",
+  "@vaccineHistoryFilterAll": {
+    "description": "Toggle option to show all vaccines"
+  },
+  "vaccineHistorySaveChanges": "Save Changes",
+  "@vaccineHistorySaveChanges": {
+    "description": "Button to save changes made in vaccine history"
+  },
+  "vaccineHistorySavedSuccess": "Vaccine history updated successfully",
+  "@vaccineHistorySavedSuccess": {
+    "description": "Snack bar message when vaccine history is saved"
+  },
+  "vaccineHistoryAdministeredOn": "Given on {date}",
+  "@vaccineHistoryAdministeredOn": {
+    "description": "Label showing when a vaccine was administered",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "vaccineHistoryDueAt": "Due: {date}",
+  "@vaccineHistoryDueAt": {
+    "description": "Label showing when an unadministered vaccine is due",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "healthFacilitatorSaveAction": "Save your closest health facility",
+  "healthFacilitatorSavedHeading": "Your local health facility",
+  "healthFacilitatorTitle": "Health Facility",
+  "healthFacilitatorSubtitle": "Save the details of your closest health facility.",
+  "healthFacilitatorName": "Facility Name",
+  "healthFacilitatorNameHint": "Enter the facility's name",
   "healthFacilitatorAddress": "Address",
   "healthFacilitatorAddressHint": "Enter the address",
   "healthFacilitatorPhone": "Phone Number",
   "healthFacilitatorPhoneHint": "Enter the phone number",
   "healthFacilitatorSave": "Save",
-  "healthFacilitatorSaveError": "Could not save health facilitator details.",
+  "healthFacilitatorSaveError": "Could not save health facility details.",
   "healthFacilitatorBack": "Back",
+  "healthFacilitySaveAction": "Save your closest health facility",
+  "healthFacilitySavedHeading": "Your local health facility",
+  "healthFacilityTitle": "Health Facility",
+  "healthFacilitySubtitle": "Save the details of your closest health facility.",
+  "healthFacilityName": "Facility Name",
+  "healthFacilityNameHint": "Enter the facility's name",
+  "healthFacilityAddress": "Address",
+  "healthFacilityAddressHint": "Enter the address",
+  "healthFacilityPhone": "Phone Number",
+  "healthFacilityPhoneHint": "Enter the phone number",
+  "healthFacilitySave": "Save",
+  "healthFacilitySaveError": "Could not save health facility details.",
+  "healthFacilityBack": "Back",
   "settingsTitle": "Settings",
   "settingsLanguageTitle": "Choose language",
   "settingsNepali": "Nepali",

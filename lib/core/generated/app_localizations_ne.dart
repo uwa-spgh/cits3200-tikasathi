@@ -106,25 +106,67 @@ class AppLocalizationsNe extends AppLocalizations {
       'यस संस्करणमा खोप रेकर्ड र क्लिनिक खोजी उपलब्ध छैन।';
 
   @override
+  String get childVaccinationOverdue => 'खोपको मिति नाघेको';
+
+  @override
+  String get childFollowingVaccine => 'त्यसपछिको खोप (पछि)';
+
+  @override
+  String get childAllVaccinesCompleted => 'सबै खोपहरू पूरा भए!';
+
+  @override
+  String get childFinalScheduledVaccine => 'अन्तिम निर्धारित खोप';
+
+  @override
+  String get childVaccineRecordsAndHistory => 'खोप इतिहास र अभिलेख';
+
+  @override
+  String get childVaccineRecordsAndHistorySubtitle =>
+      'लिएका खोपहरू हेर्नुहोस् र सम्पादन गर्नुहोस्';
+
+  @override
+  String get vaccineHistoryFilterAgeAppropriate => 'उमेर अनुसार मात्र';
+
+  @override
+  String get vaccineHistoryFilterAll => 'सबै खोपहरू देखाउनुहोस्';
+
+  @override
+  String get vaccineHistorySaveChanges => 'परिवर्तनहरू बचत गर्नुहोस्';
+
+  @override
+  String get vaccineHistorySavedSuccess =>
+      'खोप इतिहास सफलतापूर्वक अद्यावधिक गरियो';
+
+  @override
+  String vaccineHistoryAdministeredOn(String date) {
+    return '$date मा दिइएको';
+  }
+
+  @override
+  String vaccineHistoryDueAt(String date) {
+    return 'दिनुपर्ने मिति: $date';
+  }
+
+  @override
   String get healthFacilitatorSaveAction =>
-      'आफ्नो नजिकको स्वास्थ्य सहजकर्ता बचत गर्नुहोस्';
+      'आफ्नो नजिकको स्वास्थ्य संस्था बचत गर्नुहोस्';
 
   @override
   String get healthFacilitatorSavedHeading =>
-      'तपाईंको स्थानीय स्वास्थ्य सहजकर्ता';
+      'तपाईंको स्थानीय स्वास्थ्य संस्था';
 
   @override
-  String get healthFacilitatorTitle => 'स्वास्थ्य सहजकर्ता';
+  String get healthFacilitatorTitle => 'स्वास्थ्य संस्था';
 
   @override
   String get healthFacilitatorSubtitle =>
-      'आफ्नो नजिकको स्वास्थ्य सहजकर्ताको विवरण बचत गर्नुहोस्।';
+      'आफ्नो नजिकको स्वास्थ्य संस्थाको विवरण बचत गर्नुहोस्।';
 
   @override
-  String get healthFacilitatorName => 'सहजकर्ताको नाम';
+  String get healthFacilitatorName => 'स्वास्थ्य संस्थाको नाम';
 
   @override
-  String get healthFacilitatorNameHint => 'सहजकर्ताको नाम लेख्नुहोस्';
+  String get healthFacilitatorNameHint => 'स्वास्थ्य संस्थाको नाम लेख्नुहोस्';
 
   @override
   String get healthFacilitatorAddress => 'ठेगाना';
@@ -143,10 +185,52 @@ class AppLocalizationsNe extends AppLocalizations {
 
   @override
   String get healthFacilitatorSaveError =>
-      'स्वास्थ्य सहजकर्ताको विवरण बचत गर्न सकिएन।';
+      'स्वास्थ्य संस्थाको विवरण बचत गर्न सकिएन।';
 
   @override
   String get healthFacilitatorBack => 'फर्कनुहोस्';
+
+  @override
+  String get healthFacilitySaveAction =>
+      'आफ्नो नजिकको स्वास्थ्य संस्था बचत गर्नुहोस्';
+
+  @override
+  String get healthFacilitySavedHeading => 'तपाईंको स्थानीय स्वास्थ्य संस्था';
+
+  @override
+  String get healthFacilityTitle => 'स्वास्थ्य संस्था';
+
+  @override
+  String get healthFacilitySubtitle =>
+      'आफ्नो नजिकको स्वास्थ्य संस्थाको विवरण बचत गर्नुहोस्।';
+
+  @override
+  String get healthFacilityName => 'स्वास्थ्य संस्थाको नाम';
+
+  @override
+  String get healthFacilityNameHint => 'स्वास्थ्य संस्थाको नाम लेख्नुहोस्';
+
+  @override
+  String get healthFacilityAddress => 'ठेगाना';
+
+  @override
+  String get healthFacilityAddressHint => 'ठेगाना लेख्नुहोस्';
+
+  @override
+  String get healthFacilityPhone => 'फोन नम्बर';
+
+  @override
+  String get healthFacilityPhoneHint => 'फोन नम्बर लेख्नुहोस्';
+
+  @override
+  String get healthFacilitySave => 'बचत गर्नुहोस्';
+
+  @override
+  String get healthFacilitySaveError =>
+      'स्वास्थ्य संस्थाको विवरण बचत गर्न सकिएन।';
+
+  @override
+  String get healthFacilityBack => 'फर्कनुहोस्';
 
   @override
   String get settingsTitle => 'सेटिङहरू';

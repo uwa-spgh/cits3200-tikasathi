@@ -127,19 +127,90 @@
   "@childMissingFeatureNote": {
     "description": "Clear note about unavailable functionality on the child screen"
   },
-  "healthFacilitatorSaveAction": "आफ्नो नजिकको स्वास्थ्य सहजकर्ता बचत गर्नुहोस्",
-  "healthFacilitatorSavedHeading": "तपाईंको स्थानीय स्वास्थ्य सहजकर्ता",
-  "healthFacilitatorTitle": "स्वास्थ्य सहजकर्ता",
-  "healthFacilitatorSubtitle": "आफ्नो नजिकको स्वास्थ्य सहजकर्ताको विवरण बचत गर्नुहोस्।",
-  "healthFacilitatorName": "सहजकर्ताको नाम",
-  "healthFacilitatorNameHint": "सहजकर्ताको नाम लेख्नुहोस्",
+  "childVaccinationOverdue": "खोपको मिति नाघेको",
+  "@childVaccinationOverdue": {
+    "description": "Status label for a child with an overdue vaccine"
+  },
+  "childFollowingVaccine": "त्यसपछिको खोप (पछि)",
+  "@childFollowingVaccine": {
+    "description": "Label for the subsequent scheduled vaccine after the next one"
+  },
+  "childAllVaccinesCompleted": "सबै खोपहरू पूरा भए!",
+  "@childAllVaccinesCompleted": {
+    "description": "Shown when all vaccines in the schedule have been completed"
+  },
+  "childFinalScheduledVaccine": "अन्तिम निर्धारित खोप",
+  "@childFinalScheduledVaccine": {
+    "description": "Shown when only one dose remains in the schedule"
+  },
+  "childVaccineRecordsAndHistory": "खोप इतिहास र अभिलेख",
+  "@childVaccineRecordsAndHistory": {
+    "description": "Title for the unified vaccine records and history quick action card"
+  },
+  "childVaccineRecordsAndHistorySubtitle": "लिएका खोपहरू हेर्नुहोस् र सम्पादन गर्नुहोस्",
+  "@childVaccineRecordsAndHistorySubtitle": {
+    "description": "Subtitle for the unified vaccine records and history card"
+  },
+  "vaccineHistoryFilterAgeAppropriate": "उमेर अनुसार मात्र",
+  "@vaccineHistoryFilterAgeAppropriate": {
+    "description": "Toggle option to show only age-appropriate vaccines"
+  },
+  "vaccineHistoryFilterAll": "सबै खोपहरू देखाउनुहोस्",
+  "@vaccineHistoryFilterAll": {
+    "description": "Toggle option to show all vaccines"
+  },
+  "vaccineHistorySaveChanges": "परिवर्तनहरू बचत गर्नुहोस्",
+  "@vaccineHistorySaveChanges": {
+    "description": "Button to save changes made in vaccine history"
+  },
+  "vaccineHistorySavedSuccess": "खोप इतिहास सफलतापूर्वक अद्यावधिक गरियो",
+  "@vaccineHistorySavedSuccess": {
+    "description": "Snack bar message when vaccine history is saved"
+  },
+  "vaccineHistoryAdministeredOn": "{date} मा दिइएको",
+  "@vaccineHistoryAdministeredOn": {
+    "description": "Label showing when a vaccine was administered",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "vaccineHistoryDueAt": "दिनुपर्ने मिति: {date}",
+  "@vaccineHistoryDueAt": {
+    "description": "Label showing when an unadministered vaccine is due",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "healthFacilitatorSaveAction": "आफ्नो नजिकको स्वास्थ्य संस्था बचत गर्नुहोस्",
+  "healthFacilitatorSavedHeading": "तपाईंको स्थानीय स्वास्थ्य संस्था",
+  "healthFacilitatorTitle": "स्वास्थ्य संस्था",
+  "healthFacilitatorSubtitle": "आफ्नो नजिकको स्वास्थ्य संस्थाको विवरण बचत गर्नुहोस्।",
+  "healthFacilitatorName": "स्वास्थ्य संस्थाको नाम",
+  "healthFacilitatorNameHint": "स्वास्थ्य संस्थाको नाम लेख्नुहोस्",
   "healthFacilitatorAddress": "ठेगाना",
   "healthFacilitatorAddressHint": "ठेगाना लेख्नुहोस्",
   "healthFacilitatorPhone": "फोन नम्बर",
   "healthFacilitatorPhoneHint": "फोन नम्बर लेख्नुहोस्",
   "healthFacilitatorSave": "बचत गर्नुहोस्",
-  "healthFacilitatorSaveError": "स्वास्थ्य सहजकर्ताको विवरण बचत गर्न सकिएन।",
+  "healthFacilitatorSaveError": "स्वास्थ्य संस्थाको विवरण बचत गर्न सकिएन।",
   "healthFacilitatorBack": "फर्कनुहोस्",
+  "healthFacilitySaveAction": "आफ्नो नजिकको स्वास्थ्य संस्था बचत गर्नुहोस्",
+  "healthFacilitySavedHeading": "तपाईंको स्थानीय स्वास्थ्य संस्था",
+  "healthFacilityTitle": "स्वास्थ्य संस्था",
+  "healthFacilitySubtitle": "आफ्नो नजिकको स्वास्थ्य संस्थाको विवरण बचत गर्नुहोस्।",
+  "healthFacilityName": "स्वास्थ्य संस्थाको नाम",
+  "healthFacilityNameHint": "स्वास्थ्य संस्थाको नाम लेख्नुहोस्",
+  "healthFacilityAddress": "ठेगाना",
+  "healthFacilityAddressHint": "ठेगाना लेख्नुहोस्",
+  "healthFacilityPhone": "फोन नम्बर",
+  "healthFacilityPhoneHint": "फोन नम्बर लेख्नुहोस्",
+  "healthFacilitySave": "बचत गर्नुहोस्",
+  "healthFacilitySaveError": "स्वास्थ्य संस्थाको विवरण बचत गर्न सकिएन।",
+  "healthFacilityBack": "फर्कनुहोस्",
   "settingsTitle": "सेटिङहरू",
   "settingsLanguageTitle": "भाषा छान्नुहोस्",
   "settingsNepali": "नेपाली",

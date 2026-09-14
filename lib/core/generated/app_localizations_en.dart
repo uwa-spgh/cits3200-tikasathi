@@ -106,24 +106,66 @@ class AppLocalizationsEn extends AppLocalizations {
       'Record vaccine and clinic lookup are not available yet in this version.';
 
   @override
-  String get healthFacilitatorSaveAction =>
-      'Save your closest health facilitator';
+  String get childVaccinationOverdue => 'Vaccination overdue';
 
   @override
-  String get healthFacilitatorSavedHeading => 'Your local health facilitator';
+  String get childFollowingVaccine => 'Following vaccine (later)';
 
   @override
-  String get healthFacilitatorTitle => 'Health Facilitator';
+  String get childAllVaccinesCompleted =>
+      'All childhood immunisations completed!';
+
+  @override
+  String get childFinalScheduledVaccine => 'Final scheduled vaccine';
+
+  @override
+  String get childVaccineRecordsAndHistory => 'Vaccine records & history';
+
+  @override
+  String get childVaccineRecordsAndHistorySubtitle =>
+      'Review and update recorded doses';
+
+  @override
+  String get vaccineHistoryFilterAgeAppropriate => 'Age-appropriate only';
+
+  @override
+  String get vaccineHistoryFilterAll => 'Show all vaccines';
+
+  @override
+  String get vaccineHistorySaveChanges => 'Save Changes';
+
+  @override
+  String get vaccineHistorySavedSuccess =>
+      'Vaccine history updated successfully';
+
+  @override
+  String vaccineHistoryAdministeredOn(String date) {
+    return 'Given on $date';
+  }
+
+  @override
+  String vaccineHistoryDueAt(String date) {
+    return 'Due: $date';
+  }
+
+  @override
+  String get healthFacilitatorSaveAction => 'Save your closest health facility';
+
+  @override
+  String get healthFacilitatorSavedHeading => 'Your local health facility';
+
+  @override
+  String get healthFacilitatorTitle => 'Health Facility';
 
   @override
   String get healthFacilitatorSubtitle =>
-      'Save the details of your closest health facilitator.';
+      'Save the details of your closest health facility.';
 
   @override
-  String get healthFacilitatorName => 'Facilitator Name';
+  String get healthFacilitatorName => 'Facility Name';
 
   @override
-  String get healthFacilitatorNameHint => 'Enter the facilitator\'s name';
+  String get healthFacilitatorNameHint => 'Enter the facility\'s name';
 
   @override
   String get healthFacilitatorAddress => 'Address';
@@ -142,10 +184,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get healthFacilitatorSaveError =>
-      'Could not save health facilitator details.';
+      'Could not save health facility details.';
 
   @override
   String get healthFacilitatorBack => 'Back';
+
+  @override
+  String get healthFacilitySaveAction => 'Save your closest health facility';
+
+  @override
+  String get healthFacilitySavedHeading => 'Your local health facility';
+
+  @override
+  String get healthFacilityTitle => 'Health Facility';
+
+  @override
+  String get healthFacilitySubtitle =>
+      'Save the details of your closest health facility.';
+
+  @override
+  String get healthFacilityName => 'Facility Name';
+
+  @override
+  String get healthFacilityNameHint => 'Enter the facility\'s name';
+
+  @override
+  String get healthFacilityAddress => 'Address';
+
+  @override
+  String get healthFacilityAddressHint => 'Enter the address';
+
+  @override
+  String get healthFacilityPhone => 'Phone Number';
+
+  @override
+  String get healthFacilityPhoneHint => 'Enter the phone number';
+
+  @override
+  String get healthFacilitySave => 'Save';
+
+  @override
+  String get healthFacilitySaveError =>
+      'Could not save health facility details.';
+
+  @override
+  String get healthFacilityBack => 'Back';
 
   @override
   String get settingsTitle => 'Settings';

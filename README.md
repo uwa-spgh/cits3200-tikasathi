@@ -53,7 +53,8 @@ Every pull request to the `main` or `develop` branch will trigger a workflow tha
 ### Child Profile Management
 - Store UUID, Name, DOB, Sex, and `isSetupComplete` status.
 - **Validation:** Gracefully handle future dates or invalid inputs.
-- **Onboarding:** Includes a Retroactive Vaccine Checklist. Children remain in a neutral "Setup Incomplete" state until their past vaccine history is explicitly confirmed or skipped.
+- **Vaccine Status & Timeline:** Unified status card with accurate color-coded indicators (Green for Up to date / All completed, Amber for Due today / Due soon, Red for Overdue, Grey for Setup incomplete). Delineates the immediate **Next vaccine** (due soon) and **Following vaccine** (scheduled later).
+- **Vaccine Records & History:** A unified screen that merges past vaccine history logging with record viewing. Features an age-appropriate filter toggle, interactive checkboxes, date picker for administered doses, and top-left back navigation.
 
 ### Caregiver Profile Management
 - Store UUID, Name, Phone Number and Address.
@@ -61,15 +62,16 @@ Every pull request to the `main` or `develop` branch will trigger a workflow tha
 ### Immunisation Engine
 - Automatically calculate age and generate the vaccine schedule (BCG, Pentavalent, Rotavirus, PCV, etc.) based on the Nepal NIP schedule.
 - **Statuses:** Upcoming (○), Completed (✓), Overdue (⚠).
-- **Catch-up Logic:** Complex rules for adjusting intervals if a dose is missed.
+- **Catch-up Logic:** Rules for adjusting intervals if a dose is missed.
+- **Dose Logging:** Streamlined log vaccine flow displaying dates with years and a floating show more/fewer vaccines toggle.
 
 ### Notification System
 - Native, offline-scheduled notifications based on exact clinical intervals. 
 - Automatically fallback to periodic (fortnightly) alerts for overdue vaccines to prevent reminder fatigue.
 
-### Health Information & Facility Locator
+### Health Information & Health Facility
 - Educational modules containing Myth/Fact sections (adapted from Nepal's Family Welfare Division).
-- A directory of local health posts (स्वास्थ्य चौकी), filterable and searchable offline.
+- A directory and contact details for the local **Health Facility** (स्वास्थ्य संस्था, formerly health facilitator), filterable, editable, and accessible offline.
 
 ## 5. Integrating Figma Designs
 
