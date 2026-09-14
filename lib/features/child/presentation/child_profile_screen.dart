@@ -74,7 +74,7 @@ class _ChildContent extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 560),
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
           children: <Widget>[
             Row(
               children: <Widget>[

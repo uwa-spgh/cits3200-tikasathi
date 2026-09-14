@@ -213,9 +213,19 @@ class _RecordDoseBody extends StatelessWidget {
                       localizations: localizations,
                       onToggleDose: onToggleDose,
                     ),
+                  if (!recordDoseState.showAllUpcoming &&
+                      recordDoseState.upcomingDues.isNotEmpty) ...<Widget>[
+                    const SizedBox(height: 14),
+                    _ShowAllButton(
+                      showAll: false,
+                      localizations: localizations,
+                      onChanged: onToggleShowAll,
+                    ),
+                  ],
                 ],
               ),
-              if (recordDoseState.upcomingDues.isNotEmpty)
+              if (recordDoseState.showAllUpcoming &&
+                  recordDoseState.upcomingDues.isNotEmpty)
                 Positioned(
                   left: 16,
                   right: 16,
@@ -232,7 +242,7 @@ class _RecordDoseBody extends StatelessWidget {
                       ],
                     ),
                     child: _ShowAllButton(
-                      showAll: recordDoseState.showAllUpcoming,
+                      showAll: true,
                       localizations: localizations,
                       onChanged: onToggleShowAll,
                     ),

@@ -221,10 +221,10 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
                 final int doseNumber = i + 1;
                 final DayDuration doseAge = ages[i];
                 final bool isPast = age >= doseAge.duration;
+                final String key = '$vaccineCode-$doseNumber';
+                final bool isChecked = _checkedDoses.containsKey(key);
 
-                if (isPast || _showAll) {
-                  final String key = '$vaccineCode-$doseNumber';
-                  final bool isChecked = _checkedDoses.containsKey(key);
+                if (isPast || _showAll || isChecked) {
                   final DateTime defaultDate =
                       child.dateOfBirth.add(doseAge.duration);
                   final DateTime cappedDate =
@@ -362,37 +362,88 @@ class _FilterToggleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        color: const Color(0xFFE2E8F0),
+        borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
         children: <Widget>[
-          Icon(
-            showAll ? Icons.filter_alt_outlined : Icons.filter_alt_rounded,
-            color: const Color(0xFF0F52BA),
-          ),
-          const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              showAll
-                  ? localizations.vaccineHistoryFilterAll
-                  : localizations.vaccineHistoryFilterAgeAppropriate,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF1E293B),
-                fontSize: 15,
-              ),
+            child: _FilterSegment(
+              isSelected: !showAll,
+              label: localizations.vaccineHistoryFilterAgeAppropriate,
+              icon: Icons.child_care_rounded,
+              onTap: () => onToggle(false),
             ),
           ),
-          Switch(
-            value: showAll,
-            activeThumbColor: const Color(0xFF0F52BA),
-            onChanged: onToggle,
+          const SizedBox(width: 4),
+          Expanded(
+            child: _FilterSegment(
+              isSelected: showAll,
+              label: localizations.vaccineHistoryFilterAll,
+              icon: Icons.format_list_bulleted_rounded,
+              onTap: () => onToggle(true),
+            ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _FilterSegment extends StatelessWidget {
+  const _FilterSegment({
+    required this.isSelected,
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
+
+  final bool isSelected;
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: isSelected ? Colors.white : Colors.transparent,
+      borderRadius: BorderRadius.circular(10),
+      elevation: isSelected ? 1 : 0,
+      shadowColor: const Color(0x1A000000),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                icon,
+                size: 18,
+                color: isSelected
+                    ? const Color(0xFF0F52BA)
+                    : const Color(0xFF64748B),
+              ),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                    color: isSelected
+                        ? const Color(0xFF0F52BA)
+                        : const Color(0xFF64748B),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
