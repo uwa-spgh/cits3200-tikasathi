@@ -10,23 +10,23 @@ import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_helpers.dart';
 import 'package:tikasathi/features/onboarding/presentation/retroactive_vaccine_screen.dart';
+import 'package:tikasathi/features/vaccine_schedule/presentation/vaccine_schedule_screen.dart';
 import 'package:tikasathi/features/vaccine_records/presentation/vaccine_records_screen.dart';
 
 class ChildProfileScreen extends ConsumerWidget {
-  const ChildProfileScreen({
-    required this.childId,
-    super.key,
-  });
+  const ChildProfileScreen({required this.childId, super.key});
 
   final String childId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
-    final AppSection selectedSection =
-        ref.watch(appNavigationControllerProvider);
-    final AsyncValue<ChildProfileDetails> childProfileState =
-        ref.watch(childProfileProvider(childId));
+    final AppSection selectedSection = ref.watch(
+      appNavigationControllerProvider,
+    );
+    final AsyncValue<ChildProfileDetails> childProfileState = ref.watch(
+      childProfileProvider(childId),
+    );
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F9FC),
@@ -64,9 +64,10 @@ class _ChildContent extends StatelessWidget {
     final ChildStatus status = _statusFor(details);
     final nextDue = details.nextDue;
     final followingDue = details.followingDue;
-    final String bornDateLabel =
-        DateFormat('d MMMM y', Localizations.localeOf(context).languageCode)
-            .format(details.child.dateOfBirth);
+    final String bornDateLabel = DateFormat(
+      'd MMMM y',
+      Localizations.localeOf(context).languageCode,
+    ).format(details.child.dateOfBirth);
 
     return Align(
       alignment: Alignment.topCenter,
@@ -86,9 +87,9 @@ class _ChildContent extends StatelessWidget {
                   child: Text(
                     localizations.childPageTitleWithName(details.child.name),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xFF11284F),
-                        ),
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF11284F),
+                    ),
                   ),
                 ),
                 ReadAloudButton(
@@ -111,24 +112,27 @@ class _ChildContent extends StatelessWidget {
               vaccineCode: nextDue?.vaccineCode,
               dueDateLabel: nextDue == null
                   ? (status.isNeutral
-                      ? 'Pending Setup'
-                      : localizations.childNoDueVaccines)
+                        ? 'Pending Setup'
+                        : localizations.childNoDueVaccines)
                   : DateFormat(
-                          'd MMM', Localizations.localeOf(context).languageCode)
-                      .format(nextDue.dueDate),
+                      'd MMM',
+                      Localizations.localeOf(context).languageCode,
+                    ).format(nextDue.dueDate),
               isDue: status.isDue,
               isNeutral: status.isNeutral,
             ),
             const SizedBox(height: 20),
             _NextVaccineCard(
               title: localizations.childNextVaccine,
-              vaccineLabel: followingDue?.vaccineCode ??
+              vaccineLabel:
+                  followingDue?.vaccineCode ??
                   localizations.childNoUpcomingVaccines,
               dateLabel: followingDue == null
                   ? null
                   : DateFormat(
-                          'd MMM', Localizations.localeOf(context).languageCode)
-                      .format(followingDue.dueDate),
+                      'd MMM',
+                      Localizations.localeOf(context).languageCode,
+                    ).format(followingDue.dueDate),
             ),
             const SizedBox(height: 30),
             _FeatureCard(
@@ -139,10 +143,14 @@ class _ChildContent extends StatelessWidget {
               borderColor: const Color(0xFFCFE0FA),
               iconBackgroundColor: const Color(0xFFDDEAFF),
               iconColor: const Color(0xFF0E64C5),
-              onTap: () => showFeedbackSnackBar(
-                context,
-                localizations.childScheduleNotImplemented,
-              ),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) =>
+                        VaccineScheduleScreen(childId: details.child.id),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 20),
             _FeatureCard(
@@ -156,9 +164,8 @@ class _ChildContent extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(
-                    builder: (context) => VaccineRecordsScreen(
-                      childId: details.child.id,
-                    ),
+                    builder: (context) =>
+                        VaccineRecordsScreen(childId: details.child.id),
                   ),
                 );
               },
@@ -231,10 +238,7 @@ class _ChildHeaderCard extends StatelessWidget {
           CircleAvatar(
             radius: 30,
             backgroundColor: const Color(0xFFEAF2FF),
-            child: Text(
-              avatarEmoji,
-              style: const TextStyle(fontSize: 26),
-            ),
+            child: Text(avatarEmoji, style: const TextStyle(fontSize: 26)),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -244,33 +248,33 @@ class _ChildHeaderCard extends StatelessWidget {
                 Text(
                   name,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: const Color(0xFF11284F),
-                      ),
+                    fontWeight: FontWeight.w800,
+                    color: const Color(0xFF11284F),
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   ageLabel,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: const Color(0xFF4B5E7B),
-                        fontWeight: FontWeight.w600,
-                      ),
+                    color: const Color(0xFF4B5E7B),
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   sexLabel,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: const Color(0xFF6B7A92),
-                        fontWeight: FontWeight.w500,
-                      ),
+                    color: const Color(0xFF6B7A92),
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   bornLabel,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: const Color(0xFF6B7A92),
-                        fontWeight: FontWeight.w500,
-                      ),
+                    color: const Color(0xFF6B7A92),
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
@@ -301,28 +305,28 @@ class _StatusCard extends StatelessWidget {
     final Color backgroundColor = isNeutral
         ? const Color(0xFFF1F5F9)
         : isDue
-            ? const Color(0xFFF9E0E0)
-            : const Color(0xFFEAF8EF);
+        ? const Color(0xFFF9E0E0)
+        : const Color(0xFFEAF8EF);
     final Color borderColor = isNeutral
         ? const Color(0xFF94A3B8)
         : isDue
-            ? const Color(0xFFCD2E2E)
-            : AppTheme.statusUpToDate;
+        ? const Color(0xFFCD2E2E)
+        : AppTheme.statusUpToDate;
     final Color headerColor = isNeutral
         ? const Color(0xFF64748B)
         : isDue
-            ? const Color(0xFFCD2E2E)
-            : AppTheme.statusUpToDate;
+        ? const Color(0xFFCD2E2E)
+        : AppTheme.statusUpToDate;
     final Color textColor = isNeutral
         ? const Color(0xFF475569)
         : isDue
-            ? const Color(0xFFB51D1D)
-            : AppTheme.statusUpToDateText;
+        ? const Color(0xFFB51D1D)
+        : AppTheme.statusUpToDateText;
     final IconData icon = isNeutral
         ? Icons.help_outline_rounded
         : isDue
-            ? Icons.warning_amber_rounded
-            : Icons.check_circle_rounded;
+        ? Icons.warning_amber_rounded
+        : Icons.check_circle_rounded;
 
     return Container(
       decoration: BoxDecoration(
@@ -350,9 +354,9 @@ class _StatusCard extends StatelessWidget {
                   child: Text(
                     title,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                        ),
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
               ],
@@ -366,9 +370,9 @@ class _StatusCard extends StatelessWidget {
                   dueDateLabel,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: const Color(0xFF11284F),
-                      ),
+                    fontWeight: FontWeight.w800,
+                    color: const Color(0xFF11284F),
+                  ),
                 ),
                 if (vaccineCode != null) ...<Widget>[
                   const SizedBox(height: 6),
@@ -376,9 +380,9 @@ class _StatusCard extends StatelessWidget {
                     vaccineCode!,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: textColor,
-                        ),
+                      fontWeight: FontWeight.w700,
+                      color: textColor,
+                    ),
                   ),
                 ],
               ],
@@ -425,9 +429,9 @@ class _NextVaccineCard extends StatelessWidget {
                 Text(
                   title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF11284F),
-                      ),
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF11284F),
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Wrap(
@@ -438,25 +442,27 @@ class _NextVaccineCard extends StatelessWidget {
                     Text(
                       vaccineLabel,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w800,
-                            color: const Color(0xFF11284F),
-                          ),
+                        fontWeight: FontWeight.w800,
+                        color: const Color(0xFF11284F),
+                      ),
                     ),
                     if (dateLabel != null)
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 4),
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFFFF4DE),
                           borderRadius: BorderRadius.circular(999),
                         ),
                         child: Text(
                           dateLabel!,
-                          style:
-                              Theme.of(context).textTheme.titleSmall?.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    color: const Color(0xFFC97700),
-                                  ),
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFFC97700),
+                              ),
                         ),
                       ),
                   ],
@@ -516,9 +522,9 @@ class _FeatureCard extends StatelessWidget {
                 child: Text(
                   title,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: const Color(0xFF11284F),
-                      ),
+                    fontWeight: FontWeight.w800,
+                    color: const Color(0xFF11284F),
+                  ),
                 ),
               ),
               const Icon(Icons.chevron_right, color: Color(0xFF5A6B85)),
@@ -563,8 +569,11 @@ class _ErrorState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Icon(Icons.error_outline_rounded,
-                size: 44, color: Color(0xFFB51D1D)),
+            const Icon(
+              Icons.error_outline_rounded,
+              size: 44,
+              color: Color(0xFFB51D1D),
+            ),
             const SizedBox(height: 12),
             Text(
               localizations.childNotFound,
@@ -579,17 +588,20 @@ class _ErrorState extends StatelessWidget {
 }
 
 class ChildStatus {
-  const ChildStatus._(
-      {required this.isDue, required this.isNeutral, required this.key});
+  const ChildStatus._({
+    required this.isDue,
+    required this.isNeutral,
+    required this.key,
+  });
 
   const ChildStatus.setupIncomplete()
-      : this._(isDue: false, isNeutral: true, key: 'setupIncomplete');
+    : this._(isDue: false, isNeutral: true, key: 'setupIncomplete');
   const ChildStatus.upToDate()
-      : this._(isDue: false, isNeutral: false, key: 'upToDate');
+    : this._(isDue: false, isNeutral: false, key: 'upToDate');
   const ChildStatus.dueToday()
-      : this._(isDue: true, isNeutral: false, key: 'dueToday');
+    : this._(isDue: true, isNeutral: false, key: 'dueToday');
   const ChildStatus.dueSoon()
-      : this._(isDue: true, isNeutral: false, key: 'dueSoon');
+    : this._(isDue: true, isNeutral: false, key: 'dueSoon');
 
   final bool isDue;
   final bool isNeutral;

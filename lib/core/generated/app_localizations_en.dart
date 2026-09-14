@@ -378,4 +378,62 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dose => 'Dose';
+
+  @override
+  String get vaccineScheduleTitle => 'Vaccine schedule';
+
+  @override
+  String get vaccineScheduleBack => 'Back';
+
+  @override
+  String get vaccineScheduleDoseHeader => 'Vaccine dose';
+
+  @override
+  String get vaccineScheduleDueHeader => 'Date due';
+
+  @override
+  String get vaccineScheduleReturn => 'Return';
+
+  @override
+  String get vaccineScheduleEmpty => 'There are no upcoming vaccines.';
+
+  @override
+  String get vaccineScheduleToday => 'Today';
+
+  @override
+  String vaccineScheduleInDays(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'In # days',
+      one: 'In # day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String vaccineScheduleInMonths(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'In # months',
+      one: 'In # month',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String vaccineScheduleInYears(Object count) {
+    return 'In $count yr';
+  }
+
+  @override
+  String vaccineScheduleInYearsMonths(Object months, Object years) {
+    return 'In $years yr $months mo';
+  }
+
+  @override
+  String vaccineScheduleOverdueBy(Object count) {
+    return 'Overdue by $count day(s)';
+  }
 }

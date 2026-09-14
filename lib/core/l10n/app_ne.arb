@@ -251,4 +251,16 @@
   "vaccineRecordsReturn": "फिर्ता",
   "vaccineRecordsEmpty": "खोप लगाइएको कुनै रेकर्ड छैन।",
   "dose": "खुराक"
+  ,"vaccineScheduleTitle": "खोप तालिका"
+  ,"vaccineScheduleBack": "फिर्ता"
+  ,"vaccineScheduleDoseHeader": "खोपको खुराक"
+  ,"vaccineScheduleDueHeader": "मिति"
+  ,"vaccineScheduleReturn": "फिर्ता"
+  ,"vaccineScheduleEmpty": "आगामी खोपहरू छैनन्।"
+  ,"vaccineScheduleToday": "आज"
+  ,"vaccineScheduleInDays": "{count} दिनमा"
+  ,"vaccineScheduleInMonths": "{count} महिनामा"
+  ,"vaccineScheduleInYears": "{count} वर्षमा"
+  ,"vaccineScheduleInYearsMonths": "{years} वर्ष {months} महिनामा"
+  ,"vaccineScheduleOverdueBy": "{count} दिन ढिला"
 }
