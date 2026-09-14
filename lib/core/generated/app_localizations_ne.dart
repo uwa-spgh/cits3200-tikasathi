@@ -79,6 +79,9 @@ class AppLocalizationsNe extends AppLocalizations {
   String get childVaccineSchedule => 'खोप तालिका';
 
   @override
+  String get childVaccineRecord => 'खोप रेकर्ड';
+
+  @override
   String get childVaccineHistory => 'खोप इतिहास';
 
   @override
@@ -364,4 +367,19 @@ class AppLocalizationsNe extends AppLocalizations {
 
   @override
   String get retroactiveVaccineSkip => 'अहिलेको लागि छोड्नुहोस्';
+
+  @override
+  String get vaccineRecordsDoseHeader => 'खोपको खुराक';
+
+  @override
+  String get vaccineRecordsDateHeader => 'प्रशासित मिति';
+
+  @override
+  String get vaccineRecordsReturn => 'फिर्ता';
+
+  @override
+  String get vaccineRecordsEmpty => 'खोप लगाइएको कुनै रेकर्ड छैन।';
+
+  @override
+  String get dose => 'खुराक';
 }

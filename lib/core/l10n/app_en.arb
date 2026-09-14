@@ -98,6 +98,10 @@
   "@childVaccineSchedule": {
     "description": "Title for vaccine schedule quick action card"
   },
+  "childVaccineRecord": "Vaccine record",
+  "@childVaccineRecord": {
+    "description": "Title for vaccine record quick action card"
+  },
   "childVaccineHistory": "Vaccine history",
   "@childVaccineHistory": {
     "description": "Title for vaccine history quick action card"
@@ -241,5 +245,10 @@
   },
   "retroactiveVaccineChangeDate": "Change",
   "retroactiveVaccineFinish": "Finish",
-  "retroactiveVaccineSkip": "Skip for now"
+  "retroactiveVaccineSkip": "Skip for now",
+  "vaccineRecordsDoseHeader": "Vaccine dose",
+  "vaccineRecordsDateHeader": "Date administered",
+  "vaccineRecordsReturn": "Return",
+  "vaccineRecordsEmpty": "There are no recorded vaccinations.",
+  "dose": "Dose"
 }

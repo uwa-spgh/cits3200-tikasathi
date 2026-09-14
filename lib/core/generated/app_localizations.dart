@@ -230,6 +230,12 @@ abstract class AppLocalizations {
   /// **'Vaccine schedule'**
   String get childVaccineSchedule;
 
+  /// Title for vaccine record quick action card
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine record'**
+  String get childVaccineRecord;
+
   /// Title for vaccine history quick action card
   ///
   /// In en, this message translates to:
@@ -703,6 +709,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Skip for now'**
   String get retroactiveVaccineSkip;
+
+  /// No description provided for @vaccineRecordsDoseHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine dose'**
+  String get vaccineRecordsDoseHeader;
+
+  /// No description provided for @vaccineRecordsDateHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Date administered'**
+  String get vaccineRecordsDateHeader;
+
+  /// No description provided for @vaccineRecordsReturn.
+  ///
+  /// In en, this message translates to:
+  /// **'Return'**
+  String get vaccineRecordsReturn;
+
+  /// No description provided for @vaccineRecordsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no recorded vaccinations.'**
+  String get vaccineRecordsEmpty;
+
+  /// No description provided for @dose.
+  ///
+  /// In en, this message translates to:
+  /// **'Dose'**
+  String get dose;
 }
 
 class _AppLocalizationsDelegate

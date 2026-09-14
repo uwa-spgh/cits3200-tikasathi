@@ -10,6 +10,7 @@ import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_helpers.dart';
 import 'package:tikasathi/features/onboarding/presentation/retroactive_vaccine_screen.dart';
+import 'package:tikasathi/features/vaccine_records/presentation/vaccine_records_screen.dart';
 
 class ChildProfileScreen extends ConsumerWidget {
   const ChildProfileScreen({
@@ -142,6 +143,25 @@ class _ChildContent extends StatelessWidget {
                 context,
                 localizations.childScheduleNotImplemented,
               ),
+            ),
+            const SizedBox(height: 20),
+            _FeatureCard(
+              key: const Key('child-vaccine-record-card'),
+              icon: Icons.menu_book_rounded,
+              title: localizations.childVaccineRecord,
+              cardColor: const Color(0xFFF5EFFF),
+              borderColor: const Color(0xFFE3CFFA),
+              iconBackgroundColor: const Color(0xFFF0DDFF),
+              iconColor: const Color(0xFF730EC5),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => VaccineRecordsScreen(
+                      childId: details.child.id,
+                    ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 20),
             _FeatureCard(
