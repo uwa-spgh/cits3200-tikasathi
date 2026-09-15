@@ -12,6 +12,7 @@ import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_helpers.dart';
 import 'package:tikasathi/features/onboarding/presentation/retroactive_vaccine_screen.dart';
 import 'package:tikasathi/features/record_dose/presentation/record_dose_screen.dart';
+import 'package:tikasathi/features/vaccine_schedule/presentation/vaccine_schedule_screen.dart';
 
 class ChildProfileScreen extends ConsumerWidget {
   const ChildProfileScreen({
@@ -152,10 +153,14 @@ class _ChildContent extends StatelessWidget {
               borderColor: const Color(0xFFCFE0FA),
               iconBackgroundColor: const Color(0xFFDDEAFF),
               iconColor: const Color(0xFF0E64C5),
-              onTap: () => showFeedbackSnackBar(
-                context,
-                localizations.childScheduleNotImplemented,
-              ),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) =>
+                        VaccineScheduleScreen(childId: details.child.id),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 16),
             _FeatureCard(

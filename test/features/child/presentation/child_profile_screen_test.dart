@@ -6,6 +6,7 @@ import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/child/presentation/child_profile_screen.dart';
 import 'package:tikasathi/features/onboarding/presentation/retroactive_vaccine_screen.dart';
+import 'package:tikasathi/features/vaccine_schedule/presentation/vaccine_schedule_screen.dart';
 import 'package:tikasathi/features/settings/data/settings_providers.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 
@@ -87,7 +88,7 @@ void main() {
           find.byKey(const Key('child-vaccine-schedule-card')), findsOneWidget);
     });
 
-    testWidgets('shows snack bar feedback for schedule and history cards',
+    testWidgets('opens schedule and history pages from feature cards',
         (WidgetTester tester) async {
       const childId = 'child-actions';
       final now = DateTime.now();
@@ -134,9 +135,11 @@ void main() {
       await tester.scrollUntilVisible(scheduleCard, 120);
       final scheduleRect = tester.getRect(scheduleCard);
       await tester.tapAt(scheduleRect.topLeft + const Offset(24, 24));
-      await tester.pump();
-      expect(find.text('Vaccine schedule is not implemented yet.'),
-          findsOneWidget);
+      await tester.pumpAndSettle();
+      expect(find.byType(VaccineScheduleScreen), findsOneWidget);
+      expect(find.text('Vaccine schedule'), findsOneWidget);
+      await tester.pageBack();
+      await tester.pumpAndSettle();
 
       final historyCard = find.byKey(const Key('child-vaccine-history-card'));
       await tester.scrollUntilVisible(historyCard, 120);

@@ -1052,6 +1052,78 @@ abstract class AppLocalizations {
   /// **'Dose'**
   String get dose;
 
+  /// No description provided for @vaccineScheduleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine schedule'**
+  String get vaccineScheduleTitle;
+
+  /// No description provided for @vaccineScheduleBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get vaccineScheduleBack;
+
+  /// No description provided for @vaccineScheduleDoseHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine dose'**
+  String get vaccineScheduleDoseHeader;
+
+  /// No description provided for @vaccineScheduleDueHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Date due'**
+  String get vaccineScheduleDueHeader;
+
+  /// No description provided for @vaccineScheduleReturn.
+  ///
+  /// In en, this message translates to:
+  /// **'Return'**
+  String get vaccineScheduleReturn;
+
+  /// No description provided for @vaccineScheduleEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no upcoming vaccines.'**
+  String get vaccineScheduleEmpty;
+
+  /// No description provided for @vaccineScheduleToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get vaccineScheduleToday;
+
+  /// No description provided for @vaccineScheduleInDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one {In # day} other {In # days}}'**
+  String vaccineScheduleInDays(num count);
+
+  /// No description provided for @vaccineScheduleInMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one {In # month} other {In # months}}'**
+  String vaccineScheduleInMonths(num count);
+
+  /// No description provided for @vaccineScheduleInYears.
+  ///
+  /// In en, this message translates to:
+  /// **'In {count} yr'**
+  String vaccineScheduleInYears(Object count);
+
+  /// No description provided for @vaccineScheduleInYearsMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'In {years} yr {months} mo'**
+  String vaccineScheduleInYearsMonths(Object months, Object years);
+
+  /// No description provided for @vaccineScheduleOverdueBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue by {count} day(s)'**
+  String vaccineScheduleOverdueBy(Object count);
+
   /// No description provided for @onboardingErrorFutureDob.
   ///
   /// In en, this message translates to:

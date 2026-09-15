@@ -589,6 +589,52 @@ class AppLocalizationsNe extends AppLocalizations {
   String get dose => 'खुराक';
 
   @override
+  String get vaccineScheduleTitle => 'खोप तालिका';
+
+  @override
+  String get vaccineScheduleBack => 'फिर्ता';
+
+  @override
+  String get vaccineScheduleDoseHeader => 'खोपको खुराक';
+
+  @override
+  String get vaccineScheduleDueHeader => 'मिति';
+
+  @override
+  String get vaccineScheduleReturn => 'फिर्ता';
+
+  @override
+  String get vaccineScheduleEmpty => 'आगामी खोपहरू छैनन्।';
+
+  @override
+  String get vaccineScheduleToday => 'आज';
+
+  @override
+  String vaccineScheduleInDays(num count) {
+    return '$count दिनमा';
+  }
+
+  @override
+  String vaccineScheduleInMonths(num count) {
+    return '$count महिनामा';
+  }
+
+  @override
+  String vaccineScheduleInYears(Object count) {
+    return '$count वर्षमा';
+  }
+
+  @override
+  String vaccineScheduleInYearsMonths(Object months, Object years) {
+    return '$years वर्ष $months महिनामा';
+  }
+
+  @override
+  String vaccineScheduleOverdueBy(Object count) {
+    return '$count दिन ढिला';
+  }
+
+  @override
   String get onboardingErrorFutureDob => 'जन्म मिति भविष्यको हुन सक्दैन';
 
   @override
