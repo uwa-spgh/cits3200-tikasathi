@@ -68,11 +68,32 @@ dart run build_runner build --delete-conflicting-outputs
 
 ---
 
+## 💾 Local database (pre-release)
+
+We use Drift / SQLite. The file is `tikasathi.sqlite` in the app documents directory.
+
+**Until the first user release, `schemaVersion` stays at 1.** Do not add `onUpgrade` steps for new tables. After you pull a schema change (new table, new column, unique key), wipe your local database so Drift can recreate it:
+
+- Uninstall the app from the simulator/device, or
+- Delete `tikasathi.sqlite` and hot-restart
+
+If you skip this, inserts can fail with `no such table` (or a similar schema error).
+
+After we ship to real users, schema changes must bump `schemaVersion` and add an `onUpgrade` migration. Wiping user data will no longer be OK.
+
+### Reminders
+
+Reminders are persisted in the `Reminders` table (not left to the OS notification scheduler alone) so they survive restarts and can be re-registered after a reboot or a device clock change. On app startup, call `RemindersDao.getPendingReminders()` (or `getPendingRemindersDueBy()` to also catch ones the device missed while off) and re-register each with the OS notification plugin using its `notificationId`; call `markReminderDelivered()` once handed off, and cancel by that same `notificationId`.
+
+`notificationId` is assigned as `max(notificationId) + 1` in `RemindersDao._nextNotificationId()`. This is safe only because the app uses a single SQLite connection (see `_openConnection` in `app_database.dart`), so drift serializes all writes — there's no concurrent writer to race against. Reminder scheduling rules (`planReminders`) live in `lib/core/reminders/reminder_schedule.dart`.
+
+---
+
 ## 🌐 Localization (EN / NP)
 
 The app supports English and Nepali. Translation strings live in ARB files inside `lib/core/l10n/`:
 - `app_en.arb` — English strings
 - `app_ne.arb` — Nepali strings
 
-When you add a new user-facing string, add it to **both** ARB files. See Flutter's [Internationalizing Flutter apps](https://docs.flutter.dev/accessibility-and-internationalization/internationalization) guide for more details.
+When you add a new user-facing string, add it to **both** ARB files, then run `fvm flutter gen-l10n` to produce the generated dart files. See Flutter's [Internationalizing Flutter apps](https://docs.flutter.dev/ui/internationalization) guide for more details.
 

@@ -5,6 +5,20 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
+import 'package:tikasathi/core/reminders/reminder_schedule.dart';
+import 'package:uuid/uuid.dart';
+
+part 'daos/child_profiles_dao.dart';
+part 'daos/vaccination_records_dao.dart';
+part 'daos/vaccination_dues_dao.dart';
+part 'daos/reminders_dao.dart';
+part 'tables/child_profiles.dart';
+part 'tables/vaccination_records.dart';
+part 'tables/vaccination_dues.dart';
+part 'tables/reminders.dart';
+part 'tables/health_facilitators.dart';
+part 'daos/health_facilitators_dao.dart';
 part 'app_database.g.dart';
 
 /// The central Drift database for TikaSathi.
@@ -18,13 +32,45 @@ part 'app_database.g.dart';
 /// 5. Run: `dart run build_runner build --delete-conflicting-outputs`
 ///
 /// See the `proven_drift_sqlite` skill in `.agents/skills/` for the full pattern.
-@DriftDatabase(tables: [], daos: [])
+@DriftDatabase(
+  tables: [
+    ChildProfiles,
+    VaccinationRecords,
+    VaccinationDues,
+    Reminders,
+    HealthFacilitators,
+  ],
+  daos: [
+    ChildProfilesDao,
+    VaccinationRecordsDao,
+    VaccinationDuesDao,
+    RemindersDao,
+    HealthFacilitatorsDao,
+  ],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
+  AppDatabase.forTesting(super.e);
 
-  /// Bump this when you change a table schema and add a migration.
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        if (from == 1) {
+          await m.addColumn(childProfiles, childProfiles.isSetupComplete);
+        }
+      },
+      beforeOpen: (OpeningDetails details) async {
+        await customStatement('PRAGMA foreign_keys = ON');
+      },
+    );
+  }
 }
 
 /// Opens a persistent SQLite database file in the app's documents directory.

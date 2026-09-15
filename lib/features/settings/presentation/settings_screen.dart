@@ -1,0 +1,221 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tikasathi/core/database/app_database_provider.dart';
+import 'package:tikasathi/core/services/secure_storage_service.dart';
+import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
+import 'package:tikasathi/features/settings/domain/app_language.dart';
+import 'package:tikasathi/features/settings/domain/health_facility_controller.dart';
+import 'package:tikasathi/features/settings/domain/language_controller.dart';
+import 'package:tikasathi/features/settings/presentation/health_facility_card.dart';
+
+class SettingsScreen extends ConsumerWidget {
+  const SettingsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+    final AsyncValue<AppLanguage> languageState =
+        ref.watch(languageControllerProvider);
+    final AsyncValue<HealthFacility?> facilitatorState =
+        ref.watch(healthFacilityProvider);
+
+    return languageState.when(
+      data: (AppLanguage language) => facilitatorState.when(
+        data: (facilitator) => _buildContent(
+          context,
+          ref,
+          isNp: language == AppLanguage.nepali,
+          facilitator: facilitator,
+        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) => Center(
+            child: Text(localizations.appLanguageLoadError(error.toString()))),
+      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stackTrace) => Center(
+          child: Text(localizations.appLanguageLoadError(error.toString()))),
+    );
+  }
+
+  Future<void> _saveLanguage(
+    BuildContext context,
+    WidgetRef ref, {
+    required AppLanguage language,
+  }) async {
+    final bool saved = await ref
+        .read(languageControllerProvider.notifier)
+        .setLanguage(language);
+    if (!saved && context.mounted) {
+      final AppLocalizations localizations = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(localizations.settingsLanguageSaveError),
+        ),
+      );
+    }
+  }
+
+  Widget _buildContent(
+    BuildContext context,
+    WidgetRef ref, {
+    required bool isNp,
+    required HealthFacility? facilitator,
+  }) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Text(
+                      localizations.settingsTitle,
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0F172A),
+                      ),
+                    ),
+                  ),
+                  ReadAloudButton(
+                    tooltip: localizations.childReadAloudTooltip,
+                    unavailableMessage: localizations.childReadAloudUnavailable,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
+              Text(
+                localizations.settingsLanguageTitle,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF334155),
+                ),
+              ),
+              const SizedBox(height: 16),
+              _LanguageButton(
+                title: localizations.settingsNepali,
+                flag: '🇳🇵',
+                isSelected: isNp,
+                onTap: () => _saveLanguage(
+                  context,
+                  ref,
+                  language: AppLanguage.nepali,
+                ),
+              ),
+              const SizedBox(height: 16),
+              _LanguageButton(
+                title: localizations.settingsEnglish,
+                flag: '🇬🇧',
+                isSelected: !isNp,
+                onTap: () => _saveLanguage(
+                  context,
+                  ref,
+                  language: AppLanguage.english,
+                ),
+              ),
+              const SizedBox(height: 32),
+              HealthFacilityCard(
+                key: const Key('health-facilitator-action'),
+                facility: facilitator,
+              ),
+              const SizedBox(height: 32),
+              ElevatedButton(
+                onPressed: () async {
+                  // Debug: Clear secure storage
+                  await ref.read(secureStorageServiceProvider).clearAll();
+
+                  // Debug: Clear database tables
+                  final db = ref.read(appDatabaseProvider);
+                  await db.delete(db.reminders).go();
+                  await db.delete(db.vaccinationRecords).go();
+                  await db.delete(db.vaccinationDues).go();
+                  await db.delete(db.childProfiles).go();
+                  await db.delete(db.healthFacilitators).go();
+
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(isNp
+                            ? 'सबै डाटा मेटाइयो (डिबग)। सुरुदेखि हेर्न एप रिस्टार्ट गर्नुहोस्।'
+                            : 'All data cleared (Debug). Restart the app to see the onboarding screen again.'),
+                      ),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text(isNp
+                    ? 'DEBUG: सबै डाटा मेटाउनुहोस्'
+                    : 'DEBUG: Clear All Storage'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LanguageButton extends StatelessWidget {
+  final String title;
+  final String flag;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _LanguageButton({
+    required this.title,
+    required this.flag,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFFE2F0FE) : Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color:
+                isSelected ? const Color(0xFF0F52BA) : const Color(0xFFE2E8F0),
+            width: 2,
+          ),
+        ),
+        child: Row(
+          children: [
+            Text(flag, style: const TextStyle(fontSize: 24)),
+            const SizedBox(width: 16),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                color: isSelected
+                    ? const Color(0xFF0F52BA)
+                    : const Color(0xFF334155),
+              ),
+            ),
+            const Spacer(),
+            if (isSelected)
+              const Icon(Icons.check_circle, color: Color(0xFF0F52BA)),
+          ],
+        ),
+      ),
+    );
+  }
+}

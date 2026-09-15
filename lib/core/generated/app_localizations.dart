@@ -1,0 +1,1189 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations_en.dart';
+import 'app_localizations_ne.dart';
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of AppLocalizations
+/// returned by `AppLocalizations.of(context)`.
+///
+/// Applications need to include `AppLocalizations.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'generated/app_localizations.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: AppLocalizations.localizationsDelegates,
+///   supportedLocales: AppLocalizations.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppLocalizations.supportedLocales
+/// property.
+abstract class AppLocalizations {
+  AppLocalizations(String locale)
+      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static AppLocalizations? of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations);
+  }
+
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('ne')
+  ];
+
+  /// The title of the application
+  ///
+  /// In en, this message translates to:
+  /// **'TikaSathi'**
+  String get appTitle;
+
+  /// Title shown at the top of the child profile screen
+  ///
+  /// In en, this message translates to:
+  /// **'Child Page'**
+  String get childPageTitle;
+
+  /// Title shown at the top of the child profile screen with child name
+  ///
+  /// In en, this message translates to:
+  /// **'{childName}\'s page'**
+  String childPageTitleWithName(String childName);
+
+  /// Loading message while the child details are being fetched
+  ///
+  /// In en, this message translates to:
+  /// **'Loading child details...'**
+  String get childLoading;
+
+  /// Shown when the selected child cannot be loaded
+  ///
+  /// In en, this message translates to:
+  /// **'Child profile not found.'**
+  String get childNotFound;
+
+  /// Status label for a child who has a vaccine due today
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccination due today'**
+  String get childVaccinationDueToday;
+
+  /// Status label for a child with a vaccine due within a short period
+  ///
+  /// In en, this message translates to:
+  /// **'Due soon'**
+  String get childVaccinationDueSoon;
+
+  /// Status label for a child with no current due vaccines
+  ///
+  /// In en, this message translates to:
+  /// **'Up to date'**
+  String get childVaccinationUpToDate;
+
+  /// Label for the next scheduled vaccine
+  ///
+  /// In en, this message translates to:
+  /// **'Next vaccine'**
+  String get childNextVaccine;
+
+  /// Shown in next vaccine card when there is no upcoming vaccine
+  ///
+  /// In en, this message translates to:
+  /// **'No upcoming vaccines'**
+  String get childNoUpcomingVaccines;
+
+  /// Born date label in child summary card
+  ///
+  /// In en, this message translates to:
+  /// **'Born {dateText}'**
+  String childBornOn(String dateText);
+
+  /// Label for the date on which the next vaccine is due
+  ///
+  /// In en, this message translates to:
+  /// **'Due on'**
+  String get childDueOn;
+
+  /// Label for the child's sex
+  ///
+  /// In en, this message translates to:
+  /// **'Sex'**
+  String get childSexLabel;
+
+  /// Label for the child's date of birth
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth'**
+  String get childDobLabel;
+
+  /// Male sex option
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get childSexMale;
+
+  /// Female sex option
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get childSexFemale;
+
+  /// Fallback label when a child's sex is unavailable
+  ///
+  /// In en, this message translates to:
+  /// **'Not specified'**
+  String get childSexUnknown;
+
+  /// Shown when a child has no due vaccines
+  ///
+  /// In en, this message translates to:
+  /// **'No due vaccines'**
+  String get childNoDueVaccines;
+
+  /// Snack bar message for the unavailable read-aloud action
+  ///
+  /// In en, this message translates to:
+  /// **'Read aloud is not available yet.'**
+  String get childReadAloudUnavailable;
+
+  /// Tooltip text for the read-aloud action
+  ///
+  /// In en, this message translates to:
+  /// **'Read aloud'**
+  String get childReadAloudTooltip;
+
+  /// Tooltip for the back button on child page
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get childBackTooltip;
+
+  /// Title for vaccine schedule quick action card
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine schedule'**
+  String get childVaccineSchedule;
+
+  /// Title for vaccine record quick action card
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine record'**
+  String get childVaccineRecord;
+
+  /// Title for vaccine history quick action card
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine history'**
+  String get childVaccineHistory;
+
+  /// Title of the card on the child page that opens the log dose screen
+  ///
+  /// In en, this message translates to:
+  /// **'Log Vaccine'**
+  String get childActionRecordDose;
+
+  /// Snack bar message for vaccine schedule action not implemented
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine schedule is not implemented yet.'**
+  String get childScheduleNotImplemented;
+
+  /// Snack bar message for vaccine history action not implemented
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine history is not implemented yet.'**
+  String get childHistoryNotImplemented;
+
+  /// Generic message for not-yet-implemented features
+  ///
+  /// In en, this message translates to:
+  /// **'Not implemented yet.'**
+  String get childNotImplementedYet;
+
+  /// Confirmation button text for simple dialogs
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get childDialogOk;
+
+  /// Clear note about unavailable functionality on the child screen
+  ///
+  /// In en, this message translates to:
+  /// **'Record vaccine and clinic lookup are not available yet in this version.'**
+  String get childMissingFeatureNote;
+
+  /// Status label for a child with an overdue vaccine
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccination overdue'**
+  String get childVaccinationOverdue;
+
+  /// Label for the subsequent scheduled vaccine after the next one
+  ///
+  /// In en, this message translates to:
+  /// **'Following vaccine (later)'**
+  String get childFollowingVaccine;
+
+  /// Shown when all vaccines in the schedule have been completed
+  ///
+  /// In en, this message translates to:
+  /// **'All childhood immunisations completed!'**
+  String get childAllVaccinesCompleted;
+
+  /// Shown when only one dose remains in the schedule
+  ///
+  /// In en, this message translates to:
+  /// **'Final scheduled vaccine'**
+  String get childFinalScheduledVaccine;
+
+  /// Title for the unified vaccine history quick action card
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine history'**
+  String get childVaccineRecordsAndHistory;
+
+  /// Subtitle for the unified vaccine records and history card
+  ///
+  /// In en, this message translates to:
+  /// **'Review and update recorded doses'**
+  String get childVaccineRecordsAndHistorySubtitle;
+
+  /// Toggle option to show only age-appropriate vaccines
+  ///
+  /// In en, this message translates to:
+  /// **'Age-appropriate only'**
+  String get vaccineHistoryFilterAgeAppropriate;
+
+  /// Toggle option to show all vaccines
+  ///
+  /// In en, this message translates to:
+  /// **'Show all vaccines'**
+  String get vaccineHistoryFilterAll;
+
+  /// Button to save changes made in vaccine history
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get vaccineHistorySaveChanges;
+
+  /// Snack bar message when vaccine history is saved
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine history updated successfully'**
+  String get vaccineHistorySavedSuccess;
+
+  /// Label showing when a vaccine was administered
+  ///
+  /// In en, this message translates to:
+  /// **'Given on {date}'**
+  String vaccineHistoryAdministeredOn(String date);
+
+  /// Label showing when an unadministered vaccine is due
+  ///
+  /// In en, this message translates to:
+  /// **'Due: {date}'**
+  String vaccineHistoryDueAt(String date);
+
+  /// No description provided for @healthFacilitatorSaveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Save your closest health facility'**
+  String get healthFacilitatorSaveAction;
+
+  /// No description provided for @healthFacilitatorSavedHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Your local health facility'**
+  String get healthFacilitatorSavedHeading;
+
+  /// No description provided for @healthFacilitatorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Facility'**
+  String get healthFacilitatorTitle;
+
+  /// No description provided for @healthFacilitatorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the details of your closest health facility.'**
+  String get healthFacilitatorSubtitle;
+
+  /// No description provided for @healthFacilitatorName.
+  ///
+  /// In en, this message translates to:
+  /// **'Facility Name'**
+  String get healthFacilitatorName;
+
+  /// No description provided for @healthFacilitatorNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the facility\'s name'**
+  String get healthFacilitatorNameHint;
+
+  /// No description provided for @healthFacilitatorAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get healthFacilitatorAddress;
+
+  /// No description provided for @healthFacilitatorAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the address'**
+  String get healthFacilitatorAddressHint;
+
+  /// No description provided for @healthFacilitatorPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get healthFacilitatorPhone;
+
+  /// No description provided for @healthFacilitatorPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the phone number'**
+  String get healthFacilitatorPhoneHint;
+
+  /// No description provided for @healthFacilitatorSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get healthFacilitatorSave;
+
+  /// No description provided for @healthFacilitatorSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save health facility details.'**
+  String get healthFacilitatorSaveError;
+
+  /// No description provided for @healthFacilitatorBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get healthFacilitatorBack;
+
+  /// No description provided for @healthFacilitySaveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Save your closest health facility'**
+  String get healthFacilitySaveAction;
+
+  /// No description provided for @healthFacilitySavedHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Your local health facility'**
+  String get healthFacilitySavedHeading;
+
+  /// No description provided for @healthFacilityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Facility'**
+  String get healthFacilityTitle;
+
+  /// No description provided for @healthFacilitySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the details of your closest health facility.'**
+  String get healthFacilitySubtitle;
+
+  /// No description provided for @healthFacilityName.
+  ///
+  /// In en, this message translates to:
+  /// **'Facility Name'**
+  String get healthFacilityName;
+
+  /// No description provided for @healthFacilityNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the facility\'s name'**
+  String get healthFacilityNameHint;
+
+  /// No description provided for @healthFacilityAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get healthFacilityAddress;
+
+  /// No description provided for @healthFacilityAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the address'**
+  String get healthFacilityAddressHint;
+
+  /// No description provided for @healthFacilityPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get healthFacilityPhone;
+
+  /// No description provided for @healthFacilityPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the phone number'**
+  String get healthFacilityPhoneHint;
+
+  /// No description provided for @healthFacilitySave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get healthFacilitySave;
+
+  /// No description provided for @healthFacilitySaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save health facility details.'**
+  String get healthFacilitySaveError;
+
+  /// No description provided for @healthFacilityBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get healthFacilityBack;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsLanguageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose language'**
+  String get settingsLanguageTitle;
+
+  /// No description provided for @settingsNepali.
+  ///
+  /// In en, this message translates to:
+  /// **'Nepali'**
+  String get settingsNepali;
+
+  /// No description provided for @settingsEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get settingsEnglish;
+
+  /// No description provided for @settingsLanguageSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save language.'**
+  String get settingsLanguageSaveError;
+
+  /// No description provided for @appLanguageLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load language settings: {error}'**
+  String appLanguageLoadError(Object error);
+
+  /// No description provided for @navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get navHome;
+
+  /// No description provided for @navLearn.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn'**
+  String get navLearn;
+
+  /// No description provided for @navSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get navSettings;
+
+  /// No description provided for @onboardingWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome!'**
+  String get onboardingWelcome;
+
+  /// No description provided for @onboardingLanguagePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select your language / कृपया आफ्नो भाषा छान्नुहोस्'**
+  String get onboardingLanguagePrompt;
+
+  /// No description provided for @onboardingContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get onboardingContinue;
+
+  /// No description provided for @onboardingCaregiverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Caregiver Details'**
+  String get onboardingCaregiverTitle;
+
+  /// No description provided for @onboardingCaregiverSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your information so we can set up the app.'**
+  String get onboardingCaregiverSubtitle;
+
+  /// No description provided for @onboardingCaregiverNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'👩‍🦰 Full Name'**
+  String get onboardingCaregiverNameLabel;
+
+  /// No description provided for @onboardingCaregiverNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your full name'**
+  String get onboardingCaregiverNameHint;
+
+  /// No description provided for @onboardingCaregiverPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'📱 Phone Number'**
+  String get onboardingCaregiverPhoneLabel;
+
+  /// No description provided for @onboardingCaregiverPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your phone number'**
+  String get onboardingCaregiverPhoneHint;
+
+  /// No description provided for @onboardingCaregiverAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'🏠 Address (Optional)'**
+  String get onboardingCaregiverAddressLabel;
+
+  /// No description provided for @onboardingCaregiverAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your street address'**
+  String get onboardingCaregiverAddressHint;
+
+  /// No description provided for @onboardingStepLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {current} of {total}'**
+  String onboardingStepLabel(Object current, Object total);
+
+  /// No description provided for @onboardingChildNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'👶 Child\'s name'**
+  String get onboardingChildNameLabel;
+
+  /// No description provided for @onboardingChildNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter full name'**
+  String get onboardingChildNameHint;
+
+  /// No description provided for @onboardingChildDobLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'📅 Date of Birth'**
+  String get onboardingChildDobLabel;
+
+  /// No description provided for @onboardingChildDateDayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'DD'**
+  String get onboardingChildDateDayHint;
+
+  /// No description provided for @onboardingChildDateMonthHint.
+  ///
+  /// In en, this message translates to:
+  /// **'MM'**
+  String get onboardingChildDateMonthHint;
+
+  /// No description provided for @onboardingChildDateYearHint.
+  ///
+  /// In en, this message translates to:
+  /// **'YYYY'**
+  String get onboardingChildDateYearHint;
+
+  /// No description provided for @onboardingChildGenderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'⚥ Gender'**
+  String get onboardingChildGenderLabel;
+
+  /// No description provided for @onboardingChildGenderGirl.
+  ///
+  /// In en, this message translates to:
+  /// **'Girl'**
+  String get onboardingChildGenderGirl;
+
+  /// No description provided for @onboardingChildGenderBoy.
+  ///
+  /// In en, this message translates to:
+  /// **'Boy'**
+  String get onboardingChildGenderBoy;
+
+  /// No description provided for @onboardingFinishSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish Setup'**
+  String get onboardingFinishSetup;
+
+  /// No description provided for @onboardingErrorEmptyName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter child\'s name'**
+  String get onboardingErrorEmptyName;
+
+  /// No description provided for @onboardingErrorInvalidDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid Date of Birth'**
+  String get onboardingErrorInvalidDate;
+
+  /// No description provided for @onboardingErrorInvalidDob.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid Date of Birth'**
+  String get onboardingErrorInvalidDob;
+
+  /// No description provided for @onboardingErrorSaveSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving setup: {error}'**
+  String onboardingErrorSaveSetup(Object error);
+
+  /// No description provided for @homeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your children'**
+  String get homeTitle;
+
+  /// No description provided for @homeAddChildButton.
+  ///
+  /// In en, this message translates to:
+  /// **'+ Add child'**
+  String get homeAddChildButton;
+
+  /// No description provided for @homeActionAddChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Add child'**
+  String get homeActionAddChild;
+
+  /// No description provided for @homeActionChildDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Child details'**
+  String get homeActionChildDetails;
+
+  /// No description provided for @homeActionRecordDose.
+  ///
+  /// In en, this message translates to:
+  /// **'Log vaccine'**
+  String get homeActionRecordDose;
+
+  /// Fallback snack bar message for an unimplemented home action
+  ///
+  /// In en, this message translates to:
+  /// **'Placeholder action: {action}'**
+  String homeActionPlaceholder(String action);
+
+  /// Title of the screen where a caregiver records doses a child has just been given
+  ///
+  /// In en, this message translates to:
+  /// **'Log vaccine'**
+  String get recordDoseTitle;
+
+  /// Instruction shown under the log dose title
+  ///
+  /// In en, this message translates to:
+  /// **'Tick each vaccine {childName} was given today.'**
+  String recordDoseSubtitle(String childName);
+
+  /// Button that opens the date picker for the administered date
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get recordDoseChangeDate;
+
+  /// Label for a single vaccine dose in the list
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccineCode} (Dose {doseNumber})'**
+  String recordDoseDoseLabel(String vaccineCode, int doseNumber);
+
+  /// Secondary label showing when a dose was scheduled
+  ///
+  /// In en, this message translates to:
+  /// **'Due {date}'**
+  String recordDoseDueLabel(String date);
+
+  /// Secondary label for a dose whose due date has passed
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue since {date}'**
+  String recordDoseOverdueLabel(String date);
+
+  /// Empty state when the child has nothing due today
+  ///
+  /// In en, this message translates to:
+  /// **'{childName} has no doses due right now.'**
+  String recordDoseNoneDue(String childName);
+
+  /// Save button label while nothing is ticked
+  ///
+  /// In en, this message translates to:
+  /// **'Tick a vaccine first'**
+  String get recordDoseSaveEmpty;
+
+  /// Save button label showing how many doses will be recorded
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Save 1 dose} other{Save {count} doses}}'**
+  String recordDoseSaveCount(int count);
+
+  /// Confirmation shown after doses are saved
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 dose logged for {childName}} other{{count} doses logged for {childName}}}'**
+  String recordDoseSuccess(int count, String childName);
+
+  /// Shown when saving the doses fails
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save. Please try again.'**
+  String get recordDoseError;
+
+  /// Heading of the card holding the date the doses were administered
+  ///
+  /// In en, this message translates to:
+  /// **'Date given'**
+  String get recordDoseDateTitle;
+
+  /// Chip showing which dose of a vaccine a row refers to
+  ///
+  /// In en, this message translates to:
+  /// **'Dose {doseNumber}'**
+  String recordDoseDoseChip(int doseNumber);
+
+  /// Running count of ticked doses shown above the save button
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No doses selected} =1{1 dose selected} other{{count} doses selected}}'**
+  String recordDoseSelectedSummary(int count);
+
+  /// Heading above the administered date card
+  ///
+  /// In en, this message translates to:
+  /// **'Step 1 — Check the date'**
+  String get recordDoseStepDate;
+
+  /// Heading above the list of doses
+  ///
+  /// In en, this message translates to:
+  /// **'Step 2 — Tick each vaccine given'**
+  String get recordDoseStepSelect;
+
+  /// Hint telling the user the date card can be tapped
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to change'**
+  String get recordDoseTapToChange;
+
+  /// Badge shown on a dose row the user has ticked
+  ///
+  /// In en, this message translates to:
+  /// **'Ticked'**
+  String get recordDoseTickedLabel;
+
+  /// Button revealing doses that are not due yet
+  ///
+  /// In en, this message translates to:
+  /// **'Show more vaccines'**
+  String get recordDoseShowMore;
+
+  /// Button hiding doses that are not due yet
+  ///
+  /// In en, this message translates to:
+  /// **'Show fewer vaccines'**
+  String get recordDoseShowFewer;
+
+  /// Badge shown when the selected date is today
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get recordDoseToday;
+
+  /// Age label in days for a child
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1 {1 day old} other {{count} days old}}'**
+  String ageInDays(int count);
+
+  /// Age label in months for a child
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1 {1 month old} other {{count} months old}}'**
+  String ageInMonths(int count);
+
+  /// Age label in years for a child
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1 {1 year old} other {{count} years old}}'**
+  String ageInYears(int count);
+
+  /// No description provided for @homeSectionDueToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Due today'**
+  String get homeSectionDueToday;
+
+  /// No description provided for @homeSectionDueSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Due soon'**
+  String get homeSectionDueSoon;
+
+  /// No description provided for @homeSectionUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to date'**
+  String get homeSectionUpToDate;
+
+  /// No description provided for @homeEmptyStateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No children added yet.'**
+  String get homeEmptyStateTitle;
+
+  /// No description provided for @homeEmptyStateSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first child to see upcoming vaccines here.'**
+  String get homeEmptyStateSubtitle;
+
+  /// No description provided for @learnPlaceholderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn'**
+  String get learnPlaceholderTitle;
+
+  /// No description provided for @learnPlaceholderTitleNp.
+  ///
+  /// In en, this message translates to:
+  /// **'सिक्नुहोस्'**
+  String get learnPlaceholderTitleNp;
+
+  /// No description provided for @childStatusSetupIncomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Awaiting setup completion'**
+  String get childStatusSetupIncomplete;
+
+  /// No description provided for @homeSectionAwaitingSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Awaiting setup completion'**
+  String get homeSectionAwaitingSetup;
+
+  /// No description provided for @homeActionCompleteSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete setup'**
+  String get homeActionCompleteSetup;
+
+  /// No description provided for @childSetupIncompleteBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Past vaccine history hasn\'t been set up yet. Complete setup to get an accurate schedule.'**
+  String get childSetupIncompleteBanner;
+
+  /// No description provided for @childActionCompleteSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete setup'**
+  String get childActionCompleteSetup;
+
+  /// No description provided for @childUrgencySetupRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup required'**
+  String get childUrgencySetupRequired;
+
+  /// No description provided for @retroactiveVaccineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine History'**
+  String get retroactiveVaccineTitle;
+
+  /// No description provided for @retroactiveVaccineSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill out the vaccines that {childName} has already had.'**
+  String retroactiveVaccineSubtitle(String childName);
+
+  /// No description provided for @retroactiveVaccineShowAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all vaccines'**
+  String get retroactiveVaccineShowAll;
+
+  /// No description provided for @retroactiveVaccineShowAllSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing age-appropriate vaccines only.\nToggle to show all.'**
+  String get retroactiveVaccineShowAllSubtitle;
+
+  /// No description provided for @retroactiveVaccineDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date: {date}'**
+  String retroactiveVaccineDateLabel(String date);
+
+  /// No description provided for @retroactiveVaccineChangeDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get retroactiveVaccineChangeDate;
+
+  /// No description provided for @retroactiveVaccineFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get retroactiveVaccineFinish;
+
+  /// No description provided for @retroactiveVaccineSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip for now'**
+  String get retroactiveVaccineSkip;
+
+  /// No description provided for @vaccineRecordsDoseHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine dose'**
+  String get vaccineRecordsDoseHeader;
+
+  /// No description provided for @vaccineRecordsDateHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Date administered'**
+  String get vaccineRecordsDateHeader;
+
+  /// No description provided for @vaccineRecordsReturn.
+  ///
+  /// In en, this message translates to:
+  /// **'Return'**
+  String get vaccineRecordsReturn;
+
+  /// No description provided for @vaccineRecordsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no recorded vaccinations.'**
+  String get vaccineRecordsEmpty;
+
+  /// No description provided for @dose.
+  ///
+  /// In en, this message translates to:
+  /// **'Dose'**
+  String get dose;
+
+  /// No description provided for @vaccineScheduleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine schedule'**
+  String get vaccineScheduleTitle;
+
+  /// No description provided for @vaccineScheduleBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get vaccineScheduleBack;
+
+  /// No description provided for @vaccineScheduleDoseHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine dose'**
+  String get vaccineScheduleDoseHeader;
+
+  /// No description provided for @vaccineScheduleDueHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Date due'**
+  String get vaccineScheduleDueHeader;
+
+  /// No description provided for @vaccineScheduleReturn.
+  ///
+  /// In en, this message translates to:
+  /// **'Return'**
+  String get vaccineScheduleReturn;
+
+  /// No description provided for @vaccineScheduleEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no upcoming vaccines.'**
+  String get vaccineScheduleEmpty;
+
+  /// No description provided for @vaccineScheduleToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get vaccineScheduleToday;
+
+  /// No description provided for @vaccineScheduleInDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one {In # day} other {In # days}}'**
+  String vaccineScheduleInDays(num count);
+
+  /// No description provided for @vaccineScheduleInMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one {In # month} other {In # months}}'**
+  String vaccineScheduleInMonths(num count);
+
+  /// No description provided for @vaccineScheduleInYears.
+  ///
+  /// In en, this message translates to:
+  /// **'In {count} yr'**
+  String vaccineScheduleInYears(Object count);
+
+  /// No description provided for @vaccineScheduleInYearsMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'In {years} yr {months} mo'**
+  String vaccineScheduleInYearsMonths(Object months, Object years);
+
+  /// No description provided for @vaccineScheduleOverdueBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue by {count} day(s)'**
+  String vaccineScheduleOverdueBy(Object count);
+
+  /// No description provided for @onboardingErrorFutureDob.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of Birth cannot be in the future'**
+  String get onboardingErrorFutureDob;
+
+  /// No description provided for @overdueVaccinesDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed Vaccines'**
+  String get overdueVaccinesDialogTitle;
+
+  /// No description provided for @overdueVaccinesDialogMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit health facility for missed vaccines.'**
+  String get overdueVaccinesDialogMessage;
+
+  /// No description provided for @overdueVaccinesNoticeBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit health facility for missed vaccines.'**
+  String get overdueVaccinesNoticeBanner;
+
+  /// No description provided for @actionUnderstand.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get actionUnderstand;
+}
+
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['en', 'ne'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+
+AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'en':
+      return AppLocalizationsEn();
+    case 'ne':
+      return AppLocalizationsNe();
+  }
+
+  throw FlutterError(
+      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue '
+      'on GitHub with a reproducible sample app and the gen-l10n configuration '
+      'that was used.');
+}

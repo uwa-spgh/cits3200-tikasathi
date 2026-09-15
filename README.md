@@ -39,6 +39,8 @@ Every pull request to the `main` or `develop` branch will trigger a workflow tha
 2. **Unit Tests:** `flutter test` to verify the logic of the age calculator, vaccine schedule generator, and missed-dose catch-up algorithm.
 3. **Widget Tests:** Automated UI tests to ensure critical flows (e.g., child registration, language toggling) render correctly without regressions.
 
+**Releases:** Any pushed tag starting with `v` (e.g., `v1.0.0`) will automatically trigger a build workflow that generates an Android APK and an iOS Archive and publishes them as a GitHub Release.
+
 > [!TIP]
 > **Project Acceptance Tests**
 > Your team will also perform manual Acceptance Testing on physical low-end devices to verify the app meets the criteria outlined in `Project Acceptance Tests.md`, such as:
@@ -49,21 +51,29 @@ Every pull request to the `main` or `develop` branch will trigger a workflow tha
 ## 4. Core Modules & Data Architecture
 
 ### Child Profile Management
-- Store UUID, Name, DOB, Sex, Caregiver details, and Ward Number.
-- **Validation:** Gracefully handle future dates or invalid inputs.
+- Store UUID, Name, DOB, Sex, and `isSetupComplete` status.
+- **Validation:** Enforces date of birth integrity by preventing future dates with localized alerts.
+- **Vaccine Status & Timeline:** Unified status card with accurate color-coded indicators (Green for Up to date / All completed, Amber for Due today / Due soon, Red for Overdue, Slate grey for Awaiting setup completion). When a child is awaiting setup completion (`isSetupComplete == false`), non-alarming neutral slate styling is displayed alongside a clear setup prompt banner with an inline "Complete setup" action.
+- **Home Dashboard Grouping:** Dedicated "Awaiting setup completion" section on the Home dashboard with a one-tap "Complete setup" button, ensuring newly registered children whose past records were skipped do not trigger premature or alarming overdue warnings.
+- **Vaccine History:** A unified screen that merges past vaccine history logging with record viewing. Features a floating age-appropriate filter toggle at the top of the screen, interactive checkboxes, date picker for administered doses, top-left back navigation, and a concise low-literacy advisory popup prompting caregivers to visit a health facility if missed vaccines are present after completing registration. Skipping setup cleanly sets the child into the awaiting setup state without alarming alert dialogs.
+- **Vaccine Schedule:** A dedicated screen displaying the full national immunisation schedule grouped by due dates with relative countdowns and back navigation.
+
+### Caregiver Profile Management
+- Store UUID, Name, Phone Number and Address.
 
 ### Immunisation Engine
 - Automatically calculate age and generate the vaccine schedule (BCG, Pentavalent, Rotavirus, PCV, etc.) based on the Nepal NIP schedule.
 - **Statuses:** Upcoming (○), Completed (✓), Overdue (⚠).
-- **Catch-up Logic:** Complex rules for adjusting intervals if a dose is missed.
+- **Catch-up Logic:** Rules for adjusting intervals if a dose is missed.
+- **Dose Logging:** Streamlined log vaccine flow displaying dates with years and a floating show more/fewer vaccines toggle.
 
 ### Notification System
 - Native, offline-scheduled notifications based on exact clinical intervals. 
 - Automatically fallback to periodic (fortnightly) alerts for overdue vaccines to prevent reminder fatigue.
 
-### Health Information & Facility Locator
+### Health Information & Health Facility
 - Educational modules containing Myth/Fact sections (adapted from Nepal's Family Welfare Division).
-- A directory of local health posts (स्वास्थ्य चौकी), filterable and searchable offline.
+- A directory and contact details for the local **Health Facility** (स्वास्थ्य संस्था, formerly health facilitator), filterable, editable, and accessible offline.
 
 ## 5. Integrating Figma Designs
 

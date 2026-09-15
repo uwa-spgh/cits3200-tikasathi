@@ -1,0 +1,454 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
+
+import 'package:tikasathi/core/database/app_database.dart';
+import 'package:tikasathi/core/database/app_database_provider.dart';
+import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
+import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
+import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
+import 'package:tikasathi/features/onboarding/presentation/retroactive_vaccine_screen.dart';
+
+class ChildScreen extends ConsumerStatefulWidget {
+  const ChildScreen({
+    super.key,
+    this.isOnboardingFlow = true,
+  });
+
+  final bool isOnboardingFlow;
+
+  @override
+  ConsumerState<ChildScreen> createState() => _ChildScreenState();
+}
+
+class _ChildScreenState extends ConsumerState<ChildScreen> {
+  final _nameController = TextEditingController();
+  final _ddController = TextEditingController();
+  final _mmController = TextEditingController();
+  final _yyController = TextEditingController();
+
+  String _selectedGender = 'female';
+  bool _isSaving = false;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _ddController.dispose();
+    _mmController.dispose();
+    _yyController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _onFinish() async {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+
+    if (_nameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(localizations.onboardingErrorEmptyName)),
+      );
+      return;
+    }
+
+    final dd = int.tryParse(_ddController.text);
+    final mm = int.tryParse(_mmController.text);
+    final yy = int.tryParse(_yyController.text);
+
+    if (dd == null || mm == null || yy == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(localizations.onboardingErrorInvalidDate)),
+      );
+      return;
+    }
+
+    final year = yy;
+
+    DateTime? dob;
+    try {
+      dob = DateTime(year, mm, dd);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(localizations.onboardingErrorInvalidDob)),
+      );
+      return;
+    }
+
+    final DateTime now = DateTime.now();
+    final DateTime today = DateTime(now.year, now.month, now.day);
+    if (dob.isAfter(today)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(localizations.onboardingErrorFutureDob)),
+      );
+      return;
+    }
+
+    if (!widget.isOnboardingFlow) {
+      setState(() => _isSaving = true);
+      try {
+        final db = ref.read(appDatabaseProvider);
+        final childId = const Uuid().v4();
+        await db.childProfilesDao.insertChildProfile(
+          ChildProfilesCompanion.insert(
+            id: childId,
+            name: _nameController.text.trim(),
+            dateOfBirth: dob,
+            sex: _selectedGender,
+          ),
+        );
+        await db.vaccinationDuesDao.insertDuesForChild(childId);
+        ref.invalidate(homeStatusGroupsProvider);
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute<void>(
+              builder: (context) => RetroactiveVaccineScreen(
+                childId: childId,
+                isOnboardingFlow: false,
+                isRegistrationFlow: true,
+              ),
+            ),
+          );
+        }
+      } catch (error) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                localizations.onboardingErrorSaveSetup(error.toString()),
+              ),
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isSaving = false);
+        }
+      }
+      return;
+    }
+
+    final controller = ref.read(onboardingControllerProvider.notifier);
+
+    controller.updateChildInfo(
+      name: _nameController.text.trim(),
+      dob: dob,
+      sex: _selectedGender,
+    );
+
+    final String? childId = await controller.finishSetup();
+
+    if (childId != null && mounted) {
+      if (childId == 'completed_without_child') {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute<void>(builder: (context) => const AppShellScreen()),
+          (route) => false,
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute<void>(
+            builder: (context) => RetroactiveVaccineScreen(
+              childId: childId,
+              isOnboardingFlow: true,
+            ),
+          ),
+        );
+      }
+    } else if (mounted) {
+      final error = ref.read(onboardingControllerProvider).error;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content:
+              Text(localizations.onboardingErrorSaveSetup(error.toString())),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+    final state = ref.watch(onboardingControllerProvider);
+    final bool isSaving = widget.isOnboardingFlow ? state.isSaving : _isSaving;
+    final String submitLabel = widget.isOnboardingFlow
+        ? localizations.onboardingContinue
+        : 'Save child';
+
+    final List<Widget> headerWidgets = widget.isOnboardingFlow
+        ? <Widget>[
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0F52BA),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Container(
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0F52BA),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Container(
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE2E8F0),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Text(
+                  localizations.onboardingStepLabel(2, 3),
+                  style: const TextStyle(
+                    color: Color(0xFF64748B),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 32),
+          ]
+        : <Widget>[
+            const Text(
+              'Add a new child',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF0F172A),
+              ),
+            ),
+            const SizedBox(height: 32),
+          ];
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F9FC),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ...headerWidgets,
+
+              // Form Card
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      localizations.onboardingChildNameLabel,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0F172A),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: _nameController,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                        hintText: localizations.onboardingChildNameHint,
+                        hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide:
+                              const BorderSide(color: Color(0xFF0F52BA)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide:
+                              const BorderSide(color: Color(0xFF0F52BA)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      localizations.onboardingChildDobLabel,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0F172A),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildDateBox(
+                              localizations.onboardingChildDateDayHint,
+                              _ddController),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildDateBox(
+                              localizations.onboardingChildDateMonthHint,
+                              _mmController),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildDateBox(
+                              localizations.onboardingChildDateYearHint,
+                              _yyController,
+                              maxLength: 4),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      localizations.onboardingChildGenderLabel,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0F172A),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildGenderButton('female', '👱‍♀️',
+                              label: localizations.onboardingChildGenderGirl),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildGenderButton('male', '👱‍♂️',
+                              label: localizations.onboardingChildGenderBoy),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 48),
+
+              ElevatedButton(
+                onPressed: isSaving ? null : _onFinish,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0F52BA),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  minimumSize: const Size(double.infinity, 56),
+                ),
+                child: isSaving
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text(
+                        submitLabel,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDateBox(String hint, TextEditingController controller,
+      {int maxLength = 2}) {
+    return TextField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      textAlign: TextAlign.center,
+      maxLength: maxLength,
+      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      decoration: InputDecoration(
+        counterText: '',
+        hintText: hint,
+        hintStyle: const TextStyle(
+          color: Color(0xFF94A3B8),
+          fontSize: 20, // slightly smaller to fit Nepali
+          fontWeight: FontWeight.normal,
+        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 16),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF0F52BA)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF0F52BA)),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGenderButton(String genderId, String emoji,
+      {required String label}) {
+    final isSelected = _selectedGender == genderId;
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _selectedGender = genderId;
+        });
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFFE2F0FE) : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: const Color(0xFF0F52BA),
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(emoji, style: const TextStyle(fontSize: 24)),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                color: isSelected
+                    ? const Color(0xFF0F52BA)
+                    : const Color(0xFF0F172A),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
