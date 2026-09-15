@@ -106,6 +106,7 @@
   "@childVaccineHistory": {
     "description": "Title for vaccine history quick action card"
   },
+  "childActionRecordDose": "खोप दर्ता गर्नुहोस्",
   "childScheduleNotImplemented": "खोप तालिका अझै कार्यान्वयन गरिएको छैन।",
   "@childScheduleNotImplemented": {
     "description": "Snack bar message for vaccine schedule action not implemented"
@@ -126,20 +127,90 @@
   "@childMissingFeatureNote": {
     "description": "Clear note about unavailable functionality on the child screen"
   },
-  "healthFacilitatorSaveAction": "आफ्नो नजिकको स्वास्थ्य सहजकर्ता बचत गर्नुहोस्",
-  "healthFacilitatorSavedHeading": "तपाईंको स्थानीय स्वास्थ्य सहजकर्ता",
-  "healthFacilitatorTitle": "स्वास्थ्य सहजकर्ता",
-  "healthFacilitatorSubtitle": "आफ्नो नजिकको स्वास्थ्य सहजकर्ताको विवरण बचत गर्नुहोस्।",
-  "healthFacilitatorName": "सहजकर्ताको नाम",
-  "healthFacilitatorNameHint": "सहजकर्ताको नाम लेख्नुहोस्",
+  "childVaccinationOverdue": "खोपको मिति नाघेको",
+  "@childVaccinationOverdue": {
+    "description": "Status label for a child with an overdue vaccine"
+  },
+  "childFollowingVaccine": "त्यसपछिको खोप (पछि)",
+  "@childFollowingVaccine": {
+    "description": "Label for the subsequent scheduled vaccine after the next one"
+  },
+  "childAllVaccinesCompleted": "सबै खोपहरू पूरा भए!",
+  "@childAllVaccinesCompleted": {
+    "description": "Shown when all vaccines in the schedule have been completed"
+  },
+  "childFinalScheduledVaccine": "अन्तिम निर्धारित खोप",
+  "@childFinalScheduledVaccine": {
+    "description": "Shown when only one dose remains in the schedule"
+  },
+  "childVaccineRecordsAndHistory": "खोप इतिहास र अभिलेख",
+  "@childVaccineRecordsAndHistory": {
+    "description": "Title for the unified vaccine records and history quick action card"
+  },
+  "childVaccineRecordsAndHistorySubtitle": "लिएका खोपहरू हेर्नुहोस् र सम्पादन गर्नुहोस्",
+  "@childVaccineRecordsAndHistorySubtitle": {
+    "description": "Subtitle for the unified vaccine records and history card"
+  },
+  "vaccineHistoryFilterAgeAppropriate": "उमेर अनुसार मात्र",
+  "@vaccineHistoryFilterAgeAppropriate": {
+    "description": "Toggle option to show only age-appropriate vaccines"
+  },
+  "vaccineHistoryFilterAll": "सबै खोपहरू देखाउनुहोस्",
+  "@vaccineHistoryFilterAll": {
+    "description": "Toggle option to show all vaccines"
+  },
+  "vaccineHistorySaveChanges": "परिवर्तनहरू बचत गर्नुहोस्",
+  "@vaccineHistorySaveChanges": {
+    "description": "Button to save changes made in vaccine history"
+  },
+  "vaccineHistorySavedSuccess": "खोप इतिहास सफलतापूर्वक अद्यावधिक गरियो",
+  "@vaccineHistorySavedSuccess": {
+    "description": "Snack bar message when vaccine history is saved"
+  },
+  "vaccineHistoryAdministeredOn": "{date} मा दिइएको",
+  "@vaccineHistoryAdministeredOn": {
+    "description": "Label showing when a vaccine was administered",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "vaccineHistoryDueAt": "दिनुपर्ने मिति: {date}",
+  "@vaccineHistoryDueAt": {
+    "description": "Label showing when an unadministered vaccine is due",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "healthFacilitatorSaveAction": "आफ्नो नजिकको स्वास्थ्य संस्था बचत गर्नुहोस्",
+  "healthFacilitatorSavedHeading": "तपाईंको स्थानीय स्वास्थ्य संस्था",
+  "healthFacilitatorTitle": "स्वास्थ्य संस्था",
+  "healthFacilitatorSubtitle": "आफ्नो नजिकको स्वास्थ्य संस्थाको विवरण बचत गर्नुहोस्।",
+  "healthFacilitatorName": "स्वास्थ्य संस्थाको नाम",
+  "healthFacilitatorNameHint": "स्वास्थ्य संस्थाको नाम लेख्नुहोस्",
   "healthFacilitatorAddress": "ठेगाना",
   "healthFacilitatorAddressHint": "ठेगाना लेख्नुहोस्",
   "healthFacilitatorPhone": "फोन नम्बर",
   "healthFacilitatorPhoneHint": "फोन नम्बर लेख्नुहोस्",
   "healthFacilitatorSave": "बचत गर्नुहोस्",
-  "healthFacilitatorSaveError": "स्वास्थ्य सहजकर्ताको विवरण बचत गर्न सकिएन।",
-  "healthFacilitatorBack": "फर्कनुहोस्"
-  ,
+  "healthFacilitatorSaveError": "स्वास्थ्य संस्थाको विवरण बचत गर्न सकिएन।",
+  "healthFacilitatorBack": "फर्कनुहोस्",
+  "healthFacilitySaveAction": "आफ्नो नजिकको स्वास्थ्य संस्था बचत गर्नुहोस्",
+  "healthFacilitySavedHeading": "तपाईंको स्थानीय स्वास्थ्य संस्था",
+  "healthFacilityTitle": "स्वास्थ्य संस्था",
+  "healthFacilitySubtitle": "आफ्नो नजिकको स्वास्थ्य संस्थाको विवरण बचत गर्नुहोस्।",
+  "healthFacilityName": "स्वास्थ्य संस्थाको नाम",
+  "healthFacilityNameHint": "स्वास्थ्य संस्थाको नाम लेख्नुहोस्",
+  "healthFacilityAddress": "ठेगाना",
+  "healthFacilityAddressHint": "ठेगाना लेख्नुहोस्",
+  "healthFacilityPhone": "फोन नम्बर",
+  "healthFacilityPhoneHint": "फोन नम्बर लेख्नुहोस्",
+  "healthFacilitySave": "बचत गर्नुहोस्",
+  "healthFacilitySaveError": "स्वास्थ्य संस्थाको विवरण बचत गर्न सकिएन।",
+  "healthFacilityBack": "फर्कनुहोस्",
   "settingsTitle": "सेटिङहरू",
   "settingsLanguageTitle": "भाषा छान्नुहोस्",
   "settingsNepali": "नेपाली",
@@ -160,7 +231,7 @@
   "onboardingCaregiverPhoneHint": "तपाईंको फोन नम्बर प्रविष्ट गर्नुहोस्",
   "onboardingCaregiverAddressLabel": "🏠 ठेगाना (वैकल्पिक)",
   "onboardingCaregiverAddressHint": "तपाईंको ठेगाना प्रविष्ट गर्नुहोस्",
-  "onboardingStepLabel": "चरण {current}\/ {total}",
+  "onboardingStepLabel": "चरण {current}/ {total}",
   "onboardingChildNameLabel": "👶 बच्चाको नाम",
   "onboardingChildNameHint": "पूरा नाम प्रविष्ट गर्नुहोस्",
   "onboardingChildDobLabel": "📅 जन्म मिति",
@@ -179,7 +250,7 @@
   "homeAddChildButton": "+ बच्चा थप्नुहोस्",
   "homeActionAddChild": "बच्चा थप्नुहोस्",
   "homeActionChildDetails": "बच्चाको विवरण",
-  "homeActionRecordVaccine": "खोप रेकर्ड",
+  "homeActionRecordDose": "खोप दर्ता गर्नुहोस्",
   "homeActionPlaceholder": "स्थगित कार्य: {action}",
   "@homeActionPlaceholder": {
     "description": "Fallback snack bar message for an unimplemented home action",
@@ -189,6 +260,27 @@
       }
     }
   },
+  "recordDoseTitle": "खोप दर्ता गर्नुहोस्",
+  "recordDoseSubtitle": "{childName} लाई आज दिइएको प्रत्येक खोपमा चिन्ह लगाउनुहोस्।",
+  "recordDoseChangeDate": "परिवर्तन",
+  "recordDoseDoseLabel": "{vaccineCode} (मात्रा {doseNumber})",
+  "recordDoseDueLabel": "लाग्नुपर्ने मिति {date}",
+  "recordDoseOverdueLabel": "{date} देखि ढिलो",
+  "recordDoseNoneDue": "{childName} लाई अहिले कुनै खोप लाग्नुपर्ने छैन।",
+  "recordDoseSaveEmpty": "पहिले खोपमा चिन्ह लगाउनुहोस्",
+  "recordDoseSaveCount": "{count, plural, =1{१ मात्रा सुरक्षित गर्नुहोस्} other{{count} मात्रा सुरक्षित गर्नुहोस्}}",
+  "recordDoseSuccess": "{count, plural, =1{{childName} को १ मात्रा दर्ता गरियो} other{{childName} का {count} मात्रा दर्ता गरियो}}",
+  "recordDoseError": "सुरक्षित गर्न सकिएन। कृपया फेरि प्रयास गर्नुहोस्।",
+  "recordDoseDateTitle": "दिइएको मिति",
+  "recordDoseDoseChip": "मात्रा {doseNumber}",
+  "recordDoseSelectedSummary": "{count, plural, =0{कुनै मात्रा छानिएको छैन} =1{१ मात्रा छानियो} other{{count} मात्रा छानियो}}",
+  "recordDoseStepDate": "चरण १ — मिति जाँच्नुहोस्",
+  "recordDoseStepSelect": "चरण २ — दिइएको प्रत्येक खोपमा चिन्ह लगाउनुहोस्",
+  "recordDoseTapToChange": "परिवर्तन गर्न थिच्नुहोस्",
+  "recordDoseTickedLabel": "चिन्ह लगाइयो",
+  "recordDoseShowMore": "थप खोपहरू देखाउनुहोस्",
+  "recordDoseShowFewer": "कम खोपहरू देखाउनुहोस्",
+  "recordDoseToday": "आज",
   "ageInDays": "{count, plural, =1 {१ दिन पुरानो} other {{count} दिन पुरानो}}",
   "@ageInDays": {
     "description": "Age label in days for a child",
@@ -223,7 +315,12 @@
   "homeEmptyStateSubtitle": "यहाँ आगामी खोपहरू हेर्न आफ्नो पहिलो बच्चा थप्नुहोस्।",
   "learnPlaceholderTitle": "सिक्नुहोस्",
   "learnPlaceholderTitleNp": "सिक्नुहोस्",
-  "childStatusSetupIncomplete": "सेटअप अधुरो",
+  "childStatusSetupIncomplete": "सेटअप पूरा हुन बाँकी",
+  "homeSectionAwaitingSetup": "सेटअप पूरा हुन बाँकी",
+  "homeActionCompleteSetup": "सेटअप पूरा गर्नुहोस्",
+  "childSetupIncompleteBanner": "पहिले लगाइएका खोपहरूको विवरण भरिएको छैन। सही तालिका हेर्न सेटअप पूरा गर्नुहोस्।",
+  "childActionCompleteSetup": "सेटअप पूरा गर्नुहोस्",
+  "childUrgencySetupRequired": "सेटअप आवश्यक",
   "retroactiveVaccineTitle": "खोप इतिहास",
   "retroactiveVaccineSubtitle": "कृपया {childName} ले पहिले नै लगाइसकेका खोपहरू भर्नुहोस्।",
   "@retroactiveVaccineSubtitle": {
@@ -250,17 +347,22 @@
   "vaccineRecordsDateHeader": "प्रशासित मिति",
   "vaccineRecordsReturn": "फिर्ता",
   "vaccineRecordsEmpty": "खोप लगाइएको कुनै रेकर्ड छैन।",
-  "dose": "खुराक"
-  ,"vaccineScheduleTitle": "खोप तालिका"
-  ,"vaccineScheduleBack": "फिर्ता"
-  ,"vaccineScheduleDoseHeader": "खोपको खुराक"
-  ,"vaccineScheduleDueHeader": "मिति"
-  ,"vaccineScheduleReturn": "फिर्ता"
-  ,"vaccineScheduleEmpty": "आगामी खोपहरू छैनन्।"
-  ,"vaccineScheduleToday": "आज"
-  ,"vaccineScheduleInDays": "{count} दिनमा"
-  ,"vaccineScheduleInMonths": "{count} महिनामा"
-  ,"vaccineScheduleInYears": "{count} वर्षमा"
-  ,"vaccineScheduleInYearsMonths": "{years} वर्ष {months} महिनामा"
-  ,"vaccineScheduleOverdueBy": "{count} दिन ढिला"
+  "dose": "खुराक",
+  "vaccineScheduleTitle": "खोप तालिका",
+  "vaccineScheduleBack": "फिर्ता",
+  "vaccineScheduleDoseHeader": "खोपको खुराक",
+  "vaccineScheduleDueHeader": "मिति",
+  "vaccineScheduleReturn": "फिर्ता",
+  "vaccineScheduleEmpty": "आगामी खोपहरू छैनन्।",
+  "vaccineScheduleToday": "आज",
+  "vaccineScheduleInDays": "{count} दिनमा",
+  "vaccineScheduleInMonths": "{count} महिनामा",
+  "vaccineScheduleInYears": "{count} वर्षमा",
+  "vaccineScheduleInYearsMonths": "{years} वर्ष {months} महिनामा",
+  "vaccineScheduleOverdueBy": "{count} दिन ढिला",
+  "onboardingErrorFutureDob": "जन्म मिति भविष्यको हुन सक्दैन",
+  "overdueVaccinesDialogTitle": "छुटेका खोप",
+  "overdueVaccinesDialogMessage": "छुटेका खोपका लागि स्वास्थ्य संस्था जानुहोस्।",
+  "overdueVaccinesNoticeBanner": "छुटेका खोपका लागि स्वास्थ्य संस्था जानुहोस्।",
+  "actionUnderstand": "ठीक छ"
 }

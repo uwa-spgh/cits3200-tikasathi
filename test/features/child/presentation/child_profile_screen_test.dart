@@ -15,81 +15,81 @@ import '../../../helpers/fake_settings_repository.dart';
 void main() {
   group('ChildProfileScreen', () {
     testWidgets(
-      'shows child details and vaccination status for a populated profile',
-      (WidgetTester tester) async {
-        const childId = 'child-1';
-        final now = DateTime.now();
+        'shows child details and vaccination status for a populated profile',
+        (WidgetTester tester) async {
+      const childId = 'child-1';
+      tester.view.physicalSize = const Size(800, 2000);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final now = DateTime.now();
 
-        await tester.pumpWidget(
-          ProviderScope(
-            overrides: [
-              settingsRepositoryProvider.overrideWith(
-                (ref) => FakeSettingsRepository(language: AppLanguage.english),
-              ),
-              childProfileProvider(childId).overrideWith(
-                (ref) => Future.value(
-                  ChildProfileDetails(
-                    child: ChildProfile(
-                      id: childId,
-                      name: 'Maya',
-                      dateOfBirth: now.subtract(const Duration(days: 270)),
-                      sex: 'female',
-                      isSetupComplete: true,
-                    ),
-                    dueVaccines: <VaccinationDue>[
-                      VaccinationDue(
-                        id: 'due-1',
-                        childId: childId,
-                        vaccineCode: 'ROTA',
-                        doseNumber: 1,
-                        dueDate: now,
-                      ),
-                      VaccinationDue(
-                        id: 'due-2',
-                        childId: childId,
-                        vaccineCode: 'BOPV',
-                        doseNumber: 1,
-                        dueDate: now.add(const Duration(days: 14)),
-                      ),
-                    ],
-                    records: const <VaccinationRecord>[],
-                    now: now,
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(language: AppLanguage.english),
+            ),
+            childProfileProvider(childId).overrideWith(
+              (ref) => Future.value(
+                ChildProfileDetails(
+                  child: ChildProfile(
+                    id: childId,
+                    name: 'Maya',
+                    dateOfBirth: now.subtract(const Duration(days: 270)),
+                    sex: 'female',
+                    isSetupComplete: true,
                   ),
+                  dueVaccines: <VaccinationDue>[
+                    VaccinationDue(
+                      id: 'due-1',
+                      childId: childId,
+                      vaccineCode: 'ROTA',
+                      doseNumber: 1,
+                      dueDate: now,
+                    ),
+                    VaccinationDue(
+                      id: 'due-2',
+                      childId: childId,
+                      vaccineCode: 'BOPV',
+                      doseNumber: 1,
+                      dueDate: now.add(const Duration(days: 14)),
+                    ),
+                  ],
+                  records: const <VaccinationRecord>[],
+                  now: now,
                 ),
               ),
-            ],
-            child: const MaterialApp(
-              locale: Locale('en'),
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              home: ChildProfileScreen(childId: childId),
             ),
+          ],
+          child: const MaterialApp(
+            locale: Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: ChildProfileScreen(childId: childId),
           ),
-        );
+        ),
+      );
 
-        await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
 
-        expect(find.textContaining('Maya'), findsAtLeastNWidgets(1));
-        expect(find.text('Female'), findsOneWidget);
-        expect(find.text("Maya's page"), findsOneWidget);
-        expect(find.textContaining('Born'), findsOneWidget);
-        expect(find.text('Vaccination due today'), findsOneWidget);
-        expect(find.byIcon(Icons.arrow_back), findsOneWidget);
-        expect(find.byIcon(Icons.record_voice_over), findsOneWidget);
-        expect(find.text('ROTA'), findsOneWidget);
-        expect(find.text('BOPV'), findsOneWidget);
-        expect(find.text('Next vaccine'), findsOneWidget);
-        expect(find.byType(BottomNavigationBar), findsOneWidget);
-        expect(
-          find.byKey(const Key('child-vaccine-schedule-card')),
-          findsOneWidget,
-        );
-      },
-    );
+      expect(find.textContaining('Maya'), findsAtLeastNWidgets(1));
+      expect(find.text('Female'), findsOneWidget);
+      expect(find.text("Maya's page"), findsOneWidget);
+      expect(find.textContaining('Born'), findsOneWidget);
+      expect(find.text('Vaccination due today'), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+      expect(find.byIcon(Icons.record_voice_over), findsOneWidget);
+      expect(find.text('ROTA'), findsOneWidget);
+      expect(find.text('BOPV'), findsOneWidget);
+      expect(find.text('Next vaccine'), findsOneWidget);
+      expect(find.byType(BottomNavigationBar), findsOneWidget);
+      expect(
+          find.byKey(const Key('child-vaccine-schedule-card')), findsOneWidget);
+    });
 
-    testWidgets('opens schedule and history pages from feature cards', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('opens schedule and history pages from feature cards',
+        (WidgetTester tester) async {
       const childId = 'child-actions';
       final now = DateTime.now();
       tester.view.physicalSize = const Size(800, 2000);
@@ -150,9 +150,8 @@ void main() {
       expect(find.byType(RetroactiveVaccineScreen), findsOneWidget);
     });
 
-    testWidgets('shows the loading indicator while child data is loading', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('shows the loading indicator while child data is loading',
+        (WidgetTester tester) async {
       const childId = 'loading-child';
 
       await tester.pumpWidget(
@@ -178,14 +177,16 @@ void main() {
       );
 
       expect(find.text('Loading child details...'), findsOneWidget);
-      expect(find.byType(CircularProgressIndicator), findsAtLeastNWidgets(1));
+      expect(
+        find.byType(CircularProgressIndicator),
+        findsAtLeastNWidgets(1),
+      );
 
       await tester.pump(const Duration(seconds: 1));
     });
 
-    testWidgets('shows the empty state when there are no due vaccines', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('shows the empty state when there are no due vaccines',
+        (WidgetTester tester) async {
       const childId = 'child-empty';
       final now = DateTime.now();
 
@@ -226,17 +227,15 @@ void main() {
       expect(find.textContaining('Asha'), findsAtLeastNWidgets(1));
       expect(find.text("Asha's page"), findsOneWidget);
       expect(
-        find.byWidgetPredicate(
-          (widget) => widget is Text && widget.data == 'Up to date',
-        ),
-        findsAtLeastNWidgets(1),
-      );
+          find.byWidgetPredicate(
+            (widget) => widget is Text && widget.data == 'Up to date',
+          ),
+          findsAtLeastNWidgets(1));
       expect(find.text('No upcoming vaccines'), findsOneWidget);
     });
 
-    testWidgets('shows a not-found state when the profile cannot be loaded', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('shows a not-found state when the profile cannot be loaded',
+        (WidgetTester tester) async {
       const childId = 'missing-child';
 
       await tester.pumpWidget(
@@ -262,6 +261,69 @@ void main() {
       await tester.pump();
 
       expect(find.text('Child profile not found.'), findsOneWidget);
+    });
+
+    testWidgets(
+        'shows awaiting setup completion state with info banner and Complete setup button when isSetupComplete is false',
+        (WidgetTester tester) async {
+      const childId = 'child-incomplete';
+      final now = DateTime.now();
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(language: AppLanguage.english),
+            ),
+            childProfileProvider(childId).overrideWith(
+              (ref) => Future.value(
+                ChildProfileDetails(
+                  child: ChildProfile(
+                    id: childId,
+                    name: 'Nima',
+                    dateOfBirth: now.subtract(const Duration(days: 90)),
+                    sex: 'male',
+                    isSetupComplete: false,
+                  ),
+                  dueVaccines: <VaccinationDue>[
+                    VaccinationDue(
+                      id: 'due-1',
+                      childId: childId,
+                      vaccineCode: 'BCG',
+                      doseNumber: 1,
+                      dueDate: now.subtract(const Duration(days: 90)),
+                    ),
+                  ],
+                  records: const <VaccinationRecord>[],
+                  now: now,
+                ),
+              ),
+            ),
+          ],
+          child: const MaterialApp(
+            locale: Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: ChildProfileScreen(childId: childId),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Awaiting setup completion'), findsOneWidget);
+      expect(
+        find.text(
+          'Past vaccine history hasn\'t been set up yet. Complete setup to get an accurate schedule.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Complete setup'), findsOneWidget);
+      expect(find.text('Setup required'), findsOneWidget);
+      expect(
+        find.text('Visit health facility for missed vaccines.'),
+        findsNothing,
+      );
     });
   });
 }

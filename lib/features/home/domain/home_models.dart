@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 enum HomeVaccinationGroup {
+  awaitingSetup,
   dueToday,
   dueSoon,
   upToDate,
@@ -15,7 +16,8 @@ class HomeChildSummary {
     this.nextVaccineCode,
     this.sex,
     required this.avatarEmoji,
-    required this.canRecordVaccine,
+    required this.canRecordDose,
+    this.isAwaitingSetup = false,
   });
 
   final String name;
@@ -24,7 +26,8 @@ class HomeChildSummary {
   final String? nextVaccineCode;
   final String? sex;
   final String avatarEmoji;
-  final bool canRecordVaccine;
+  final bool canRecordDose;
+  final bool isAwaitingSetup;
 }
 
 @immutable

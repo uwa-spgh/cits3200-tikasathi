@@ -379,6 +379,50 @@ void main() {
             .first;
         expect(records, hasLength(1));
       });
+
+      test('recalculating dues succeeds when reminders exist', () async {
+        await insertChildWithDue();
+        await remindersDao.scheduleRemindersForDue('due-1', from: wellBefore);
+        expect(await remindersDao.getPendingReminders(), isNotEmpty);
+
+        await expectLater(
+          vaccinationDuesDao.recalculateDuesForChild('child-1'),
+          completes,
+        );
+      });
+
+      test('recalculating dues leaves no reminders on the replaced dues',
+          () async {
+        await insertChildWithDue();
+        await remindersDao.scheduleRemindersForDue('due-1', from: wellBefore);
+
+        await vaccinationDuesDao.recalculateDuesForChild('child-1');
+
+        final remaining = await remindersDao.getPendingReminders();
+        expect(
+          remaining.every((reminder) => reminder.dueId != 'due-1'),
+          isTrue,
+        );
+      });
+
+      test("recalculating dues leaves another child's reminders", () async {
+        await insertChildWithDue();
+        await insertChildWithDue(
+          childId: 'child-2',
+          dueId: 'due-2',
+          vaccineCode: 'MR',
+        );
+        await remindersDao.scheduleRemindersForDue('due-1', from: wellBefore);
+        await remindersDao.scheduleRemindersForDue('due-2', from: wellBefore);
+
+        await vaccinationDuesDao.recalculateDuesForChild('child-1');
+
+        final remaining = await remindersDao.getPendingReminders();
+        expect(
+          remaining.where((reminder) => reminder.dueId == 'due-2'),
+          isNotEmpty,
+        );
+      });
     });
   });
 }

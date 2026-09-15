@@ -48,7 +48,7 @@ void main() {
     facilitatorStream.add(null);
     await tester.pump();
 
-    expect(find.text('Save your closest health facilitator'), findsOneWidget);
+    expect(find.text('Save your closest health facility'), findsOneWidget);
     await tester.tap(find.byKey(const Key('health-facilitator-action')));
     await tester.pumpAndSettle();
     expect(find.byType(HealthFacilitatorScreen), findsOneWidget);
@@ -66,8 +66,8 @@ void main() {
     facilitatorStream
         .add(await database.healthFacilitatorsDao.getLocalFacilitator());
     await tester.pumpAndSettle();
-    expect(find.text('Your local health facilitator'), findsOneWidget);
-    expect(find.textContaining('Facilitator Name: Maya'), findsOneWidget);
+    expect(find.text('Your local health facility'), findsOneWidget);
+    expect(find.textContaining('Facility Name: Maya'), findsOneWidget);
     expect(find.textContaining('Address: Ward 4'), findsOneWidget);
     expect(find.textContaining('Phone Number: 9800000000'), findsOneWidget);
     await tester.tap(find.byKey(const Key('health-facilitator-action')));

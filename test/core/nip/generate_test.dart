@@ -61,14 +61,12 @@ void main() {
               (due) => due.dueDate == dob.add(getDoseAge('BOPV', 1)!.duration)),
           false);
       expect(
-          bopvDues
-              .any((due) => due.dueDate == today.add(const Duration(days: 1))),
+          bopvDues.any(
+              (due) => due.dueDate == dob.add(getDoseAge('BOPV', 2)!.duration)),
           true);
       expect(
           bopvDues.any((due) =>
-              due.dueDate ==
-              today.add(
-                  DayDuration(months: 1).duration + const Duration(days: 1))),
+              due.dueDate == today.add(DayDuration(months: 1).duration)),
           true);
     });
 

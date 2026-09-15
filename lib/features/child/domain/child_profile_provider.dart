@@ -24,30 +24,40 @@ class ChildProfileDetails {
 
   bool get isSetupComplete => child.isSetupComplete;
 
-  bool get isUpToDate => dueVaccines.isEmpty;
+  bool get allDosesCompleted => dueVaccines.isEmpty;
+
+  DateTime get _today => DateTime(now.year, now.month, now.day);
+
+  bool get hasOverdueDoses => dueVaccines.any((due) {
+        final dueDate =
+            DateTime(due.dueDate.year, due.dueDate.month, due.dueDate.day);
+        return dueDate.isBefore(_today);
+      });
+
+  bool get hasDosesDueToday => dueVaccines.any((due) {
+        final dueDate =
+            DateTime(due.dueDate.year, due.dueDate.month, due.dueDate.day);
+        return dueDate.isAtSameMomentAs(_today);
+      });
+
+  bool get hasDosesDueSoon => dueVaccines.any((due) {
+        final dueDate =
+            DateTime(due.dueDate.year, due.dueDate.month, due.dueDate.day);
+        final diff = dueDate.difference(_today).inDays;
+        return diff > 0 && diff <= 14;
+      });
+
+  /// The child is Up To Date if they have no overdue doses and no doses due today.
+  bool get isUpToDate =>
+      dueVaccines.isEmpty ||
+      (isSetupComplete && !hasOverdueDoses && !hasDosesDueToday);
 
   List<VaccinationDue> get orderedDueVaccines =>
       List<VaccinationDue>.from(dueVaccines)
         ..sort((VaccinationDue a, VaccinationDue b) =>
             a.dueDate.compareTo(b.dueDate));
 
-  bool get isDueToday {
-    if (dueVaccines.isEmpty) {
-      return false;
-    }
-
-    final nextDue = (List<VaccinationDue>.from(dueVaccines)
-          ..sort((VaccinationDue a, VaccinationDue b) =>
-              a.dueDate.compareTo(b.dueDate)))
-        .first;
-    final nextDueDate = DateTime(
-      nextDue.dueDate.year,
-      nextDue.dueDate.month,
-      nextDue.dueDate.day,
-    );
-    final today = DateTime(now.year, now.month, now.day);
-    return !nextDueDate.isAfter(today);
-  }
+  bool get isDueToday => hasDosesDueToday;
 
   VaccinationDue? get nextDue =>
       dueVaccines.isEmpty ? null : orderedDueVaccines.first;
@@ -77,12 +87,12 @@ Future<ChildProfileDetails> childProfile(
     throw StateError('Child profile not found');
   }
 
-  final List<VaccinationDue> dueVaccines = await database.vaccinationDuesDao
-      .watchVaccinationDuesForChild(childId)
-      .first;
-  final List<VaccinationRecord> records = await database.vaccinationRecordsDao
-      .watchVaccinationRecordsForChild(childId)
-      .first;
+  final List<VaccinationDue> dueVaccines =
+      await database.vaccinationDuesDao.getVaccinationDuesForChild(childId);
+  final List<VaccinationRecord> records =
+      await (database.select(database.vaccinationRecords)
+            ..where((row) => row.childId.equals(childId)))
+          .get();
 
   return ChildProfileDetails(
     child: profile,

@@ -5,11 +5,14 @@ import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/child/presentation/child_profile_screen.dart';
+import 'package:tikasathi/features/record_dose/presentation/record_dose_screen.dart';
 import 'package:tikasathi/features/onboarding/presentation/child_screen.dart';
+import 'package:tikasathi/features/onboarding/presentation/retroactive_vaccine_screen.dart';
+import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
-import 'package:tikasathi/features/settings/domain/health_facilitator_controller.dart';
+import 'package:tikasathi/features/settings/domain/health_facility_controller.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
-import 'package:tikasathi/features/settings/presentation/health_facilitator_card.dart';
+import 'package:tikasathi/features/settings/presentation/health_facility_card.dart';
 
 import '../domain/home_helpers.dart';
 import '../domain/home_models.dart';
@@ -22,21 +25,23 @@ class HomeScreen extends ConsumerWidget {
     super.key,
     this.groups,
     this.onAddChildPressed,
-    this.onRecordVaccinePressed,
+    this.onRecordDosePressed,
+    this.onCompleteSetupPressed,
     this.onChildPressed,
   });
 
   final List<HomeStatusGroup>? groups;
   final VoidCallback? onAddChildPressed;
-  final HomeChildActionCallback? onRecordVaccinePressed;
+  final HomeChildActionCallback? onRecordDosePressed;
+  final HomeChildActionCallback? onCompleteSetupPressed;
   final HomeChildActionCallback? onChildPressed;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<AppLanguage> languageState =
         ref.watch(languageControllerProvider);
-    final AsyncValue<HealthFacilitator?> facilitatorState =
-        ref.watch(healthFacilitatorProvider);
+    final AsyncValue<HealthFacility?> facilitatorState =
+        ref.watch(healthFacilityProvider);
 
     return languageState.when(
       data: (AppLanguage _) {
@@ -60,7 +65,8 @@ class HomeScreen extends ConsumerWidget {
             groups: resolvedGroups,
             facilitator: facilitator,
             onAddChildPressed: onAddChildPressed,
-            onRecordVaccinePressed: onRecordVaccinePressed,
+            onRecordDosePressed: onRecordDosePressed,
+            onCompleteSetupPressed: onCompleteSetupPressed,
             onChildPressed: onChildPressed,
           ),
           loading: () => const Center(child: CircularProgressIndicator()),
@@ -83,17 +89,14 @@ class HomeScreen extends ConsumerWidget {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
     final ScaffoldMessengerState scaffoldMessenger =
         ScaffoldMessenger.of(context);
-    scaffoldMessenger.hideCurrentSnackBar();
+    scaffoldMessenger.clearSnackBars();
     scaffoldMessenger.showSnackBar(
-      SnackBar(
-        content: Text(localizations.homeActionPlaceholder(action)),
-      ),
+      SnackBar(content: Text(localizations.homeActionPlaceholder(action))),
     );
   }
 
-  static Future<void> _openAddChildPage(BuildContext context) {
-    return Navigator.push(
-      context,
+  static void _openAddChildPage(BuildContext context) {
+    Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (BuildContext _) => const ChildScreen(isOnboardingFlow: false),
       ),
@@ -107,10 +110,7 @@ String _childSummaryLabel({
 }) {
   final String ageText = formatAge(child.dateOfBirth, localizations);
   final String sexText = childSexLabel(child.sex, localizations);
-  if (child.nextVaccineCode == null || child.nextVaccineCode!.isEmpty) {
-    return '$sexText - $ageText';
-  }
-  return '${child.nextVaccineCode} - $sexText - $ageText';
+  return '$sexText • $ageText';
 }
 
 class _HomeScreenContent extends StatelessWidget {
@@ -118,14 +118,16 @@ class _HomeScreenContent extends StatelessWidget {
     required this.groups,
     required this.facilitator,
     required this.onAddChildPressed,
-    required this.onRecordVaccinePressed,
+    required this.onRecordDosePressed,
+    required this.onCompleteSetupPressed,
     required this.onChildPressed,
   });
 
   final List<HomeStatusGroup> groups;
   final HealthFacilitator? facilitator;
   final VoidCallback? onAddChildPressed;
-  final HomeChildActionCallback? onRecordVaccinePressed;
+  final HomeChildActionCallback? onRecordDosePressed;
+  final HomeChildActionCallback? onCompleteSetupPressed;
   final HomeChildActionCallback? onChildPressed;
 
   @override
@@ -185,11 +187,22 @@ class _HomeScreenContent extends StatelessWidget {
                       ),
                     );
 
+                    final Widget readAloudButton = ReadAloudButton(
+                      tooltip: localizations.childReadAloudTooltip,
+                      unavailableMessage:
+                          localizations.childReadAloudUnavailable,
+                    );
+
                     if (compactHeader) {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          title,
+                          Row(
+                            children: <Widget>[
+                              Expanded(child: title),
+                              readAloudButton,
+                            ],
+                          ),
                           const SizedBox(height: 8),
                           addChildButton,
                         ],
@@ -201,6 +214,8 @@ class _HomeScreenContent extends StatelessWidget {
                       children: <Widget>[
                         Expanded(child: title),
                         addChildButton,
+                        const SizedBox(width: 10),
+                        readAloudButton,
                       ],
                     );
                   },
@@ -236,21 +251,41 @@ class _HomeScreenContent extends StatelessWidget {
                             ),
                           );
                         },
-                        onRecordVaccinePressed: (HomeChildSummary child) {
-                          if (onRecordVaccinePressed != null) {
-                            onRecordVaccinePressed!(child);
+                        onRecordDosePressed: (HomeChildSummary child) {
+                          if (onRecordDosePressed != null) {
+                            onRecordDosePressed!(child);
                             return;
                           }
-                          HomeScreen._showPlaceholder(
-                              context, localizations.homeActionRecordVaccine);
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (BuildContext childContext) =>
+                                  RecordDoseScreen(childId: child.childId),
+                            ),
+                          );
+                        },
+                        onCompleteSetupPressed: (HomeChildSummary child) {
+                          if (onCompleteSetupPressed != null) {
+                            onCompleteSetupPressed!(child);
+                            return;
+                          }
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (BuildContext childContext) =>
+                                  RetroactiveVaccineScreen(
+                                childId: child.childId,
+                                isOnboardingFlow: false,
+                                isRegistrationFlow: true,
+                              ),
+                            ),
+                          );
                         },
                       ),
                     ),
                   ),
                 const SizedBox(height: 22),
-                HealthFacilitatorCard(
+                HealthFacilityCard(
                   key: const Key('home-health-facilitator-card'),
-                  facilitator: facilitator,
+                  facility: facilitator,
                 ),
               ],
             ),
@@ -265,12 +300,14 @@ class _StatusGroupCard extends StatelessWidget {
   const _StatusGroupCard({
     required this.group,
     required this.onChildPressed,
-    required this.onRecordVaccinePressed,
+    required this.onRecordDosePressed,
+    required this.onCompleteSetupPressed,
   });
 
   final HomeStatusGroup group;
   final HomeChildActionCallback onChildPressed;
-  final HomeChildActionCallback onRecordVaccinePressed;
+  final HomeChildActionCallback onRecordDosePressed;
+  final HomeChildActionCallback onCompleteSetupPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -278,6 +315,8 @@ class _StatusGroupCard extends StatelessWidget {
     final _GroupStyle style = _GroupStyle.fromGroup(group.group);
 
     final String groupHeader = switch (group.group) {
+      HomeVaccinationGroup.awaitingSetup =>
+        localizations.homeSectionAwaitingSetup,
       HomeVaccinationGroup.dueToday => localizations.homeSectionDueToday,
       HomeVaccinationGroup.dueSoon => localizations.homeSectionDueSoon,
       HomeVaccinationGroup.upToDate => localizations.homeSectionUpToDate,
@@ -328,8 +367,9 @@ class _StatusGroupCard extends StatelessWidget {
                       child: _HomeChildCard(
                         child: child,
                         onChildPressed: () => onChildPressed(child),
-                        onRecordVaccinePressed: () =>
-                            onRecordVaccinePressed(child),
+                        onRecordDosePressed: () => onRecordDosePressed(child),
+                        onCompleteSetupPressed: () =>
+                            onCompleteSetupPressed(child),
                       ),
                     ),
                   )
@@ -346,12 +386,14 @@ class _HomeChildCard extends StatelessWidget {
   const _HomeChildCard({
     required this.child,
     required this.onChildPressed,
-    required this.onRecordVaccinePressed,
+    required this.onRecordDosePressed,
+    required this.onCompleteSetupPressed,
   });
 
   final HomeChildSummary child;
   final VoidCallback onChildPressed;
-  final VoidCallback onRecordVaccinePressed;
+  final VoidCallback onRecordDosePressed;
+  final VoidCallback onCompleteSetupPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -362,10 +404,30 @@ class _HomeChildCard extends StatelessWidget {
         final bool compactActions = childConstraints.maxWidth < 420;
 
         final List<Widget> actionButtons = <Widget>[
-          if (child.canRecordVaccine)
+          if (child.isAwaitingSetup)
             FilledButton.icon(
-              key: Key('record-vaccine-${child.name}'),
-              onPressed: onRecordVaccinePressed,
+              key: Key('complete-setup-${child.name}'),
+              onPressed: onCompleteSetupPressed,
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF0E64C5),
+                foregroundColor: Colors.white,
+                minimumSize: const Size(0, 44),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
+              ),
+              icon: const Icon(Icons.assignment_turned_in_outlined, size: 18),
+              label: Text(localizations.homeActionCompleteSetup),
+            )
+          else if (child.canRecordDose)
+            FilledButton.icon(
+              key: Key('record-dose-${child.name}'),
+              onPressed: onRecordDosePressed,
               style: FilledButton.styleFrom(
                 backgroundColor: const Color(0xFF0E64C5),
                 foregroundColor: Colors.white,
@@ -380,7 +442,7 @@ class _HomeChildCard extends StatelessWidget {
                 ),
               ),
               icon: const Icon(Icons.edit, size: 18),
-              label: Text(localizations.homeActionRecordVaccine),
+              label: Text(localizations.homeActionRecordDose),
             ),
         ];
 
@@ -539,6 +601,13 @@ class _GroupStyle {
 
   static _GroupStyle fromGroup(HomeVaccinationGroup group) {
     switch (group) {
+      case HomeVaccinationGroup.awaitingSetup:
+        return const _GroupStyle(
+          headerColor: Color(0xFF475569),
+          bodyColor: Color(0xFFF8FAFC),
+          borderColor: Color(0xFFCBD5E1),
+          icon: Icons.pending_actions_rounded,
+        );
       case HomeVaccinationGroup.dueToday:
         return const _GroupStyle(
           headerColor: Color(0xFFC9292B),

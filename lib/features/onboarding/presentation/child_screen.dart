@@ -73,6 +73,15 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
       return;
     }
 
+    final DateTime now = DateTime.now();
+    final DateTime today = DateTime(now.year, now.month, now.day);
+    if (dob.isAfter(today)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(localizations.onboardingErrorFutureDob)),
+      );
+      return;
+    }
+
     if (!widget.isOnboardingFlow) {
       setState(() => _isSaving = true);
       try {
@@ -95,6 +104,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
               builder: (context) => RetroactiveVaccineScreen(
                 childId: childId,
                 isOnboardingFlow: false,
+                isRegistrationFlow: true,
               ),
             ),
           );

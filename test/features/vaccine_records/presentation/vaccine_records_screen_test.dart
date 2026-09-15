@@ -14,6 +14,10 @@ void main() {
   group('VaccineRecordsScreen', () {
     testWidgets('shows all recorded vaccinations', (WidgetTester tester) async {
       const childId = 'child-1';
+      tester.view.physicalSize = const Size(800, 2500);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
       final now = DateTime.now();
       final dob = now.subtract(const Duration(days: 105));
 
@@ -123,6 +127,10 @@ void main() {
       );
 
       await tester.pumpAndSettle();
+      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+      expect(find.text('Vaccine records & history'), findsOneWidget);
+      expect(find.textContaining('Maya'), findsOneWidget);
+      expect(find.text('Age-appropriate only'), findsOneWidget);
       expect(find.text('BCG (Dose 1)'), findsOneWidget);
       expect(find.text('PENTA (Dose 1)'), findsOneWidget);
       expect(find.text('PENTA (Dose 2)'), findsOneWidget);
@@ -135,11 +143,17 @@ void main() {
       expect(find.text('ROTA (Dose 2)'), findsOneWidget);
       expect(find.text('PCV (Dose 1)'), findsOneWidget);
       expect(find.text('PCV (Dose 2)'), findsOneWidget);
+      expect(find.text('Save Changes'), findsOneWidget);
       expect(find.text('Return'), findsOneWidget);
     });
 
-    testWidgets('shows that there are no records', (WidgetTester tester) async {
+    testWidgets('shows unrecorded vaccines when child has no records yet',
+        (WidgetTester tester) async {
       const childId = 'child-2';
+      tester.view.physicalSize = const Size(800, 2500);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
       final now = DateTime.now();
       final dob = now.subtract(const Duration(days: 105));
 
@@ -176,7 +190,12 @@ void main() {
       );
 
       await tester.pumpAndSettle();
-      expect(find.text('There are no recorded vaccinations.'), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+      expect(find.text('Vaccine records & history'), findsOneWidget);
+      expect(find.textContaining('Nima'), findsOneWidget);
+      expect(find.text('Age-appropriate only'), findsOneWidget);
+      expect(find.text('BCG (Dose 1)'), findsOneWidget);
+      expect(find.text('Save Changes'), findsOneWidget);
       expect(find.text('Return'), findsOneWidget);
     });
   });

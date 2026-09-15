@@ -242,6 +242,12 @@ abstract class AppLocalizations {
   /// **'Vaccine history'**
   String get childVaccineHistory;
 
+  /// Title of the card on the child page that opens the log dose screen
+  ///
+  /// In en, this message translates to:
+  /// **'Log Vaccine'**
+  String get childActionRecordDose;
+
   /// Snack bar message for vaccine schedule action not implemented
   ///
   /// In en, this message translates to:
@@ -272,40 +278,112 @@ abstract class AppLocalizations {
   /// **'Record vaccine and clinic lookup are not available yet in this version.'**
   String get childMissingFeatureNote;
 
+  /// Status label for a child with an overdue vaccine
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccination overdue'**
+  String get childVaccinationOverdue;
+
+  /// Label for the subsequent scheduled vaccine after the next one
+  ///
+  /// In en, this message translates to:
+  /// **'Following vaccine (later)'**
+  String get childFollowingVaccine;
+
+  /// Shown when all vaccines in the schedule have been completed
+  ///
+  /// In en, this message translates to:
+  /// **'All childhood immunisations completed!'**
+  String get childAllVaccinesCompleted;
+
+  /// Shown when only one dose remains in the schedule
+  ///
+  /// In en, this message translates to:
+  /// **'Final scheduled vaccine'**
+  String get childFinalScheduledVaccine;
+
+  /// Title for the unified vaccine records and history quick action card
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine records & history'**
+  String get childVaccineRecordsAndHistory;
+
+  /// Subtitle for the unified vaccine records and history card
+  ///
+  /// In en, this message translates to:
+  /// **'Review and update recorded doses'**
+  String get childVaccineRecordsAndHistorySubtitle;
+
+  /// Toggle option to show only age-appropriate vaccines
+  ///
+  /// In en, this message translates to:
+  /// **'Age-appropriate only'**
+  String get vaccineHistoryFilterAgeAppropriate;
+
+  /// Toggle option to show all vaccines
+  ///
+  /// In en, this message translates to:
+  /// **'Show all vaccines'**
+  String get vaccineHistoryFilterAll;
+
+  /// Button to save changes made in vaccine history
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get vaccineHistorySaveChanges;
+
+  /// Snack bar message when vaccine history is saved
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine history updated successfully'**
+  String get vaccineHistorySavedSuccess;
+
+  /// Label showing when a vaccine was administered
+  ///
+  /// In en, this message translates to:
+  /// **'Given on {date}'**
+  String vaccineHistoryAdministeredOn(String date);
+
+  /// Label showing when an unadministered vaccine is due
+  ///
+  /// In en, this message translates to:
+  /// **'Due: {date}'**
+  String vaccineHistoryDueAt(String date);
+
   /// No description provided for @healthFacilitatorSaveAction.
   ///
   /// In en, this message translates to:
-  /// **'Save your closest health facilitator'**
+  /// **'Save your closest health facility'**
   String get healthFacilitatorSaveAction;
 
   /// No description provided for @healthFacilitatorSavedHeading.
   ///
   /// In en, this message translates to:
-  /// **'Your local health facilitator'**
+  /// **'Your local health facility'**
   String get healthFacilitatorSavedHeading;
 
   /// No description provided for @healthFacilitatorTitle.
   ///
   /// In en, this message translates to:
-  /// **'Health Facilitator'**
+  /// **'Health Facility'**
   String get healthFacilitatorTitle;
 
   /// No description provided for @healthFacilitatorSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Save the details of your closest health facilitator.'**
+  /// **'Save the details of your closest health facility.'**
   String get healthFacilitatorSubtitle;
 
   /// No description provided for @healthFacilitatorName.
   ///
   /// In en, this message translates to:
-  /// **'Facilitator Name'**
+  /// **'Facility Name'**
   String get healthFacilitatorName;
 
   /// No description provided for @healthFacilitatorNameHint.
   ///
   /// In en, this message translates to:
-  /// **'Enter the facilitator\'s name'**
+  /// **'Enter the facility\'s name'**
   String get healthFacilitatorNameHint;
 
   /// No description provided for @healthFacilitatorAddress.
@@ -341,7 +419,7 @@ abstract class AppLocalizations {
   /// No description provided for @healthFacilitatorSaveError.
   ///
   /// In en, this message translates to:
-  /// **'Could not save health facilitator details.'**
+  /// **'Could not save health facility details.'**
   String get healthFacilitatorSaveError;
 
   /// No description provided for @healthFacilitatorBack.
@@ -349,6 +427,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get healthFacilitatorBack;
+
+  /// No description provided for @healthFacilitySaveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Save your closest health facility'**
+  String get healthFacilitySaveAction;
+
+  /// No description provided for @healthFacilitySavedHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Your local health facility'**
+  String get healthFacilitySavedHeading;
+
+  /// No description provided for @healthFacilityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Facility'**
+  String get healthFacilityTitle;
+
+  /// No description provided for @healthFacilitySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the details of your closest health facility.'**
+  String get healthFacilitySubtitle;
+
+  /// No description provided for @healthFacilityName.
+  ///
+  /// In en, this message translates to:
+  /// **'Facility Name'**
+  String get healthFacilityName;
+
+  /// No description provided for @healthFacilityNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the facility\'s name'**
+  String get healthFacilityNameHint;
+
+  /// No description provided for @healthFacilityAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get healthFacilityAddress;
+
+  /// No description provided for @healthFacilityAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the address'**
+  String get healthFacilityAddressHint;
+
+  /// No description provided for @healthFacilityPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get healthFacilityPhone;
+
+  /// No description provided for @healthFacilityPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the phone number'**
+  String get healthFacilityPhoneHint;
+
+  /// No description provided for @healthFacilitySave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get healthFacilitySave;
+
+  /// No description provided for @healthFacilitySaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save health facility details.'**
+  String get healthFacilitySaveError;
+
+  /// No description provided for @healthFacilityBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get healthFacilityBack;
 
   /// No description provided for @settingsTitle.
   ///
@@ -584,17 +740,143 @@ abstract class AppLocalizations {
   /// **'Child details'**
   String get homeActionChildDetails;
 
-  /// No description provided for @homeActionRecordVaccine.
+  /// No description provided for @homeActionRecordDose.
   ///
   /// In en, this message translates to:
-  /// **'Record vaccine'**
-  String get homeActionRecordVaccine;
+  /// **'Log vaccine'**
+  String get homeActionRecordDose;
 
   /// Fallback snack bar message for an unimplemented home action
   ///
   /// In en, this message translates to:
   /// **'Placeholder action: {action}'**
   String homeActionPlaceholder(String action);
+
+  /// Title of the screen where a caregiver records doses a child has just been given
+  ///
+  /// In en, this message translates to:
+  /// **'Log vaccine'**
+  String get recordDoseTitle;
+
+  /// Instruction shown under the log dose title
+  ///
+  /// In en, this message translates to:
+  /// **'Tick each vaccine {childName} was given today.'**
+  String recordDoseSubtitle(String childName);
+
+  /// Button that opens the date picker for the administered date
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get recordDoseChangeDate;
+
+  /// Label for a single vaccine dose in the list
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccineCode} (Dose {doseNumber})'**
+  String recordDoseDoseLabel(String vaccineCode, int doseNumber);
+
+  /// Secondary label showing when a dose was scheduled
+  ///
+  /// In en, this message translates to:
+  /// **'Due {date}'**
+  String recordDoseDueLabel(String date);
+
+  /// Secondary label for a dose whose due date has passed
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue since {date}'**
+  String recordDoseOverdueLabel(String date);
+
+  /// Empty state when the child has nothing due today
+  ///
+  /// In en, this message translates to:
+  /// **'{childName} has no doses due right now.'**
+  String recordDoseNoneDue(String childName);
+
+  /// Save button label while nothing is ticked
+  ///
+  /// In en, this message translates to:
+  /// **'Tick a vaccine first'**
+  String get recordDoseSaveEmpty;
+
+  /// Save button label showing how many doses will be recorded
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Save 1 dose} other{Save {count} doses}}'**
+  String recordDoseSaveCount(int count);
+
+  /// Confirmation shown after doses are saved
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 dose logged for {childName}} other{{count} doses logged for {childName}}}'**
+  String recordDoseSuccess(int count, String childName);
+
+  /// Shown when saving the doses fails
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save. Please try again.'**
+  String get recordDoseError;
+
+  /// Heading of the card holding the date the doses were administered
+  ///
+  /// In en, this message translates to:
+  /// **'Date given'**
+  String get recordDoseDateTitle;
+
+  /// Chip showing which dose of a vaccine a row refers to
+  ///
+  /// In en, this message translates to:
+  /// **'Dose {doseNumber}'**
+  String recordDoseDoseChip(int doseNumber);
+
+  /// Running count of ticked doses shown above the save button
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No doses selected} =1{1 dose selected} other{{count} doses selected}}'**
+  String recordDoseSelectedSummary(int count);
+
+  /// Heading above the administered date card
+  ///
+  /// In en, this message translates to:
+  /// **'Step 1 — Check the date'**
+  String get recordDoseStepDate;
+
+  /// Heading above the list of doses
+  ///
+  /// In en, this message translates to:
+  /// **'Step 2 — Tick each vaccine given'**
+  String get recordDoseStepSelect;
+
+  /// Hint telling the user the date card can be tapped
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to change'**
+  String get recordDoseTapToChange;
+
+  /// Badge shown on a dose row the user has ticked
+  ///
+  /// In en, this message translates to:
+  /// **'Ticked'**
+  String get recordDoseTickedLabel;
+
+  /// Button revealing doses that are not due yet
+  ///
+  /// In en, this message translates to:
+  /// **'Show more vaccines'**
+  String get recordDoseShowMore;
+
+  /// Button hiding doses that are not due yet
+  ///
+  /// In en, this message translates to:
+  /// **'Show fewer vaccines'**
+  String get recordDoseShowFewer;
+
+  /// Badge shown when the selected date is today
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get recordDoseToday;
 
   /// Age label in days for a child
   ///
@@ -659,8 +941,38 @@ abstract class AppLocalizations {
   /// No description provided for @childStatusSetupIncomplete.
   ///
   /// In en, this message translates to:
-  /// **'Setup incomplete'**
+  /// **'Awaiting setup completion'**
   String get childStatusSetupIncomplete;
+
+  /// No description provided for @homeSectionAwaitingSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Awaiting setup completion'**
+  String get homeSectionAwaitingSetup;
+
+  /// No description provided for @homeActionCompleteSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete setup'**
+  String get homeActionCompleteSetup;
+
+  /// No description provided for @childSetupIncompleteBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Past vaccine history hasn\'t been set up yet. Complete setup to get an accurate schedule.'**
+  String get childSetupIncompleteBanner;
+
+  /// No description provided for @childActionCompleteSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete setup'**
+  String get childActionCompleteSetup;
+
+  /// No description provided for @childUrgencySetupRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup required'**
+  String get childUrgencySetupRequired;
 
   /// No description provided for @retroactiveVaccineTitle.
   ///
@@ -811,6 +1123,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Overdue by {count} day(s)'**
   String vaccineScheduleOverdueBy(Object count);
+
+  /// No description provided for @onboardingErrorFutureDob.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of Birth cannot be in the future'**
+  String get onboardingErrorFutureDob;
+
+  /// No description provided for @overdueVaccinesDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed Vaccines'**
+  String get overdueVaccinesDialogTitle;
+
+  /// No description provided for @overdueVaccinesDialogMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit health facility for missed vaccines.'**
+  String get overdueVaccinesDialogMessage;
+
+  /// No description provided for @overdueVaccinesNoticeBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit health facility for missed vaccines.'**
+  String get overdueVaccinesNoticeBanner;
+
+  /// No description provided for @actionUnderstand.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get actionUnderstand;
 }
 
 class _AppLocalizationsDelegate
