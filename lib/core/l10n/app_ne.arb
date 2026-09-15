@@ -143,9 +143,9 @@
   "@childFinalScheduledVaccine": {
     "description": "Shown when only one dose remains in the schedule"
   },
-  "childVaccineRecordsAndHistory": "खोप इतिहास र अभिलेख",
+  "childVaccineRecordsAndHistory": "खोप इतिहास",
   "@childVaccineRecordsAndHistory": {
-    "description": "Title for the unified vaccine records and history quick action card"
+    "description": "Title for the unified vaccine history quick action card"
   },
   "childVaccineRecordsAndHistorySubtitle": "लिएका खोपहरू हेर्नुहोस् र सम्पादन गर्नुहोस्",
   "@childVaccineRecordsAndHistorySubtitle": {

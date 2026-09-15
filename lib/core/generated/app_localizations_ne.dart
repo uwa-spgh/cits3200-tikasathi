@@ -118,7 +118,7 @@ class AppLocalizationsNe extends AppLocalizations {
   String get childFinalScheduledVaccine => 'अन्तिम निर्धारित खोप';
 
   @override
-  String get childVaccineRecordsAndHistory => 'खोप इतिहास र अभिलेख';
+  String get childVaccineRecordsAndHistory => 'खोप इतिहास';
 
   @override
   String get childVaccineRecordsAndHistorySubtitle =>

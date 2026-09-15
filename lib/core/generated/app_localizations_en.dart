@@ -119,7 +119,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get childFinalScheduledVaccine => 'Final scheduled vaccine';
 
   @override
-  String get childVaccineRecordsAndHistory => 'Vaccine records & history';
+  String get childVaccineRecordsAndHistory => 'Vaccine history';
 
   @override
   String get childVaccineRecordsAndHistorySubtitle =>
