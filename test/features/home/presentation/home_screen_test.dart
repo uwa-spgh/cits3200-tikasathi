@@ -227,7 +227,7 @@ void main() {
       expect(find.byKey(const Key('home-health-facilitator-card')),
           findsOneWidget);
       expect(
-        find.text('आफ्नो नजिकको स्वास्थ्य सहजकर्ता बचत गर्नुहोस्'),
+        find.text('आफ्नो नजिकको स्वास्थ्य संस्था बचत गर्नुहोस्'),
         findsOneWidget,
       );
     });
@@ -295,8 +295,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Your local health facilitator'), findsOneWidget);
-      expect(find.textContaining('Facilitator Name: Maya Health Post'),
+      expect(find.text('Your local health facility'), findsOneWidget);
+      expect(find.textContaining('Facility Name: Maya Health Post'),
           findsOneWidget);
       expect(find.textContaining('Address: Main Street'), findsOneWidget);
       expect(find.textContaining('Phone Number: 555-0100'), findsOneWidget);
@@ -349,7 +349,7 @@ void main() {
 
       expect(find.byKey(const Key('home-health-facilitator-card')),
           findsOneWidget);
-      expect(find.text('Save your closest health facilitator'), findsOneWidget);
+      expect(find.text('Save your closest health facility'), findsOneWidget);
       expect(
         tester
             .getTopLeft(find.byKey(const Key('home-health-facilitator-card')))
@@ -362,7 +362,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(HealthFacilitatorScreen), findsOneWidget);
-      expect(find.text('Enter the facilitator\'s name'), findsOneWidget);
+      expect(find.text('Enter the facility\'s name'), findsOneWidget);
     });
 
     testWidgets('renders without layout overflow on narrow screens',
@@ -403,6 +403,59 @@ void main() {
           findsOneWidget);
 
       expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('renders awaitingSetup group with Complete setup button',
+        (WidgetTester tester) async {
+      HomeChildSummary? setupChildPressed;
+      final awaitingChild = HomeChildSummary(
+        name: 'Rohan',
+        childId: 'c-awaiting',
+        dateOfBirth: DateTime.now().subtract(const Duration(days: 60)),
+        avatarEmoji: '👦',
+        canRecordDose: false,
+        isAwaitingSetup: true,
+      );
+      final groups = <HomeStatusGroup>[
+        HomeStatusGroup(
+          group: HomeVaccinationGroup.awaitingSetup,
+          children: <HomeChildSummary>[awaitingChild],
+        ),
+      ];
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(),
+            ),
+            healthFacilityProvider.overrideWith(
+              (ref) => Stream.value(null),
+            ),
+          ],
+          child: MaterialApp(
+            locale: const Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: HomeScreen(
+                groups: groups,
+                onCompleteSetupPressed: (child) => setupChildPressed = child,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Awaiting setup completion'), findsOneWidget);
+      expect(find.text('Complete setup'), findsOneWidget);
+      expect(find.byKey(const Key('complete-setup-Rohan')), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('complete-setup-Rohan')));
+      await tester.pumpAndSettle();
+
+      expect(setupChildPressed?.name, 'Rohan');
     });
   });
 }

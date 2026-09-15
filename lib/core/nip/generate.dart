@@ -111,7 +111,13 @@ List<GeneratedDue> generate(
         continue;
       }
       // dose is overdue, replace all overdue doses with the catch-up schedule
-      result.addAll(_generateCatchUp(vaccine, dose, age, today));
+      result.addAll(_generateCatchUp(
+        vaccine,
+        dose,
+        age,
+        today,
+        originalDueDate: dob.add(doseAge.duration),
+      ));
       break;
     }
   });
@@ -139,10 +145,16 @@ VaccineStatus status(
 
 /// Generates the catch-up schedule for an overdue vaccine.
 ///
-/// Schedules the first overdue dose's due date to tomorrow, then schedules following due dates with the vaccine's minimum interval between each one.
+/// The first overdue dose retains its original past due date so that it is accurately
+/// recognized as overdue. Subsequent doses are scheduled from today with the vaccine's minimum interval.
 /// Doses that exceed the maximum age for the catch-up schedule are excluded.
 List<GeneratedDue> _generateCatchUp(
-    String vaccineCode, int dosesTaken, Duration age, DateTime today) {
+  String vaccineCode,
+  int dosesTaken,
+  Duration age,
+  DateTime today, {
+  DateTime? originalDueDate,
+}) {
   final List<GeneratedDue> result = [];
 
   final CatchUpRule rule;
@@ -151,21 +163,31 @@ List<GeneratedDue> _generateCatchUp(
       return rule.minAge.duration <= age && age < rule.maxAge.duration;
     });
   } on StateError catch (_) {
-    // vaccination has no catch-up schedule, return early with no due dates.
+    // vaccination has no catch-up schedule, retain overdue dose if available
+    if (originalDueDate != null) {
+      result.add((
+        vaccineCode: vaccineCode,
+        doseNumber: dosesTaken + 1,
+        dueDate: originalDueDate,
+      ));
+    }
     return result;
   }
 
   for (int i = dosesTaken; i < rule.doses; i++) {
     // For now, only vaccinations under the maxAge are added to results, which may result in incomplete vaccination schedules
-    if (age + rule.minInterval.duration * i + const Duration(days: 1) >
+    if (age + rule.minInterval.duration * (i - dosesTaken) >
         rule.maxAge.duration) {
       break;
     }
+    final DateTime dueDate = (i == dosesTaken && originalDueDate != null)
+        ? originalDueDate
+        : today.add(rule.minInterval.duration * (i - dosesTaken));
+
     result.add((
       vaccineCode: vaccineCode,
       doseNumber: i + 1,
-      dueDate: today.add(rule.minInterval.duration * (i - dosesTaken) +
-          const Duration(days: 1))
+      dueDate: dueDate,
     ));
   }
   return result;

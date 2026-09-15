@@ -6,14 +6,36 @@ import 'package:tikasathi/features/onboarding/presentation/caregiver_screen.dart
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
 
-class LanguageScreen extends ConsumerWidget {
+class LanguageScreen extends ConsumerStatefulWidget {
   const LanguageScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LanguageScreen> createState() => _LanguageScreenState();
+}
+
+class _LanguageScreenState extends ConsumerState<LanguageScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final onboardingLang =
+          ref.read(onboardingControllerProvider).selectedLanguage;
+      final currentLang = ref.read(languageControllerProvider).value;
+      if (currentLang != onboardingLang) {
+        ref
+            .read(languageControllerProvider.notifier)
+            .setLanguage(onboardingLang);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
     final state = ref.watch(onboardingControllerProvider);
     final controller = ref.read(onboardingControllerProvider.notifier);
+    final currentLanguage =
+        ref.watch(languageControllerProvider).value ?? state.selectedLanguage;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F9FC),
@@ -62,7 +84,7 @@ class LanguageScreen extends ConsumerWidget {
               _LanguageButton(
                 title: localizations.settingsNepali,
                 flag: '🇳🇵',
-                isSelected: state.selectedLanguage == AppLanguage.nepali,
+                isSelected: currentLanguage == AppLanguage.nepali,
                 onTap: () {
                   controller.updateLanguage(AppLanguage.nepali);
                   ref
@@ -74,7 +96,7 @@ class LanguageScreen extends ConsumerWidget {
               _LanguageButton(
                 title: localizations.settingsEnglish,
                 flag: '🇬🇧',
-                isSelected: state.selectedLanguage == AppLanguage.english,
+                isSelected: currentLanguage == AppLanguage.english,
                 onTap: () {
                   controller.updateLanguage(AppLanguage.english);
                   ref

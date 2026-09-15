@@ -161,58 +161,93 @@ class _RecordDoseBody extends StatelessWidget {
     return Column(
       children: <Widget>[
         Expanded(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+          child: Stack(
             children: <Widget>[
-              _Header(localizations: localizations),
-              const SizedBox(height: 14),
-              Text(
-                localizations.recordDoseSubtitle(recordDoseState.child.name),
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(color: _slate),
-              ),
-              const SizedBox(height: 24),
-              _StepHeading(
-                stepNumber: 1,
-                label: localizations.recordDoseStepDate,
-              ),
-              const SizedBox(height: 10),
-              _DateCard(
-                date: recordDoseState.administeredDate,
-                isToday: recordDoseState.isToday(
-                  recordDoseState.administeredDate,
+              ListView(
+                padding: EdgeInsets.fromLTRB(
+                  16,
+                  8,
+                  16,
+                  recordDoseState.upcomingDues.isNotEmpty ? 76 : 24,
                 ),
-                localizations: localizations,
-                onChangeDate: onChangeDate,
+                children: <Widget>[
+                  _Header(localizations: localizations),
+                  const SizedBox(height: 14),
+                  Text(
+                    localizations
+                        .recordDoseSubtitle(recordDoseState.child.name),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(color: _slate),
+                  ),
+                  const SizedBox(height: 24),
+                  _StepHeading(
+                    stepNumber: 1,
+                    label: localizations.recordDoseStepDate,
+                  ),
+                  const SizedBox(height: 10),
+                  _DateCard(
+                    date: recordDoseState.administeredDate,
+                    isToday: recordDoseState.isToday(
+                      recordDoseState.administeredDate,
+                    ),
+                    localizations: localizations,
+                    onChangeDate: onChangeDate,
+                  ),
+                  const SizedBox(height: 24),
+                  _StepHeading(
+                    stepNumber: 2,
+                    label: localizations.recordDoseStepSelect,
+                  ),
+                  const SizedBox(height: 10),
+                  if (visibleDues.isEmpty)
+                    _EmptyState(
+                      childName: recordDoseState.child.name,
+                      localizations: localizations,
+                    )
+                  else
+                    _DueList(
+                      dues: visibleDues,
+                      recordDoseState: recordDoseState,
+                      localizations: localizations,
+                      onToggleDose: onToggleDose,
+                    ),
+                  if (!recordDoseState.showAllUpcoming &&
+                      recordDoseState.upcomingDues.isNotEmpty) ...<Widget>[
+                    const SizedBox(height: 14),
+                    _ShowAllButton(
+                      showAll: false,
+                      localizations: localizations,
+                      onChanged: onToggleShowAll,
+                    ),
+                  ],
+                ],
               ),
-              const SizedBox(height: 24),
-              _StepHeading(
-                stepNumber: 2,
-                label: localizations.recordDoseStepSelect,
-              ),
-              const SizedBox(height: 10),
-              if (visibleDues.isEmpty)
-                _EmptyState(
-                  childName: recordDoseState.child.name,
-                  localizations: localizations,
-                )
-              else
-                _DueList(
-                  dues: visibleDues,
-                  recordDoseState: recordDoseState,
-                  localizations: localizations,
-                  onToggleDose: onToggleDose,
+              if (recordDoseState.showAllUpcoming &&
+                  recordDoseState.upcomingDues.isNotEmpty)
+                Positioned(
+                  left: 16,
+                  right: 16,
+                  bottom: 10,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: const <BoxShadow>[
+                        BoxShadow(
+                          color: Color(0x1F000000),
+                          blurRadius: 10,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: _ShowAllButton(
+                      showAll: true,
+                      localizations: localizations,
+                      onChanged: onToggleShowAll,
+                    ),
+                  ),
                 ),
-              if (recordDoseState.upcomingDues.isNotEmpty) ...<Widget>[
-                const SizedBox(height: 4),
-                _ShowAllButton(
-                  showAll: recordDoseState.showAllUpcoming,
-                  localizations: localizations,
-                  onChanged: onToggleShowAll,
-                ),
-              ],
             ],
           ),
         ),
@@ -810,8 +845,8 @@ String _formatLongDate(BuildContext context, DateTime date) {
       .format(date);
 }
 
-/// Short form date, matching the child page's due-date pills.
+/// Short form date with year, matching the requirement to show the year doses are due.
 String _formatShortDate(BuildContext context, DateTime date) {
-  return DateFormat('d MMM', Localizations.localeOf(context).languageCode)
+  return DateFormat('d MMM y', Localizations.localeOf(context).languageCode)
       .format(date);
 }
