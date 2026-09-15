@@ -259,5 +259,68 @@ void main() {
 
       expect(find.text('Child profile not found.'), findsOneWidget);
     });
+
+    testWidgets(
+        'shows awaiting setup completion state with info banner and Complete setup button when isSetupComplete is false',
+        (WidgetTester tester) async {
+      const childId = 'child-incomplete';
+      final now = DateTime.now();
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(language: AppLanguage.english),
+            ),
+            childProfileProvider(childId).overrideWith(
+              (ref) => Future.value(
+                ChildProfileDetails(
+                  child: ChildProfile(
+                    id: childId,
+                    name: 'Nima',
+                    dateOfBirth: now.subtract(const Duration(days: 90)),
+                    sex: 'male',
+                    isSetupComplete: false,
+                  ),
+                  dueVaccines: <VaccinationDue>[
+                    VaccinationDue(
+                      id: 'due-1',
+                      childId: childId,
+                      vaccineCode: 'BCG',
+                      doseNumber: 1,
+                      dueDate: now.subtract(const Duration(days: 90)),
+                    ),
+                  ],
+                  records: const <VaccinationRecord>[],
+                  now: now,
+                ),
+              ),
+            ),
+          ],
+          child: const MaterialApp(
+            locale: Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: ChildProfileScreen(childId: childId),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Awaiting setup completion'), findsOneWidget);
+      expect(
+        find.text(
+          'Past vaccine history hasn\'t been set up yet. Complete setup to get an accurate schedule.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Complete setup'), findsOneWidget);
+      expect(find.text('Setup required'), findsOneWidget);
+      expect(
+        find.text('Visit health facility for missed vaccines.'),
+        findsNothing,
+      );
+    });
   });
 }

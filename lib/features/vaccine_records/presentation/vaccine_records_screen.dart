@@ -24,11 +24,13 @@ class VaccineRecordsScreen extends ConsumerStatefulWidget {
   const VaccineRecordsScreen({
     required this.childId,
     this.isOnboardingFlow = false,
+    this.isRegistrationFlow,
     super.key,
   });
 
   final String childId;
   final bool isOnboardingFlow;
+  final bool? isRegistrationFlow;
 
   @override
   ConsumerState<VaccineRecordsScreen> createState() =>
@@ -40,6 +42,9 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
   final Map<String, DateTime> _checkedDoses = <String, DateTime>{};
   bool _isSaving = false;
   bool _initialized = false;
+
+  bool get _isRegistration =>
+      widget.isRegistrationFlow ?? widget.isOnboardingFlow;
 
   void _toggleShowAll(bool value) {
     setState(() {
@@ -125,9 +130,12 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
             );
           }
         }
-        await db.childProfilesDao.setSetupComplete(widget.childId, true);
-        await db.vaccinationDuesDao.recalculateDuesForChild(widget.childId);
       }
+
+      if (markComplete) {
+        await db.childProfilesDao.setSetupComplete(widget.childId, true);
+      }
+      await db.vaccinationDuesDao.recalculateDuesForChild(widget.childId);
 
       ref.invalidate(homeStatusGroupsProvider);
       ref.invalidate(childProfileProvider(widget.childId));
@@ -144,7 +152,7 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
 
       if (mounted) {
         setState(() => _isSaving = false);
-        if (hasOverdue) {
+        if (markComplete && hasOverdue) {
           await showDialog<void>(
             context: context,
             barrierDismissible: false,
@@ -188,7 +196,7 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
               );
             },
           );
-        } else {
+        } else if (markComplete) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(localizations.vaccineHistorySavedSuccess),
@@ -307,72 +315,96 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
             return Column(
               children: <Widget>[
                 Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                  child: Stack(
                     children: <Widget>[
-                      if (widget.isOnboardingFlow) ...<Widget>[
-                        _OnboardingStepsHeader(localizations: localizations),
-                        const SizedBox(height: 12),
-                      ],
-                      Text(
-                        localizations.retroactiveVaccineSubtitle(child.name),
-                        style: const TextStyle(
-                          fontSize: 15,
-                          color: Color(0xFF64748B),
-                        ),
-                      ),
-                      const SizedBox(height: 18),
-                      _FilterToggleCard(
-                        showAll: _showAll,
-                        onToggle: _toggleShowAll,
-                        localizations: localizations,
-                      ),
-                      const SizedBox(height: 18),
-                      if (items.isEmpty)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 40),
-                          child: Center(
-                            child: Text(
-                              localizations.vaccineRecordsEmpty,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Color(0xFF64748B),
-                              ),
+                      ListView(
+                        padding: const EdgeInsets.fromLTRB(16, 70, 16, 24),
+                        children: <Widget>[
+                          if (widget.isOnboardingFlow) ...<Widget>[
+                            _OnboardingStepsHeader(
+                                localizations: localizations),
+                            const SizedBox(height: 12),
+                          ],
+                          Text(
+                            localizations
+                                .retroactiveVaccineSubtitle(child.name),
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: Color(0xFF64748B),
                             ),
                           ),
-                        )
-                      else
-                        ...items.map(
-                          (_DoseItemData item) => _VaccineDoseRow(
-                            item: item,
+                          const SizedBox(height: 14),
+                          if (items.isEmpty)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 40),
+                              child: Center(
+                                child: Text(
+                                  localizations.vaccineRecordsEmpty,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Color(0xFF64748B),
+                                  ),
+                                ),
+                              ),
+                            )
+                          else
+                            ...items.map(
+                              (_DoseItemData item) => _VaccineDoseRow(
+                                item: item,
+                                localizations: localizations,
+                                onToggle: (bool isChecked) {
+                                  _toggleDose(
+                                    item.vaccineCode,
+                                    item.doseNumber,
+                                    isChecked,
+                                    item.fallbackDate,
+                                  );
+                                },
+                                onPickDate: () {
+                                  _selectDate(
+                                    context,
+                                    item.keyName,
+                                    item.administeredDate ?? item.fallbackDate,
+                                    child.dateOfBirth,
+                                  );
+                                },
+                              ),
+                            ),
+                        ],
+                      ),
+                      Positioned(
+                        top: 10,
+                        left: 16,
+                        right: 16,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            boxShadow: const <BoxShadow>[
+                              BoxShadow(
+                                color: Color(0x1F000000),
+                                blurRadius: 10,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: _FilterToggleCard(
+                            showAll: _showAll,
+                            onToggle: _toggleShowAll,
                             localizations: localizations,
-                            onToggle: (bool isChecked) {
-                              _toggleDose(
-                                item.vaccineCode,
-                                item.doseNumber,
-                                isChecked,
-                                item.fallbackDate,
-                              );
-                            },
-                            onPickDate: () {
-                              _selectDate(
-                                context,
-                                item.keyName,
-                                item.administeredDate ?? item.fallbackDate,
-                                child.dateOfBirth,
-                              );
-                            },
                           ),
                         ),
+                      ),
                     ],
                   ),
                 ),
                 _BottomActionBar(
                   isSaving: _isSaving,
-                  isOnboarding: widget.isOnboardingFlow,
+                  isRegistration: _isRegistration,
                   localizations: localizations,
                   onSave: () => _save(true),
-                  onReturn: () => Navigator.pop(context),
+                  onSkipOrReturn: _isRegistration
+                      ? () => _save(false)
+                      : () => Navigator.pop(context),
                 ),
               ],
             );
@@ -630,17 +662,17 @@ class _VaccineDoseRow extends StatelessWidget {
 class _BottomActionBar extends StatelessWidget {
   const _BottomActionBar({
     required this.isSaving,
-    required this.isOnboarding,
+    required this.isRegistration,
     required this.localizations,
     required this.onSave,
-    required this.onReturn,
+    required this.onSkipOrReturn,
   });
 
   final bool isSaving;
-  final bool isOnboarding;
+  final bool isRegistration;
   final AppLocalizations localizations;
   final VoidCallback onSave;
-  final VoidCallback onReturn;
+  final VoidCallback onSkipOrReturn;
 
   @override
   Widget build(BuildContext context) {
@@ -680,7 +712,7 @@ class _BottomActionBar extends StatelessWidget {
                     ),
                   )
                 : Text(
-                    isOnboarding
+                    isRegistration
                         ? localizations.retroactiveVaccineFinish
                         : localizations.vaccineHistorySaveChanges,
                     style: const TextStyle(
@@ -691,9 +723,9 @@ class _BottomActionBar extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           TextButton(
-            onPressed: isSaving ? null : onReturn,
+            onPressed: isSaving ? null : onSkipOrReturn,
             child: Text(
-              isOnboarding
+              isRegistration
                   ? localizations.retroactiveVaccineSkip
                   : localizations.vaccineRecordsReturn,
               style: const TextStyle(

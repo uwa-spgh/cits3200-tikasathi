@@ -87,12 +87,12 @@ Future<ChildProfileDetails> childProfile(
     throw StateError('Child profile not found');
   }
 
-  final List<VaccinationDue> dueVaccines = await database.vaccinationDuesDao
-      .watchVaccinationDuesForChild(childId)
-      .first;
-  final List<VaccinationRecord> records = await database.vaccinationRecordsDao
-      .watchVaccinationRecordsForChild(childId)
-      .first;
+  final List<VaccinationDue> dueVaccines =
+      await database.vaccinationDuesDao.getVaccinationDuesForChild(childId);
+  final List<VaccinationRecord> records =
+      await (database.select(database.vaccinationRecords)
+            ..where((row) => row.childId.equals(childId)))
+          .get();
 
   return ChildProfileDetails(
     child: profile,

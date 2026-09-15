@@ -104,6 +104,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
               builder: (context) => RetroactiveVaccineScreen(
                 childId: childId,
                 isOnboardingFlow: false,
+                isRegistrationFlow: true,
               ),
             ),
           );

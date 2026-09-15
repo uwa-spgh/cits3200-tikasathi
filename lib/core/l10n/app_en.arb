@@ -432,7 +432,12 @@
   "homeEmptyStateSubtitle": "Add your first child to see upcoming vaccines here.",
   "learnPlaceholderTitle": "Learn",
   "learnPlaceholderTitleNp": "सिक्नुहोस्",
-  "childStatusSetupIncomplete": "Setup incomplete",
+  "childStatusSetupIncomplete": "Awaiting setup completion",
+  "homeSectionAwaitingSetup": "Awaiting setup completion",
+  "homeActionCompleteSetup": "Complete setup",
+  "childSetupIncompleteBanner": "Past vaccine history hasn't been set up yet. Complete setup to get an accurate schedule.",
+  "childActionCompleteSetup": "Complete setup",
+  "childUrgencySetupRequired": "Setup required",
   "retroactiveVaccineTitle": "Vaccine History",
   "retroactiveVaccineSubtitle": "Please fill out the vaccines that {childName} has already had.",
   "@retroactiveVaccineSubtitle": {
@@ -461,8 +466,8 @@
   "vaccineRecordsEmpty": "There are no recorded vaccinations.",
   "dose": "Dose",
   "onboardingErrorFutureDob": "Date of Birth cannot be in the future",
-  "overdueVaccinesDialogTitle": "Vaccines Overdue",
-  "overdueVaccinesDialogMessage": "Your child has missed scheduled vaccinations. Please visit your nearest health facility to get information and catch up on missed doses.",
-  "overdueVaccinesNoticeBanner": "Please visit your nearest health facility to consult a health worker about catch-up vaccinations.",
-  "actionUnderstand": "I understand"
+  "overdueVaccinesDialogTitle": "Missed Vaccines",
+  "overdueVaccinesDialogMessage": "Visit health facility for missed vaccines.",
+  "overdueVaccinesNoticeBanner": "Visit health facility for missed vaccines.",
+  "actionUnderstand": "OK"
 }

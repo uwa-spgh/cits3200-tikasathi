@@ -941,8 +941,38 @@ abstract class AppLocalizations {
   /// No description provided for @childStatusSetupIncomplete.
   ///
   /// In en, this message translates to:
-  /// **'Setup incomplete'**
+  /// **'Awaiting setup completion'**
   String get childStatusSetupIncomplete;
+
+  /// No description provided for @homeSectionAwaitingSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Awaiting setup completion'**
+  String get homeSectionAwaitingSetup;
+
+  /// No description provided for @homeActionCompleteSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete setup'**
+  String get homeActionCompleteSetup;
+
+  /// No description provided for @childSetupIncompleteBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Past vaccine history hasn\'t been set up yet. Complete setup to get an accurate schedule.'**
+  String get childSetupIncompleteBanner;
+
+  /// No description provided for @childActionCompleteSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete setup'**
+  String get childActionCompleteSetup;
+
+  /// No description provided for @childUrgencySetupRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup required'**
+  String get childUrgencySetupRequired;
 
   /// No description provided for @retroactiveVaccineTitle.
   ///
@@ -1031,25 +1061,25 @@ abstract class AppLocalizations {
   /// No description provided for @overdueVaccinesDialogTitle.
   ///
   /// In en, this message translates to:
-  /// **'Vaccines Overdue'**
+  /// **'Missed Vaccines'**
   String get overdueVaccinesDialogTitle;
 
   /// No description provided for @overdueVaccinesDialogMessage.
   ///
   /// In en, this message translates to:
-  /// **'Your child has missed scheduled vaccinations. Please visit your nearest health facility to get information and catch up on missed doses.'**
+  /// **'Visit health facility for missed vaccines.'**
   String get overdueVaccinesDialogMessage;
 
   /// No description provided for @overdueVaccinesNoticeBanner.
   ///
   /// In en, this message translates to:
-  /// **'Please visit your nearest health facility to consult a health worker about catch-up vaccinations.'**
+  /// **'Visit health facility for missed vaccines.'**
   String get overdueVaccinesNoticeBanner;
 
   /// No description provided for @actionUnderstand.
   ///
   /// In en, this message translates to:
-  /// **'I understand'**
+  /// **'OK'**
   String get actionUnderstand;
 }
 

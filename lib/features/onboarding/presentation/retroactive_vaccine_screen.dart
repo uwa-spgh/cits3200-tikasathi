@@ -9,16 +9,19 @@ class RetroactiveVaccineScreen extends StatelessWidget {
     super.key,
     required this.childId,
     required this.isOnboardingFlow,
+    this.isRegistrationFlow = true,
   });
 
   final String childId;
   final bool isOnboardingFlow;
+  final bool isRegistrationFlow;
 
   @override
   Widget build(BuildContext context) {
     return VaccineRecordsScreen(
       childId: childId,
       isOnboardingFlow: isOnboardingFlow,
+      isRegistrationFlow: isRegistrationFlow,
     );
   }
 }

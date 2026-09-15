@@ -16,6 +16,7 @@ class HomeRepository {
     }
 
     final Map<HomeVaccinationGroup, List<HomeChildSummary>> groupedChildren = {
+      HomeVaccinationGroup.awaitingSetup: <HomeChildSummary>[],
       HomeVaccinationGroup.dueToday: <HomeChildSummary>[],
       HomeVaccinationGroup.dueSoon: <HomeChildSummary>[],
       HomeVaccinationGroup.upToDate: <HomeChildSummary>[],
@@ -28,7 +29,13 @@ class HomeRepository {
 
       final List<VaccinationDue> outstandingDues = dueRows;
 
-      final status = _describeStatus(outstandingDues, currentTime);
+      final HomeVaccinationGroup status;
+      if (!profile.isSetupComplete) {
+        status = HomeVaccinationGroup.awaitingSetup;
+      } else {
+        status = _describeStatus(outstandingDues, currentTime);
+      }
+
       final child = HomeChildSummary(
         name: profile.name,
         childId: profile.id,
@@ -39,7 +46,9 @@ class HomeRepository {
           sex: childSexFromString(profile.sex),
           dateOfBirth: profile.dateOfBirth,
         ),
-        canRecordDose: status != HomeVaccinationGroup.upToDate,
+        canRecordDose: status != HomeVaccinationGroup.upToDate &&
+            status != HomeVaccinationGroup.awaitingSetup,
+        isAwaitingSetup: status == HomeVaccinationGroup.awaitingSetup,
       );
 
       groupedChildren[status]!.add(child);
@@ -47,6 +56,7 @@ class HomeRepository {
 
     final statusGroups = <HomeStatusGroup>[];
     for (final group in <HomeVaccinationGroup>[
+      HomeVaccinationGroup.awaitingSetup,
       HomeVaccinationGroup.dueToday,
       HomeVaccinationGroup.dueSoon,
       HomeVaccinationGroup.upToDate,

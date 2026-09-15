@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tikasathi/core/database/app_database.dart';
@@ -28,6 +29,7 @@ void main() {
           name: 'Test',
           dateOfBirth: DateTime(2025, 1, 1),
           sex: 'female',
+          isSetupComplete: const Value(true),
         ),
       );
 
@@ -103,6 +105,35 @@ void main() {
       expect(groups.single.children.single.avatarEmoji, '🧒');
     });
 
+    test('isSetupComplete == false => awaitingSetup even with overdue dues',
+        () async {
+      await database.childProfilesDao.insertChildProfile(
+        ChildProfilesCompanion.insert(
+          id: 'c-awaiting',
+          name: 'Awaiting',
+          dateOfBirth: DateTime(2025, 1, 1),
+          sex: 'female',
+          isSetupComplete: const Value(false),
+        ),
+      );
+
+      await database.vaccinationDuesDao.insertVaccinationDue(
+        VaccinationDuesCompanion.insert(
+          id: 'd0',
+          childId: 'c-awaiting',
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+          dueDate: DateTime(2026, 8, 20),
+        ),
+      );
+
+      final groups = await repository.loadHomeStatusGroups(now: now);
+      expect(groups.length, 1);
+      expect(groups.single.group, HomeVaccinationGroup.awaitingSetup);
+      expect(groups.single.children.single.isAwaitingSetup, isTrue);
+      expect(groups.single.children.single.canRecordDose, isFalse);
+    });
+
     test('overdue due date is classified as dueToday (not upToDate)', () async {
       await database.childProfilesDao.insertChildProfile(
         ChildProfilesCompanion.insert(
@@ -110,6 +141,7 @@ void main() {
           name: 'Test',
           dateOfBirth: DateTime(2025, 1, 1),
           sex: 'female',
+          isSetupComplete: const Value(true),
         ),
       );
 
@@ -135,6 +167,7 @@ void main() {
           name: 'Test',
           dateOfBirth: DateTime(2025, 1, 1),
           sex: 'female',
+          isSetupComplete: const Value(true),
         ),
       );
 
@@ -160,6 +193,7 @@ void main() {
           name: 'Test',
           dateOfBirth: DateTime(2025, 1, 1),
           sex: 'female',
+          isSetupComplete: const Value(true),
         ),
       );
 
@@ -185,6 +219,7 @@ void main() {
           name: 'Test',
           dateOfBirth: DateTime(2025, 1, 1),
           sex: 'female',
+          isSetupComplete: const Value(true),
         ),
       );
 

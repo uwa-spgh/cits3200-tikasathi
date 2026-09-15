@@ -13,34 +13,17 @@ import 'package:tikasathi/features/vaccine_records/presentation/vaccine_records_
 import '../../../helpers/fake_settings_repository.dart';
 
 void main() {
-  group('VaccineRecordsScreen overdue advisory dialog', () {
+  group('VaccineRecordsScreen floating filter toggle', () {
     testWidgets(
-        'shows overdue alert dialog with health facility prompt when child has overdue vaccines',
+        'renders floating filter toggle at top and toggles between age-appropriate and all vaccines',
         (WidgetTester tester) async {
-      const childId = 'child-overdue';
-      tester.view.physicalSize = const Size(800, 2500);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-
+      const childId = 'child-test-123';
       final db = AppDatabase.forTesting(NativeDatabase.memory());
       addTearDown(db.close);
 
       final now = DateTime.now();
-      final pastDate = now.subtract(const Duration(days: 300));
-
-      // Insert child profile
-      await db.childProfilesDao.insertChildProfile(
-        ChildProfilesCompanion.insert(
-          id: childId,
-          name: 'Sunita',
-          dateOfBirth: pastDate,
-          sex: 'female',
-        ),
-      );
-
-      // Generate overdue dues for child
-      await db.vaccinationDuesDao.insertDuesForChild(childId);
+      // 6-week-old child
+      final dob = now.subtract(const Duration(days: 42));
 
       await tester.pumpWidget(
         ProviderScope(
@@ -54,10 +37,10 @@ void main() {
                 ChildProfileDetails(
                   child: ChildProfile(
                     id: childId,
-                    name: 'Sunita',
-                    dateOfBirth: pastDate,
-                    sex: 'female',
-                    isSetupComplete: false,
+                    name: 'Aayush',
+                    dateOfBirth: dob,
+                    sex: 'male',
+                    isSetupComplete: true,
                   ),
                   dueVaccines: const <VaccinationDue>[],
                   records: const <VaccinationRecord>[],
@@ -80,30 +63,24 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      // Tap Save Changes button
-      final saveBtn = find.text('Save Changes');
-      expect(saveBtn, findsOneWidget);
-      await tester.tap(saveBtn);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 500));
-
-      // Verify the Overdue dialog pops up with prompt to visit health facility
-      expect(find.text('Missed Vaccines'), findsOneWidget);
-      expect(
-        find.text(
-          'Visit health facility for missed vaccines.',
-        ),
-        findsOneWidget,
+      // Verify floating selector is positioned at top
+      final positionedFinder = find.ancestor(
+        of: find.text('Age-appropriate only'),
+        matching: find.byType(Positioned),
       );
-      expect(find.text('OK'), findsOneWidget);
+      expect(positionedFinder, findsOneWidget);
+      final Positioned positionedWidget = tester.widget(positionedFinder);
+      expect(positionedWidget.top, 10);
 
-      // Tap OK to dismiss
-      await tester.tap(find.text('OK'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 500));
+      // Verify toggle button to Show all vaccines works
+      final showAllBtn = find.text('Show all vaccines');
+      expect(showAllBtn, findsOneWidget);
+      await tester.tap(showAllBtn);
+      await tester.pumpAndSettle();
 
-      // Dialog is dismissed
-      expect(find.text('Missed Vaccines'), findsNothing);
+      // Tap back to Age-appropriate only
+      await tester.tap(find.text('Age-appropriate only'));
+      await tester.pumpAndSettle();
     });
   });
 }

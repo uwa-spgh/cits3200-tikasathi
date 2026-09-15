@@ -404,5 +404,58 @@ void main() {
 
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('renders awaitingSetup group with Complete setup button',
+        (WidgetTester tester) async {
+      HomeChildSummary? setupChildPressed;
+      final awaitingChild = HomeChildSummary(
+        name: 'Rohan',
+        childId: 'c-awaiting',
+        dateOfBirth: DateTime.now().subtract(const Duration(days: 60)),
+        avatarEmoji: '👦',
+        canRecordDose: false,
+        isAwaitingSetup: true,
+      );
+      final groups = <HomeStatusGroup>[
+        HomeStatusGroup(
+          group: HomeVaccinationGroup.awaitingSetup,
+          children: <HomeChildSummary>[awaitingChild],
+        ),
+      ];
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(),
+            ),
+            healthFacilityProvider.overrideWith(
+              (ref) => Stream.value(null),
+            ),
+          ],
+          child: MaterialApp(
+            locale: const Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: HomeScreen(
+                groups: groups,
+                onCompleteSetupPressed: (child) => setupChildPressed = child,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Awaiting setup completion'), findsOneWidget);
+      expect(find.text('Complete setup'), findsOneWidget);
+      expect(find.byKey(const Key('complete-setup-Rohan')), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('complete-setup-Rohan')));
+      await tester.pumpAndSettle();
+
+      expect(setupChildPressed?.name, 'Rohan');
+    });
   });
 }

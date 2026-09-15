@@ -519,7 +519,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get learnPlaceholderTitleNp => 'सिक्नुहोस्';
 
   @override
-  String get childStatusSetupIncomplete => 'Setup incomplete';
+  String get childStatusSetupIncomplete => 'Awaiting setup completion';
+
+  @override
+  String get homeSectionAwaitingSetup => 'Awaiting setup completion';
+
+  @override
+  String get homeActionCompleteSetup => 'Complete setup';
+
+  @override
+  String get childSetupIncompleteBanner =>
+      'Past vaccine history hasn\'t been set up yet. Complete setup to get an accurate schedule.';
+
+  @override
+  String get childActionCompleteSetup => 'Complete setup';
+
+  @override
+  String get childUrgencySetupRequired => 'Setup required';
 
   @override
   String get retroactiveVaccineTitle => 'Vaccine History';
@@ -570,16 +586,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Date of Birth cannot be in the future';
 
   @override
-  String get overdueVaccinesDialogTitle => 'Vaccines Overdue';
+  String get overdueVaccinesDialogTitle => 'Missed Vaccines';
 
   @override
   String get overdueVaccinesDialogMessage =>
-      'Your child has missed scheduled vaccinations. Please visit your nearest health facility to get information and catch up on missed doses.';
+      'Visit health facility for missed vaccines.';
 
   @override
   String get overdueVaccinesNoticeBanner =>
-      'Please visit your nearest health facility to consult a health worker about catch-up vaccinations.';
+      'Visit health facility for missed vaccines.';
 
   @override
-  String get actionUnderstand => 'I understand';
+  String get actionUnderstand => 'OK';
 }

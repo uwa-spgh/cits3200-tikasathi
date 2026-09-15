@@ -113,6 +113,17 @@ class _ChildContent extends StatelessWidget {
               followingDue: followingDue,
               localizations: localizations,
               languageCode: languageCode,
+              onCompleteSetup: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => RetroactiveVaccineScreen(
+                      childId: details.child.id,
+                      isOnboardingFlow: false,
+                      isRegistrationFlow: true,
+                    ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 24),
             _FeatureCard(
@@ -161,6 +172,7 @@ class _ChildContent extends StatelessWidget {
                     builder: (context) => RetroactiveVaccineScreen(
                       childId: details.child.id,
                       isOnboardingFlow: false,
+                      isRegistrationFlow: !details.isSetupComplete,
                     ),
                   ),
                 );
@@ -275,6 +287,7 @@ class _VaccineStatusAndTimelineCard extends StatelessWidget {
     required this.followingDue,
     required this.localizations,
     required this.languageCode,
+    required this.onCompleteSetup,
   });
 
   final ChildStatus status;
@@ -282,6 +295,7 @@ class _VaccineStatusAndTimelineCard extends StatelessWidget {
   final VaccinationDue? followingDue;
   final AppLocalizations localizations;
   final String languageCode;
+  final VoidCallback onCompleteSetup;
 
   @override
   Widget build(BuildContext context) {
@@ -335,6 +349,63 @@ class _VaccineStatusAndTimelineCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                if (status.key == 'setupIncomplete') ...<Widget>[
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF1F5F9),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: const Color(0xFFCBD5E1)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            const Icon(
+                              Icons.info_outline_rounded,
+                              color: Color(0xFF475569),
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                localizations.childSetupIncompleteBanner,
+                                style: const TextStyle(
+                                  color: Color(0xFF334155),
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.3,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: double.infinity,
+                          child: FilledButton.icon(
+                            style: FilledButton.styleFrom(
+                              backgroundColor: const Color(0xFF0E64C5),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            onPressed: onCompleteSetup,
+                            icon: const Icon(
+                              Icons.assignment_turned_in_outlined,
+                              size: 18,
+                            ),
+                            label: Text(localizations.childActionCompleteSetup),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                ],
                 if (nextDue != null) ...<Widget>[
                   Text(
                     localizations.childNextVaccine,
@@ -383,10 +454,11 @@ class _VaccineStatusAndTimelineCard extends StatelessWidget {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                nextDue!.dueDate.isBefore(DateTime(
-                                        DateTime.now().year,
-                                        DateTime.now().month,
-                                        DateTime.now().day))
+                                (nextDue!.dueDate.isBefore(DateTime(
+                                            DateTime.now().year,
+                                            DateTime.now().month,
+                                            DateTime.now().day)) &&
+                                        status.key != 'setupIncomplete')
                                     ? localizations.recordDoseOverdueLabel(
                                         dateFormat.format(nextDue!.dueDate))
                                     : dateFormat.format(nextDue!.dueDate),
@@ -394,10 +466,12 @@ class _VaccineStatusAndTimelineCard extends StatelessWidget {
                                     .textTheme
                                     .bodyMedium
                                     ?.copyWith(
-                                      color: nextDue!.dueDate.isBefore(DateTime(
-                                              DateTime.now().year,
-                                              DateTime.now().month,
-                                              DateTime.now().day))
+                                      color: (status.key != 'setupIncomplete' &&
+                                              nextDue!.dueDate.isBefore(
+                                                  DateTime(
+                                                      DateTime.now().year,
+                                                      DateTime.now().month,
+                                                      DateTime.now().day)))
                                           ? const Color(0xFFB91C1C)
                                           : const Color(0xFF64748B),
                                       fontWeight: FontWeight.w600,
@@ -409,6 +483,7 @@ class _VaccineStatusAndTimelineCard extends StatelessWidget {
                         _UrgencyPill(
                           dueDate: nextDue!.dueDate,
                           localizations: localizations,
+                          isSetupIncomplete: status.key == 'setupIncomplete',
                         ),
                       ],
                     ),
@@ -570,13 +645,32 @@ class _UrgencyPill extends StatelessWidget {
   const _UrgencyPill({
     required this.dueDate,
     required this.localizations,
+    this.isSetupIncomplete = false,
   });
 
   final DateTime dueDate;
   final AppLocalizations localizations;
+  final bool isSetupIncomplete;
 
   @override
   Widget build(BuildContext context) {
+    if (isSetupIncomplete) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF1F5F9),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Text(
+          localizations.childUrgencySetupRequired,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: const Color(0xFF475569),
+              ),
+        ),
+      );
+    }
+
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final due = DateTime(dueDate.year, dueDate.month, dueDate.day);
@@ -746,11 +840,11 @@ class ChildStatus {
           isDue: false,
           isNeutral: true,
           key: 'setupIncomplete',
-          backgroundColor: const Color(0xFFF1F5F9),
-          borderColor: const Color(0xFF94A3B8),
-          headerColor: const Color(0xFF64748B),
-          iconColor: const Color(0xFF475569),
-          icon: Icons.help_outline_rounded,
+          backgroundColor: const Color(0xFFF8FAFC),
+          borderColor: const Color(0xFFCBD5E1),
+          headerColor: const Color(0xFF475569),
+          iconColor: const Color(0xFF334155),
+          icon: Icons.pending_actions_rounded,
         );
 
   const ChildStatus.allCompleted()

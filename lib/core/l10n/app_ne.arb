@@ -315,7 +315,12 @@
   "homeEmptyStateSubtitle": "यहाँ आगामी खोपहरू हेर्न आफ्नो पहिलो बच्चा थप्नुहोस्।",
   "learnPlaceholderTitle": "सिक्नुहोस्",
   "learnPlaceholderTitleNp": "सिक्नुहोस्",
-  "childStatusSetupIncomplete": "सेटअप अधुरो",
+  "childStatusSetupIncomplete": "सेटअप पूरा हुन बाँकी",
+  "homeSectionAwaitingSetup": "सेटअप पूरा हुन बाँकी",
+  "homeActionCompleteSetup": "सेटअप पूरा गर्नुहोस्",
+  "childSetupIncompleteBanner": "पहिले लगाइएका खोपहरूको विवरण भरिएको छैन। सही तालिका हेर्न सेटअप पूरा गर्नुहोस्।",
+  "childActionCompleteSetup": "सेटअप पूरा गर्नुहोस्",
+  "childUrgencySetupRequired": "सेटअप आवश्यक",
   "retroactiveVaccineTitle": "खोप इतिहास",
   "retroactiveVaccineSubtitle": "कृपया {childName} ले पहिले नै लगाइसकेका खोपहरू भर्नुहोस्।",
   "@retroactiveVaccineSubtitle": {
@@ -344,8 +349,8 @@
   "vaccineRecordsEmpty": "खोप लगाइएको कुनै रेकर्ड छैन।",
   "dose": "खुराक",
   "onboardingErrorFutureDob": "जन्म मिति भविष्यको हुन सक्दैन",
-  "overdueVaccinesDialogTitle": "खोपको म्याद नाघेको",
-  "overdueVaccinesDialogMessage": "तपाईंको बच्चाको तालिका अनुसारको खोप छुटेको छ। छुटेका खोपहरू लगाउन र थप जानकारी लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।",
-  "overdueVaccinesNoticeBanner": "छुटेका खोपहरूका बारेमा परामर्श लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।",
-  "actionUnderstand": "बुझें"
+  "overdueVaccinesDialogTitle": "छुटेका खोप",
+  "overdueVaccinesDialogMessage": "छुटेका खोपका लागि स्वास्थ्य संस्था जानुहोस्।",
+  "overdueVaccinesNoticeBanner": "छुटेका खोपका लागि स्वास्थ्य संस्था जानुहोस्।",
+  "actionUnderstand": "ठीक छ"
 }

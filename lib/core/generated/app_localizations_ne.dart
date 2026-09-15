@@ -526,7 +526,23 @@ class AppLocalizationsNe extends AppLocalizations {
   String get learnPlaceholderTitleNp => 'सिक्नुहोस्';
 
   @override
-  String get childStatusSetupIncomplete => 'सेटअप अधुरो';
+  String get childStatusSetupIncomplete => 'सेटअप पूरा हुन बाँकी';
+
+  @override
+  String get homeSectionAwaitingSetup => 'सेटअप पूरा हुन बाँकी';
+
+  @override
+  String get homeActionCompleteSetup => 'सेटअप पूरा गर्नुहोस्';
+
+  @override
+  String get childSetupIncompleteBanner =>
+      'पहिले लगाइएका खोपहरूको विवरण भरिएको छैन। सही तालिका हेर्न सेटअप पूरा गर्नुहोस्।';
+
+  @override
+  String get childActionCompleteSetup => 'सेटअप पूरा गर्नुहोस्';
+
+  @override
+  String get childUrgencySetupRequired => 'सेटअप आवश्यक';
 
   @override
   String get retroactiveVaccineTitle => 'खोप इतिहास';
@@ -576,16 +592,16 @@ class AppLocalizationsNe extends AppLocalizations {
   String get onboardingErrorFutureDob => 'जन्म मिति भविष्यको हुन सक्दैन';
 
   @override
-  String get overdueVaccinesDialogTitle => 'खोपको म्याद नाघेको';
+  String get overdueVaccinesDialogTitle => 'छुटेका खोप';
 
   @override
   String get overdueVaccinesDialogMessage =>
-      'तपाईंको बच्चाको तालिका अनुसारको खोप छुटेको छ। छुटेका खोपहरू लगाउन र थप जानकारी लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।';
+      'छुटेका खोपका लागि स्वास्थ्य संस्था जानुहोस्।';
 
   @override
   String get overdueVaccinesNoticeBanner =>
-      'छुटेका खोपहरूका बारेमा परामर्श लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।';
+      'छुटेका खोपका लागि स्वास्थ्य संस्था जानुहोस्।';
 
   @override
-  String get actionUnderstand => 'बुझें';
+  String get actionUnderstand => 'ठीक छ';
 }
