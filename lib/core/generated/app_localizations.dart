@@ -302,10 +302,10 @@ abstract class AppLocalizations {
   /// **'Final scheduled vaccine'**
   String get childFinalScheduledVaccine;
 
-  /// Title for the unified vaccine records and history quick action card
+  /// Title for the unified vaccine history quick action card
   ///
   /// In en, this message translates to:
-  /// **'Vaccine records & history'**
+  /// **'Vaccine history'**
   String get childVaccineRecordsAndHistory;
 
   /// Subtitle for the unified vaccine records and history card

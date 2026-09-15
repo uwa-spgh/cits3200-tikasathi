@@ -146,9 +146,9 @@
   "@childFinalScheduledVaccine": {
     "description": "Shown when only one dose remains in the schedule"
   },
-  "childVaccineRecordsAndHistory": "Vaccine records & history",
+  "childVaccineRecordsAndHistory": "Vaccine history",
   "@childVaccineRecordsAndHistory": {
-    "description": "Title for the unified vaccine records and history quick action card"
+    "description": "Title for the unified vaccine history quick action card"
   },
   "childVaccineRecordsAndHistorySubtitle": "Review and update recorded doses",
   "@childVaccineRecordsAndHistorySubtitle": {

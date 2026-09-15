@@ -128,7 +128,7 @@ void main() {
 
       await tester.pumpAndSettle();
       expect(find.byIcon(Icons.arrow_back), findsOneWidget);
-      expect(find.text('Vaccine records & history'), findsOneWidget);
+      expect(find.text('Vaccine history'), findsOneWidget);
       expect(find.textContaining('Maya'), findsOneWidget);
       expect(find.text('Age-appropriate only'), findsOneWidget);
       expect(find.text('BCG (Dose 1)'), findsOneWidget);
@@ -191,7 +191,7 @@ void main() {
 
       await tester.pumpAndSettle();
       expect(find.byIcon(Icons.arrow_back), findsOneWidget);
-      expect(find.text('Vaccine records & history'), findsOneWidget);
+      expect(find.text('Vaccine history'), findsOneWidget);
       expect(find.textContaining('Nima'), findsOneWidget);
       expect(find.text('Age-appropriate only'), findsOneWidget);
       expect(find.text('BCG (Dose 1)'), findsOneWidget);
