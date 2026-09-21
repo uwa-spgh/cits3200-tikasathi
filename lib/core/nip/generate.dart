@@ -117,7 +117,7 @@ List<GeneratedDue> generate(
         ));
         continue;
       }
-      if (_canGenerateCatchup(vaccine, dose + 1, age)) {
+      if (_canGenerateCatchup(vaccine, dose, age)) {
         // dose is overdue, replace all overdue doses with the catch-up schedule
         result.addAll(_generateCatchUp(
           vaccine,

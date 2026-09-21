@@ -3,7 +3,7 @@ import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
 
 void main() {
   group('generate', () {
-    test('generate produces standard NIP for child at age 0', () {
+    test('produces standard NIP for child at age 0', () {
       final today = DateTime.now();
       final dues = generate(true, today, today, []);
 
@@ -16,7 +16,7 @@ void main() {
       }
     });
 
-    test('generate does not produce dues for existing records', () {
+    test('does not produce dues for existing records', () {
       final today = DateTime.now();
       final yesterday = today.subtract(const Duration(days: 1));
       final records = <AdministeredDose>[
@@ -38,7 +38,7 @@ void main() {
       }
     });
 
-    test('generate calculates the catch-up schedule for overdue vaccinations',
+    test('calculates the catch-up schedule for overdue vaccinations',
         () {
       final today = DateTime.now();
       final dob = today.subtract(DayDuration(weeks: 12).duration);
@@ -70,7 +70,7 @@ void main() {
           true);
     });
 
-    test('generate does not use catch-up schedule for completed vaccinations',
+    test('does not use catch-up schedule for completed vaccinations',
         () {
       final today = DateTime.now();
       final dob = today.subtract(DayDuration(weeks: 16).duration);
@@ -98,7 +98,7 @@ void main() {
       expect(bopvDues.length, 0);
     });
 
-    test('generate does not use catch-up schedule for ongoing vaccinations',
+    test('does not use catch-up schedule for ongoing vaccinations',
         () {
       final today = DateTime.now();
       final dob = today.subtract(DayDuration(weeks: 9).duration);
@@ -123,10 +123,31 @@ void main() {
               (due) => due.dueDate == dob.add(getDoseAge('BOPV', 3)!.duration)),
           true);
     });
+
+    test('generates HPV schedule for girl and does not for boy', () {
+      final today = DateTime.now();
+      final dob = today.subtract(DayDuration(years: 9).duration);
+
+      final boyDues = generate(false, dob, today, []);
+      final girlDues = generate(true, dob, today, []);
+
+      expect(boyDues.any((due) => due.vaccineCode == "HPV"), false);
+      expect(boyDues.any((due) => due.vaccineCode == "HPV"), true);
+    });
+
+    test('does not use catch-up schedule when there is not enough time', () {
+      final today = DateTime.now();
+      final dob = today.subtract(DayDuration(months: 22).duration);
+      final dues = generate(false, dob, today, []);
+      final pcvDues = dues.where((due) => due.vaccineCode == 'PCV');
+
+      expect(pcvDues.length, 2); // dues past max age are not dropped
+      expect(pcvDues.any((due) => due.dueDate.isAfter(today)), false); // all dues are original dates, not catch-up
+    });
   });
 
   group('status', () {
-    test('status correctly identifies completed vaccination', () {
+    test('correctly identifies completed vaccination', () {
       final today = DateTime.now();
       final dob = today.subtract(DayDuration(weeks: 16).duration);
       final records = <AdministeredDose>[
@@ -151,7 +172,7 @@ void main() {
       expect(status(today, dues, 'BOPV'), VaccineStatus.completed);
     });
 
-    test('status correctly identifies ongoing vaccination', () {
+    test('correctly identifies ongoing vaccination', () {
       final past = DateTime.now();
       final dob = past.subtract(DayDuration(weeks: 11).duration);
       final records = <AdministeredDose>[
@@ -172,7 +193,7 @@ void main() {
       expect(status(today, dues, 'BOPV'), VaccineStatus.ongoing);
     });
 
-    test('status correctly identifies overdue vaccination', () {
+    test('correctly identifies overdue vaccination', () {
       final past = DateTime.now();
       final dob = past.subtract(DayDuration(weeks: 11).duration);
       final records = <AdministeredDose>[
