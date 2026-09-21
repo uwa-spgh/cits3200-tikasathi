@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/services/notification_service.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
@@ -8,11 +9,18 @@ import 'package:tikasathi/features/onboarding/presentation/language_screen.dart'
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Reused as the app's scope so the initialised service is the one it reads.
+  final ProviderContainer container = ProviderContainer();
+  await container.read(notificationServiceProvider).initialize();
+
   runApp(
     // ProviderScope is mandatory for Riverpod
-    const ProviderScope(
-      child: TikaSathiApp(),
+    UncontrolledProviderScope(
+      container: container,
+      child: const TikaSathiApp(),
     ),
   );
 }
