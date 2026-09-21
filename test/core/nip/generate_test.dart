@@ -38,8 +38,7 @@ void main() {
       }
     });
 
-    test('calculates the catch-up schedule for overdue vaccinations',
-        () {
+    test('calculates the catch-up schedule for overdue vaccinations', () {
       final today = DateTime.now();
       final dob = today.subtract(DayDuration(weeks: 12).duration);
       final records = <AdministeredDose>[
@@ -70,8 +69,7 @@ void main() {
           true);
     });
 
-    test('does not use catch-up schedule for completed vaccinations',
-        () {
+    test('does not use catch-up schedule for completed vaccinations', () {
       final today = DateTime.now();
       final dob = today.subtract(DayDuration(weeks: 16).duration);
       final records = <AdministeredDose>[
@@ -98,8 +96,7 @@ void main() {
       expect(bopvDues.length, 0);
     });
 
-    test('does not use catch-up schedule for ongoing vaccinations',
-        () {
+    test('does not use catch-up schedule for ongoing vaccinations', () {
       final today = DateTime.now();
       final dob = today.subtract(DayDuration(weeks: 9).duration);
       final records = <AdministeredDose>[
@@ -132,7 +129,7 @@ void main() {
       final girlDues = generate(true, dob, today, []);
 
       expect(boyDues.any((due) => due.vaccineCode == "HPV"), false);
-      expect(boyDues.any((due) => due.vaccineCode == "HPV"), true);
+      expect(girlDues.any((due) => due.vaccineCode == "HPV"), true);
     });
 
     test('does not use catch-up schedule when there is not enough time', () {
@@ -142,7 +139,8 @@ void main() {
       final pcvDues = dues.where((due) => due.vaccineCode == 'PCV');
 
       expect(pcvDues.length, 2); // dues past max age are not dropped
-      expect(pcvDues.any((due) => due.dueDate.isAfter(today)), false); // all dues are original dates, not catch-up
+      expect(pcvDues.any((due) => due.dueDate.isAfter(today)),
+          false); // all dues are original dates, not catch-up
     });
   });
 

@@ -292,7 +292,8 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
                 final String key = '$vaccineCode-$doseNumber';
                 final bool isChecked = _checkedDoses.containsKey(key);
 
-                if (vaccineCode == "HPV" && childSexFromString(child.sex) != ChildSex.female) {
+                if (vaccineCode == "HPV" &&
+                    childSexFromString(child.sex) != ChildSex.female) {
                   continue;
                 }
 
