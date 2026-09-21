@@ -5,7 +5,7 @@ void main() {
   group('generate', () {
     test('generate produces standard NIP for child at age 0', () {
       final today = DateTime.now();
-      final dues = generate(today, today, []);
+      final dues = generate(true, today, today, []);
 
       for (final due in dues) {
         expect(doesDoseExist(due.vaccineCode, due.doseNumber), true);
@@ -28,7 +28,7 @@ void main() {
         (vaccineCode: 'PCV', doseNumber: 2, administeredDate: yesterday),
       ];
 
-      final dues = generate(today, today, records);
+      final dues = generate(true, today, today, records);
       for (final record in records) {
         expect(
             dues.any((GeneratedDue due) =>
@@ -50,7 +50,7 @@ void main() {
         ),
       ];
 
-      final dues = generate(dob, today, records);
+      final dues = generate(true, dob, today, records);
       final bopvDues = dues.where((due) => due.vaccineCode == 'BOPV');
 
       expect(bopvDues.length, 2,
@@ -92,7 +92,7 @@ void main() {
         ),
       ];
 
-      final dues = generate(dob, today, records);
+      final dues = generate(true, dob, today, records);
       final bopvDues = dues.where((due) => due.vaccineCode == 'BOPV');
 
       expect(bopvDues.length, 0);
@@ -110,7 +110,7 @@ void main() {
         ),
       ];
 
-      final dues = generate(dob, today, records);
+      final dues = generate(true, dob, today, records);
       final bopvDues = dues.where((due) => due.vaccineCode == 'BOPV');
 
       expect(bopvDues.length, 2);
@@ -147,7 +147,7 @@ void main() {
         ),
       ];
 
-      final dues = generate(dob, today, records);
+      final dues = generate(true, dob, today, records);
       expect(status(today, dues, 'BOPV'), VaccineStatus.completed);
     });
 
@@ -167,7 +167,7 @@ void main() {
         ),
       ];
 
-      final dues = generate(dob, past, records);
+      final dues = generate(true, dob, past, records);
       final today = past.add(DayDuration(weeks: 2).duration);
       expect(status(today, dues, 'BOPV'), VaccineStatus.ongoing);
     });
@@ -188,7 +188,7 @@ void main() {
         ),
       ];
 
-      final dues = generate(dob, past, records);
+      final dues = generate(true, dob, past, records);
       final today = past.add(DayDuration(weeks: 4).duration);
       expect(status(today, dues, 'BOPV'), VaccineStatus.overdue);
     });

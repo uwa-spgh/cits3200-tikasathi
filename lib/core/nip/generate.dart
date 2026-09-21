@@ -13,6 +13,7 @@ typedef AdministeredDose = ({
 });
 
 typedef GenerateDues = List<GeneratedDue> Function(
+  bool isGirl,
   DateTime dob,
   DateTime today,
   List<AdministeredDose> records,
@@ -87,6 +88,7 @@ class CatchUpRule {
 /// Ongoing vaccinations only generate upcoming due dates.
 /// Overdue vaccinations generate due dates via _generateCatchUp()
 List<GeneratedDue> generate(
+  bool isGirl,
   DateTime dob,
   DateTime today,
   List<AdministeredDose> records,
@@ -96,6 +98,10 @@ List<GeneratedDue> generate(
   final age = today.difference(dob);
   nipCatalogue.forEach((vaccine, ages) {
     for (final (dose, doseAge) in ages.indexed) {
+      if (vaccine == "HPV" && !isGirl) {
+        // boys dont need HPV vaccine
+        continue;
+      }
       if (records.any((AdministeredDose record) =>
           record.vaccineCode == vaccine && record.doseNumber == dose + 1)) {
         // dose is completed, ignore

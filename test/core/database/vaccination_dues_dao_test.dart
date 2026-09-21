@@ -255,7 +255,7 @@ void main() {
       final dob = DateTime(2023, 4, 15);
 
       GenerateDues stubReturning(List<GeneratedDue> generatedDues) =>
-          (DateTime dob, DateTime today, List<AdministeredDose> records) =>
+          (bool isGirl, DateTime dob, DateTime today, List<AdministeredDose> records) =>
               generatedDues;
 
       test('persists dues matching the stub', () async {
@@ -359,7 +359,7 @@ void main() {
           vaccinationDuesDao.insertDuesForChild(
             'missing-child',
             generateDues:
-                (DateTime dob, DateTime today, List<AdministeredDose> records) {
+                (bool isGirl, DateTime dob, DateTime today, List<AdministeredDose> records) {
               generateCalled = true;
               return [
                 (
@@ -389,7 +389,7 @@ void main() {
         await vaccinationDuesDao.insertDuesForChild(
           childId,
           today: today,
-          generateDues: (DateTime receivedDob, DateTime receivedToday,
+          generateDues: (bool isGirl, DateTime receivedDob, DateTime receivedToday,
               List<AdministeredDose> records) {
             capturedDob = receivedDob;
             capturedToday = receivedToday;
@@ -421,7 +421,7 @@ void main() {
           childId,
           today: today,
           generateDues:
-              (DateTime dob, DateTime today, List<AdministeredDose> records) {
+              (bool isGirl, DateTime dob, DateTime today, List<AdministeredDose> records) {
             capturedRecords = records;
             return [];
           },
