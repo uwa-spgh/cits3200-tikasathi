@@ -55,6 +55,7 @@ class VaccinationDuesDao extends DatabaseAccessor<AppDatabase>
     ];
 
     return generateDues(
+      childSexFromString(child.sex) == ChildSex.female,
       child.dateOfBirth,
       today ?? DateTime.now(),
       records,
