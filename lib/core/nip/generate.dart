@@ -86,7 +86,8 @@ class CatchUpRule {
 /// and produces a list of vaccination due dates as outputs.
 /// Completed vaccinations do not generate any due dates.
 /// Ongoing vaccinations only generate upcoming due dates.
-/// Overdue vaccinations generate due dates via _generateCatchUp()
+/// Overdue vaccinations generate due dates via _generateCatchUp() only if there is enough time to apply all doses, 
+/// otherwise the original overdue dates are generated.
 List<GeneratedDue> generate(
   bool isGirl,
   DateTime dob,
@@ -116,15 +117,24 @@ List<GeneratedDue> generate(
         ));
         continue;
       }
-      // dose is overdue, replace all overdue doses with the catch-up schedule
-      result.addAll(_generateCatchUp(
-        vaccine,
-        dose,
-        age,
-        today,
-        originalDueDate: dob.add(doseAge.duration),
-      ));
-      break;
+      if (_canGenerateCatchup(vaccine, dose + 1, age)) {
+        // dose is overdue, replace all overdue doses with the catch-up schedule
+        result.addAll(_generateCatchUp(
+          vaccine,
+          dose,
+          age,
+          today,
+          originalDueDate: dob.add(doseAge.duration),
+        ));
+        break;
+      } else {
+        // could not generate catch-up schedule, reuse original overdue date
+        result.add((
+          vaccineCode: vaccine,
+          doseNumber: dose + 1,
+          dueDate: dob.add(doseAge.duration)
+        ));
+      }
     }
   });
 
@@ -153,7 +163,6 @@ VaccineStatus status(
 ///
 /// The first overdue dose retains its original past due date so that it is accurately
 /// recognized as overdue. Subsequent doses are scheduled from today with the vaccine's minimum interval.
-/// Doses that exceed the maximum age for the catch-up schedule are excluded.
 List<GeneratedDue> _generateCatchUp(
   String vaccineCode,
   int dosesTaken,
@@ -181,11 +190,6 @@ List<GeneratedDue> _generateCatchUp(
   }
 
   for (int i = dosesTaken; i < rule.doses; i++) {
-    // For now, only vaccinations under the maxAge are added to results, which may result in incomplete vaccination schedules
-    if (age + rule.minInterval.duration * (i - dosesTaken) >
-        rule.maxAge.duration) {
-      break;
-    }
     final DateTime dueDate = (i == dosesTaken && originalDueDate != null)
         ? originalDueDate
         : today.add(rule.minInterval.duration * (i - dosesTaken));
@@ -197,4 +201,25 @@ List<GeneratedDue> _generateCatchUp(
     ));
   }
   return result;
+}
+
+/// Determines if a valid catch-up schedule can be generated for a particular vaccine
+/// 
+/// If this returns false, generate should use the original overdue dates instead, so that they may be ticked off by the doctor
+bool _canGenerateCatchup(
+  String vaccineCode,
+  int dosesTaken,
+  Duration age
+) {
+  final CatchUpRule rule;
+  try {
+    rule = _catchUp[vaccineCode]!.firstWhere((CatchUpRule rule) {
+      return rule.minAge.duration <= age && age < rule.maxAge.duration;
+    });
+  } on StateError catch (_) {
+    // vaccination has no catch-up schedule
+    return false;
+  }
+  // true when there is enough time to take all doses at minimum interval
+  return (age + rule.minInterval.duration * (rule.doses - dosesTaken - 1) <= rule.maxAge.duration);
 }
