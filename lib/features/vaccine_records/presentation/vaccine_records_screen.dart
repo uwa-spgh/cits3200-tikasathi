@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:tikasathi/features/home/domain/home_helpers.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:tikasathi/core/database/app_database.dart';
@@ -290,6 +291,10 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
                 final bool isPast = age >= doseAge.duration;
                 final String key = '$vaccineCode-$doseNumber';
                 final bool isChecked = _checkedDoses.containsKey(key);
+
+                if (vaccineCode == "HPV" && childSexFromString(child.sex) != ChildSex.female) {
+                  continue;
+                }
 
                 if (isPast || _showAll || isChecked) {
                   final DateTime defaultDate =
