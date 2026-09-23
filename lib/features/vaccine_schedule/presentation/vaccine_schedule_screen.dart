@@ -79,6 +79,7 @@ class _VaccineScheduleTable extends StatelessWidget {
                 child: SingleChildScrollView(
                   child: IgnorePointer(
                     child: Table(
+                      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                       columnWidths: const {
                         0: FlexColumnWidth(0.25),
                         1: IntrinsicColumnWidth(),
@@ -91,8 +92,7 @@ class _VaccineScheduleTable extends StatelessWidget {
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: Text(
-                                    DateFormat('d MMM y',
-                                            Localizations.localeOf(context).languageCode)
+                                    DateFormat('d MMM y', locale)
                                         .format(due.dueDate),
                                     style: const TextStyle(
                                       fontSize: 13,
@@ -101,10 +101,10 @@ class _VaccineScheduleTable extends StatelessWidget {
                                     ),
                                   )
                                 ),
-                                Column(
+                                Stack(
                                   children: [
-                                    Checkbox(value: true, onChanged: (value) => {}),
-                                    const VerticalDivider()
+                                    // TODO: add vertical line behind checkbox
+                                    Checkbox(value: true, onChanged: (value) => {})
                                   ],
                                 ),
                                 Text(
