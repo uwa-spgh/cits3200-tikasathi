@@ -77,56 +77,45 @@ class _VaccineScheduleTable extends StatelessWidget {
             else
               Expanded(
                 child: SingleChildScrollView(
-                  child: DataTable(
-                    columns: [
-                      DataColumn(
-                        label: Text(localizations.vaccineScheduleDoseHeader),
-                      ),
-                      DataColumn(
-                        label: Text(localizations.vaccineScheduleDueHeader),
-                      ),
-                    ],
-                    rows: dues
-                        .map(
-                          (due) => DataRow(
-                            cells: [
-                              DataCell(
-                                Text(
-                                  '${due.vaccineCode} (${localizations.dose} ${due.doseNumber})',
+                  child: IgnorePointer(
+                    child: Table(
+                      columnWidths: const {
+                        0: FlexColumnWidth(0.25),
+                        1: IntrinsicColumnWidth(),
+                        2: FlexColumnWidth(0.75)
+                      },
+                      children: dues
+                          .map(
+                            (due) => TableRow(
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    DateFormat('d MMM y',
+                                            Localizations.localeOf(context).languageCode)
+                                        .format(due.dueDate),
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      color: Color(0xFF94A3B8),
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  )
                                 ),
-                              ),
-                              DataCell(
                                 Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      DateFormat(
-                                        'd MMMM y',
-                                        locale,
-                                      ).format(due.dueDate),
-                                    ),
-                                    Text(
-                                      formatVaccineDueRelativeDate(
-                                        due.dueDate,
-                                        now,
-                                        localizations,
-                                      ),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                            color: const Color(0xFF4B5E7B),
-                                          ),
-                                    ),
+                                    Checkbox(value: true, onChanged: (value) => {}),
+                                    const VerticalDivider()
                                   ],
                                 ),
-                              ),
-                            ],
-                          ),
-                        )
-                        .toList(),
-                  ),
+                                Text(
+                                  '${due.vaccineCode} (${localizations.dose} ${due.doseNumber})',
+                                )
+                              ],
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  )
                 ),
               ),
             Container(
