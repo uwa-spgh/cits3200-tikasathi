@@ -96,7 +96,7 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 0),
               Text(
                 localizations.settingsLanguageTitle,
                 style: const TextStyle(
@@ -105,7 +105,7 @@ class SettingsScreen extends ConsumerWidget {
                   color: Color(0xFF334155),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
               _LanguageButton(
                 title: localizations.settingsNepali,
                 flag: '🇳🇵',
@@ -116,7 +116,7 @@ class SettingsScreen extends ConsumerWidget {
                   language: AppLanguage.nepali,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
               _LanguageButton(
                 title: localizations.settingsEnglish,
                 flag: '🇬🇧',
@@ -127,7 +127,7 @@ class SettingsScreen extends ConsumerWidget {
                   language: AppLanguage.english,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 16),
               Text(
                 localizations.manageProfilesTitle,
                 style: const TextStyle(
@@ -136,7 +136,7 @@ class SettingsScreen extends ConsumerWidget {
                   color: Color(0xFF334155),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 6),
               _ProfileAction(
                 icon: Icons.person_outline,
                 title: localizations.editCaregiverAction,
@@ -146,19 +146,19 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 6),
               _ProfileAction(
                 icon: Icons.child_care_outlined,
                 title: localizations.editChildAction,
                 onTap: () => _chooseChild(context, ref, delete: false),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 8),
               _ProfileAction(
                 icon: Icons.delete_outline,
                 title: localizations.deleteChildAction,
                 onTap: () => _chooseChild(context, ref, delete: true),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 18),
               HealthFacilityCard(
                 key: const Key('health-facilitator-action'),
                 facility: facilitator,
@@ -224,6 +224,13 @@ class SettingsScreen extends ConsumerWidget {
         : await showDialog<ChildProfile>(
             context: context,
             builder: (dialogContext) => AlertDialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              titlePadding: const EdgeInsets.fromLTRB(28, 28, 28, 8),
+              contentPadding: const EdgeInsets.fromLTRB(28, 8, 28, 0),
+              actionsPadding: const EdgeInsets.fromLTRB(28, 12, 28, 24),
               title: Text(l10n.selectChildTitle),
               content: SizedBox(
                 width: double.maxFinite,
@@ -249,8 +256,16 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
               actions: [
-                TextButton(
+                FilledButton(
                   autofocus: true,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF0F52BA),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                  ),
                   onPressed: () => Navigator.of(dialogContext).pop(),
                   child: Text(l10n.profileCancel),
                 ),
@@ -270,19 +285,72 @@ class SettingsScreen extends ConsumerWidget {
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) => AlertDialog(
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(l10n.deleteChildTitle),
-        content: Text(l10n.deleteChildMessage),
-        actions: [
-          TextButton(
-            autofocus: true,
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(l10n.profileCancel),
+        titlePadding: const EdgeInsets.fromLTRB(32, 32, 32, 0),
+        contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 0),
+        actionsPadding: const EdgeInsets.fromLTRB(32, 28, 32, 28),
+        title: Text(
+          l10n.deleteChildTitle,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        content: RichText(
+          text: TextSpan(
+            style: const TextStyle(
+              color: Color(0xFF0F172A),
+              fontSize: 16,
+              height: 1.5,
+            ),
+            children: [
+              TextSpan(
+                text: l10n.deleteChildProfileName(selected.name),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const TextSpan(text: '\n\n'),
+              TextSpan(
+                text: l10n.deleteChildMessageFirst,
+                style: const TextStyle(fontSize: 18),
+              ),
+              const TextSpan(text: '\n\n'),
+              TextSpan(
+                text: l10n.deleteChildMessageUndo,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
-          FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(l10n.deleteChildConfirm),
+        ),
+        actions: [
+          Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FilledButton(
+                  autofocus: true,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF0F52BA),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                  ),
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
+                  child: Text(l10n.profileCancel),
+                ),
+                const SizedBox(width: 12),
+                FilledButton(
+                  style: FilledButton.styleFrom(backgroundColor: Colors.red),
+                  onPressed: () => Navigator.of(dialogContext).pop(true),
+                  child: Text(l10n.deleteChildConfirm),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -323,7 +391,7 @@ class _ProfileAction extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: const Color(0xFFEFF5FF),
           border: Border.all(color: const Color(0xFFCFE0FA)),
@@ -338,6 +406,7 @@ class _ProfileAction extends StatelessWidget {
                 title,
                 style: const TextStyle(
                   color: Color(0xFF0E64C5),
+                  fontSize: 18,
                   fontWeight: FontWeight.w700,
                 ),
               ),

@@ -5,6 +5,7 @@ import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
+import 'package:tikasathi/features/vaccine_records/presentation/missed_vaccines_dialog.dart';
 
 class ChildEditScreen extends ConsumerStatefulWidget {
   const ChildEditScreen({required this.childId, super.key});
@@ -16,6 +17,9 @@ class ChildEditScreen extends ConsumerStatefulWidget {
 
 class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
   final _nameController = TextEditingController();
+  final _ddController = TextEditingController();
+  final _mmController = TextEditingController();
+  final _yyController = TextEditingController();
   ChildProfile? _child;
   DateTime? _dob;
   String _sex = 'female';
@@ -42,6 +46,9 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
       _child = child;
       _nameController.text = child.name;
       _dob = child.dateOfBirth;
+      _ddController.text = child.dateOfBirth.day.toString().padLeft(2, '0');
+      _mmController.text = child.dateOfBirth.month.toString().padLeft(2, '0');
+      _yyController.text = child.dateOfBirth.year.toString();
       _sex = child.sex;
       setState(() => _loading = false);
     } catch (_) {
@@ -49,29 +56,31 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
     }
   }
 
-  Future<void> _pickDob() async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _dob ?? DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-      builder: (_, child) => Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.light(primary: Color(0xFF0F52BA)),
-        ),
-        child: child!,
-      ),
-    );
-    if (picked != null) setState(() => _dob = picked);
-  }
-
   Future<void> _save() async {
     final l10n = AppLocalizations.of(context)!;
-    if (_child == null || _nameController.text.trim().isEmpty || _dob == null) {
+    final day = int.tryParse(_ddController.text);
+    final month = int.tryParse(_mmController.text);
+    final year = int.tryParse(_yyController.text);
+    if (_child == null ||
+        _nameController.text.trim().isEmpty ||
+        day == null ||
+        month == null ||
+        year == null) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(l10n.profileInvalidChild)));
       return;
     }
+    final dob = DateTime(year, month, day);
+    final now = DateTime.now();
+    if (dob.year != year ||
+        dob.month != month ||
+        dob.day != day ||
+        dob.isAfter(DateTime(now.year, now.month, now.day))) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.onboardingErrorInvalidDob)));
+      return;
+    }
+    _dob = dob;
     final changedDemographics =
         _dob != _child!.dateOfBirth || _sex != _child!.sex;
     if (changedDemographics) {
@@ -93,6 +102,15 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
       }
       ref.invalidate(childProfileProvider(widget.childId));
       ref.invalidate(homeStatusGroupsProvider);
+      if (changedDemographics) {
+        final dues = await db.vaccinationDuesDao
+            .getVaccinationDuesForChild(widget.childId);
+        final now = DateTime.now();
+        final today = DateTime(now.year, now.month, now.day);
+        if (mounted && dues.any((due) => due.dueDate.isBefore(today))) {
+          await showMissedVaccinesDialog(context);
+        }
+      }
       if (mounted) Navigator.of(context).pop();
     } catch (_) {
       if (mounted) {
@@ -109,21 +127,74 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) => AlertDialog(
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(l10n.updateVaccinationScheduleTitle),
-        content: Text(l10n.updateVaccinationScheduleMessage),
-        actions: [
-          TextButton(
-            autofocus: true,
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(l10n.profileCancel),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFF0F52BA),
+        titlePadding: const EdgeInsets.fromLTRB(32, 32, 32, 0),
+        contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 0),
+        actionsPadding: const EdgeInsets.fromLTRB(32, 28, 32, 28),
+        title: Text(l10n.updateVaccinationScheduleTitle,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        content: RichText(
+          text: TextSpan(
+            style: const TextStyle(
+              color: Color(0xFF0F172A),
+              fontSize: 16,
+              height: 1.5,
             ),
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(l10n.profileContinue),
+            children: [
+              TextSpan(
+                text: l10n.updateVaccinationScheduleProfileName(_child!.name),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const TextSpan(text: '\n\n'),
+              TextSpan(
+                text: l10n.updateVaccinationScheduleMessageFirst,
+                style: const TextStyle(fontSize: 18),
+              ),
+              const TextSpan(text: '\n\n'),
+              TextSpan(
+                text: l10n.updateVaccinationScheduleMessageSecond,
+                style: const TextStyle(fontSize: 18),
+              ),
+              const TextSpan(text: '\n\n'),
+              TextSpan(
+                text: l10n.updateVaccinationScheduleMessageThird,
+                style: const TextStyle(fontSize: 18),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                OutlinedButton(
+                  autofocus: true,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF0F52BA),
+                    side: const BorderSide(color: Color(0xFF0F52BA), width: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                  ),
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
+                  child: Text(l10n.profileCancel),
+                ),
+                const SizedBox(width: 12),
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF0F52BA),
+                  ),
+                  onPressed: () => Navigator.of(dialogContext).pop(true),
+                  child: Text(l10n.profileContinue),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -134,6 +205,9 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
   @override
   void dispose() {
     _nameController.dispose();
+    _ddController.dispose();
+    _mmController.dispose();
+    _yyController.dispose();
     super.dispose();
   }
 
@@ -162,7 +236,7 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Text(l10n.editChildTitle,
+                        Text(l10n.editChildTitleWithName(child.name),
                             style: const TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
@@ -170,45 +244,61 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
                         const SizedBox(height: 32),
                         TextField(
                           controller: _nameController,
-                          decoration: _decoration(l10n.onboardingChildNameLabel,
-                              l10n.onboardingChildNameHint),
+                          textInputAction: TextInputAction.next,
+                          decoration: _decoration(
+                            l10n.onboardingChildNameLabel,
+                            l10n.onboardingChildNameHint,
+                          ).copyWith(labelText: null),
                         ),
                         const SizedBox(height: 24),
                         Text(l10n.onboardingChildDobLabel,
                             style: const TextStyle(
-                                fontSize: 16,
+                                fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF334155))),
-                        const SizedBox(height: 8),
-                        OutlinedButton.icon(
-                          onPressed: _saving ? null : _pickDob,
-                          icon: const Icon(Icons.calendar_today_outlined),
-                          label: Text(MaterialLocalizations.of(context)
-                              .formatMediumDate(_dob!)),
-                          style: OutlinedButton.styleFrom(
-                            alignment: Alignment.centerLeft,
-                            foregroundColor: const Color(0xFF0F52BA),
-                            minimumSize: const Size(double.infinity, 56),
-                            side: const BorderSide(color: Color(0xFFE2E8F0)),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                          ),
+                                color: Color(0xFF0F172A))),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _dateBox(
+                                l10n.onboardingChildDateDayHint,
+                                _ddController,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _dateBox(
+                                l10n.onboardingChildDateMonthHint,
+                                _mmController,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _dateBox(
+                                l10n.onboardingChildDateYearHint,
+                                _yyController,
+                                maxLength: 4,
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 24),
                         Text(l10n.onboardingChildGenderLabel,
                             style: const TextStyle(
-                                fontSize: 16,
+                                fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF334155))),
-                        const SizedBox(height: 8),
+                                color: Color(0xFF0F172A))),
+                        const SizedBox(height: 12),
                         Row(children: [
                           Expanded(
                               child: _sexButton(
-                                  'female', l10n.onboardingChildGenderGirl)),
-                          const SizedBox(width: 12),
+                                  'female', l10n.onboardingChildGenderGirl,
+                                  emoji: '👱‍♀️')),
+                          const SizedBox(width: 16),
                           Expanded(
                               child: _sexButton(
-                                  'male', l10n.onboardingChildGenderBoy)),
+                                  'male', l10n.onboardingChildGenderBoy,
+                                  emoji: '👱‍♂️')),
                         ]),
                         const SizedBox(height: 48),
                         ElevatedButton(
@@ -235,7 +325,35 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
     );
   }
 
-  Widget _sexButton(String value, String label) {
+  Widget _dateBox(String hint, TextEditingController controller,
+      {int maxLength = 2}) {
+    return TextField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      textAlign: TextAlign.center,
+      maxLength: maxLength,
+      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      decoration: InputDecoration(
+        counterText: '',
+        hintText: hint,
+        hintStyle: const TextStyle(
+          color: Color(0xFF94A3B8),
+          fontSize: 20,
+        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 16),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF0F52BA)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF0F52BA)),
+        ),
+      ),
+    );
+  }
+
+  Widget _sexButton(String value, String label, {required String emoji}) {
     final selected = _sex == value;
     return OutlinedButton(
       onPressed: _saving ? null : () => setState(() => _sex = value),
@@ -248,7 +366,22 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
             width: selected ? 2 : 1),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
-      child: Text(label),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(emoji, style: const TextStyle(fontSize: 24)),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: selected ? FontWeight.bold : FontWeight.w500,
+              color:
+                  selected ? const Color(0xFF0F52BA) : const Color(0xFF0F172A),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

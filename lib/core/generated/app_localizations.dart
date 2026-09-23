@@ -572,6 +572,12 @@ abstract class AppLocalizations {
   /// **'Edit child details'**
   String get editChildTitle;
 
+  /// No description provided for @editChildTitleWithName.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {childName}\'s details'**
+  String editChildTitleWithName(String childName);
+
   /// No description provided for @profileSave.
   ///
   /// In en, this message translates to:
@@ -638,11 +644,29 @@ abstract class AppLocalizations {
   /// **'Update vaccination schedule?'**
   String get updateVaccinationScheduleTitle;
 
-  /// No description provided for @updateVaccinationScheduleMessage.
+  /// No description provided for @updateVaccinationScheduleProfileName.
   ///
   /// In en, this message translates to:
-  /// **'Changing your child\'s date of birth or sex may change their vaccination schedule. These changes will be saved and used until you change the details again. You can edit these details again later if needed.'**
-  String get updateVaccinationScheduleMessage;
+  /// **'Updating child profile: {childName}'**
+  String updateVaccinationScheduleProfileName(String childName);
+
+  /// No description provided for @updateVaccinationScheduleMessageFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing your child\'s date of birth or sex may change their vaccination schedule.'**
+  String get updateVaccinationScheduleMessageFirst;
+
+  /// No description provided for @updateVaccinationScheduleMessageSecond.
+  ///
+  /// In en, this message translates to:
+  /// **'These changes will be saved and used until you change the details again.'**
+  String get updateVaccinationScheduleMessageSecond;
+
+  /// No description provided for @updateVaccinationScheduleMessageThird.
+  ///
+  /// In en, this message translates to:
+  /// **'You can edit these details again later if needed.'**
+  String get updateVaccinationScheduleMessageThird;
 
   /// No description provided for @deleteChildTitle.
   ///
@@ -650,11 +674,23 @@ abstract class AppLocalizations {
   /// **'Delete child?'**
   String get deleteChildTitle;
 
-  /// No description provided for @deleteChildMessage.
+  /// No description provided for @deleteChildProfileName.
   ///
   /// In en, this message translates to:
-  /// **'This will permanently delete this child\'s information and vaccination records. This action cannot be undone.'**
-  String get deleteChildMessage;
+  /// **'Deleting child profile: {childName}'**
+  String deleteChildProfileName(String childName);
+
+  /// No description provided for @deleteChildMessageFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently delete this child\'s information and vaccination records.'**
+  String get deleteChildMessageFirst;
+
+  /// No description provided for @deleteChildMessageUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone.'**
+  String get deleteChildMessageUndo;
 
   /// No description provided for @deleteChildConfirm.
   ///

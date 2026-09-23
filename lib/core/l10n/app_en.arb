@@ -225,6 +225,14 @@
   "deleteChildAction": "Delete child",
   "editCaregiverTitle": "Edit caregiver details",
   "editChildTitle": "Edit child details",
+  "editChildTitleWithName": "Edit {childName}'s details",
+  "@editChildTitleWithName": {
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
   "profileSave": "Save",
   "profileCancel": "Cancel",
   "profileContinue": "Continue",
@@ -236,9 +244,28 @@
   "selectChildTitle": "Select a child",
   "noChildrenMessage": "No children have been added yet.",
   "updateVaccinationScheduleTitle": "Update vaccination schedule?",
-  "updateVaccinationScheduleMessage": "Changing your child's date of birth or sex may change their vaccination schedule. These changes will be saved and used until you change the details again. You can edit these details again later if needed.",
+  "updateVaccinationScheduleProfileName": "Updating child profile: {childName}",
+  "@updateVaccinationScheduleProfileName": {
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "updateVaccinationScheduleMessageFirst": "Changing your child's date of birth or sex may change their vaccination schedule.",
+  "updateVaccinationScheduleMessageSecond": "These changes will be saved and used until you change the details again.",
+  "updateVaccinationScheduleMessageThird": "You can edit these details again later if needed.",
   "deleteChildTitle": "Delete child?",
-  "deleteChildMessage": "This will permanently delete this child's information and vaccination records. This action cannot be undone.",
+  "deleteChildProfileName": "Deleting child profile: {childName}",
+  "@deleteChildProfileName": {
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteChildMessageFirst": "This will permanently delete this child's information and vaccination records.",
+  "deleteChildMessageUndo": "This action cannot be undone.",
   "deleteChildConfirm": "Delete child",
   "deleteChildSuccess": "Child deleted.",
   "deleteChildError": "Could not delete child.",

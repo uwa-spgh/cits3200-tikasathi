@@ -266,6 +266,11 @@ class AppLocalizationsNe extends AppLocalizations {
   String get editChildTitle => 'बच्चाको विवरण सम्पादन गर्नुहोस्';
 
   @override
+  String editChildTitleWithName(String childName) {
+    return '$childName को विवरण सम्पादन गर्नुहोस्';
+  }
+
+  @override
   String get profileSave => 'बचत गर्नुहोस्';
 
   @override
@@ -299,15 +304,36 @@ class AppLocalizationsNe extends AppLocalizations {
   String get updateVaccinationScheduleTitle => 'खोप तालिका अद्यावधिक गर्ने?';
 
   @override
-  String get updateVaccinationScheduleMessage =>
-      'तपाईंको बच्चाको जन्म मिति वा लिङ्ग परिवर्तन गर्दा खोप तालिका परिवर्तन हुन सक्छ। यी परिवर्तनहरू बचत गरिनेछन् र तपाईंले विवरण फेरि परिवर्तन नगरेसम्म प्रयोग हुनेछन्। आवश्यक परेमा तपाईंले यी विवरणहरू पछि फेरि सम्पादन गर्न सक्नुहुन्छ।';
+  String updateVaccinationScheduleProfileName(String childName) {
+    return 'अद्यावधिक गरिने बच्चाको प्रोफाइल: $childName';
+  }
+
+  @override
+  String get updateVaccinationScheduleMessageFirst =>
+      'तपाईंको बच्चाको जन्म मिति वा लिङ्ग परिवर्तन गर्दा खोप तालिका परिवर्तन हुन सक्छ।';
+
+  @override
+  String get updateVaccinationScheduleMessageSecond =>
+      'यी परिवर्तनहरू बचत गरिनेछन् र तपाईंले विवरण फेरि परिवर्तन नगरेसम्म प्रयोग हुनेछन्।';
+
+  @override
+  String get updateVaccinationScheduleMessageThird =>
+      'आवश्यक परेमा तपाईंले यी विवरणहरू पछि फेरि सम्पादन गर्न सक्नुहुन्छ।';
 
   @override
   String get deleteChildTitle => 'बच्चा मेटाउने?';
 
   @override
-  String get deleteChildMessage =>
-      'यसले यो बच्चाको जानकारी र खोपका अभिलेखहरू स्थायी रूपमा मेटाउनेछ। यो कार्य पूर्ववत गर्न सकिँदैन।';
+  String deleteChildProfileName(String childName) {
+    return 'बच्चाको प्रोफाइल मेटाउँदै: $childName';
+  }
+
+  @override
+  String get deleteChildMessageFirst =>
+      'यसले यो बच्चाको जानकारी र खोपका अभिलेखहरू स्थायी रूपमा मेटाउनेछ।';
+
+  @override
+  String get deleteChildMessageUndo => 'यो कार्य पूर्ववत गर्न सकिँदैन।';
 
   @override
   String get deleteChildConfirm => 'बच्चा मेटाउनुहोस्';

@@ -264,6 +264,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editChildTitle => 'Edit child details';
 
   @override
+  String editChildTitleWithName(String childName) {
+    return 'Edit $childName\'s details';
+  }
+
+  @override
   String get profileSave => 'Save';
 
   @override
@@ -297,15 +302,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updateVaccinationScheduleTitle => 'Update vaccination schedule?';
 
   @override
-  String get updateVaccinationScheduleMessage =>
-      'Changing your child\'s date of birth or sex may change their vaccination schedule. These changes will be saved and used until you change the details again. You can edit these details again later if needed.';
+  String updateVaccinationScheduleProfileName(String childName) {
+    return 'Updating child profile: $childName';
+  }
+
+  @override
+  String get updateVaccinationScheduleMessageFirst =>
+      'Changing your child\'s date of birth or sex may change their vaccination schedule.';
+
+  @override
+  String get updateVaccinationScheduleMessageSecond =>
+      'These changes will be saved and used until you change the details again.';
+
+  @override
+  String get updateVaccinationScheduleMessageThird =>
+      'You can edit these details again later if needed.';
 
   @override
   String get deleteChildTitle => 'Delete child?';
 
   @override
-  String get deleteChildMessage =>
-      'This will permanently delete this child\'s information and vaccination records. This action cannot be undone.';
+  String deleteChildProfileName(String childName) {
+    return 'Deleting child profile: $childName';
+  }
+
+  @override
+  String get deleteChildMessageFirst =>
+      'This will permanently delete this child\'s information and vaccination records.';
+
+  @override
+  String get deleteChildMessageUndo => 'This action cannot be undone.';
 
   @override
   String get deleteChildConfirm => 'Delete child';
