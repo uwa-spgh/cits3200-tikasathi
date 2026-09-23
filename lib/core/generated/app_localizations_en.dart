@@ -246,6 +246,77 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguageSaveError => 'Could not save language.';
 
   @override
+  String get manageProfilesTitle => 'Manage profiles';
+
+  @override
+  String get editCaregiverAction => 'Edit caregiver details';
+
+  @override
+  String get editChildAction => 'Edit child details';
+
+  @override
+  String get deleteChildAction => 'Delete child';
+
+  @override
+  String get editCaregiverTitle => 'Edit caregiver details';
+
+  @override
+  String get editChildTitle => 'Edit child details';
+
+  @override
+  String get profileSave => 'Save';
+
+  @override
+  String get profileCancel => 'Cancel';
+
+  @override
+  String get profileContinue => 'Continue';
+
+  @override
+  String get profileBack => 'Back';
+
+  @override
+  String get profileLoadError => 'Could not load profile details.';
+
+  @override
+  String get profileSaveError => 'Could not save profile details.';
+
+  @override
+  String get profileInvalidChild => 'Please enter a name and date of birth.';
+
+  @override
+  String get profileChildNotFound => 'Child details could not be found.';
+
+  @override
+  String get selectChildTitle => 'Select a child';
+
+  @override
+  String get noChildrenMessage => 'No children have been added yet.';
+
+  @override
+  String get updateVaccinationScheduleTitle => 'Update vaccination schedule?';
+
+  @override
+  String get updateVaccinationScheduleMessage =>
+      'Changing your child\'s date of birth or sex may change their vaccination schedule. These changes will be saved and used until you change the details again. You can edit these details again later if needed.';
+
+  @override
+  String get deleteChildTitle => 'Delete child?';
+
+  @override
+  String get deleteChildMessage =>
+      'This will permanently delete this child\'s information and vaccination records. This action cannot be undone.';
+
+  @override
+  String get deleteChildConfirm => 'Delete child';
+
+  @override
+  String get deleteChildSuccess => 'Child deleted.';
+
+  @override
+  String get deleteChildError => 'Could not delete child.';
+
+  @override
   String appLanguageLoadError(Object error) {
     return 'Unable to load language settings: $error';
   }

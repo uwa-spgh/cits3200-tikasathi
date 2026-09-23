@@ -248,6 +248,77 @@ class AppLocalizationsNe extends AppLocalizations {
   String get settingsLanguageSaveError => 'भाषा सेव गर्न सकिएन।';
 
   @override
+  String get manageProfilesTitle => 'प्रोफाइलहरू व्यवस्थापन गर्नुहोस्';
+
+  @override
+  String get editCaregiverAction => 'हेरचाहकर्ताको विवरण सम्पादन गर्नुहोस्';
+
+  @override
+  String get editChildAction => 'बच्चाको विवरण सम्पादन गर्नुहोस्';
+
+  @override
+  String get deleteChildAction => 'बच्चा मेटाउनुहोस्';
+
+  @override
+  String get editCaregiverTitle => 'हेरचाहकर्ताको विवरण सम्पादन गर्नुहोस्';
+
+  @override
+  String get editChildTitle => 'बच्चाको विवरण सम्पादन गर्नुहोस्';
+
+  @override
+  String get profileSave => 'बचत गर्नुहोस्';
+
+  @override
+  String get profileCancel => 'रद्द गर्नुहोस्';
+
+  @override
+  String get profileContinue => 'जारी राख्नुहोस्';
+
+  @override
+  String get profileBack => 'फर्कनुहोस्';
+
+  @override
+  String get profileLoadError => 'प्रोफाइल विवरण लोड गर्न सकिएन।';
+
+  @override
+  String get profileSaveError => 'प्रोफाइल विवरण बचत गर्न सकिएन।';
+
+  @override
+  String get profileInvalidChild => 'कृपया नाम र जन्म मिति प्रविष्ट गर्नुहोस्।';
+
+  @override
+  String get profileChildNotFound => 'बच्चाको विवरण फेला परेन।';
+
+  @override
+  String get selectChildTitle => 'बच्चा छान्नुहोस्';
+
+  @override
+  String get noChildrenMessage => 'अहिलेसम्म कुनै बच्चा थपिएको छैन।';
+
+  @override
+  String get updateVaccinationScheduleTitle => 'खोप तालिका अद्यावधिक गर्ने?';
+
+  @override
+  String get updateVaccinationScheduleMessage =>
+      'तपाईंको बच्चाको जन्म मिति वा लिङ्ग परिवर्तन गर्दा खोप तालिका परिवर्तन हुन सक्छ। यी परिवर्तनहरू बचत गरिनेछन् र तपाईंले विवरण फेरि परिवर्तन नगरेसम्म प्रयोग हुनेछन्। आवश्यक परेमा तपाईंले यी विवरणहरू पछि फेरि सम्पादन गर्न सक्नुहुन्छ।';
+
+  @override
+  String get deleteChildTitle => 'बच्चा मेटाउने?';
+
+  @override
+  String get deleteChildMessage =>
+      'यसले यो बच्चाको जानकारी र खोपका अभिलेखहरू स्थायी रूपमा मेटाउनेछ। यो कार्य पूर्ववत गर्न सकिँदैन।';
+
+  @override
+  String get deleteChildConfirm => 'बच्चा मेटाउनुहोस्';
+
+  @override
+  String get deleteChildSuccess => 'बच्चा मेटाइयो।';
+
+  @override
+  String get deleteChildError => 'बच्चा मेटाउन सकिएन।';
+
+  @override
   String appLanguageLoadError(Object error) {
     return 'भाषा सेटिङहरू लोड गर्न सकिएन: $error';
   }
