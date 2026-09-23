@@ -12,6 +12,7 @@ import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart'
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
+import 'package:tikasathi/features/vaccine_records/presentation/missed_vaccines_dialog.dart';
 
 /// Unified screen combining Vaccine Records and Vaccine History.
 ///
@@ -154,49 +155,7 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
       if (mounted) {
         setState(() => _isSaving = false);
         if (markComplete && hasOverdue) {
-          await showDialog<void>(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext dialogContext) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                title: Row(
-                  children: [
-                    const Icon(
-                      Icons.warning_amber_rounded,
-                      color: Color(0xFFCD2E2E),
-                      size: 28,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        localizations.overdueVaccinesDialogTitle,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-                content: Text(
-                  localizations.overdueVaccinesDialogMessage,
-                  style: const TextStyle(fontSize: 15, height: 1.4),
-                ),
-                actions: [
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: const Color(0xFF0F52BA),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () => Navigator.of(dialogContext).pop(),
-                    child: Text(localizations.actionUnderstand),
-                  ),
-                ],
-              );
-            },
-          );
+          await showMissedVaccinesDialog(context);
         } else if (markComplete) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

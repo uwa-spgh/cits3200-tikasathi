@@ -536,6 +536,180 @@ abstract class AppLocalizations {
   /// **'Could not save language.'**
   String get settingsLanguageSaveError;
 
+  /// No description provided for @manageProfilesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage profiles'**
+  String get manageProfilesTitle;
+
+  /// No description provided for @editCaregiverAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit caregiver details'**
+  String get editCaregiverAction;
+
+  /// No description provided for @editChildAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit child details'**
+  String get editChildAction;
+
+  /// No description provided for @deleteChildAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete child'**
+  String get deleteChildAction;
+
+  /// No description provided for @editCaregiverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit caregiver details'**
+  String get editCaregiverTitle;
+
+  /// No description provided for @editChildTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit child details'**
+  String get editChildTitle;
+
+  /// No description provided for @editChildTitleWithName.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {childName}\'s details'**
+  String editChildTitleWithName(String childName);
+
+  /// No description provided for @profileSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get profileSave;
+
+  /// No description provided for @profileCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get profileCancel;
+
+  /// No description provided for @profileContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get profileContinue;
+
+  /// No description provided for @profileBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get profileBack;
+
+  /// No description provided for @profileLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load profile details.'**
+  String get profileLoadError;
+
+  /// No description provided for @profileSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save profile details.'**
+  String get profileSaveError;
+
+  /// No description provided for @profileInvalidChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a name and date of birth.'**
+  String get profileInvalidChild;
+
+  /// No description provided for @profileChildNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Child details could not be found.'**
+  String get profileChildNotFound;
+
+  /// No description provided for @selectChildTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a child'**
+  String get selectChildTitle;
+
+  /// No description provided for @noChildrenMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No children have been added yet.'**
+  String get noChildrenMessage;
+
+  /// No description provided for @updateVaccinationScheduleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update vaccination schedule?'**
+  String get updateVaccinationScheduleTitle;
+
+  /// No description provided for @updateVaccinationScheduleProfileName.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating child profile: {childName}'**
+  String updateVaccinationScheduleProfileName(String childName);
+
+  /// No description provided for @updateVaccinationScheduleMessageFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing your child\'s date of birth or sex may change their vaccination schedule.'**
+  String get updateVaccinationScheduleMessageFirst;
+
+  /// No description provided for @updateVaccinationScheduleMessageSecond.
+  ///
+  /// In en, this message translates to:
+  /// **'These changes will be saved and used until you change the details again.'**
+  String get updateVaccinationScheduleMessageSecond;
+
+  /// No description provided for @updateVaccinationScheduleMessageThird.
+  ///
+  /// In en, this message translates to:
+  /// **'You can edit these details again later if needed.'**
+  String get updateVaccinationScheduleMessageThird;
+
+  /// No description provided for @deleteChildTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete child?'**
+  String get deleteChildTitle;
+
+  /// No description provided for @deleteChildProfileName.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting child profile: {childName}'**
+  String deleteChildProfileName(String childName);
+
+  /// No description provided for @deleteChildMessageFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently delete this child\'s information and vaccination records.'**
+  String get deleteChildMessageFirst;
+
+  /// No description provided for @deleteChildMessageUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone.'**
+  String get deleteChildMessageUndo;
+
+  /// No description provided for @deleteChildConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete child'**
+  String get deleteChildConfirm;
+
+  /// No description provided for @deleteChildSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Child deleted.'**
+  String get deleteChildSuccess;
+
+  /// No description provided for @deleteChildError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete child.'**
+  String get deleteChildError;
+
   /// No description provided for @appLanguageLoadError.
   ///
   /// In en, this message translates to:
