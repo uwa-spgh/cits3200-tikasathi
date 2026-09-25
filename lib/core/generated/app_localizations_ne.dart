@@ -223,6 +223,10 @@ class AppLocalizationsNe extends AppLocalizations {
   String get healthFacilityPhoneHint => 'फोन नम्बर लेख्नुहोस्';
 
   @override
+  String get healthFacilityInvalidPhone =>
+      'कृपया मान्य फोन नम्बर प्रविष्ट गर्नुहोस्';
+
+  @override
   String get healthFacilitySave => 'बचत गर्नुहोस्';
 
   @override
@@ -396,6 +400,18 @@ class AppLocalizationsNe extends AppLocalizations {
       'तपाईंको ठेगाना प्रविष्ट गर्नुहोस्';
 
   @override
+  String get onboardingErrorEmptyCaregiverName =>
+      'कृपया हेरचाहकर्ताको नाम प्रविष्ट गर्नुहोस्';
+
+  @override
+  String get onboardingErrorEmptyCaregiverPhone =>
+      'कृपया हेरचाहकर्ताको फोन नम्बर प्रविष्ट गर्नुहोस्';
+
+  @override
+  String get onboardingErrorInvalidPhone =>
+      'कृपया मान्य फोन नम्बर प्रविष्ट गर्नुहोस्';
+
+  @override
   String onboardingStepLabel(Object current, Object total) {
     return 'चरण $current/ $total';
   }
@@ -438,7 +454,11 @@ class AppLocalizationsNe extends AppLocalizations {
       'कृपया मान्य जन्म मिति प्रविष्ट गर्नुहोस्';
 
   @override
-  String get onboardingErrorInvalidDob => 'अवैध जन्म मिति';
+  String get onboardingErrorFutureDob => 'जन्म मिति भविष्यको हुन सक्दैन';
+
+  @override
+  String get onboardingErrorTooOldDob =>
+      'बच्चा १८ वर्षभन्दा कम उमेरको हुनुपर्छ';
 
   @override
   String onboardingErrorSaveSetup(Object error) {
@@ -727,9 +747,6 @@ class AppLocalizationsNe extends AppLocalizations {
   String vaccineScheduleOverdueBy(Object count) {
     return '$count दिन ढिला';
   }
-
-  @override
-  String get onboardingErrorFutureDob => 'जन्म मिति भविष्यको हुन सक्दैन';
 
   @override
   String get overdueVaccinesDialogTitle => 'छुटेका खोप';

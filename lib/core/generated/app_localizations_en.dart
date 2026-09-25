@@ -221,6 +221,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get healthFacilityPhoneHint => 'Enter the phone number';
 
   @override
+  String get healthFacilityInvalidPhone => 'Please enter a valid phone number';
+
+  @override
   String get healthFacilitySave => 'Save';
 
   @override
@@ -392,6 +395,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingCaregiverAddressHint => 'Enter your street address';
 
   @override
+  String get onboardingErrorEmptyCaregiverName =>
+      'Please enter caregiver\'s name';
+
+  @override
+  String get onboardingErrorEmptyCaregiverPhone =>
+      'Please enter caregiver\'s phone number';
+
+  @override
+  String get onboardingErrorInvalidPhone => 'Please enter a valid phone number';
+
+  @override
   String onboardingStepLabel(Object current, Object total) {
     return 'Step $current of $total';
   }
@@ -433,7 +447,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingErrorInvalidDate => 'Please enter a valid Date of Birth';
 
   @override
-  String get onboardingErrorInvalidDob => 'Invalid Date of Birth';
+  String get onboardingErrorFutureDob =>
+      'Date of Birth cannot be in the future';
+
+  @override
+  String get onboardingErrorTooOldDob => 'Child must be under 18 years old';
 
   @override
   String onboardingErrorSaveSetup(Object error) {
@@ -732,10 +750,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String vaccineScheduleOverdueBy(Object count) {
     return 'Overdue by $count day(s)';
   }
-
-  @override
-  String get onboardingErrorFutureDob =>
-      'Date of Birth cannot be in the future';
 
   @override
   String get overdueVaccinesDialogTitle => 'Missed Vaccines';
