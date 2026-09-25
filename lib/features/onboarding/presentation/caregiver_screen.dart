@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/onboarding/presentation/child_screen.dart';
+import 'package:tikasathi/features/settings/domain/phone_number_validation.dart';
 
 class CaregiverScreen extends ConsumerStatefulWidget {
   const CaregiverScreen({super.key});
@@ -25,9 +26,34 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
   }
 
   void _onContinue() {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+    final String name = _nameController.text.trim();
+    final String phone = _phoneController.text.trim();
+
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(localizations.onboardingErrorEmptyCaregiverName)),
+      );
+      return;
+    }
+    if (phone.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(localizations.onboardingErrorEmptyCaregiverPhone)),
+      );
+      return;
+    }
+    if (!isValidPhoneNumber(phone, allowEmpty: false)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(localizations.onboardingErrorInvalidPhone)),
+      );
+      return;
+    }
+
     ref.read(onboardingControllerProvider.notifier).updateCaregiverInfo(
-          name: _nameController.text.trim(),
-          phone: _phoneController.text.trim(),
+          name: name,
+          phone: phone,
           address: _addressController.text.trim(),
         );
 

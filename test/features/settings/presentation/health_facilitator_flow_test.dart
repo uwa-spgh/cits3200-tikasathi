@@ -16,6 +16,81 @@ import 'package:tikasathi/features/settings/presentation/health_facilitator_scre
 import '../../../helpers/fake_settings_repository.dart';
 
 void main() {
+  testWidgets('allows an empty optional facilitator phone number',
+      (WidgetTester tester) async {
+    final database = AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(database.close);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          appDatabaseProvider.overrideWithValue(database),
+          settingsRepositoryProvider.overrideWith(
+            (ref) => FakeSettingsRepository(language: AppLanguage.english),
+          ),
+        ],
+        child: const MaterialApp(
+          locale: Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(body: HealthFacilitatorScreen()),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField).at(0), 'Maya');
+    await tester.enterText(find.byType(TextField).at(1), 'Ward 4');
+    final saveButton = find.widgetWithText(ElevatedButton, 'Save');
+    await tester.ensureVisible(saveButton);
+    await tester.tap(saveButton);
+    await tester.pumpAndSettle();
+
+    final facilitator =
+        await database.healthFacilitatorsDao.getLocalFacilitator();
+    expect(facilitator?.phone, isEmpty);
+  });
+
+  testWidgets('rejects invalid facilitator phone numbers without saving',
+      (WidgetTester tester) async {
+    final database = AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(database.close);
+    final facilitatorStream = StreamController<HealthFacilitator?>.broadcast();
+    addTearDown(facilitatorStream.close);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          appDatabaseProvider.overrideWithValue(database),
+          healthFacilitatorProvider.overrideWith(
+            (ref) => facilitatorStream.stream,
+          ),
+          settingsRepositoryProvider.overrideWith(
+            (ref) => FakeSettingsRepository(language: AppLanguage.english),
+          ),
+        ],
+        child: const MaterialApp(
+          locale: Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(body: HealthFacilitatorScreen()),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    await tester.enterText(find.byType(TextField).at(0), 'Maya');
+    await tester.enterText(find.byType(TextField).at(1), 'Ward 4');
+    await tester.enterText(find.byType(TextField).at(2), '98 000abc');
+    final saveButton = find.widgetWithText(ElevatedButton, 'Save');
+    await tester.ensureVisible(saveButton);
+    await tester.tap(saveButton);
+    await tester.pump();
+
+    expect(find.text('Please enter a valid phone number'), findsOneWidget);
+    expect(await database.healthFacilitatorsDao.getLocalFacilitator(), isNull);
+  });
+
   testWidgets('saves and edits the facilitator from Settings',
       (WidgetTester tester) async {
     final database = AppDatabase.forTesting(NativeDatabase.memory());

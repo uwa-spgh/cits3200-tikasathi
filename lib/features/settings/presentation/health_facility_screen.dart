@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/settings/domain/health_facility_controller.dart';
+import 'package:tikasathi/features/settings/domain/phone_number_validation.dart';
 
 class HealthFacilityScreen extends ConsumerStatefulWidget {
   const HealthFacilityScreen({this.facility, super.key});
@@ -37,11 +38,20 @@ class _HealthFacilityScreenState extends ConsumerState<HealthFacilityScreen> {
   }
 
   Future<void> _save() async {
+    final String phone = _phoneController.text.trim();
+    if (!isValidPhoneNumber(phone, allowEmpty: true)) {
+      final localizations = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(localizations.healthFacilityInvalidPhone)),
+      );
+      return;
+    }
+
     final bool saved =
         await ref.read(healthFacilityControllerProvider.notifier).save(
               name: _nameController.text.trim(),
               address: _addressController.text.trim(),
-              phone: _phoneController.text.trim(),
+              phone: phone,
             );
     if (!mounted) {
       return;
