@@ -556,9 +556,6 @@ class AppLocalizationsNe extends AppLocalizations {
   String get recordDoseTapToChange => 'परिवर्तन गर्न थिच्नुहोस्';
 
   @override
-  String get recordDoseTickedLabel => 'चिन्ह लगाइयो';
-
-  @override
   String get recordDoseShowMore => 'थप खोपहरू देखाउनुहोस्';
 
   @override

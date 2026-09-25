@@ -1028,12 +1028,6 @@ abstract class AppLocalizations {
   /// **'Tap to change'**
   String get recordDoseTapToChange;
 
-  /// Badge shown on a dose row the user has ticked
-  ///
-  /// In en, this message translates to:
-  /// **'Ticked'**
-  String get recordDoseTickedLabel;
-
   /// Button revealing doses that are not due yet
   ///
   /// In en, this message translates to:

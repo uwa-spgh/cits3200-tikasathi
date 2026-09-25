@@ -432,10 +432,6 @@
   "@recordDoseTapToChange": {
     "description": "Hint telling the user the date card can be tapped"
   },
-  "recordDoseTickedLabel": "Ticked",
-  "@recordDoseTickedLabel": {
-    "description": "Badge shown on a dose row the user has ticked"
-  },
   "recordDoseShowMore": "Show more vaccines",
   "@recordDoseShowMore": {
     "description": "Button revealing doses that are not due yet"

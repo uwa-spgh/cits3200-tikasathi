@@ -549,9 +549,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordDoseTapToChange => 'Tap to change';
 
   @override
-  String get recordDoseTickedLabel => 'Ticked';
-
-  @override
   String get recordDoseShowMore => 'Show more vaccines';
 
   @override
