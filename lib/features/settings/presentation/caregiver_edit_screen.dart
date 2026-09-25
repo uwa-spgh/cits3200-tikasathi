@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
+import 'package:tikasathi/features/settings/domain/phone_number_validation.dart';
 
 class CaregiverEditScreen extends ConsumerStatefulWidget {
   const CaregiverEditScreen({super.key});
@@ -48,11 +49,37 @@ class _CaregiverEditScreenState extends ConsumerState<CaregiverEditScreen> {
   }
 
   Future<void> _save() async {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+    final String name = _nameController.text.trim();
+    final String phone = _phoneController.text.trim();
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(localizations.onboardingErrorEmptyCaregiverName),
+        ),
+      );
+      return;
+    }
+    if (phone.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(localizations.onboardingErrorEmptyCaregiverPhone),
+        ),
+      );
+      return;
+    }
+    if (!isValidPhoneNumber(phone, allowEmpty: false)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(localizations.onboardingErrorInvalidPhone)),
+      );
+      return;
+    }
+
     setState(() => _saving = true);
     try {
       await ref.read(secureStorageServiceProvider).saveCaregiverProfile(
-            name: _nameController.text.trim(),
-            phone: _phoneController.text.trim(),
+            name: name,
+            phone: phone,
             address: _addressController.text.trim(),
           );
       if (mounted) Navigator.of(context).pop();
