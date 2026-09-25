@@ -76,67 +76,38 @@ class _VaccineScheduleTable extends StatelessWidget {
               )
             else
               Expanded(
-                child: SingleChildScrollView(
-                  child: Table(
-                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    columnWidths: const {
-                      0: FlexColumnWidth(0.25),
-                      1: IntrinsicColumnWidth(),
-                      2: FlexColumnWidth(0.75)
-                    },
-                    children: dues
-                        .map(
-                          (due) => TableRow(
-                            children: [
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Text(
-                                  DateFormat('d MMM y', locale)
-                                      .format(due.dueDate),
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    color: Color(0xFF94A3B8),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                )
-                              ),
-                              Container(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Icon(Icons.check_box_outline_blank, color: due.dueDate.isBefore(now) ? const Color(0xFFF5B544) : const Color(0xFF475569))
-                              ),
-                              Text(
-                                '${due.vaccineCode} (${localizations.dose} ${due.doseNumber})',
-                              )
-                            ],
-                          ),
-                        )
-                        .toList(),
-                  )
-                ),
+                child: ListView.separated(itemBuilder: (context, index) {
+                  final due = dues[index];
+                  final isOverdue = due.dueDate.isBefore(now);
+                  final statusColor = isOverdue ? const Color(0xFFF5B544) : const Color(0xFF94A3B8);
+                  final statusDarker = isOverdue ? const Color(0xFFF5B544) : const Color(0xFF475569);
+                  final isFirst = index == 0;
+                  final isLast = index == dues.length - 1;
+
+                  return Row(children: [
+                    Flexible(child: Align(alignment: Alignment.topRight, child: Text(
+                      DateFormat('d MMM y', locale).format(due.dueDate),
+                      style: TextStyle(fontSize: 13, color: statusColor, fontWeight: FontWeight.w500)
+                      ))
+                    ),
+                    Padding(padding: const EdgeInsets.fromLTRB(12, 0, 12, 0), child: 
+                      Column(children: [
+                        Container(width: 4, height: 12, color: isFirst ? Colors.transparent : const Color(0xFF94A3B8)),
+                        Icon(Icons.check_box_outline_blank, color: statusColor),
+                        Container(width: 4, height: 12, color: isLast ? Colors.transparent : const Color(0xFF94A3B8))
+                      ])
+                    ),
+                    Flexible(flex: 2, child: Text('${due.vaccineCode} (${localizations.dose} ${due.doseNumber})', style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                      color: statusDarker,
+                    )))
+                  ]);
+                }, separatorBuilder: (context, index) {
+                  
+                  return const SizedBox.shrink();
+                }, itemCount: dues.length)
               ),
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    offset: const Offset(0, -4),
-                    blurRadius: 10,
-                  ),
-                ],
-              ),
-              child: TextButton(
-                onPressed: () => Navigator.of(context).maybePop(),
-                child: Text(
-                  localizations.vaccineScheduleReturn,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),
