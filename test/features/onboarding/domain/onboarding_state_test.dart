@@ -25,6 +25,21 @@ final class _FailingSettingsRepository implements SettingsRepository {
   }
 }
 
+final class _FailsOnceSettingsRepository implements SettingsRepository {
+  bool shouldFail = true;
+
+  @override
+  Future<AppLanguage> getLanguage() async => AppLanguage.nepali;
+
+  @override
+  Future<void> setLanguage(AppLanguage language) async {
+    if (shouldFail) {
+      shouldFail = false;
+      throw Exception('write failed');
+    }
+  }
+}
+
 void main() {
   late _MockSecureStorageService secureStorage;
 
@@ -118,5 +133,68 @@ void main() {
       ),
       '👦',
     );
+  });
+
+  test('concurrent finishSetup calls create one child profile', () async {
+    final AppDatabase database =
+        AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(database.close);
+    final ProviderContainer container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(database),
+        secureStorageServiceProvider.overrideWithValue(secureStorage),
+        settingsRepositoryProvider.overrideWith(
+          (ref) => FakeSettingsRepository(language: AppLanguage.english),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final OnboardingController controller =
+        container.read(onboardingControllerProvider.notifier);
+    controller.updateChildInfo(
+      name: 'Nima',
+      dob: DateTime(2020),
+      sex: 'Boy',
+    );
+
+    final results = await Future.wait<String?>([
+      controller.finishSetup(),
+      controller.finishSetup(),
+    ]);
+
+    expect(results, hasLength(2));
+    expect(results[0], results[1]);
+    expect(await database.childProfilesDao.getAllChildProfiles(), hasLength(1));
+  });
+
+  test('retry after a post-insert failure reuses the child profile', () async {
+    final AppDatabase database =
+        AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(database.close);
+    final _FailsOnceSettingsRepository repository =
+        _FailsOnceSettingsRepository();
+    final ProviderContainer container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(database),
+        secureStorageServiceProvider.overrideWithValue(secureStorage),
+        settingsRepositoryProvider.overrideWith((ref) => repository),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final OnboardingController controller =
+        container.read(onboardingControllerProvider.notifier);
+    controller.updateChildInfo(
+      name: 'Nima',
+      dob: DateTime(2020),
+      sex: 'Boy',
+    );
+
+    expect(await controller.finishSetup(), isNull);
+    final String? childId = await controller.finishSetup();
+
+    expect(childId, isNotNull);
+    expect(await database.childProfilesDao.getAllChildProfiles(), hasLength(1));
   });
 }

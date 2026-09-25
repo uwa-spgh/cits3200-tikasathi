@@ -563,13 +563,6 @@ class _DueTile extends StatelessWidget {
                                   ),
                             ),
                           ),
-                          if (isSelected)
-                            _Pill(
-                              label: localizations.recordDoseTickedLabel,
-                              background: _upToDateSurface,
-                              foreground: AppTheme.statusUpToDateText,
-                              icon: Icons.check_rounded,
-                            ),
                         ],
                       ),
                       const SizedBox(height: 6),

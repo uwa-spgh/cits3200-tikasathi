@@ -6,6 +6,7 @@ import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
 import 'package:tikasathi/features/vaccine_records/presentation/missed_vaccines_dialog.dart';
+import 'package:tikasathi/features/child/domain/date_of_birth_validation.dart';
 
 class ChildEditScreen extends ConsumerStatefulWidget {
   const ChildEditScreen({required this.childId, super.key});
@@ -70,16 +71,25 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
           .showSnackBar(SnackBar(content: Text(l10n.profileInvalidChild)));
       return;
     }
-    final dob = DateTime(year, month, day);
-    final now = DateTime.now();
-    if (dob.year != year ||
-        dob.month != month ||
-        dob.day != day ||
-        dob.isAfter(DateTime(now.year, now.month, now.day))) {
+    final ChildDateOfBirthValidation dobValidation = validateChildDateOfBirth(
+      day: day,
+      month: month,
+      year: year,
+    );
+    if (!dobValidation.isValid) {
+      final String message = switch (dobValidation.error) {
+        ChildDateOfBirthError.future => l10n.onboardingErrorFutureDob,
+        ChildDateOfBirthError.tooOld => l10n.onboardingErrorTooOldDob,
+        ChildDateOfBirthError.invalid ||
+        null =>
+          l10n.onboardingErrorInvalidDate,
+      };
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.onboardingErrorInvalidDob)));
+        SnackBar(content: Text(message)),
+      );
       return;
     }
+    final DateTime dob = dobValidation.dateOfBirth!;
     _dob = dob;
     final changedDemographics =
         _dob != _child!.dateOfBirth || _sex != _child!.sex;

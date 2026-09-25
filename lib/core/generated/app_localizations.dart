@@ -488,6 +488,12 @@ abstract class AppLocalizations {
   /// **'Enter the phone number'**
   String get healthFacilityPhoneHint;
 
+  /// No description provided for @healthFacilityInvalidPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid phone number'**
+  String get healthFacilityInvalidPhone;
+
   /// No description provided for @healthFacilitySave.
   ///
   /// In en, this message translates to:
@@ -800,6 +806,24 @@ abstract class AppLocalizations {
   /// **'Enter your street address'**
   String get onboardingCaregiverAddressHint;
 
+  /// No description provided for @onboardingErrorEmptyCaregiverName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter caregiver\'s name'**
+  String get onboardingErrorEmptyCaregiverName;
+
+  /// No description provided for @onboardingErrorEmptyCaregiverPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter caregiver\'s phone number'**
+  String get onboardingErrorEmptyCaregiverPhone;
+
+  /// No description provided for @onboardingErrorInvalidPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid phone number'**
+  String get onboardingErrorInvalidPhone;
+
   /// No description provided for @onboardingStepLabel.
   ///
   /// In en, this message translates to:
@@ -878,11 +902,17 @@ abstract class AppLocalizations {
   /// **'Please enter a valid Date of Birth'**
   String get onboardingErrorInvalidDate;
 
-  /// No description provided for @onboardingErrorInvalidDob.
+  /// No description provided for @onboardingErrorFutureDob.
   ///
   /// In en, this message translates to:
-  /// **'Invalid Date of Birth'**
-  String get onboardingErrorInvalidDob;
+  /// **'Date of Birth cannot be in the future'**
+  String get onboardingErrorFutureDob;
+
+  /// No description provided for @onboardingErrorTooOldDob.
+  ///
+  /// In en, this message translates to:
+  /// **'Child must be under 18 years old'**
+  String get onboardingErrorTooOldDob;
 
   /// No description provided for @onboardingErrorSaveSetup.
   ///
@@ -1027,12 +1057,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tap to change'**
   String get recordDoseTapToChange;
-
-  /// Badge shown on a dose row the user has ticked
-  ///
-  /// In en, this message translates to:
-  /// **'Ticked'**
-  String get recordDoseTickedLabel;
 
   /// Button revealing doses that are not due yet
   ///
@@ -1297,12 +1321,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Overdue by {count} day(s)'**
   String vaccineScheduleOverdueBy(Object count);
-
-  /// No description provided for @onboardingErrorFutureDob.
-  ///
-  /// In en, this message translates to:
-  /// **'Date of Birth cannot be in the future'**
-  String get onboardingErrorFutureDob;
 
   /// No description provided for @overdueVaccinesDialogTitle.
   ///
