@@ -77,44 +77,40 @@ class _VaccineScheduleTable extends StatelessWidget {
             else
               Expanded(
                 child: SingleChildScrollView(
-                  child: IgnorePointer(
-                    child: Table(
-                      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                      columnWidths: const {
-                        0: FlexColumnWidth(0.25),
-                        1: IntrinsicColumnWidth(),
-                        2: FlexColumnWidth(0.75)
-                      },
-                      children: dues
-                          .map(
-                            (due) => TableRow(
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    DateFormat('d MMM y', locale)
-                                        .format(due.dueDate),
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                      color: Color(0xFF94A3B8),
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  )
-                                ),
-                                Stack(
-                                  children: [
-                                    // TODO: add vertical line behind checkbox
-                                    Checkbox(value: true, onChanged: (value) => {})
-                                  ],
-                                ),
-                                Text(
-                                  '${due.vaccineCode} (${localizations.dose} ${due.doseNumber})',
+                  child: Table(
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    columnWidths: const {
+                      0: FlexColumnWidth(0.25),
+                      1: IntrinsicColumnWidth(),
+                      2: FlexColumnWidth(0.75)
+                    },
+                    children: dues
+                        .map(
+                          (due) => TableRow(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  DateFormat('d MMM y', locale)
+                                      .format(due.dueDate),
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: Color(0xFF94A3B8),
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 )
-                              ],
-                            ),
-                          )
-                          .toList(),
-                    ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Icon(Icons.check_box_outline_blank, color: due.dueDate.isBefore(now) ? const Color(0xFFF5B544) : const Color(0xFF475569))
+                              ),
+                              Text(
+                                '${due.vaccineCode} (${localizations.dose} ${due.doseNumber})',
+                              )
+                            ],
+                          ),
+                        )
+                        .toList(),
                   )
                 ),
               ),
