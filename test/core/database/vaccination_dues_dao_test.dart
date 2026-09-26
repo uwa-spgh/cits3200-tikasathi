@@ -514,5 +514,51 @@ void main() {
           .get();
       expect(dues, isNotEmpty);
     });
+
+    group('reminders', () {
+      Future<List<Reminder>> remindersFor(String childId) {
+        return (database.select(database.reminders)
+              ..where((row) => row.childId.equals(childId)))
+            .get();
+      }
+
+      // Dues whose reminders have all passed get none, so the reminders cover
+      // some of the dues rather than every one.
+      test('plans reminders for the dues it inserts', () async {
+        await insertChild('reminder-child');
+
+        await vaccinationDuesDao.insertDuesForChild('reminder-child');
+
+        final dues = await duesFor('reminder-child');
+        final planned = await remindersFor('reminder-child');
+        expect(dues, isNotEmpty);
+        expect(planned, isNotEmpty);
+        expect(
+          dues.map((due) => due.id).toSet(),
+          containsAll(planned.map((reminder) => reminder.dueId).toSet()),
+        );
+      });
+
+      test('replans reminders when dues are recalculated', () async {
+        await insertChild('reminder-child');
+        await vaccinationDuesDao.insertDuesForChild('reminder-child');
+        final first = await remindersFor('reminder-child');
+
+        await vaccinationDuesDao.recalculateDuesForChild('reminder-child');
+
+        final dues = await duesFor('reminder-child');
+        final planned = await remindersFor('reminder-child');
+        expect(planned, isNotEmpty);
+        // The regenerated dues get new ids, so the old reminders cannot survive.
+        expect(
+          planned.map((reminder) => reminder.id).toSet(),
+          isNot(first.map((reminder) => reminder.id).toSet()),
+        );
+        expect(
+          dues.map((due) => due.id).toSet(),
+          containsAll(planned.map((reminder) => reminder.dueId).toSet()),
+        );
+      });
+    });
   });
 }

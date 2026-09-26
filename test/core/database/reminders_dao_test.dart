@@ -100,6 +100,60 @@ void main() {
       );
     });
 
+    test('plans reminders for every due a child has', () async {
+      await insertChildWithDue();
+      await insertDue(
+        id: 'due-2',
+        childId: 'child-1',
+        vaccineCode: 'MR',
+        date: DateTime(2024, 8, 20),
+      );
+
+      final scheduled = await remindersDao.scheduleRemindersForChild(
+        'child-1',
+        from: wellBefore,
+      );
+
+      final expected = planReminders(dueDate, from: wellBefore).length +
+          planReminders(DateTime(2024, 8, 20), from: wellBefore).length;
+      expect(scheduled, hasLength(expected));
+      expect(
+        scheduled.map((reminder) => reminder.dueId).toSet(),
+        {'due-1', 'due-2'},
+      );
+      expect(
+        scheduled.map((reminder) => reminder.notificationId).toSet(),
+        hasLength(expected),
+      );
+    });
+
+    test('replaces a child\'s existing reminders when replanning', () async {
+      await insertChildWithDue();
+
+      await remindersDao.scheduleRemindersForChild('child-1', from: wellBefore);
+      final second = await remindersDao.scheduleRemindersForChild(
+        'child-1',
+        from: wellBefore,
+      );
+
+      final all = await remindersDao.getPendingReminders();
+      expect(all, hasLength(second.length));
+    });
+
+    test('watches only the soonest pending reminders', () async {
+      await insertChildWithDue();
+      await remindersDao.scheduleRemindersForChild('child-1', from: wellBefore);
+
+      final window = await remindersDao.watchPendingReminders(limit: 3).first;
+
+      final all = await remindersDao.getPendingReminders();
+      expect(window, hasLength(3));
+      expect(
+        window.map((reminder) => reminder.scheduledFor),
+        all.take(3).map((reminder) => reminder.scheduledFor),
+      );
+    });
+
     test('gives every reminder a distinct notification id', () async {
       await insertChildWithDue();
       await insertChildWithDue(
