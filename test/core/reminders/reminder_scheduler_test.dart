@@ -103,6 +103,21 @@ void main() {
       verifyNever(() => notifications.cancelReminder(7));
     });
 
+    test('leaves one-off notifications registered', () async {
+      when(() => notifications.registeredNotificationIds()).thenAnswer(
+        (_) async => <int>{NotificationService.oneOffIdFloor + 1},
+      );
+
+      await scheduler.sync([
+        reminder(
+          notificationId: 7,
+          scheduledFor: now.add(const Duration(days: 1)),
+        ),
+      ]);
+
+      verifyNever(() => notifications.cancelReminder(any()));
+    });
+
     test('skips reminders whose time has already passed', () async {
       await scheduler.sync([
         reminder(

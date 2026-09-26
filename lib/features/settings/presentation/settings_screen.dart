@@ -55,8 +55,8 @@ class SettingsScreen extends ConsumerWidget {
     WidgetRef ref, {
     required bool isNp,
   }) async {
-    const int immediateId = 999000;
-    const int scheduledId = 999001;
+    const int immediateId = NotificationService.oneOffIdFloor;
+    const int scheduledId = NotificationService.oneOffIdFloor + 1;
     const Duration delay = Duration(seconds: 30);
 
     final NotificationService notifications =
@@ -70,7 +70,7 @@ class SettingsScreen extends ConsumerWidget {
           ? 'सूचना प्रणाली काम गरिरहेको छ।'
           : 'Notifications are working on this device.',
     );
-    await notifications.scheduleReminder(
+    await notifications.scheduleOneOff(
       notificationId: scheduledId,
       when: DateTime.now().add(delay),
       title: isNp ? 'निर्धारित परीक्षण' : 'Scheduled test',

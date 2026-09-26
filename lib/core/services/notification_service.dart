@@ -15,6 +15,10 @@ class NotificationService {
 
   static const String reminderChannelId = 'vaccination_reminders';
 
+  /// Ids at or above this belong to one-off notifications rather than reminder
+  /// rows, so reminder reconciliation leaves them alone.
+  static const int oneOffIdFloor = 900000;
+
   static const NotificationDetails _reminderDetails = NotificationDetails(
     android: AndroidNotificationDetails(
       reminderChannelId,
@@ -71,6 +75,29 @@ class NotificationService {
 
   Future<void> cancelReminder(int notificationId) {
     return _plugin.cancel(notificationId);
+  }
+
+  /// Schedules a one-off notification that no reminder row owns.
+  ///
+  /// Uses plain inexact scheduling rather than the allow-while-idle mode
+  /// reminders use: that mode is throttled to about one firing every nine
+  /// minutes, which a short check would never survive.
+  Future<void> scheduleOneOff({
+    required int notificationId,
+    required DateTime when,
+    required String title,
+    required String body,
+  }) {
+    return _plugin.zonedSchedule(
+      notificationId,
+      title,
+      body,
+      tz.TZDateTime.from(when, tz.local),
+      _reminderDetails,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      androidScheduleMode: AndroidScheduleMode.inexact,
+    );
   }
 
   /// Raises a notification straight away, to check the device lets them through.

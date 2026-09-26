@@ -54,7 +54,9 @@ class ReminderScheduler {
     };
 
     final Set<int> registered =
-        await _notifications.registeredNotificationIds();
+        (await _notifications.registeredNotificationIds())
+            .where((int id) => id < NotificationService.oneOffIdFloor)
+            .toSet();
 
     for (final int notificationId
         in registered.difference(wanted.keys.toSet())) {
