@@ -39,6 +39,42 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
     });
   }
 
+  /// Replaces every reminder the child has with ones derived from the child's
+  /// current dues.
+  ///
+  /// Planning the whole child at once keeps the notification ids in one run
+  /// rather than restarting the sequence per due.
+  Future<List<Reminder>> scheduleRemindersForChild(
+    String childId, {
+    DateTime? from,
+  }) {
+    return transaction(() async {
+      final dues = await (select(vaccinationDues)
+            ..where((row) => row.childId.equals(childId)))
+          .get();
+
+      await (delete(reminders)..where((row) => row.childId.equals(childId)))
+          .go();
+
+      int notificationId = await _nextNotificationId();
+      final rows = <RemindersCompanion>[
+        for (final due in dues)
+          for (final planned in planReminders(due.dueDate, from: from))
+            RemindersCompanion.insert(
+              id: const Uuid().v4(),
+              childId: childId,
+              dueId: due.id,
+              kind: planned.kind,
+              scheduledFor: planned.scheduledFor,
+              notificationId: notificationId++,
+            ),
+      ];
+      await batch((batch) => batch.insertAll(reminders, rows));
+
+      return _remindersForChild(childId);
+    });
+  }
+
   /// drops the reminders for a due (e.g. once the dose has been recorded)
   Future<int> deleteRemindersForDue(String dueId) {
     return (delete(reminders)..where((row) => row.dueId.equals(dueId))).go();
@@ -53,6 +89,18 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
     return (select(reminders)
           ..where((row) => row.childId.equals(childId))
           ..orderBy([(row) => OrderingTerm.asc(row.scheduledFor)]))
+        .watch();
+  }
+
+  /// The soonest [limit] reminders still waiting to be handed to the device.
+  ///
+  /// iOS keeps at most 64 pending local notifications, so only a window of the
+  /// table is ever registered with the device.
+  Stream<List<Reminder>> watchPendingReminders({required int limit}) {
+    return (select(reminders)
+          ..where((row) => row.deliveredAt.isNull())
+          ..orderBy([(row) => OrderingTerm.asc(row.scheduledFor)])
+          ..limit(limit))
         .watch();
   }
 
@@ -85,6 +133,13 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
         deliveredAt: Value(deliveredAt ?? DateTime.now()),
       ),
     );
+  }
+
+  Future<List<Reminder>> _remindersForChild(String childId) {
+    return (select(reminders)
+          ..where((row) => row.childId.equals(childId))
+          ..orderBy([(row) => OrderingTerm.asc(row.scheduledFor)]))
+        .get();
   }
 
   Future<List<Reminder>> _remindersForDue(String dueId) {

@@ -86,6 +86,10 @@ class VaccinationDuesDao extends DatabaseAccessor<AppDatabase>
         ),
       );
     }
+
+    // Dues carry the dates reminders are derived from, so every path that
+    // writes dues has to replan them or the child ends up with none.
+    await attachedDatabase.remindersDao.scheduleRemindersForChild(childId);
   }
 
   /// Replaces the child's dues with a freshly generated set.
