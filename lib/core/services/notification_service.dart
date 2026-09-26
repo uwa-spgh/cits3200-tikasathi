@@ -5,11 +5,10 @@ import 'package:timezone/timezone.dart' as tz;
 
 part 'notification_service.g.dart';
 
-/// Sets up the device notification plugin and the timezone database it needs.
+/// Wraps the device notification plugin: setup, permission, and the calls that
+/// register or raise a notification.
 ///
-/// Scheduling reminders is not handled here: reminder rows are planned by
-/// `planReminders` and persisted by `RemindersDao`, and handing them to the
-/// device comes later.
+/// Which reminders belong on the device is decided by `ReminderScheduler`.
 class NotificationService {
   NotificationService(this._plugin);
 
@@ -40,8 +39,8 @@ class NotificationService {
     await _plugin.initialize(
       const InitializationSettings(
         android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-        // Permission prompts are deliberately left off: asking for them is its
-        // own piece of work, and iOS only offers the prompt once per install.
+        // Asked for separately in [requestPermission] so the prompt is a
+        // deliberate step whose answer we can read, not a side effect of setup.
         iOS: DarwinInitializationSettings(
           requestAlertPermission: false,
           requestBadgePermission: false,
@@ -75,6 +74,33 @@ class NotificationService {
 
   Future<void> cancelReminder(int notificationId) {
     return _plugin.cancel(notificationId);
+  }
+
+  /// Asks for permission to post notifications.
+  ///
+  /// Android 13 and newer drop every notification until this is granted, and
+  /// iOS shows its prompt only once per install.
+  Future<bool> requestPermission() async {
+    final AndroidFlutterLocalNotificationsPlugin? android =
+        _plugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+    if (android != null) {
+      return await android.requestNotificationsPermission() ?? false;
+    }
+
+    final IOSFlutterLocalNotificationsPlugin? ios =
+        _plugin.resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>();
+    if (ios != null) {
+      return await ios.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          ) ??
+          false;
+    }
+
+    return false;
   }
 
   /// Schedules a one-off notification that no reminder row owns.
