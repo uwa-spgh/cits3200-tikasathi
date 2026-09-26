@@ -13,6 +13,24 @@ part 'notification_service.g.dart';
 class NotificationService {
   NotificationService(this._plugin);
 
+  static const String reminderChannelId = 'vaccination_reminders';
+
+  /// Ids at or above this belong to one-off notifications rather than reminder
+  /// rows, so reminder reconciliation leaves them alone.
+  static const int oneOffIdFloor = 900000;
+
+  static const NotificationDetails _reminderDetails = NotificationDetails(
+    android: AndroidNotificationDetails(
+      reminderChannelId,
+      'Vaccination reminders',
+      channelDescription:
+          'Reminders for upcoming and missed vaccination doses.',
+      importance: Importance.high,
+      priority: Priority.high,
+    ),
+    iOS: DarwinNotificationDetails(),
+  );
+
   final FlutterLocalNotificationsPlugin _plugin;
 
   Future<void> initialize() async {
@@ -31,6 +49,74 @@ class NotificationService {
         ),
       ),
     );
+  }
+
+  /// Registers a reminder with the device for [when].
+  ///
+  /// Inexact so no exact-alarm permission is needed: a vaccination reminder
+  /// does not have to land on the minute.
+  Future<void> scheduleReminder({
+    required int notificationId,
+    required DateTime when,
+    required String title,
+    required String body,
+  }) {
+    return _plugin.zonedSchedule(
+      notificationId,
+      title,
+      body,
+      tz.TZDateTime.from(when, tz.local),
+      _reminderDetails,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+    );
+  }
+
+  Future<void> cancelReminder(int notificationId) {
+    return _plugin.cancel(notificationId);
+  }
+
+  /// Schedules a one-off notification that no reminder row owns.
+  ///
+  /// Uses plain inexact scheduling rather than the allow-while-idle mode
+  /// reminders use: that mode is throttled to about one firing every nine
+  /// minutes, which a short check would never survive.
+  Future<void> scheduleOneOff({
+    required int notificationId,
+    required DateTime when,
+    required String title,
+    required String body,
+  }) {
+    return _plugin.zonedSchedule(
+      notificationId,
+      title,
+      body,
+      tz.TZDateTime.from(when, tz.local),
+      _reminderDetails,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      androidScheduleMode: AndroidScheduleMode.inexact,
+    );
+  }
+
+  /// Raises a notification straight away, to check the device lets them through.
+  Future<void> showNotificationNow({
+    required int notificationId,
+    required String title,
+    required String body,
+  }) {
+    return _plugin.show(notificationId, title, body, _reminderDetails);
+  }
+
+  /// The notification ids the device currently holds a schedule for.
+  ///
+  /// Read from the device rather than tracked in memory, so it stays right
+  /// across app restarts.
+  Future<Set<int>> registeredNotificationIds() async {
+    final List<PendingNotificationRequest> pending =
+        await _plugin.pendingNotificationRequests();
+    return pending.map((request) => request.id).toSet();
   }
 
   /// The timezone database entry matching the device's current UTC offset.

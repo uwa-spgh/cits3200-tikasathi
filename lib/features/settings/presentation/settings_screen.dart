@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
+import 'package:tikasathi/core/services/notification_service.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
@@ -41,6 +42,60 @@ class SettingsScreen extends ConsumerWidget {
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stackTrace) => Center(
           child: Text(localizations.appLanguageLoadError(error.toString()))),
+    );
+  }
+
+  /// Shows one notification now and schedules a second shortly after, then
+  /// reports what the reminders table holds and what the device has registered.
+  ///
+  /// Ids sit well above the reminder sequence so a test cannot collide with a
+  /// real reminder.
+  Future<void> _testNotifications(
+    BuildContext context,
+    WidgetRef ref, {
+    required bool isNp,
+  }) async {
+    const int immediateId = NotificationService.oneOffIdFloor;
+    const int scheduledId = NotificationService.oneOffIdFloor + 1;
+    const Duration delay = Duration(seconds: 30);
+
+    final NotificationService notifications =
+        ref.read(notificationServiceProvider);
+    final AppDatabase database = ref.read(appDatabaseProvider);
+
+    await notifications.showNotificationNow(
+      notificationId: immediateId,
+      title: isNp ? 'परीक्षण सूचना' : 'Test notification',
+      body: isNp
+          ? 'सूचना प्रणाली काम गरिरहेको छ।'
+          : 'Notifications are working on this device.',
+    );
+    await notifications.scheduleOneOff(
+      notificationId: scheduledId,
+      when: DateTime.now().add(delay),
+      title: isNp ? 'निर्धारित परीक्षण' : 'Scheduled test',
+      body: isNp
+          ? 'यो सूचना ३० सेकेन्ड अगाडि निर्धारित गरिएको थियो।'
+          : 'This one was scheduled 30 seconds earlier.',
+    );
+
+    final int pending =
+        (await database.remindersDao.getPendingReminders()).length;
+    final int registered =
+        (await notifications.registeredNotificationIds()).length;
+
+    if (!context.mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(isNp
+            ? 'सूचना पठाइयो। ३० सेकेन्डमा अर्को आउँछ। '
+                'पेन्डिङ रिमाइन्डर: $pending, दर्ता भएका: $registered'
+            : 'Sent one now, another in 30s. '
+                'Pending reminders: $pending, registered with device: $registered'),
+        duration: const Duration(seconds: 6),
+      ),
     );
   }
 
@@ -164,6 +219,16 @@ class SettingsScreen extends ConsumerWidget {
                 facility: facilitator,
               ),
               const SizedBox(height: 32),
+              ElevatedButton(
+                onPressed: () => _testNotifications(context, ref, isNp: isNp),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text(isNp
+                    ? 'DEBUG: सूचना परीक्षण गर्नुहोस्'
+                    : 'DEBUG: Test Notifications'),
+              ),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () async {
                   // Debug: Clear secure storage

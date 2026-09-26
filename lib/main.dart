@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/reminders/reminder_scheduler.dart';
 import 'package:tikasathi/core/services/notification_service.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
@@ -15,6 +16,7 @@ Future<void> main() async {
   // Reused as the app's scope so the initialised service is the one it reads.
   final ProviderContainer container = ProviderContainer();
   await container.read(notificationServiceProvider).initialize();
+  container.read(reminderSchedulerProvider).start();
 
   runApp(
     // ProviderScope is mandatory for Riverpod
