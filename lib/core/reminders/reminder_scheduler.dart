@@ -36,6 +36,43 @@ class ReminderScheduler {
     );
   }
 
+  /// Raises reminders whose time passed without the device delivering them.
+  ///
+  /// Covers the app being closed, the phone being off, or the clock jumping
+  /// forward. Only the most recent per child is raised: a dose overdue for
+  /// months leaves a long trail of reminders, and raising all of them would
+  /// bury the caregiver under notifications for one missed dose. The rest are
+  /// still settled so they never reappear.
+  Future<void> catchUpMissed({DateTime? asOf}) async {
+    final DateTime now = asOf ?? DateTime.now();
+    final List<Reminder> missed =
+        await _database.remindersDao.getPendingRemindersDueBy(now);
+    if (missed.isEmpty) {
+      return;
+    }
+
+    final Map<String, Reminder> latestPerChild = <String, Reminder>{};
+    for (final Reminder reminder in missed) {
+      final Reminder? held = latestPerChild[reminder.childId];
+      if (held == null || reminder.scheduledFor.isAfter(held.scheduledFor)) {
+        latestPerChild[reminder.childId] = reminder;
+      }
+    }
+
+    for (final Reminder reminder in latestPerChild.values) {
+      await _notifications.showNotificationNow(
+        notificationId: reminder.notificationId,
+        title: reminderTitle,
+        body: reminderBody,
+      );
+    }
+
+    await _database.remindersDao.markRemindersDelivered(
+      missed.map((Reminder reminder) => reminder.id).toList(),
+      deliveredAt: now,
+    );
+  }
+
   Future<void> stop() async {
     await _subscription?.cancel();
     _subscription = null;

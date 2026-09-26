@@ -127,6 +127,24 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
         .get();
   }
 
+  /// Marks a batch as delivered in one statement.
+  ///
+  /// A dose missed for a while leaves many reminders behind, so they are
+  /// settled together rather than one round trip each.
+  Future<int> markRemindersDelivered(
+    List<String> ids, {
+    DateTime? deliveredAt,
+  }) {
+    if (ids.isEmpty) {
+      return Future<int>.value(0);
+    }
+    return (update(reminders)..where((row) => row.id.isIn(ids))).write(
+      RemindersCompanion(
+        deliveredAt: Value(deliveredAt ?? DateTime.now()),
+      ),
+    );
+  }
+
   Future<int> markReminderDelivered(String id, {DateTime? deliveredAt}) {
     return (update(reminders)..where((row) => row.id.equals(id))).write(
       RemindersCompanion(
