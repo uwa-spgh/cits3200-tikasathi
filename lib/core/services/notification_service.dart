@@ -15,6 +15,18 @@ class NotificationService {
 
   static const String reminderChannelId = 'vaccination_reminders';
 
+  static const NotificationDetails _reminderDetails = NotificationDetails(
+    android: AndroidNotificationDetails(
+      reminderChannelId,
+      'Vaccination reminders',
+      channelDescription:
+          'Reminders for upcoming and missed vaccination doses.',
+      importance: Importance.high,
+      priority: Priority.high,
+    ),
+    iOS: DarwinNotificationDetails(),
+  );
+
   final FlutterLocalNotificationsPlugin _plugin;
 
   Future<void> initialize() async {
@@ -50,17 +62,7 @@ class NotificationService {
       title,
       body,
       tz.TZDateTime.from(when, tz.local),
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          reminderChannelId,
-          'Vaccination reminders',
-          channelDescription:
-              'Reminders for upcoming and missed vaccination doses.',
-          importance: Importance.high,
-          priority: Priority.high,
-        ),
-        iOS: DarwinNotificationDetails(),
-      ),
+      _reminderDetails,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
@@ -69,6 +71,15 @@ class NotificationService {
 
   Future<void> cancelReminder(int notificationId) {
     return _plugin.cancel(notificationId);
+  }
+
+  /// Raises a notification straight away, to check the device lets them through.
+  Future<void> showNotificationNow({
+    required int notificationId,
+    required String title,
+    required String body,
+  }) {
+    return _plugin.show(notificationId, title, body, _reminderDetails);
   }
 
   /// The notification ids the device currently holds a schedule for.
