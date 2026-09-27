@@ -110,10 +110,12 @@ class ReminderScheduler {
       await _notifications.cancelReminder(notificationId);
     }
 
+    // Every wanted reminder is registered again rather than assumed present.
+    // The plugin's pending list is its own bookkeeping, and Android drops the
+    // real alarms on force-stop or reboot without telling it, so trusting the
+    // list leaves the app believing it is scheduled when nothing is queued.
+    // Scheduling an id that already exists replaces it, so this is idempotent.
     for (final Reminder reminder in wanted.values) {
-      if (registered.contains(reminder.notificationId)) {
-        continue;
-      }
       await _notifications.scheduleReminder(
         notificationId: reminder.notificationId,
         when: reminder.scheduledFor,

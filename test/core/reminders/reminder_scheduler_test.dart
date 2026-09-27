@@ -66,7 +66,11 @@ void main() {
       ).called(1);
     });
 
-    test('leaves reminders the device already holds alone', () async {
+    // The plugin's pending list survives Android dropping the real alarms on
+    // force-stop or reboot, so a reminder it claims to hold is registered again
+    // rather than skipped.
+    test('registers reminders again even when the plugin claims to hold them',
+        () async {
       when(() => notifications.registeredNotificationIds())
           .thenAnswer((_) async => <int>{7});
 
@@ -77,14 +81,14 @@ void main() {
         ),
       ]);
 
-      verifyNever(
+      verify(
         () => notifications.scheduleReminder(
-          notificationId: any(named: 'notificationId'),
+          notificationId: 7,
           when: any(named: 'when'),
           title: any(named: 'title'),
           body: any(named: 'body'),
         ),
-      );
+      ).called(1);
       verifyNever(() => notifications.cancelReminder(any()));
     });
 
