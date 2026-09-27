@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 
 class VaccineScheduleScreen extends ConsumerWidget {
@@ -61,12 +62,18 @@ class _VaccineScheduleTable extends StatelessWidget {
                     icon: const Icon(Icons.arrow_back),
                     tooltip: localizations.vaccineScheduleBack,
                   ),
-                  Text(
-                    localizations.vaccineScheduleTitle,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xFF11284F),
-                        ),
+                  Expanded(child: 
+                    Text(
+                      localizations.vaccineScheduleTitle,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF11284F),
+                      ),
+                    )
+                  ),
+                  ReadAloudButton(
+                    tooltip: localizations.childReadAloudTooltip,
+                    unavailableMessage: localizations.childReadAloudUnavailable,
                   ),
                 ],
               ),
