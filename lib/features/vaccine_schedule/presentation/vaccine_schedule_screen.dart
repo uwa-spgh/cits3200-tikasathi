@@ -149,22 +149,21 @@ class _VaccineScheduleTable extends StatelessWidget {
 
                         if (!isAfterNowDivider && (!isPast || isLast)) {
                           final todayDivider = Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                            child: Row(children: [
-                              Text(
-                                  '${localizations.vaccineScheduleToday} · ${DateFormat('d MMM y', locale).format(now)}',
-                                  style: const TextStyle(
-                                      fontSize: 13,
-                                      color: Color(0xFF0F52BA),
-                                      fontWeight: FontWeight.w500)),
-                              Flexible(
-                                  child: Container(
-                                      height: 2,
-                                      color: const Color(0xFF0F52BA),
-                                      margin: const EdgeInsets.fromLTRB(
-                                          12, 0, 12, 0)))
-                            ]));
+                              padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                              child: Row(children: [
+                                Text(
+                                    '${localizations.vaccineScheduleToday} · ${DateFormat('d MMM y', locale).format(now)}',
+                                    style: const TextStyle(
+                                        fontSize: 13,
+                                        color: Color(0xFF0F52BA),
+                                        fontWeight: FontWeight.w500)),
+                                Flexible(
+                                    child: Container(
+                                        height: 2,
+                                        color: const Color(0xFF0F52BA),
+                                        margin: const EdgeInsets.fromLTRB(
+                                            12, 0, 12, 0)))
+                              ]));
 
                           if (!isPast) {
                             isAfterNowDivider = true;

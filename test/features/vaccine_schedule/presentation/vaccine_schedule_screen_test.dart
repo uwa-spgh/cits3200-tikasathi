@@ -77,7 +77,7 @@ void main() {
     expect(find.text('BCG (Dose 1)'), findsOneWidget);
     expect(find.text('PENTA (Dose 2)'), findsOneWidget);
     expect(find.text('MR (Dose 2)'), findsOneWidget);
-    expect(find.text('Today'), findsOneWidget);
+    expect(find.text('Today · 14 Sep 2026'), findsOneWidget);
   });
 
   testWidgets('shows an empty state when there are no due vaccines', (
