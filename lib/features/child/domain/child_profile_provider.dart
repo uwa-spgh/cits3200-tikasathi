@@ -65,6 +65,11 @@ class ChildProfileDetails {
   VaccinationDue? get followingDue =>
       orderedDueVaccines.length > 1 ? orderedDueVaccines[1] : null;
 
+  List<VaccinationRecord> get orderedVaccineRecords =>
+      List<VaccinationRecord>.from(records)
+        ..sort((VaccinationRecord a, VaccinationRecord b) =>
+            a.administeredDate.compareTo(b.administeredDate));
+
   String ageLabel(AppLocalizations localizations) =>
       formatAge(child.dateOfBirth, localizations);
 
