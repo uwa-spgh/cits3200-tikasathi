@@ -21,16 +21,16 @@ class NotificationService {
 
     await _plugin.initialize(
       const InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-        // Permission prompts are deliberately left off: asking for them is its
-        // own piece of work, and iOS only offers the prompt once per install.
-        iOS: DarwinInitializationSettings(
-          requestAlertPermission: false,
-          requestBadgePermission: false,
-          requestSoundPermission: false,
-        ),
-        linux: LinuxInitializationSettings(defaultActionName: 'Open notification')
-      ),
+          android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+          // Permission prompts are deliberately left off: asking for them is its
+          // own piece of work, and iOS only offers the prompt once per install.
+          iOS: DarwinInitializationSettings(
+            requestAlertPermission: false,
+            requestBadgePermission: false,
+            requestSoundPermission: false,
+          ),
+          linux: LinuxInitializationSettings(
+              defaultActionName: 'Open notification')),
     );
   }
 
