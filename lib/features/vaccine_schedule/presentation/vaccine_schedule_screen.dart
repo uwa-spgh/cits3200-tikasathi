@@ -23,6 +23,7 @@ class VaccineScheduleScreen extends ConsumerWidget {
         child: state.when(
           data: (details) => _VaccineScheduleTable(
             dues: details.orderedDueVaccines,
+            records: details.orderedVaccineRecords.where((record) => details.now.difference(record.administeredDate).inDays <= 7).toList(),
             now: details.now,
           ),
           loading: () => const Center(child: CircularProgressIndicator()),
@@ -35,16 +36,20 @@ class VaccineScheduleScreen extends ConsumerWidget {
 }
 
 class _VaccineScheduleTable extends StatelessWidget {
-  const _VaccineScheduleTable({required this.dues, required this.now});
+  const _VaccineScheduleTable({required this.dues, required this.records, required this.now});
 
   final List<VaccinationDue> dues;
+  final List<VaccinationRecord> records;
   final DateTime now;
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).languageCode;
+
     bool isAfterNowDivider = false;
+    int duesIndex = 0;
+    int recordsIndex = 0;
 
     return Align(
       alignment: Alignment.topCenter,
@@ -85,34 +90,53 @@ class _VaccineScheduleTable extends StatelessWidget {
             else
               Expanded(
                 child: ListView.builder(itemBuilder: (context, index) {
-                  final due = dues[index];
-                  final isOverdue = due.dueDate.isBefore(now);
-                  final statusColor = isOverdue ? const Color(0xFFF5B544) : const Color(0xFF94A3B8);
-                  final statusDarker = isOverdue ? const Color(0xFFF5B544) : const Color(0xFF475569);
+                  bool isDuesRow;
+                  if (duesIndex == dues.length) {
+                    isDuesRow = false;
+                  } else if (recordsIndex == records.length) {
+                    isDuesRow = true;
+                  } else {
+                    final due = dues[duesIndex];
+                    final record = records[recordsIndex];
+
+                    isDuesRow = due.dueDate.isBefore(record.administeredDate);
+                  }
                   final isFirst = index == 0;
-                  final isLast = index == dues.length - 1;
+                  final isLast = index == dues.length + records.length - 1;
 
-                  final vaccineRow = Row(children: [
-                    Flexible(child: Align(alignment: Alignment.topRight, child: Text(
+                  Row vaccineRow;
+                  bool isPast;
+                  if (isDuesRow) {
+                    final due = dues[duesIndex];
+                    isPast = due.dueDate.isBefore(now);
+                    final statusColor = isPast ? const Color(0xFFF5B544) : const Color(0xFF94A3B8);
+                    final statusDarker = isPast ? const Color(0xFFF5B544) : const Color(0xFF475569);
+
+                    vaccineRow = makeVaccineRow(
+                      '${due.vaccineCode} (${localizations.dose} ${due.doseNumber})',
                       DateFormat('d MMM y', locale).format(due.dueDate),
-                      style: TextStyle(fontSize: 13, color: statusColor, fontWeight: FontWeight.w500)
-                      ))
-                    ),
-                    Padding(padding: const EdgeInsets.fromLTRB(12, 0, 12, 0), child: 
-                      Column(children: [
-                        Container(width: 2, height: 12, color: isFirst ? Colors.transparent : const Color(0xFF94A3B8)),
-                        Icon(Icons.check_box_outline_blank, color: statusColor),
-                        Container(width: 2, height: 12, color: isLast ? Colors.transparent : const Color(0xFF94A3B8))
-                      ])
-                    ),
-                    Flexible(flex: 2, child: Text('${due.vaccineCode} (${localizations.dose} ${due.doseNumber})', style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                      color: statusDarker,
-                    )))
-                  ]);
+                      isFirst, isLast,
+                      statusColor,
+                      statusDarker,
+                      false
+                    );
+                    duesIndex++;
+                  } else {
+                    final record = records[recordsIndex];
+                    isPast = true;
+                    
+                    vaccineRow = makeVaccineRow(
+                      '${record.vaccineCode} (${localizations.dose} ${record.doseNumber})',
+                      DateFormat('d MMM y', locale).format(record.administeredDate),
+                      isFirst, isLast,
+                      const Color(0xFF166534),
+                      const Color(0xFF166534),
+                      true
+                    );
+                    recordsIndex++;
+                  }
 
-                  if (!isAfterNowDivider && !isOverdue) {
+                  if (!isAfterNowDivider && !isPast) {
                     isAfterNowDivider = true;
                     return Column(children: [
                       Padding(padding: const EdgeInsets.fromLTRB(12, 0, 12, 0), child: Row(
@@ -128,13 +152,35 @@ class _VaccineScheduleTable extends StatelessWidget {
                   } else {
                     return vaccineRow;
                   }
-                }, itemCount: dues.length)
+                }, itemCount: dues.length + records.length)
               ),
           ],
         ),
       ),
     );
   }
+}
+
+Row makeVaccineRow(String vaccine, String date, bool isFirst, bool isLast, Color statusColor, Color statusDarker, bool isCompleted) {
+  return Row(children: [
+    Flexible(child: Align(alignment: Alignment.topRight, child: Text(
+      date,
+      style: TextStyle(fontSize: 13, color: statusColor, fontWeight: FontWeight.w500)
+      ))
+    ),
+    Padding(padding: const EdgeInsets.fromLTRB(12, 0, 12, 0), child: 
+      Column(children: [
+        Container(width: 2, height: 12, color: isFirst ? Colors.transparent : const Color(0xFF94A3B8)),
+        Icon(isCompleted ? Icons.check_box : Icons.check_box_outline_blank, color: statusColor),
+        Container(width: 2, height: 12, color: isLast ? Colors.transparent : const Color(0xFF94A3B8))
+      ])
+    ),
+    Flexible(flex: 2, child: Text(vaccine, style: TextStyle(
+      fontWeight: FontWeight.w700,
+      fontSize: 16,
+      color: statusDarker,
+    )))
+  ]);
 }
 
 String formatVaccineDueRelativeDate(
