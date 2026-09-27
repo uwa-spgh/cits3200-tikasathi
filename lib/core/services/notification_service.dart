@@ -34,7 +34,6 @@ class NotificationService {
 
   Future<void> initialize() async {
     tz_data.initializeTimeZones();
-    tz.setLocalLocation(_resolveLocalLocation());
 
     await _plugin.initialize(
       const InitializationSettings(
@@ -64,7 +63,7 @@ class NotificationService {
       notificationId,
       title,
       body,
-      tz.TZDateTime.from(when, tz.local),
+      _asDeviceInstant(when),
       _reminderDetails,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
@@ -118,7 +117,7 @@ class NotificationService {
       notificationId,
       title,
       body,
-      tz.TZDateTime.from(when, tz.local),
+      _asDeviceInstant(when),
       _reminderDetails,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
@@ -145,19 +144,15 @@ class NotificationService {
     return pending.map((request) => request.id).toSet();
   }
 
-  /// The timezone database entry matching the device's current UTC offset.
+  /// The instant [when] refers to, expressed in UTC.
   ///
-  /// Offsets are shared by several zones, so this can pick a different name
-  /// than the device reports. Reminders fire at a wall-clock hour, so any zone
-  /// with the same offset and DST behaviour schedules them identically.
-  tz.Location _resolveLocalLocation() {
-    final int offsetMillis = DateTime.now().timeZoneOffset.inMilliseconds;
-    for (final tz.Location location in tz.timeZoneDatabase.locations.values) {
-      if (location.currentTimeZone.offset == offsetMillis) {
-        return location;
-      }
-    }
-    return tz.UTC;
+  /// The plugin hands Android a wall-clock time plus a zone *name*, which
+  /// Android resolves against its own timezone database. Naming a zone picked
+  /// by matching the device's offset put reminders three hours out, because the
+  /// two databases disagreed about that zone. UTC is the one name both agree
+  /// on, and the instant is what we want to preserve anyway.
+  tz.TZDateTime _asDeviceInstant(DateTime when) {
+    return tz.TZDateTime.from(when, tz.UTC);
   }
 }
 
