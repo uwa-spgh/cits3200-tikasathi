@@ -75,6 +75,39 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
     });
   }
 
+  /// Adds a single reminder for [dueId] at [scheduledFor].
+  ///
+  /// Lets a reminder be raised through the normal pipeline without waiting for
+  /// a due date to come round, which is otherwise impossible to observe.
+  Future<Reminder> insertReminderAt({
+    required String dueId,
+    required DateTime scheduledFor,
+    ReminderKind kind = ReminderKind.sameDay,
+  }) {
+    return transaction(() async {
+      final due = await (select(vaccinationDues)
+            ..where((row) => row.id.equals(dueId)))
+          .getSingleOrNull();
+      if (due == null) {
+        throw Exception('no vaccination due with id $dueId');
+      }
+
+      final String id = const Uuid().v4();
+      await into(reminders).insert(
+        RemindersCompanion.insert(
+          id: id,
+          childId: due.childId,
+          dueId: due.id,
+          kind: kind,
+          scheduledFor: scheduledFor,
+          notificationId: await _nextNotificationId(),
+        ),
+      );
+
+      return (select(reminders)..where((row) => row.id.equals(id))).getSingle();
+    });
+  }
+
   /// drops the reminders for a due (e.g. once the dose has been recorded)
   Future<int> deleteRemindersForDue(String dueId) {
     return (delete(reminders)..where((row) => row.dueId.equals(dueId))).go();

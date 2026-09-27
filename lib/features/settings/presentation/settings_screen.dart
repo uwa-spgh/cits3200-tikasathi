@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/services/notification_service.dart';
@@ -94,6 +95,56 @@ class SettingsScreen extends ConsumerWidget {
                 'पेन्डिङ रिमाइन्डर: $pending, दर्ता भएका: $registered'
             : 'Sent one now, another in 30s. '
                 'Pending reminders: $pending, registered with device: $registered'),
+        duration: const Duration(seconds: 6),
+      ),
+    );
+  }
+
+  /// Adds a real reminder two minutes out, so the whole pipeline runs: the row
+  /// is written, the scheduler registers it with the device, and the device
+  /// raises it with the app closed.
+  ///
+  /// The emulator will not fire an alarm that a clock change stepped over, so
+  /// this is the only way to watch a genuine reminder arrive.
+  Future<void> _remindInTwoMinutes(
+    BuildContext context,
+    WidgetRef ref, {
+    required bool isNp,
+  }) async {
+    const Duration delay = Duration(minutes: 2);
+    final AppDatabase database = ref.read(appDatabaseProvider);
+
+    final VaccinationDue? due = await (database.select(database.vaccinationDues)
+          ..limit(1))
+        .getSingleOrNull();
+    if (due == null) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(isNp
+                ? 'कुनै बच्चा वा खोप बाँकी छैन।'
+                : 'Add a child first — there are no doses to remind about.'),
+          ),
+        );
+      }
+      return;
+    }
+
+    final DateTime when = DateTime.now().add(delay);
+    await database.remindersDao.insertReminderAt(
+      dueId: due.id,
+      scheduledFor: when,
+    );
+
+    if (!context.mounted) {
+      return;
+    }
+    final String at = DateFormat('h:mm a').format(when);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(isNp
+            ? 'रिमाइन्डर $at मा आउनेछ। एप बन्द गर्नुहोस्।'
+            : 'A reminder is set for $at. Close the app and wait.'),
         duration: const Duration(seconds: 6),
       ),
     );
@@ -227,6 +278,16 @@ class SettingsScreen extends ConsumerWidget {
                 child: Text(isNp
                     ? 'DEBUG: सूचना परीक्षण गर्नुहोस्'
                     : 'DEBUG: Test Notifications'),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => _remindInTwoMinutes(context, ref, isNp: isNp),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text(isNp
+                    ? 'DEBUG: २ मिनेटमा रिमाइन्डर'
+                    : 'DEBUG: Remind Me In 2 Minutes'),
               ),
               const SizedBox(height: 16),
               ElevatedButton(
