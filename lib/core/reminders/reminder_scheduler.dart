@@ -18,6 +18,15 @@ class ReminderScheduler {
 
   static const int registrationLimit = 60;
 
+  /// The id a missed-dose notification is raised under, for the [index]th child.
+  ///
+  /// Deliberately not the reminder's own id. Settling a reminder makes it
+  /// unwanted, so the next reconcile cancels that id — and cancelling dismisses
+  /// a notification already on screen, not just a scheduled one. Sitting in the
+  /// one-off band keeps these clear of reconciliation entirely.
+  static int missedNotificationId(int index) =>
+      NotificationService.oneOffIdFloor + 100 + index;
+
   final AppDatabase _database;
   final NotificationService _notifications;
 
@@ -59,9 +68,10 @@ class ReminderScheduler {
       }
     }
 
-    for (final Reminder reminder in latestPerChild.values) {
+    final List<String> childIds = latestPerChild.keys.toList()..sort();
+    for (int index = 0; index < childIds.length; index++) {
       await _notifications.showNotificationNow(
-        notificationId: reminder.notificationId,
+        notificationId: missedNotificationId(index),
         title: reminderTitle,
         body: reminderBody,
       );

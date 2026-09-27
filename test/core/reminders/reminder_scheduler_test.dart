@@ -172,21 +172,25 @@ void main() {
         expect(await database.remindersDao.getPendingReminders(), isEmpty);
       });
 
-      test('raises the most recent missed reminder', () async {
+      // Reminder ids are cancelled the moment their row is settled, which would
+      // dismiss the notification we just raised.
+      test('raises missed notifications outside the reminder id range',
+          () async {
         await seedMissedReminders('child-1');
-        final List<Reminder> pending =
-            await database.remindersDao.getPendingReminders();
-        final Reminder latest = pending.last;
 
         await scheduler.catchUpMissed();
 
         verify(
           () => notifications.showNotificationNow(
-            notificationId: latest.notificationId,
+            notificationId: ReminderScheduler.missedNotificationId(0),
             title: any(named: 'title'),
             body: any(named: 'body'),
           ),
         ).called(1);
+        expect(
+          ReminderScheduler.missedNotificationId(0),
+          greaterThanOrEqualTo(NotificationService.oneOffIdFloor),
+        );
       });
 
       test('covers each child separately', () async {
