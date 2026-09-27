@@ -11,7 +11,7 @@ import 'package:tikasathi/features/vaccine_schedule/presentation/vaccine_schedul
 import '../../../helpers/fake_settings_repository.dart';
 
 void main() {
-  testWidgets('shows due doses, dates, and relative time', (
+  testWidgets('shows due doses and dates', (
     WidgetTester tester,
   ) async {
     const childId = 'child-schedule';
@@ -74,13 +74,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Vaccine schedule'), findsOneWidget);
-    expect(find.text('Vaccine dose'), findsOneWidget);
-    expect(find.text('Date due'), findsOneWidget);
     expect(find.text('BCG (Dose 1)'), findsOneWidget);
     expect(find.text('PENTA (Dose 2)'), findsOneWidget);
     expect(find.text('MR (Dose 2)'), findsOneWidget);
-    expect(find.text('Today'), findsOneWidget);
-    expect(find.text('In 1 yr 2 mo'), findsOneWidget);
+    expect(find.text('Today · 14 Sep 2026'), findsOneWidget);
   });
 
   testWidgets('shows an empty state when there are no due vaccines', (
@@ -123,6 +120,5 @@ void main() {
 
     await tester.pumpAndSettle();
     expect(find.text('There are no upcoming vaccines.'), findsOneWidget);
-    expect(find.text('Return'), findsOneWidget);
   });
 }

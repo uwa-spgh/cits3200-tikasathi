@@ -45,6 +45,9 @@ class NotificationService {
           requestBadgePermission: false,
           requestSoundPermission: false,
         ),
+        linux: LinuxInitializationSettings(
+          defaultActionName: 'Open notification',
+        ),
       ),
     );
   }
