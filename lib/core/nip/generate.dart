@@ -57,7 +57,8 @@ final Map<String, List<CatchUpRule>> _catchUp = Map.unmodifiable({
   'JE': <CatchUpRule>[], // no catch-up mentioned
   'TCV': [
     CatchUpRule(minAge: DayDuration(months: 15), maxAge: DayDuration(years: 5))
-  ]
+  ],
+  'HPV': <CatchUpRule>[]
 });
 
 /// Represents a part of the catch-up schedule for a particular vaccination.
