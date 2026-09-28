@@ -5,11 +5,10 @@ import 'package:timezone/timezone.dart' as tz;
 
 part 'notification_service.g.dart';
 
-/// Sets up the device notification plugin and the timezone database it needs.
+/// Wraps the device notification plugin: setup, permission, and the calls that
+/// register or raise a notification.
 ///
-/// Scheduling reminders is not handled here: reminder rows are planned by
-/// `planReminders` and persisted by `RemindersDao`, and handing them to the
-/// device comes later.
+/// Which reminders belong on the device is decided by `ReminderScheduler`.
 class NotificationService {
   NotificationService(this._plugin);
 
@@ -35,20 +34,21 @@ class NotificationService {
 
   Future<void> initialize() async {
     tz_data.initializeTimeZones();
-    tz.setLocalLocation(_resolveLocalLocation());
 
     await _plugin.initialize(
       const InitializationSettings(
-          android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-          // Permission prompts are deliberately left off: asking for them is its
-          // own piece of work, and iOS only offers the prompt once per install.
-          iOS: DarwinInitializationSettings(
-            requestAlertPermission: false,
-            requestBadgePermission: false,
-            requestSoundPermission: false,
-          ),
-          linux: LinuxInitializationSettings(
-              defaultActionName: 'Open notification')),
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        // Asked for separately in [requestPermission] so the prompt is a
+        // deliberate step whose answer we can read, not a side effect of setup.
+        iOS: DarwinInitializationSettings(
+          requestAlertPermission: false,
+          requestBadgePermission: false,
+          requestSoundPermission: false,
+        ),
+        linux: LinuxInitializationSettings(
+          defaultActionName: 'Open notification',
+        ),
+      ),
     );
   }
 
@@ -66,7 +66,7 @@ class NotificationService {
       notificationId,
       title,
       body,
-      tz.TZDateTime.from(when, tz.local),
+      _asDeviceInstant(when),
       _reminderDetails,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
@@ -76,6 +76,33 @@ class NotificationService {
 
   Future<void> cancelReminder(int notificationId) {
     return _plugin.cancel(notificationId);
+  }
+
+  /// Asks for permission to post notifications.
+  ///
+  /// Android 13 and newer drop every notification until this is granted, and
+  /// iOS shows its prompt only once per install.
+  Future<bool> requestPermission() async {
+    final AndroidFlutterLocalNotificationsPlugin? android =
+        _plugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+    if (android != null) {
+      return await android.requestNotificationsPermission() ?? false;
+    }
+
+    final IOSFlutterLocalNotificationsPlugin? ios =
+        _plugin.resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>();
+    if (ios != null) {
+      return await ios.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          ) ??
+          false;
+    }
+
+    return false;
   }
 
   /// Schedules a one-off notification that no reminder row owns.
@@ -93,7 +120,7 @@ class NotificationService {
       notificationId,
       title,
       body,
-      tz.TZDateTime.from(when, tz.local),
+      _asDeviceInstant(when),
       _reminderDetails,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
@@ -120,19 +147,15 @@ class NotificationService {
     return pending.map((request) => request.id).toSet();
   }
 
-  /// The timezone database entry matching the device's current UTC offset.
+  /// The instant [when] refers to, expressed in UTC.
   ///
-  /// Offsets are shared by several zones, so this can pick a different name
-  /// than the device reports. Reminders fire at a wall-clock hour, so any zone
-  /// with the same offset and DST behaviour schedules them identically.
-  tz.Location _resolveLocalLocation() {
-    final int offsetMillis = DateTime.now().timeZoneOffset.inMilliseconds;
-    for (final tz.Location location in tz.timeZoneDatabase.locations.values) {
-      if (location.currentTimeZone.offset == offsetMillis) {
-        return location;
-      }
-    }
-    return tz.UTC;
+  /// The plugin hands Android a wall-clock time plus a zone *name*, which
+  /// Android resolves against its own timezone database. Naming a zone picked
+  /// by matching the device's offset put reminders three hours out, because the
+  /// two databases disagreed about that zone. UTC is the one name both agree
+  /// on, and the instant is what we want to preserve anyway.
+  tz.TZDateTime _asDeviceInstant(DateTime when) {
+    return tz.TZDateTime.from(when, tz.UTC);
   }
 }
 

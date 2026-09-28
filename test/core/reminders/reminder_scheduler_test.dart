@@ -66,7 +66,11 @@ void main() {
       ).called(1);
     });
 
-    test('leaves reminders the device already holds alone', () async {
+    // The plugin's pending list survives Android dropping the real alarms on
+    // force-stop or reboot, so a reminder it claims to hold is registered again
+    // rather than skipped.
+    test('registers reminders again even when the plugin claims to hold them',
+        () async {
       when(() => notifications.registeredNotificationIds())
           .thenAnswer((_) async => <int>{7});
 
@@ -77,14 +81,14 @@ void main() {
         ),
       ]);
 
-      verifyNever(
+      verify(
         () => notifications.scheduleReminder(
-          notificationId: any(named: 'notificationId'),
+          notificationId: 7,
           when: any(named: 'when'),
           title: any(named: 'title'),
           body: any(named: 'body'),
         ),
-      );
+      ).called(1);
       verifyNever(() => notifications.cancelReminder(any()));
     });
 
@@ -116,6 +120,126 @@ void main() {
       ]);
 
       verifyNever(() => notifications.cancelReminder(any()));
+    });
+
+    group('catchUpMissed', () {
+      final DateTime pastDue = DateTime(2024, 6, 20);
+      final DateTime wellBefore = DateTime(2024, 1, 1);
+
+      setUp(() {
+        when(
+          () => notifications.showNotificationNow(
+            notificationId: any(named: 'notificationId'),
+            title: any(named: 'title'),
+            body: any(named: 'body'),
+          ),
+        ).thenAnswer((_) async {});
+      });
+
+      Future<void> seedMissedReminders(String childId) async {
+        await database.childProfilesDao.insertChildProfile(
+          ChildProfilesCompanion.insert(
+            id: childId,
+            name: 'Aarav',
+            dateOfBirth: DateTime(2023, 4, 15),
+            sex: 'male',
+          ),
+        );
+        await database.vaccinationDuesDao.insertVaccinationDue(
+          VaccinationDuesCompanion.insert(
+            id: 'due-$childId',
+            childId: childId,
+            vaccineCode: 'BCG',
+            doseNumber: 1,
+            dueDate: pastDue,
+          ),
+        );
+        await database.remindersDao
+            .scheduleRemindersForChild(childId, from: wellBefore);
+      }
+
+      test('raises one notification per child and settles the rest', () async {
+        await seedMissedReminders('child-1');
+        final List<Reminder> before =
+            await database.remindersDao.getPendingReminders();
+        expect(before.length, greaterThan(1));
+
+        await scheduler.catchUpMissed();
+
+        verify(
+          () => notifications.showNotificationNow(
+            notificationId: any(named: 'notificationId'),
+            title: any(named: 'title'),
+            body: any(named: 'body'),
+          ),
+        ).called(1);
+        expect(await database.remindersDao.getPendingReminders(), isEmpty);
+      });
+
+      // Reminder ids are cancelled the moment their row is settled, which would
+      // dismiss the notification we just raised.
+      test('raises missed notifications outside the reminder id range',
+          () async {
+        await seedMissedReminders('child-1');
+
+        await scheduler.catchUpMissed();
+
+        verify(
+          () => notifications.showNotificationNow(
+            notificationId: ReminderScheduler.missedNotificationId(0),
+            title: any(named: 'title'),
+            body: any(named: 'body'),
+          ),
+        ).called(1);
+        expect(
+          ReminderScheduler.missedNotificationId(0),
+          greaterThanOrEqualTo(NotificationService.oneOffIdFloor),
+        );
+      });
+
+      test('covers each child separately', () async {
+        await seedMissedReminders('child-1');
+        await seedMissedReminders('child-2');
+
+        await scheduler.catchUpMissed();
+
+        verify(
+          () => notifications.showNotificationNow(
+            notificationId: any(named: 'notificationId'),
+            title: any(named: 'title'),
+            body: any(named: 'body'),
+          ),
+        ).called(2);
+      });
+
+      test('does nothing when no reminder was missed', () async {
+        await scheduler.catchUpMissed();
+
+        verifyNever(
+          () => notifications.showNotificationNow(
+            notificationId: any(named: 'notificationId'),
+            title: any(named: 'title'),
+            body: any(named: 'body'),
+          ),
+        );
+      });
+
+      test('leaves reminders that are still in the future pending', () async {
+        await seedMissedReminders('child-1');
+
+        await scheduler.catchUpMissed(asOf: DateTime(2024, 6, 14));
+
+        final List<Reminder> stillPending =
+            await database.remindersDao.getPendingReminders();
+        expect(stillPending, isNotEmpty);
+        expect(
+          stillPending.every(
+            (Reminder reminder) =>
+                reminder.scheduledFor.isAfter(DateTime(2024, 6, 14)),
+          ),
+          isTrue,
+        );
+      });
     });
 
     test('skips reminders whose time has already passed', () async {

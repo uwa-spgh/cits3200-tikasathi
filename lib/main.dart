@@ -16,7 +16,11 @@ Future<void> main() async {
   // Reused as the app's scope so the initialised service is the one it reads.
   final ProviderContainer container = ProviderContainer();
   await container.read(notificationServiceProvider).initialize();
-  container.read(reminderSchedulerProvider).start();
+  await container.read(notificationServiceProvider).requestPermission();
+
+  final ReminderScheduler scheduler = container.read(reminderSchedulerProvider);
+  await scheduler.catchUpMissed();
+  scheduler.start();
 
   runApp(
     // ProviderScope is mandatory for Riverpod
