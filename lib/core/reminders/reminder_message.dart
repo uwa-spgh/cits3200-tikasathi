@@ -36,9 +36,6 @@ String reminderVaccineName(
 /// not be reworded without them. The two follow-up variants and every title are
 /// ours; see the notes in `app_en.arb`.
 ///
-/// TODO(client sign-off): the "For {childName}:" prefix, both follow-up
-/// messages, every title and all the Nepali copy are drafts awaiting client
-/// and native-speaker review.
 /// TODO(facility locator): the brief wants the nearest immunisation service or
 /// outreach session in the advance reminder. The app has no such data yet —
 /// only the one facility a caregiver saves by hand — so it is not included.
