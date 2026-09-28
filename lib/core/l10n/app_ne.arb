@@ -417,5 +417,12 @@
   "overdueVaccinesDialogTitle": "छुटेका खोप",
   "overdueVaccinesDialogMessage": "छुटेका खोपका लागि स्वास्थ्य संस्था जानुहोस्।",
   "overdueVaccinesNoticeBanner": "छुटेका खोपका लागि स्वास्थ्य संस्था जानुहोस्।",
-  "actionUnderstand": "ठीक छ"
+  "actionUnderstand": "ठीक छ",
+  "reminderTitleUpcoming": "खोपको सम्झना",
+  "reminderTitleMissed": "खोप छुट्यो",
+  "reminderTitleOverdue": "खोपको म्याद नाघ्यो",
+  "reminderUpcoming": "{childName} लाई {date} मा {vaccineName} लगाउनुपर्छ। कृपया नजिकैको स्वास्थ्य चौकी वा खोप क्लिनिकमा जानुहोस्।",
+  "reminderMissedYesterday": "{childName} लाई {date} मा {vaccineName} लगाउनुपर्ने थियो, तर अहिलेसम्म रेकर्ड भएको छैन। हरेक मात्रा समयमै पूरा गर्दा बच्चा सुरक्षित रहन्छ। कृपया नजिकैको स्वास्थ्य चौकीमा जानुहोस्।",
+  "reminderMissedWeek": "{childName} को {vaccineName} एक हप्तादेखि छुटेको छ। बच्चा सुरक्षित रहोस् भन्नाका लागि क्याच-अप खोपबारे नजिकैको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।",
+  "reminderOverdue": "{childName} को {vaccineName} को म्याद नाघिसक्यो। क्याच-अप खोपका लागि नजिकैको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।"
 }
