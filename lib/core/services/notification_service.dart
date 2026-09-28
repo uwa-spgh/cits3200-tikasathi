@@ -18,17 +18,22 @@ class NotificationService {
   /// rows, so reminder reconciliation leaves them alone.
   static const int oneOffIdFloor = 900000;
 
-  static const NotificationDetails _reminderDetails = NotificationDetails(
-    android: AndroidNotificationDetails(
-      reminderChannelId,
-      'Vaccination reminders',
-      channelDescription:
-          'Reminders for upcoming and missed vaccination doses.',
-      importance: Importance.high,
-      priority: Priority.high,
-    ),
-    iOS: DarwinNotificationDetails(),
-  );
+  /// Android shows only the first line of a body unless it is given the big
+  /// text style, which cut reminders off mid-sentence when expanded.
+  static NotificationDetails _reminderDetails(String body) {
+    return NotificationDetails(
+      android: AndroidNotificationDetails(
+        reminderChannelId,
+        'Vaccination reminders',
+        channelDescription:
+            'Reminders for upcoming and missed vaccination doses.',
+        importance: Importance.high,
+        priority: Priority.high,
+        styleInformation: BigTextStyleInformation(body),
+      ),
+      iOS: const DarwinNotificationDetails(),
+    );
+  }
 
   final FlutterLocalNotificationsPlugin _plugin;
 
@@ -67,7 +72,7 @@ class NotificationService {
       title,
       body,
       _asDeviceInstant(when),
-      _reminderDetails,
+      _reminderDetails(body),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
@@ -121,7 +126,7 @@ class NotificationService {
       title,
       body,
       _asDeviceInstant(when),
-      _reminderDetails,
+      _reminderDetails(body),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       androidScheduleMode: AndroidScheduleMode.inexact,
@@ -134,7 +139,7 @@ class NotificationService {
     required String title,
     required String body,
   }) {
-    return _plugin.show(notificationId, title, body, _reminderDetails);
+    return _plugin.show(notificationId, title, body, _reminderDetails(body));
   }
 
   /// The notification ids the device currently holds a schedule for.

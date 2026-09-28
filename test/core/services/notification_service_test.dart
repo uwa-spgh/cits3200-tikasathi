@@ -83,6 +83,37 @@ void main() {
       expect(scheduled.location.name, 'UTC');
     });
 
+    // Without the big text style Android cuts the body to one line, even when
+    // the caregiver expands the notification.
+    test('lets Android show the whole body when expanded', () async {
+      const String body = 'For Aarav: BCG (Dose 1) is overdue. Contact your '
+          'nearest health facility for catch-up vaccination.';
+
+      await service.scheduleReminder(
+        notificationId: 5,
+        when: DateTime(2026, 10, 4, 9),
+        title: 'title',
+        body: body,
+      );
+
+      final NotificationDetails details = verify(
+        () => plugin.zonedSchedule(
+          5,
+          any(),
+          any(),
+          any(),
+          captureAny(),
+          uiLocalNotificationDateInterpretation:
+              any(named: 'uiLocalNotificationDateInterpretation'),
+          androidScheduleMode: any(named: 'androidScheduleMode'),
+        ),
+      ).captured.single as NotificationDetails;
+
+      final StyleInformation? style = details.android!.styleInformation;
+      expect(style, isA<BigTextStyleInformation>());
+      expect((style! as BigTextStyleInformation).bigText, body);
+    });
+
     test('schedules one-off notifications at the instant asked for', () async {
       final DateTime when = DateTime.now().add(const Duration(minutes: 2));
 
