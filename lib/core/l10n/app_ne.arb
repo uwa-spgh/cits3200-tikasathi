@@ -90,6 +90,18 @@
   "@childReadAloudTooltip": {
     "description": "Tooltip text for the read-aloud action"
   },
+  "childReadAloudStopTooltip": "पढाइ रोक्नुहोस्",
+  "@childReadAloudStopTooltip": {
+    "description": "Tooltip text when read aloud is currently active to allow stopping it"
+  },
+  "childReadAloudNoContent": "पढ्नको लागि कुनै पाठ भेटिएन।",
+  "@childReadAloudNoContent": {
+    "description": "Message shown when there is no text available to read aloud"
+  },
+  "childReadAloudError": "पढाइ सुनाउन सकिएन। कृपया आफ्नो यन्त्रको आवाज सेटिङ जाँच गर्नुहोस्।",
+  "@childReadAloudError": {
+    "description": "Error message when text-to-speech fails on device"
+  },
   "childBackTooltip": "फर्कनुहोस्",
   "@childBackTooltip": {
     "description": "Tooltip for the back button on child page"

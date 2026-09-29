@@ -8,6 +8,7 @@ import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/app_shell/domain/app_navigation_controller.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_bottom_navigation_bar.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_helpers.dart';
 import 'package:tikasathi/features/onboarding/presentation/retroactive_vaccine_screen.dart';
@@ -96,6 +97,11 @@ class _ChildContent extends StatelessWidget {
                 ReadAloudButton(
                   tooltip: localizations.childReadAloudTooltip,
                   unavailableMessage: localizations.childReadAloudUnavailable,
+                  textGetter: () => ScreenSpeechHelper.childProfileScreenText(
+                    context: context,
+                    localizations: localizations,
+                    details: details,
+                  ),
                 ),
               ],
             ),

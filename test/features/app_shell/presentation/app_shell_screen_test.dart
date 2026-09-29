@@ -10,10 +10,42 @@ import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/settings/domain/health_facilitator_controller.dart';
 import 'package:tikasathi/features/settings/data/settings_providers.dart';
 
+import 'package:tikasathi/core/services/tts_service.dart';
+import 'package:tikasathi/features/settings/domain/app_language.dart';
 import '../../../helpers/fake_settings_repository.dart';
+
+class _FakeTtsService extends Fake implements TtsService {
+  @override
+  void Function(TtsStatus status)? onStatusChanged;
+
+  @override
+  void Function(String error)? onError;
+
+  @override
+  Future<void> initialize() async {}
+
+  @override
+  Future<TtsSpeakResult> speak(
+    String text, {
+    required AppLanguage language,
+  }) async {
+    onStatusChanged?.call(TtsStatus.playing);
+    return const TtsSpeakResult(success: true, resolvedLanguage: 'ne-NP');
+  }
+
+  @override
+  Future<void> stop() async {
+    onStatusChanged?.call(TtsStatus.stopped);
+  }
+}
 
 void main() {
   group('AppShellScreen', () {
+    late _FakeTtsService ttsService;
+
+    setUp(() {
+      ttsService = _FakeTtsService();
+    });
     testWidgets('shows home screen by default', (WidgetTester tester) async {
       await tester.pumpWidget(
         ProviderScope(
@@ -95,6 +127,7 @@ void main() {
               (ref) => FakeSettingsRepository(),
             ),
             healthFacilitatorProvider.overrideWith((ref) => Stream.value(null)),
+            ttsServiceProvider.overrideWith((ref) => ttsService),
           ],
           child: const MaterialApp(
             locale: Locale('ne'),
@@ -110,7 +143,15 @@ void main() {
       await tester.tap(find.byIcon(Icons.record_voice_over));
       await tester.pump();
 
-      expect(find.text('पढाइ सुन्न उपलब्ध छैन।'), findsOneWidget);
+      // Switches to playing state
+      expect(find.byIcon(Icons.stop_rounded), findsOneWidget);
+      expect(find.byTooltip('पढाइ रोक्नुहोस्'), findsOneWidget);
+
+      // Tapping again stops playback
+      await tester.tap(find.byIcon(Icons.stop_rounded));
+      await tester.pump();
+      expect(find.byIcon(Icons.record_voice_over), findsOneWidget);
+      expect(find.byTooltip('पढाइ सुन्नुहोस्'), findsOneWidget);
     });
   });
 }

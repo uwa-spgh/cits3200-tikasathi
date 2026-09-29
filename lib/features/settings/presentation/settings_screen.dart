@@ -7,6 +7,7 @@ import 'package:tikasathi/core/services/notification_service.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/health_facility_controller.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
@@ -199,6 +200,12 @@ class SettingsScreen extends ConsumerWidget {
                   ReadAloudButton(
                     tooltip: localizations.childReadAloudTooltip,
                     unavailableMessage: localizations.childReadAloudUnavailable,
+                    textGetter: () => ScreenSpeechHelper.settingsScreenText(
+                      context: context,
+                      localizations: localizations,
+                      currentLanguage:
+                          isNp ? AppLanguage.nepali : AppLanguage.english,
+                    ),
                   ),
                 ],
               ),

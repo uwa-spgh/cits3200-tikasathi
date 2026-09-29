@@ -10,6 +10,7 @@ import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
 import 'package:tikasathi/features/vaccine_records/presentation/missed_vaccines_dialog.dart';
@@ -222,6 +223,59 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
             child: ReadAloudButton(
               tooltip: localizations.childReadAloudTooltip,
               unavailableMessage: localizations.childReadAloudUnavailable,
+              textGetter: () {
+                final details = childState.asData?.value;
+                if (details == null) {
+                  return ScreenSpeechHelper.extractVisibleText(context);
+                }
+
+                final child = details.child;
+                final now = DateTime.now();
+                final age = now.difference(child.dateOfBirth);
+
+                final List<String> visibleNames = <String>[];
+                final List<String> tickedNames = <String>[];
+
+                nipCatalogue
+                    .forEach((String vaccineCode, List<DayDuration> ages) {
+                  for (int i = 0; i < ages.length; i++) {
+                    final int doseNumber = i + 1;
+                    final DayDuration doseAge = ages[i];
+                    final bool isPast = age >= doseAge.duration;
+                    final String key = '$vaccineCode-$doseNumber';
+                    final bool isChecked = _checkedDoses.containsKey(key);
+
+                    if (vaccineCode == "HPV" &&
+                        childSexFromString(child.sex) != ChildSex.female) {
+                      continue;
+                    }
+
+                    if (isPast || _showAll || isChecked) {
+                      final String displayName = doseNumber > 1
+                          ? '$vaccineCode $doseNumber'
+                          : vaccineCode;
+                      if (!visibleNames.contains(displayName)) {
+                        visibleNames.add(displayName);
+                      }
+                      if (isChecked && !tickedNames.contains(displayName)) {
+                        tickedNames.add(displayName);
+                      }
+                    }
+                  }
+                });
+
+                return ScreenSpeechHelper.vaccineRecordsScreenText(
+                  context: context,
+                  localizations: localizations,
+                  childName: details.child.name,
+                  isRegistrationFlow: _isRegistration,
+                  showAllVaccines: _showAll,
+                  visibleVaccineNames: visibleNames,
+                  tickedVaccineNames: tickedNames,
+                  records: details.records,
+                  dues: details.dueVaccines,
+                );
+              },
             ),
           ),
         ],

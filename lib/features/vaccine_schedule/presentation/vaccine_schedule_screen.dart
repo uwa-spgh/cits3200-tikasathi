@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 
 class VaccineScheduleScreen extends ConsumerWidget {
@@ -82,6 +83,11 @@ class _VaccineScheduleTable extends StatelessWidget {
                   ReadAloudButton(
                     tooltip: localizations.childReadAloudTooltip,
                     unavailableMessage: localizations.childReadAloudUnavailable,
+                    textGetter: () =>
+                        ScreenSpeechHelper.vaccineScheduleScreenText(
+                      context: context,
+                      localizations: localizations,
+                    ),
                   ),
                 ],
               ),
