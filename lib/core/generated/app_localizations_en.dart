@@ -73,6 +73,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get childReadAloudTooltip => 'Read aloud';
 
   @override
+  String get childReadAloudStopTooltip => 'Stop reading aloud';
+
+  @override
+  String get childReadAloudNoContent => 'No text found to read aloud.';
+
+  @override
+  String get childReadAloudError =>
+      'Could not read text aloud. Please check your device speech settings.';
+
+  @override
   String get childBackTooltip => 'Back';
 
   @override

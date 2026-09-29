@@ -6,6 +6,7 @@ import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/record_dose/domain/record_dose_controller.dart';
 
 const Color _pageBackground = Color(0xFFF5F9FC);
@@ -321,6 +322,10 @@ class _Header extends StatelessWidget {
         ReadAloudButton(
           tooltip: localizations.childReadAloudTooltip,
           unavailableMessage: localizations.childReadAloudUnavailable,
+          textGetter: () => ScreenSpeechHelper.recordDoseScreenText(
+            context: context,
+            localizations: localizations,
+          ),
         ),
       ],
     );

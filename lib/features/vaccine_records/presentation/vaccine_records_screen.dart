@@ -10,6 +10,7 @@ import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
 import 'package:tikasathi/features/vaccine_records/presentation/missed_vaccines_dialog.dart';
@@ -222,6 +223,19 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
             child: ReadAloudButton(
               tooltip: localizations.childReadAloudTooltip,
               unavailableMessage: localizations.childReadAloudUnavailable,
+              textGetter: () {
+                final details = childState.asData?.value;
+                if (details == null) {
+                  return ScreenSpeechHelper.extractVisibleText(context);
+                }
+                return ScreenSpeechHelper.vaccineRecordsScreenText(
+                  context: context,
+                  localizations: localizations,
+                  childName: details.child.name,
+                  records: details.records,
+                  dues: details.dueVaccines,
+                );
+              },
             ),
           ),
         ],

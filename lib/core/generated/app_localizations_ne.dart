@@ -73,6 +73,16 @@ class AppLocalizationsNe extends AppLocalizations {
   String get childReadAloudTooltip => 'पढाइ सुन्नुहोस्';
 
   @override
+  String get childReadAloudStopTooltip => 'पढाइ रोक्नुहोस्';
+
+  @override
+  String get childReadAloudNoContent => 'पढ्नको लागि कुनै पाठ भेटिएन।';
+
+  @override
+  String get childReadAloudError =>
+      'पढाइ सुनाउन सकिएन। कृपया आफ्नो यन्त्रको आवाज सेटिङ जाँच गर्नुहोस्।';
+
+  @override
   String get childBackTooltip => 'फर्कनुहोस्';
 
   @override

@@ -218,6 +218,24 @@ abstract class AppLocalizations {
   /// **'Read aloud'**
   String get childReadAloudTooltip;
 
+  /// Tooltip text when read aloud is currently active to allow stopping it
+  ///
+  /// In en, this message translates to:
+  /// **'Stop reading aloud'**
+  String get childReadAloudStopTooltip;
+
+  /// Message shown when there is no text available to read aloud
+  ///
+  /// In en, this message translates to:
+  /// **'No text found to read aloud.'**
+  String get childReadAloudNoContent;
+
+  /// Error message when text-to-speech fails on device
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read text aloud. Please check your device speech settings.'**
+  String get childReadAloudError;
+
   /// Tooltip for the back button on child page
   ///
   /// In en, this message translates to:

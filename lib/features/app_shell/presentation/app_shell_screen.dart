@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tikasathi/core/services/tts_controller.dart';
 import 'package:tikasathi/features/home/presentation/home_screen.dart';
 import 'package:tikasathi/features/learn/presentation/learn_placeholder_screen.dart';
 import 'package:tikasathi/features/settings/presentation/settings_screen.dart';
@@ -30,6 +31,7 @@ class AppShellScreen extends ConsumerWidget {
       bottomNavigationBar: AppBottomNavigationBar(
         selectedSection: selectedSection,
         onDestinationSelected: (AppSection section) {
+          ref.read(ttsControllerProvider.notifier).stop();
           ref
               .read(appNavigationControllerProvider.notifier)
               .selectSection(section);
