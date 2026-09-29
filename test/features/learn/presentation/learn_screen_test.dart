@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/learn/presentation/learn_screen.dart';
 import 'package:tikasathi/features/learn/presentation/learn_topic_screen.dart';
 import 'package:tikasathi/features/settings/data/settings_providers.dart';
@@ -34,6 +35,7 @@ void main() {
 
       expect(find.byKey(const Key('learn-title')), findsOneWidget);
       expect(find.byType(GridView), findsOneWidget);
+      expect(find.byType(ReadAloudButton), findsOneWidget);
       for (int number = 1; number <= 8; number++) {
         final Finder tile = find.byKey(Key('learn-topic-$number'));
         await tester.scrollUntilVisible(tile, 100, scrollable: _pageScrollable);
@@ -58,6 +60,13 @@ void main() {
         'Topic 6',
       );
       expect(find.textContaining('[6] Lorem ipsum'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(LearnTopicScreen),
+          matching: find.byType(ReadAloudButton),
+        ),
+        findsOneWidget,
+      );
 
       await tester.tap(find.byIcon(Icons.arrow_back));
       await tester.pumpAndSettle();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/learn/domain/learn_topics.dart';
 
 /// Full page of information for a single Learn topic.
@@ -42,6 +43,11 @@ class LearnTopicScreen extends StatelessWidget {
                         color: Color(0xFF0F172A),
                       ),
                     ),
+                  ),
+                  const SizedBox(width: 12),
+                  ReadAloudButton(
+                    tooltip: l10n.childReadAloudTooltip,
+                    unavailableMessage: l10n.childReadAloudUnavailable,
                   ),
                 ],
               ),

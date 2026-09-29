@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/learn/domain/learn_topics.dart';
 import 'package:tikasathi/features/learn/presentation/learn_topic_screen.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
@@ -35,14 +36,24 @@ class LearnScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            l10n.learnTitle,
-            key: const Key('learn-title'),
-            style: const TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF0F172A),
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.learnTitle,
+                  key: const Key('learn-title'),
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF0F172A),
+                  ),
+                ),
+              ),
+              ReadAloudButton(
+                tooltip: l10n.childReadAloudTooltip,
+                unavailableMessage: l10n.childReadAloudUnavailable,
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           GridView.count(
