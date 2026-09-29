@@ -625,10 +625,87 @@ class AppLocalizationsEn extends AppLocalizations {
       'Add your first child to see upcoming vaccines here.';
 
   @override
-  String get learnPlaceholderTitle => 'Learn';
+  String get learnTitle => 'Learn';
 
   @override
-  String get learnPlaceholderTitleNp => 'सिक्नुहोस्';
+  String get learnTopic1Title => 'Topic 1';
+
+  @override
+  String get learnTopic1Summary => 'A short summary of topic 1.';
+
+  @override
+  String get learnTopic1Body =>
+      'This is placeholder content for topic 1. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 1 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 1 and answer common questions.\n\nThis paragraph will say where to get more help with topic 1, such as the local health facility or a health worker.';
+
+  @override
+  String get learnTopic2Title => 'Topic 2';
+
+  @override
+  String get learnTopic2Summary => 'A short summary of topic 2.';
+
+  @override
+  String get learnTopic2Body =>
+      'This is placeholder content for topic 2. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 2 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 2 and answer common questions.\n\nThis paragraph will say where to get more help with topic 2, such as the local health facility or a health worker.';
+
+  @override
+  String get learnTopic3Title => 'Topic 3';
+
+  @override
+  String get learnTopic3Summary => 'A short summary of topic 3.';
+
+  @override
+  String get learnTopic3Body =>
+      'This is placeholder content for topic 3. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 3 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 3 and answer common questions.\n\nThis paragraph will say where to get more help with topic 3, such as the local health facility or a health worker.';
+
+  @override
+  String get learnTopic4Title => 'Topic 4';
+
+  @override
+  String get learnTopic4Summary => 'A short summary of topic 4.';
+
+  @override
+  String get learnTopic4Body =>
+      'This is placeholder content for topic 4. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 4 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 4 and answer common questions.\n\nThis paragraph will say where to get more help with topic 4, such as the local health facility or a health worker.';
+
+  @override
+  String get learnTopic5Title => 'Topic 5';
+
+  @override
+  String get learnTopic5Summary => 'A short summary of topic 5.';
+
+  @override
+  String get learnTopic5Body =>
+      'This is placeholder content for topic 5. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 5 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 5 and answer common questions.\n\nThis paragraph will say where to get more help with topic 5, such as the local health facility or a health worker.';
+
+  @override
+  String get learnTopic6Title => 'Topic 6';
+
+  @override
+  String get learnTopic6Summary => 'A short summary of topic 6.';
+
+  @override
+  String get learnTopic6Body =>
+      'This is placeholder content for topic 6. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 6 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 6 and answer common questions.\n\nThis paragraph will say where to get more help with topic 6, such as the local health facility or a health worker.';
+
+  @override
+  String get learnTopic7Title => 'Topic 7';
+
+  @override
+  String get learnTopic7Summary => 'A short summary of topic 7.';
+
+  @override
+  String get learnTopic7Body =>
+      'This is placeholder content for topic 7. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 7 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 7 and answer common questions.\n\nThis paragraph will say where to get more help with topic 7, such as the local health facility or a health worker.';
+
+  @override
+  String get learnTopic8Title => 'Topic 8';
+
+  @override
+  String get learnTopic8Summary => 'A short summary of topic 8.';
+
+  @override
+  String get learnTopic8Body =>
+      'This is placeholder content for topic 8. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 8 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 8 and answer common questions.\n\nThis paragraph will say where to get more help with topic 8, such as the local health facility or a health worker.';
 
   @override
   String get childStatusSetupIncomplete => 'Awaiting setup completion';

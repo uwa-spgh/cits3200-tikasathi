@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/features/home/presentation/home_screen.dart';
-import 'package:tikasathi/features/learn/presentation/learn_placeholder_screen.dart';
+import 'package:tikasathi/features/learn/presentation/learn_screen.dart';
 import 'package:tikasathi/features/settings/presentation/settings_screen.dart';
 
 import '../domain/app_navigation_controller.dart';
@@ -22,7 +22,7 @@ class AppShellScreen extends ConsumerWidget {
           index: selectedSection.index,
           children: const <Widget>[
             HomeScreen(),
-            LearnPlaceholderScreen(),
+            LearnScreen(),
             SettingsScreen(),
           ],
         ),
