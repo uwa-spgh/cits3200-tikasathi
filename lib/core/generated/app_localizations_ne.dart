@@ -761,4 +761,39 @@ class AppLocalizationsNe extends AppLocalizations {
 
   @override
   String get actionUnderstand => 'ठीक छ';
+
+  @override
+  String reminderTitleUpcoming(String childName) {
+    return 'खोपको सम्झना – $childName';
+  }
+
+  @override
+  String reminderTitleMissed(String childName) {
+    return 'खोप छुट्यो – $childName';
+  }
+
+  @override
+  String reminderTitleOverdue(String childName) {
+    return 'खोपको म्याद नाघ्यो – $childName';
+  }
+
+  @override
+  String reminderUpcoming(String vaccineName, String date) {
+    return 'तपाईंको बच्चालाई $date मा $vaccineName लगाउनुपर्छ। कृपया नजिकैको स्वास्थ्य चौकी वा खोप क्लिनिकमा जानुहोस्।';
+  }
+
+  @override
+  String reminderMissedYesterday(String vaccineName, String date) {
+    return '$vaccineName $date मा लगाउनुपर्ने थियो, तर अहिलेसम्म रेकर्ड भएको छैन। हरेक मात्रा समयमै पूरा गर्दा बच्चा सुरक्षित रहन्छ। कृपया नजिकैको स्वास्थ्य चौकीमा जानुहोस्।';
+  }
+
+  @override
+  String reminderMissedWeek(String vaccineName) {
+    return '$vaccineName एक हप्तादेखि छुटेको छ। बच्चा सुरक्षित रहोस् भन्नाका लागि क्याच-अप खोपबारे नजिकैको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।';
+  }
+
+  @override
+  String reminderOverdue(String vaccineName) {
+    return '$vaccineName को म्याद नाघिसक्यो। क्याच-अप खोपका लागि नजिकैको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।';
+  }
 }

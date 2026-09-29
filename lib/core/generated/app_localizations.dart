@@ -1345,6 +1345,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OK'**
   String get actionUnderstand;
+
+  /// DRAFT, NOT CLIENT-SUPPLIED. Title for a dose that is coming up. The brief fixes the body wording only, so the child's name goes in the title: it keeps the body word for word while letting caregivers with several children tell reminders apart.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccination reminder – {childName}'**
+  String reminderTitleUpcoming(String childName);
+
+  /// DRAFT, NOT CLIENT-SUPPLIED. Title for the follow-ups after a dose was missed.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccination missed – {childName}'**
+  String reminderTitleMissed(String childName);
+
+  /// DRAFT, NOT CLIENT-SUPPLIED. Title once a dose is more than a week overdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccination overdue – {childName}'**
+  String reminderTitleOverdue(String childName);
+
+  /// CLIENT'S EXACT WORDING (brief section 5, push notification message). Do not reword. The brief also asks for the nearest immunisation service or outreach session in the week-before reminder; see the TODO in reminder_message.dart.
+  ///
+  /// In en, this message translates to:
+  /// **'Your child is due for {vaccineName} on {date}. Please visit your nearest health post or immunisation clinic.'**
+  String reminderUpcoming(String vaccineName, String date);
+
+  /// DRAFT, NEEDS CLIENT SIGN-OFF. Sent one day after a missed dose. The brief gives no exact wording here, only that it must carry the missed vaccine name, why finishing the schedule matters, and catch-up guidance where it applies.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccineName} was due on {date} and has not been recorded yet. Completing every dose on time keeps your child protected. Please visit your nearest health post.'**
+  String reminderMissedYesterday(String vaccineName, String date);
+
+  /// DRAFT, NEEDS CLIENT SIGN-OFF. Sent one week after a missed dose, same reasoning as reminderMissedYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccineName} has now been missed for a week. Contact your nearest health facility about catch-up vaccination so your child stays protected.'**
+  String reminderMissedWeek(String vaccineName);
+
+  /// CLIENT'S EXACT WORDING (brief section 5, overdue notification). Do not reword. Sent every fortnight once a dose is more than a week overdue.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccineName} is overdue. Contact your nearest health facility for catch-up vaccination.'**
+  String reminderOverdue(String vaccineName);
 }
 
 class _AppLocalizationsDelegate

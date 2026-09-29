@@ -764,4 +764,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get actionUnderstand => 'OK';
+
+  @override
+  String reminderTitleUpcoming(String childName) {
+    return 'Vaccination reminder – $childName';
+  }
+
+  @override
+  String reminderTitleMissed(String childName) {
+    return 'Vaccination missed – $childName';
+  }
+
+  @override
+  String reminderTitleOverdue(String childName) {
+    return 'Vaccination overdue – $childName';
+  }
+
+  @override
+  String reminderUpcoming(String vaccineName, String date) {
+    return 'Your child is due for $vaccineName on $date. Please visit your nearest health post or immunisation clinic.';
+  }
+
+  @override
+  String reminderMissedYesterday(String vaccineName, String date) {
+    return '$vaccineName was due on $date and has not been recorded yet. Completing every dose on time keeps your child protected. Please visit your nearest health post.';
+  }
+
+  @override
+  String reminderMissedWeek(String vaccineName) {
+    return '$vaccineName has now been missed for a week. Contact your nearest health facility about catch-up vaccination so your child stays protected.';
+  }
+
+  @override
+  String reminderOverdue(String vaccineName) {
+    return '$vaccineName is overdue. Contact your nearest health facility for catch-up vaccination.';
+  }
 }

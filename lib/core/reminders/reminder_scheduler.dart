@@ -5,7 +5,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
+import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/reminders/reminder_message.dart';
 import 'package:tikasathi/core/services/notification_service.dart';
+import 'package:tikasathi/features/settings/data/settings_providers.dart';
+import 'package:tikasathi/features/settings/domain/app_language.dart';
+import 'package:tikasathi/features/settings/domain/settings_repository.dart';
 
 part 'reminder_scheduler.g.dart';
 
@@ -14,7 +19,7 @@ part 'reminder_scheduler.g.dart';
 /// The table is the source of truth. Only a window of it is registered with the
 /// device, because iOS holds at most 64 pending local notifications.
 class ReminderScheduler {
-  ReminderScheduler(this._database, this._notifications);
+  ReminderScheduler(this._database, this._notifications, this._settings);
 
   static const int registrationLimit = 60;
 
@@ -29,8 +34,42 @@ class ReminderScheduler {
 
   final AppDatabase _database;
   final NotificationService _notifications;
+  final SettingsRepository _settings;
 
   StreamSubscription<void>? _subscription;
+
+  /// The wording for [reminder], in the caregiver's chosen language.
+  ///
+  /// Returns null when the child or the due has gone; the foreign keys make
+  /// that impossible in practice, but a reminder with nothing to name is not
+  /// worth raising.
+  Future<ReminderMessage?> _messageFor(Reminder reminder) async {
+    await ensureReminderDateFormatting();
+    final AppLanguage language = await _settings.getLanguage();
+    final AppLocalizations localizations =
+        lookupAppLocalizations(language.locale);
+
+    final ChildProfile? child = await (_database.select(_database.childProfiles)
+          ..where((row) => row.id.equals(reminder.childId)))
+        .getSingleOrNull();
+    final VaccinationDue? due =
+        await (_database.select(_database.vaccinationDues)
+              ..where((row) => row.id.equals(reminder.dueId)))
+            .getSingleOrNull();
+    if (child == null || due == null) {
+      return null;
+    }
+
+    return buildReminderMessage(
+      localizations: localizations,
+      languageCode: language.code,
+      childName: child.name,
+      vaccineCode: due.vaccineCode,
+      doseNumber: due.doseNumber,
+      dueDate: due.dueDate,
+      kind: reminder.kind,
+    );
+  }
 
   /// Registers reminders now, and again whenever the table changes.
   void start() {
@@ -70,10 +109,15 @@ class ReminderScheduler {
 
     final List<String> childIds = latestPerChild.keys.toList()..sort();
     for (int index = 0; index < childIds.length; index++) {
+      final ReminderMessage? message =
+          await _messageFor(latestPerChild[childIds[index]]!);
+      if (message == null) {
+        continue;
+      }
       await _notifications.showNotificationNow(
         notificationId: missedNotificationId(index),
-        title: reminderTitle,
-        body: reminderBody,
+        title: message.title,
+        body: message.body,
       );
     }
 
@@ -116,24 +160,25 @@ class ReminderScheduler {
     // list leaves the app believing it is scheduled when nothing is queued.
     // Scheduling an id that already exists replaces it, so this is idempotent.
     for (final Reminder reminder in wanted.values) {
+      final ReminderMessage? message = await _messageFor(reminder);
+      if (message == null) {
+        continue;
+      }
       await _notifications.scheduleReminder(
         notificationId: reminder.notificationId,
         when: reminder.scheduledFor,
-        title: reminderTitle,
-        body: reminderBody,
+        title: message.title,
+        body: message.body,
       );
     }
   }
 }
-
-// Placeholder wording: naming the vaccine and translating it comes later.
-const String reminderTitle = 'Vaccination reminder';
-const String reminderBody = 'Your child has a vaccination due.';
 
 @Riverpod(keepAlive: true)
 ReminderScheduler reminderScheduler(ReminderSchedulerRef ref) {
   return ReminderScheduler(
     ref.watch(appDatabaseProvider),
     ref.watch(notificationServiceProvider),
+    ref.watch(settingsRepositoryProvider),
   );
 }

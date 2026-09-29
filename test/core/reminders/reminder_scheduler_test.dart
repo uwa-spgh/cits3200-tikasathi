@@ -5,13 +5,28 @@ import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/reminders/reminder_scheduler.dart';
 import 'package:tikasathi/core/reminders/reminder_schedule.dart';
 import 'package:tikasathi/core/services/notification_service.dart';
+import 'package:tikasathi/features/settings/domain/app_language.dart';
+import 'package:tikasathi/features/settings/domain/settings_repository.dart';
 
 class _MockNotificationService extends Mock implements NotificationService {}
+
+class _FakeSettingsRepository implements SettingsRepository {
+  AppLanguage language = AppLanguage.english;
+
+  @override
+  Future<AppLanguage> getLanguage() async => language;
+
+  @override
+  Future<void> setLanguage(AppLanguage language) async {
+    this.language = language;
+  }
+}
 
 void main() {
   group('ReminderScheduler.sync', () {
     late AppDatabase database;
     late _MockNotificationService notifications;
+    late _FakeSettingsRepository settings;
     late ReminderScheduler scheduler;
 
     final DateTime now = DateTime.now();
@@ -20,10 +35,31 @@ void main() {
       await database.close();
     });
 
-    setUp(() {
+    setUp(() async {
       database = AppDatabase.forTesting(NativeDatabase.memory());
       notifications = _MockNotificationService();
-      scheduler = ReminderScheduler(database, notifications);
+      settings = _FakeSettingsRepository();
+      scheduler = ReminderScheduler(database, notifications, settings);
+
+      // The scheduler names the child and the vaccine, so the rows a reminder
+      // points at have to exist.
+      await database.childProfilesDao.insertChildProfile(
+        ChildProfilesCompanion.insert(
+          id: 'child-1',
+          name: 'Aarav',
+          dateOfBirth: DateTime(2026, 7, 26),
+          sex: 'male',
+        ),
+      );
+      await database.vaccinationDuesDao.insertVaccinationDue(
+        VaccinationDuesCompanion.insert(
+          id: 'due-1',
+          childId: 'child-1',
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+          dueDate: DateTime(2026, 10, 4),
+        ),
+      );
       when(() => notifications.registeredNotificationIds())
           .thenAnswer((_) async => <int>{});
       when(() => notifications.cancelReminder(any())).thenAnswer((_) async {});
@@ -159,7 +195,7 @@ void main() {
       }
 
       test('raises one notification per child and settles the rest', () async {
-        await seedMissedReminders('child-1');
+        await seedMissedReminders('missed-1');
         final List<Reminder> before =
             await database.remindersDao.getPendingReminders();
         expect(before.length, greaterThan(1));
@@ -180,7 +216,7 @@ void main() {
       // dismiss the notification we just raised.
       test('raises missed notifications outside the reminder id range',
           () async {
-        await seedMissedReminders('child-1');
+        await seedMissedReminders('missed-1');
 
         await scheduler.catchUpMissed();
 
@@ -198,8 +234,8 @@ void main() {
       });
 
       test('covers each child separately', () async {
-        await seedMissedReminders('child-1');
-        await seedMissedReminders('child-2');
+        await seedMissedReminders('missed-1');
+        await seedMissedReminders('missed-2');
 
         await scheduler.catchUpMissed();
 
@@ -225,7 +261,7 @@ void main() {
       });
 
       test('leaves reminders that are still in the future pending', () async {
-        await seedMissedReminders('child-1');
+        await seedMissedReminders('missed-1');
 
         await scheduler.catchUpMissed(asOf: DateTime(2024, 6, 14));
 
