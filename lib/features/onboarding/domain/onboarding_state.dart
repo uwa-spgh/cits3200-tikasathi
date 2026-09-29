@@ -27,6 +27,9 @@ class OnboardingStateData with _$OnboardingStateData {
 
 @riverpod
 class OnboardingController extends _$OnboardingController {
+  Future<String?>? _activeFinishSetup;
+  String? _createdChildId;
+
   @override
   OnboardingStateData build() {
     return const OnboardingStateData();
@@ -41,6 +44,11 @@ class OnboardingController extends _$OnboardingController {
     required String phone,
     required String address,
   }) {
+    if (state.caregiverName != name ||
+        state.caregiverPhone != phone ||
+        state.caregiverAddress != address) {
+      _createdChildId = null;
+    }
     state = state.copyWith(
       caregiverName: name,
       caregiverPhone: phone,
@@ -53,6 +61,11 @@ class OnboardingController extends _$OnboardingController {
     required DateTime dob,
     required String sex,
   }) {
+    if (state.childName != name ||
+        state.childDob != dob ||
+        state.childSex != sex) {
+      _createdChildId = null;
+    }
     state = state.copyWith(
       childName: name,
       childDob: dob,
@@ -60,9 +73,37 @@ class OnboardingController extends _$OnboardingController {
     );
   }
 
-  Future<String?> finishSetup() async {
+  Future<String?> finishSetup() {
+    final activeFinishSetup = _activeFinishSetup;
+    if (activeFinishSetup != null) {
+      return activeFinishSetup;
+    }
+
+    final Future<String?> operation = _finishSetup();
+    _activeFinishSetup = operation;
+    operation.then<void>(
+      (_) {
+        if (identical(_activeFinishSetup, operation)) {
+          _activeFinishSetup = null;
+        }
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        if (identical(_activeFinishSetup, operation)) {
+          _activeFinishSetup = null;
+        }
+      },
+    );
+    return operation;
+  }
+
+  Future<String?> _finishSetup() async {
     state = state.copyWith(isSaving: true, error: null);
     try {
+      final DateTime? childDob = state.childDob;
+      if (state.childName.isNotEmpty && childDob == null) {
+        throw StateError('A valid child date of birth is required');
+      }
+
       final secureStorage = ref.read(secureStorageServiceProvider);
 
       // 1. Save Caregiver
@@ -73,21 +114,23 @@ class OnboardingController extends _$OnboardingController {
       );
 
       // 2. Save Child
-      String? createdChildId;
-      if (state.childName.isNotEmpty && state.childDob != null) {
+      if (state.childName.isNotEmpty && childDob != null) {
         final db = ref.read(appDatabaseProvider);
-        final id = const Uuid().v4();
-        createdChildId = id;
-
-        await db.childProfilesDao.insertChildProfile(
-          ChildProfilesCompanion.insert(
-            id: id,
-            name: state.childName,
-            dateOfBirth: state.childDob!,
-            sex: state.childSex,
-          ),
-        );
-        await db.vaccinationDuesDao.recalculateDuesForChild(id);
+        _createdChildId ??= const Uuid().v4();
+        final childId = _createdChildId!;
+        final existingChild =
+            await db.childProfilesDao.getChildProfileById(childId);
+        if (existingChild == null) {
+          await db.childProfilesDao.insertChildProfile(
+            ChildProfilesCompanion.insert(
+              id: childId,
+              name: state.childName,
+              dateOfBirth: childDob,
+              sex: state.childSex,
+            ),
+          );
+        }
+        await db.vaccinationDuesDao.recalculateDuesForChild(childId);
       }
 
       // 3. Save language and mark onboarding as completed.
@@ -100,7 +143,7 @@ class OnboardingController extends _$OnboardingController {
       await secureStorage.setOnboardingCompleted();
 
       state = state.copyWith(isSaving: false);
-      return createdChildId ?? 'completed_without_child';
+      return _createdChildId ?? 'completed_without_child';
     } catch (e) {
       state = state.copyWith(isSaving: false, error: e.toString());
       return null;

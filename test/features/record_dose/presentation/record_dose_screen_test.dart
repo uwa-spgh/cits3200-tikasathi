@@ -194,7 +194,7 @@ void main() {
       expect(find.text('Today'), findsOneWidget);
     });
 
-    testWidgets('badges a ticked dose in words, not only in colour',
+    testWidgets('does not show a redundant ticked badge',
         (WidgetTester tester) async {
       await pumpScreen(tester, <VaccinationDue>[
         due('due-1', 'BOPV', 1, today),
@@ -205,7 +205,7 @@ void main() {
       await tester.tap(find.byKey(const Key('record-dose-item-BOPV-1')));
       await tester.pumpAndSettle();
 
-      expect(find.text('Ticked'), findsOneWidget);
+      expect(find.text('Ticked'), findsNothing);
     });
 
     testWidgets('names the show-more action instead of using a bare switch',

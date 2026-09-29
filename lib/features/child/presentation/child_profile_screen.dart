@@ -8,6 +8,7 @@ import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/app_shell/domain/app_navigation_controller.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_bottom_navigation_bar.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_helpers.dart';
 import 'package:tikasathi/features/onboarding/presentation/retroactive_vaccine_screen.dart';
@@ -96,6 +97,11 @@ class _ChildContent extends StatelessWidget {
                 ReadAloudButton(
                   tooltip: localizations.childReadAloudTooltip,
                   unavailableMessage: localizations.childReadAloudUnavailable,
+                  textGetter: () => ScreenSpeechHelper.childProfileScreenText(
+                    context: context,
+                    localizations: localizations,
+                    details: details,
+                  ),
                 ),
               ],
             ),
@@ -131,10 +137,12 @@ class _ChildContent extends StatelessWidget {
               key: const Key('child-record-dose-card'),
               icon: Icons.vaccines_rounded,
               title: localizations.childActionRecordDose,
-              cardColor: const Color(0xFFFFF6EC),
-              borderColor: const Color(0xFFF6DFC4),
-              iconBackgroundColor: const Color(0xFFFCEBD8),
-              iconColor: const Color(0xFFB2691B),
+              cardColor: const Color(0xFF0E64C5),
+              borderColor: const Color(0xFF0E64C5),
+              iconBackgroundColor: const Color(0xFF3B82D0),
+              iconColor: Colors.white,
+              titleColor: Colors.white,
+              chevronColor: Colors.white,
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(
@@ -149,10 +157,10 @@ class _ChildContent extends StatelessWidget {
               key: const Key('child-vaccine-schedule-card'),
               icon: Icons.calendar_month_rounded,
               title: localizations.childVaccineSchedule,
-              cardColor: const Color(0xFFEFF5FF),
-              borderColor: const Color(0xFFCFE0FA),
-              iconBackgroundColor: const Color(0xFFDDEAFF),
-              iconColor: const Color(0xFF0E64C5),
+              cardColor: const Color(0xFFFFF8E6),
+              borderColor: const Color(0xFFE08A00),
+              iconBackgroundColor: const Color(0xFFFFEFC2),
+              iconColor: const Color(0xFF9A5B00),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(
@@ -730,6 +738,8 @@ class _FeatureCard extends StatelessWidget {
     required this.iconBackgroundColor,
     required this.iconColor,
     required this.onTap,
+    this.titleColor = const Color(0xFF11284F),
+    this.chevronColor = const Color(0xFF5A6B85),
   });
 
   final IconData icon;
@@ -739,6 +749,8 @@ class _FeatureCard extends StatelessWidget {
   final Color iconBackgroundColor;
   final Color iconColor;
   final VoidCallback onTap;
+  final Color titleColor;
+  final Color chevronColor;
 
   @override
   Widget build(BuildContext context) {
@@ -767,11 +779,11 @@ class _FeatureCard extends StatelessWidget {
                   title,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.w800,
-                        color: const Color(0xFF11284F),
+                        color: titleColor,
                       ),
                 ),
               ),
-              const Icon(Icons.chevron_right, color: Color(0xFF5A6B85)),
+              Icon(Icons.chevron_right, color: chevronColor),
             ],
           ),
         ),

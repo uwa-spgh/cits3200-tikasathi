@@ -255,7 +255,8 @@ void main() {
       final dob = DateTime(2023, 4, 15);
 
       GenerateDues stubReturning(List<GeneratedDue> generatedDues) =>
-          (DateTime dob, DateTime today, List<AdministeredDose> records) =>
+          (bool isGirl, DateTime dob, DateTime today,
+                  List<AdministeredDose> records) =>
               generatedDues;
 
       test('persists dues matching the stub', () async {
@@ -358,8 +359,8 @@ void main() {
         await expectLater(
           vaccinationDuesDao.insertDuesForChild(
             'missing-child',
-            generateDues:
-                (DateTime dob, DateTime today, List<AdministeredDose> records) {
+            generateDues: (bool isGirl, DateTime dob, DateTime today,
+                List<AdministeredDose> records) {
               generateCalled = true;
               return [
                 (
@@ -389,8 +390,8 @@ void main() {
         await vaccinationDuesDao.insertDuesForChild(
           childId,
           today: today,
-          generateDues: (DateTime receivedDob, DateTime receivedToday,
-              List<AdministeredDose> records) {
+          generateDues: (bool isGirl, DateTime receivedDob,
+              DateTime receivedToday, List<AdministeredDose> records) {
             capturedDob = receivedDob;
             capturedToday = receivedToday;
             capturedRecords = records;
@@ -420,8 +421,8 @@ void main() {
         await vaccinationDuesDao.insertDuesForChild(
           childId,
           today: today,
-          generateDues:
-              (DateTime dob, DateTime today, List<AdministeredDose> records) {
+          generateDues: (bool isGirl, DateTime dob, DateTime today,
+              List<AdministeredDose> records) {
             capturedRecords = records;
             return [];
           },
@@ -512,6 +513,52 @@ void main() {
             ..where((row) => row.childId.equals('recalculate-child')))
           .get();
       expect(dues, isNotEmpty);
+    });
+
+    group('reminders', () {
+      Future<List<Reminder>> remindersFor(String childId) {
+        return (database.select(database.reminders)
+              ..where((row) => row.childId.equals(childId)))
+            .get();
+      }
+
+      // Dues whose reminders have all passed get none, so the reminders cover
+      // some of the dues rather than every one.
+      test('plans reminders for the dues it inserts', () async {
+        await insertChild('reminder-child');
+
+        await vaccinationDuesDao.insertDuesForChild('reminder-child');
+
+        final dues = await duesFor('reminder-child');
+        final planned = await remindersFor('reminder-child');
+        expect(dues, isNotEmpty);
+        expect(planned, isNotEmpty);
+        expect(
+          dues.map((due) => due.id).toSet(),
+          containsAll(planned.map((reminder) => reminder.dueId).toSet()),
+        );
+      });
+
+      test('replans reminders when dues are recalculated', () async {
+        await insertChild('reminder-child');
+        await vaccinationDuesDao.insertDuesForChild('reminder-child');
+        final first = await remindersFor('reminder-child');
+
+        await vaccinationDuesDao.recalculateDuesForChild('reminder-child');
+
+        final dues = await duesFor('reminder-child');
+        final planned = await remindersFor('reminder-child');
+        expect(planned, isNotEmpty);
+        // The regenerated dues get new ids, so the old reminders cannot survive.
+        expect(
+          planned.map((reminder) => reminder.id).toSet(),
+          isNot(first.map((reminder) => reminder.id).toSet()),
+        );
+        expect(
+          dues.map((due) => due.id).toSet(),
+          containsAll(planned.map((reminder) => reminder.dueId).toSet()),
+        );
+      });
     });
   });
 }

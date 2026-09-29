@@ -90,6 +90,18 @@
   "@childReadAloudTooltip": {
     "description": "Tooltip text for the read-aloud action"
   },
+  "childReadAloudStopTooltip": "पढाइ रोक्नुहोस्",
+  "@childReadAloudStopTooltip": {
+    "description": "Tooltip text when read aloud is currently active to allow stopping it"
+  },
+  "childReadAloudNoContent": "पढ्नको लागि कुनै पाठ भेटिएन।",
+  "@childReadAloudNoContent": {
+    "description": "Message shown when there is no text available to read aloud"
+  },
+  "childReadAloudError": "पढाइ सुनाउन सकिएन। कृपया आफ्नो यन्त्रको आवाज सेटिङ जाँच गर्नुहोस्।",
+  "@childReadAloudError": {
+    "description": "Error message when text-to-speech fails on device"
+  },
   "childBackTooltip": "फर्कनुहोस्",
   "@childBackTooltip": {
     "description": "Tooltip for the back button on child page"
@@ -208,6 +220,7 @@
   "healthFacilityAddressHint": "ठेगाना लेख्नुहोस्",
   "healthFacilityPhone": "फोन नम्बर",
   "healthFacilityPhoneHint": "फोन नम्बर लेख्नुहोस्",
+  "healthFacilityInvalidPhone": "कृपया मान्य फोन नम्बर प्रविष्ट गर्नुहोस्",
   "healthFacilitySave": "बचत गर्नुहोस्",
   "healthFacilitySaveError": "स्वास्थ्य संस्थाको विवरण बचत गर्न सकिएन।",
   "healthFacilityBack": "फर्कनुहोस्",
@@ -216,6 +229,56 @@
   "settingsNepali": "नेपाली",
   "settingsEnglish": "अङ्ग्रेजी",
   "settingsLanguageSaveError": "भाषा सेव गर्न सकिएन।",
+  "manageProfilesTitle": "प्रोफाइलहरू व्यवस्थापन गर्नुहोस्",
+  "editCaregiverAction": "हेरचाहकर्ताको विवरण सम्पादन गर्नुहोस्",
+  "editChildAction": "बच्चाको विवरण सम्पादन गर्नुहोस्",
+  "deleteChildAction": "बच्चा मेटाउनुहोस्",
+  "editCaregiverTitle": "हेरचाहकर्ताको विवरण सम्पादन गर्नुहोस्",
+  "editChildTitle": "बच्चाको विवरण सम्पादन गर्नुहोस्",
+  "editChildTitleWithName": "{childName} को विवरण सम्पादन गर्नुहोस्",
+  "@editChildTitleWithName": {
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "profileSave": "बचत गर्नुहोस्",
+  "profileCancel": "रद्द गर्नुहोस्",
+  "profileContinue": "जारी राख्नुहोस्",
+  "profileBack": "फर्कनुहोस्",
+  "profileLoadError": "प्रोफाइल विवरण लोड गर्न सकिएन।",
+  "profileSaveError": "प्रोफाइल विवरण बचत गर्न सकिएन।",
+  "profileInvalidChild": "कृपया नाम र जन्म मिति प्रविष्ट गर्नुहोस्।",
+  "profileChildNotFound": "बच्चाको विवरण फेला परेन।",
+  "selectChildTitle": "बच्चा छान्नुहोस्",
+  "noChildrenMessage": "अहिलेसम्म कुनै बच्चा थपिएको छैन।",
+  "updateVaccinationScheduleTitle": "खोप तालिका अद्यावधिक गर्ने?",
+  "updateVaccinationScheduleProfileName": "अद्यावधिक गरिने बच्चाको प्रोफाइल: {childName}",
+  "@updateVaccinationScheduleProfileName": {
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "updateVaccinationScheduleMessageFirst": "तपाईंको बच्चाको जन्म मिति वा लिङ्ग परिवर्तन गर्दा खोप तालिका परिवर्तन हुन सक्छ।",
+  "updateVaccinationScheduleMessageSecond": "यी परिवर्तनहरू बचत गरिनेछन् र तपाईंले विवरण फेरि परिवर्तन नगरेसम्म प्रयोग हुनेछन्।",
+  "updateVaccinationScheduleMessageThird": "आवश्यक परेमा तपाईंले यी विवरणहरू पछि फेरि सम्पादन गर्न सक्नुहुन्छ।",
+  "deleteChildTitle": "बच्चा मेटाउने?",
+  "deleteChildProfileName": "बच्चाको प्रोफाइल मेटाउँदै: {childName}",
+  "@deleteChildProfileName": {
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteChildMessageFirst": "यसले यो बच्चाको जानकारी र खोपका अभिलेखहरू स्थायी रूपमा मेटाउनेछ।",
+  "deleteChildMessageUndo": "यो कार्य पूर्ववत गर्न सकिँदैन।",
+  "deleteChildConfirm": "बच्चा मेटाउनुहोस्",
+  "deleteChildSuccess": "बच्चा मेटाइयो।",
+  "deleteChildError": "बच्चा मेटाउन सकिएन।",
   "appLanguageLoadError": "भाषा सेटिङहरू लोड गर्न सकिएन: {error}",
   "navHome": "गृहपृष्ठ",
   "navLearn": "सिक्नुहोस्",
@@ -231,6 +294,9 @@
   "onboardingCaregiverPhoneHint": "तपाईंको फोन नम्बर प्रविष्ट गर्नुहोस्",
   "onboardingCaregiverAddressLabel": "🏠 ठेगाना (वैकल्पिक)",
   "onboardingCaregiverAddressHint": "तपाईंको ठेगाना प्रविष्ट गर्नुहोस्",
+  "onboardingErrorEmptyCaregiverName": "कृपया हेरचाहकर्ताको नाम प्रविष्ट गर्नुहोस्",
+  "onboardingErrorEmptyCaregiverPhone": "कृपया हेरचाहकर्ताको फोन नम्बर प्रविष्ट गर्नुहोस्",
+  "onboardingErrorInvalidPhone": "कृपया मान्य फोन नम्बर प्रविष्ट गर्नुहोस्",
   "onboardingStepLabel": "चरण {current}/ {total}",
   "onboardingChildNameLabel": "👶 बच्चाको नाम",
   "onboardingChildNameHint": "पूरा नाम प्रविष्ट गर्नुहोस्",
@@ -244,7 +310,8 @@
   "onboardingFinishSetup": "सेटअप पूरा गर्नुहोस्",
   "onboardingErrorEmptyName": "कृपया बच्चाको नाम प्रविष्ट गर्नुहोस्",
   "onboardingErrorInvalidDate": "कृपया मान्य जन्म मिति प्रविष्ट गर्नुहोस्",
-  "onboardingErrorInvalidDob": "अवैध जन्म मिति",
+  "onboardingErrorFutureDob": "जन्म मिति भविष्यको हुन सक्दैन",
+  "onboardingErrorTooOldDob": "बच्चा १८ वर्षभन्दा कम उमेरको हुनुपर्छ",
   "onboardingErrorSaveSetup": "सेटअप बचत गर्दा त्रुटि: {error}",
   "homeTitle": "तपाईंको बच्चाहरू",
   "homeAddChildButton": "+ बच्चा थप्नुहोस्",
@@ -277,7 +344,6 @@
   "recordDoseStepDate": "चरण १ — मिति जाँच्नुहोस्",
   "recordDoseStepSelect": "चरण २ — दिइएको प्रत्येक खोपमा चिन्ह लगाउनुहोस्",
   "recordDoseTapToChange": "परिवर्तन गर्न थिच्नुहोस्",
-  "recordDoseTickedLabel": "चिन्ह लगाइयो",
   "recordDoseShowMore": "थप खोपहरू देखाउनुहोस्",
   "recordDoseShowFewer": "कम खोपहरू देखाउनुहोस्",
   "recordDoseToday": "आज",
@@ -313,8 +379,31 @@
   "homeSectionUpToDate": "पूरा भएको",
   "homeEmptyStateTitle": "अहिलेसम्म कुनै बच्चा थपिएको छैन।",
   "homeEmptyStateSubtitle": "यहाँ आगामी खोपहरू हेर्न आफ्नो पहिलो बच्चा थप्नुहोस्।",
-  "learnPlaceholderTitle": "सिक्नुहोस्",
-  "learnPlaceholderTitleNp": "सिक्नुहोस्",
+  "learnTitle": "सिक्नुहोस्",
+  "learnTopic1Title": "विषय १",
+  "learnTopic1Summary": "विषय १ को छोटो सारांश।",
+  "learnTopic1Body": "यो विषय १ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय १ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय १ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय १ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।",
+  "learnTopic2Title": "विषय २",
+  "learnTopic2Summary": "विषय २ को छोटो सारांश।",
+  "learnTopic2Body": "यो विषय २ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय २ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय २ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय २ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।",
+  "learnTopic3Title": "विषय ३",
+  "learnTopic3Summary": "विषय ३ को छोटो सारांश।",
+  "learnTopic3Body": "यो विषय ३ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ३ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ३ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ३ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।",
+  "learnTopic4Title": "विषय ४",
+  "learnTopic4Summary": "विषय ४ को छोटो सारांश।",
+  "learnTopic4Body": "यो विषय ४ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ४ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ४ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ४ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।",
+  "learnTopic5Title": "विषय ५",
+  "learnTopic5Summary": "विषय ५ को छोटो सारांश।",
+  "learnTopic5Body": "यो विषय ५ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ५ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ५ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ५ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।",
+  "learnTopic6Title": "विषय ६",
+  "learnTopic6Summary": "विषय ६ को छोटो सारांश।",
+  "learnTopic6Body": "यो विषय ६ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ६ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ६ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ६ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।",
+  "learnTopic7Title": "विषय ७",
+  "learnTopic7Summary": "विषय ७ को छोटो सारांश।",
+  "learnTopic7Body": "यो विषय ७ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ७ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ७ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ७ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।",
+  "learnTopic8Title": "विषय ८",
+  "learnTopic8Summary": "विषय ८ को छोटो सारांश।",
+  "learnTopic8Body": "यो विषय ८ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ८ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ८ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ८ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।",
   "childStatusSetupIncomplete": "सेटअप पूरा हुन बाँकी",
   "homeSectionAwaitingSetup": "सेटअप पूरा हुन बाँकी",
   "homeActionCompleteSetup": "सेटअप पूरा गर्नुहोस्",
@@ -360,9 +449,15 @@
   "vaccineScheduleInYears": "{count} वर्षमा",
   "vaccineScheduleInYearsMonths": "{years} वर्ष {months} महिनामा",
   "vaccineScheduleOverdueBy": "{count} दिन ढिला",
-  "onboardingErrorFutureDob": "जन्म मिति भविष्यको हुन सक्दैन",
   "overdueVaccinesDialogTitle": "छुटेका खोप",
   "overdueVaccinesDialogMessage": "छुटेका खोपका लागि स्वास्थ्य संस्था जानुहोस्।",
   "overdueVaccinesNoticeBanner": "छुटेका खोपका लागि स्वास्थ्य संस्था जानुहोस्।",
-  "actionUnderstand": "ठीक छ"
+  "actionUnderstand": "ठीक छ",
+  "reminderTitleUpcoming": "खोपको सम्झना – {childName}",
+  "reminderTitleMissed": "खोप छुट्यो – {childName}",
+  "reminderTitleOverdue": "खोपको म्याद नाघ्यो – {childName}",
+  "reminderUpcoming": "तपाईंको बच्चालाई {date} मा {vaccineName} लगाउनुपर्छ। कृपया नजिकैको स्वास्थ्य चौकी वा खोप क्लिनिकमा जानुहोस्।",
+  "reminderMissedYesterday": "{vaccineName} {date} मा लगाउनुपर्ने थियो, तर अहिलेसम्म रेकर्ड भएको छैन। हरेक मात्रा समयमै पूरा गर्दा बच्चा सुरक्षित रहन्छ। कृपया नजिकैको स्वास्थ्य चौकीमा जानुहोस्।",
+  "reminderMissedWeek": "{vaccineName} एक हप्तादेखि छुटेको छ। बच्चा सुरक्षित रहोस् भन्नाका लागि क्याच-अप खोपबारे नजिकैको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।",
+  "reminderOverdue": "{vaccineName} को म्याद नाघिसक्यो। क्याच-अप खोपका लागि नजिकैको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।"
 }

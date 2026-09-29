@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:tikasathi/features/home/domain/home_helpers.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:tikasathi/core/database/app_database.dart';
@@ -9,8 +10,10 @@ import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
+import 'package:tikasathi/features/vaccine_records/presentation/missed_vaccines_dialog.dart';
 
 /// Unified screen combining Vaccine Records and Vaccine History.
 ///
@@ -153,49 +156,7 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
       if (mounted) {
         setState(() => _isSaving = false);
         if (markComplete && hasOverdue) {
-          await showDialog<void>(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext dialogContext) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                title: Row(
-                  children: [
-                    const Icon(
-                      Icons.warning_amber_rounded,
-                      color: Color(0xFFCD2E2E),
-                      size: 28,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        localizations.overdueVaccinesDialogTitle,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-                content: Text(
-                  localizations.overdueVaccinesDialogMessage,
-                  style: const TextStyle(fontSize: 15, height: 1.4),
-                ),
-                actions: [
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: const Color(0xFF0F52BA),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () => Navigator.of(dialogContext).pop(),
-                    child: Text(localizations.actionUnderstand),
-                  ),
-                ],
-              );
-            },
-          );
+          await showMissedVaccinesDialog(context);
         } else if (markComplete) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -262,6 +223,59 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
             child: ReadAloudButton(
               tooltip: localizations.childReadAloudTooltip,
               unavailableMessage: localizations.childReadAloudUnavailable,
+              textGetter: () {
+                final details = childState.asData?.value;
+                if (details == null) {
+                  return ScreenSpeechHelper.extractVisibleText(context);
+                }
+
+                final child = details.child;
+                final now = DateTime.now();
+                final age = now.difference(child.dateOfBirth);
+
+                final List<String> visibleNames = <String>[];
+                final List<String> tickedNames = <String>[];
+
+                nipCatalogue
+                    .forEach((String vaccineCode, List<DayDuration> ages) {
+                  for (int i = 0; i < ages.length; i++) {
+                    final int doseNumber = i + 1;
+                    final DayDuration doseAge = ages[i];
+                    final bool isPast = age >= doseAge.duration;
+                    final String key = '$vaccineCode-$doseNumber';
+                    final bool isChecked = _checkedDoses.containsKey(key);
+
+                    if (vaccineCode == "HPV" &&
+                        childSexFromString(child.sex) != ChildSex.female) {
+                      continue;
+                    }
+
+                    if (isPast || _showAll || isChecked) {
+                      final String displayName = doseNumber > 1
+                          ? '$vaccineCode $doseNumber'
+                          : vaccineCode;
+                      if (!visibleNames.contains(displayName)) {
+                        visibleNames.add(displayName);
+                      }
+                      if (isChecked && !tickedNames.contains(displayName)) {
+                        tickedNames.add(displayName);
+                      }
+                    }
+                  }
+                });
+
+                return ScreenSpeechHelper.vaccineRecordsScreenText(
+                  context: context,
+                  localizations: localizations,
+                  childName: details.child.name,
+                  isRegistrationFlow: _isRegistration,
+                  showAllVaccines: _showAll,
+                  visibleVaccineNames: visibleNames,
+                  tickedVaccineNames: tickedNames,
+                  records: details.records,
+                  dues: details.dueVaccines,
+                );
+              },
             ),
           ),
         ],
@@ -290,6 +304,11 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
                 final bool isPast = age >= doseAge.duration;
                 final String key = '$vaccineCode-$doseNumber';
                 final bool isChecked = _checkedDoses.containsKey(key);
+
+                if (vaccineCode == "HPV" &&
+                    childSexFromString(child.sex) != ChildSex.female) {
+                  continue;
+                }
 
                 if (isPast || _showAll || isChecked) {
                   final DateTime defaultDate =

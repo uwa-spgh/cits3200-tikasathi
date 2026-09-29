@@ -32,6 +32,7 @@ final Map<String, List<DayDuration>> nipCatalogue = Map.unmodifiable({
   'MR': [DayDuration(months: 9), DayDuration(months: 15)],
   'JE': [DayDuration(months: 12)],
   'TCV': [DayDuration(months: 15)],
+  'HPV': [DayDuration(years: 10)]
 });
 
 /// A wrapper around Duration to input days, weeks, months, and years.

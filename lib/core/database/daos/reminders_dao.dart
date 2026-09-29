@@ -39,6 +39,75 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
     });
   }
 
+  /// Replaces every reminder the child has with ones derived from the child's
+  /// current dues.
+  ///
+  /// Planning the whole child at once keeps the notification ids in one run
+  /// rather than restarting the sequence per due.
+  Future<List<Reminder>> scheduleRemindersForChild(
+    String childId, {
+    DateTime? from,
+  }) {
+    return transaction(() async {
+      final dues = await (select(vaccinationDues)
+            ..where((row) => row.childId.equals(childId)))
+          .get();
+
+      await (delete(reminders)..where((row) => row.childId.equals(childId)))
+          .go();
+
+      int notificationId = await _nextNotificationId();
+      final rows = <RemindersCompanion>[
+        for (final due in dues)
+          for (final planned in planReminders(due.dueDate, from: from))
+            RemindersCompanion.insert(
+              id: const Uuid().v4(),
+              childId: childId,
+              dueId: due.id,
+              kind: planned.kind,
+              scheduledFor: planned.scheduledFor,
+              notificationId: notificationId++,
+            ),
+      ];
+      await batch((batch) => batch.insertAll(reminders, rows));
+
+      return _remindersForChild(childId);
+    });
+  }
+
+  /// Adds a single reminder for [dueId] at [scheduledFor].
+  ///
+  /// Lets a reminder be raised through the normal pipeline without waiting for
+  /// a due date to come round, which is otherwise impossible to observe.
+  Future<Reminder> insertReminderAt({
+    required String dueId,
+    required DateTime scheduledFor,
+    ReminderKind kind = ReminderKind.sameDay,
+  }) {
+    return transaction(() async {
+      final due = await (select(vaccinationDues)
+            ..where((row) => row.id.equals(dueId)))
+          .getSingleOrNull();
+      if (due == null) {
+        throw Exception('no vaccination due with id $dueId');
+      }
+
+      final String id = const Uuid().v4();
+      await into(reminders).insert(
+        RemindersCompanion.insert(
+          id: id,
+          childId: due.childId,
+          dueId: due.id,
+          kind: kind,
+          scheduledFor: scheduledFor,
+          notificationId: await _nextNotificationId(),
+        ),
+      );
+
+      return (select(reminders)..where((row) => row.id.equals(id))).getSingle();
+    });
+  }
+
   /// drops the reminders for a due (e.g. once the dose has been recorded)
   Future<int> deleteRemindersForDue(String dueId) {
     return (delete(reminders)..where((row) => row.dueId.equals(dueId))).go();
@@ -53,6 +122,18 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
     return (select(reminders)
           ..where((row) => row.childId.equals(childId))
           ..orderBy([(row) => OrderingTerm.asc(row.scheduledFor)]))
+        .watch();
+  }
+
+  /// The soonest [limit] reminders still waiting to be handed to the device.
+  ///
+  /// iOS keeps at most 64 pending local notifications, so only a window of the
+  /// table is ever registered with the device.
+  Stream<List<Reminder>> watchPendingReminders({required int limit}) {
+    return (select(reminders)
+          ..where((row) => row.deliveredAt.isNull())
+          ..orderBy([(row) => OrderingTerm.asc(row.scheduledFor)])
+          ..limit(limit))
         .watch();
   }
 
@@ -79,12 +160,37 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
         .get();
   }
 
+  /// Marks a batch as delivered in one statement.
+  ///
+  /// A dose missed for a while leaves many reminders behind, so they are
+  /// settled together rather than one round trip each.
+  Future<int> markRemindersDelivered(
+    List<String> ids, {
+    DateTime? deliveredAt,
+  }) {
+    if (ids.isEmpty) {
+      return Future<int>.value(0);
+    }
+    return (update(reminders)..where((row) => row.id.isIn(ids))).write(
+      RemindersCompanion(
+        deliveredAt: Value(deliveredAt ?? DateTime.now()),
+      ),
+    );
+  }
+
   Future<int> markReminderDelivered(String id, {DateTime? deliveredAt}) {
     return (update(reminders)..where((row) => row.id.equals(id))).write(
       RemindersCompanion(
         deliveredAt: Value(deliveredAt ?? DateTime.now()),
       ),
     );
+  }
+
+  Future<List<Reminder>> _remindersForChild(String childId) {
+    return (select(reminders)
+          ..where((row) => row.childId.equals(childId))
+          ..orderBy([(row) => OrderingTerm.asc(row.scheduledFor)]))
+        .get();
   }
 
   Future<List<Reminder>> _remindersForDue(String dueId) {

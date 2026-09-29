@@ -9,6 +9,7 @@ import 'package:tikasathi/features/record_dose/presentation/record_dose_screen.d
 import 'package:tikasathi/features/onboarding/presentation/child_screen.dart';
 import 'package:tikasathi/features/onboarding/presentation/retroactive_vaccine_screen.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/health_facility_controller.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
@@ -191,6 +192,11 @@ class _HomeScreenContent extends StatelessWidget {
                       tooltip: localizations.childReadAloudTooltip,
                       unavailableMessage:
                           localizations.childReadAloudUnavailable,
+                      textGetter: () => ScreenSpeechHelper.homeScreenText(
+                        context: context,
+                        localizations: localizations,
+                        groups: groups,
+                      ),
                     );
 
                     if (compactHeader) {
@@ -611,7 +617,7 @@ class _GroupStyle {
       case HomeVaccinationGroup.dueToday:
         return const _GroupStyle(
           headerColor: Color(0xFFC9292B),
-          bodyColor: Color(0xFFFFDCDD),
+          bodyColor: Colors.white,
           borderColor: Color(0xFFC9292B),
           icon: Icons.warning_rounded,
         );

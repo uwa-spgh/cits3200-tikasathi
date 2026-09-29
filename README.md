@@ -28,6 +28,7 @@ Based on the project constraints and team requirements, the following tech stack
 * **Local Database:** **Drift**. A reactive, type-safe SQLite library for Flutter. It is perfect for local data storage and offline-first persistence.
 * **Notifications:** `flutter_local_notifications` to interface with the device's native calendar and notification APIs for the 3-touch reminder system (1 week before, 1 day before, day-of).
 * **Localization:** Flutter's built-in `flutter_localizations` combined with JSON or ARB files to support instant toggling between English (EN) and Nepali (NP).
+* **Text-to-Speech (TTS) & Accessibility:** `flutter_tts` providing 100% offline, on-device audio narration in both English (`en-US`) and Nepali (`ne-NP` with automated phonetic `hi-IN` Devanagari fallback for iOS and devices lacking a native Nepali voice).
 * **Security:** `flutter_secure_storage` and `local_auth` for encrypting data at rest and locking the app behind biometrics/PIN.
 
 ## 3. CI/CD & Testing Strategy
@@ -74,6 +75,20 @@ Every pull request to the `main` or `develop` branch will trigger a workflow tha
 ### Health Information & Health Facility
 - Educational modules containing Myth/Fact sections (adapted from Nepal's Family Welfare Division).
 - A directory and contact details for the local **Health Facility** (स्वास्थ्य संस्था, formerly health facilitator), filterable, editable, and accessible offline.
+
+### Accessibility & Text-to-Speech (TTS)
+- **100% Offline Speech Synthesis:** Interfaces natively with device engines (Android `TextToSpeech` and iOS `AVSpeechSynthesizer`), adhering strictly to offline-first principles with zero cloud dependencies.
+- **Cross-Language Resolution:** Seamlessly supports English and Nepali based on the active user app language. For Nepali, detects on-device `ne-NP` voices and gracefully falls back to phonetic Hindi (`hi-IN`), which shares identical Devanagari script and phonetics, guaranteeing voice playback on iOS and low-resource devices.
+- **Low-Literacy Conversational Narratives:** `ScreenSpeechHelper` provides friendly, actionable spoken instructions tailored to what is actively displayed on screen:
+  - *Child Profile Page:* Provides a concise, vaccine-focused narrative highlighting the child's immunisation status, next due vaccine and date, and completed doses (without reciting demographic metadata like age, date of birth, and sex).
+  - *Onboarding / New Child Registration:* Guides the caregiver to tick vaccines already received for their child under the age-appropriate or all-vaccines view, dynamically reading ticked items and reminding them that registration can be skipped for now.
+  - *Add a New Child Page & Caregiver Screen:* One-tap speech guidance walking caregivers step-by-step through entering child and caregiver information.
+  - *Health Facility Details Page:* Articulates saved or editable facility contact details (post/hospital name, address, phone number).
+  - *Home Dashboard:* Conveys clear, actionable status cards for registered children (awaiting setup, due today, due soon, up-to-date) without redundant app title prefixes.
+  - *Record Dose Screen:* Articulates the 2 actual on-screen steps (checking the administered date and ticking received vaccines), announcing currently ticked vaccines or available options.
+  - *Child Vaccine History:* Narrates completed vaccines concisely and only includes upcoming doses when the user selects the "All vaccines" tab.
+- **One-Tap Interactive Control:** Top-of-screen `ReadAloudButton` toggles between idle and active playback, switching visually to a stop icon with localized tooltips and automatically cancelling audio when navigating or switching tabs.
+- **Fallback Screen Text Crawler:** Automatically extracts visible text elements from the active widget tree when a screen doesn't declare a custom narrative.
 
 ## 5. Integrating Figma Designs
 

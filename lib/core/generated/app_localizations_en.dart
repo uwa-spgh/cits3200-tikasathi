@@ -73,6 +73,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get childReadAloudTooltip => 'Read aloud';
 
   @override
+  String get childReadAloudStopTooltip => 'Stop reading aloud';
+
+  @override
+  String get childReadAloudNoContent => 'No text found to read aloud.';
+
+  @override
+  String get childReadAloudError =>
+      'Could not read text aloud. Please check your device speech settings.';
+
+  @override
   String get childBackTooltip => 'Back';
 
   @override
@@ -221,6 +231,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get healthFacilityPhoneHint => 'Enter the phone number';
 
   @override
+  String get healthFacilityInvalidPhone => 'Please enter a valid phone number';
+
+  @override
   String get healthFacilitySave => 'Save';
 
   @override
@@ -244,6 +257,103 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsLanguageSaveError => 'Could not save language.';
+
+  @override
+  String get manageProfilesTitle => 'Manage profiles';
+
+  @override
+  String get editCaregiverAction => 'Edit caregiver details';
+
+  @override
+  String get editChildAction => 'Edit child details';
+
+  @override
+  String get deleteChildAction => 'Delete child';
+
+  @override
+  String get editCaregiverTitle => 'Edit caregiver details';
+
+  @override
+  String get editChildTitle => 'Edit child details';
+
+  @override
+  String editChildTitleWithName(String childName) {
+    return 'Edit $childName\'s details';
+  }
+
+  @override
+  String get profileSave => 'Save';
+
+  @override
+  String get profileCancel => 'Cancel';
+
+  @override
+  String get profileContinue => 'Continue';
+
+  @override
+  String get profileBack => 'Back';
+
+  @override
+  String get profileLoadError => 'Could not load profile details.';
+
+  @override
+  String get profileSaveError => 'Could not save profile details.';
+
+  @override
+  String get profileInvalidChild => 'Please enter a name and date of birth.';
+
+  @override
+  String get profileChildNotFound => 'Child details could not be found.';
+
+  @override
+  String get selectChildTitle => 'Select a child';
+
+  @override
+  String get noChildrenMessage => 'No children have been added yet.';
+
+  @override
+  String get updateVaccinationScheduleTitle => 'Update vaccination schedule?';
+
+  @override
+  String updateVaccinationScheduleProfileName(String childName) {
+    return 'Updating child profile: $childName';
+  }
+
+  @override
+  String get updateVaccinationScheduleMessageFirst =>
+      'Changing your child\'s date of birth or sex may change their vaccination schedule.';
+
+  @override
+  String get updateVaccinationScheduleMessageSecond =>
+      'These changes will be saved and used until you change the details again.';
+
+  @override
+  String get updateVaccinationScheduleMessageThird =>
+      'You can edit these details again later if needed.';
+
+  @override
+  String get deleteChildTitle => 'Delete child?';
+
+  @override
+  String deleteChildProfileName(String childName) {
+    return 'Deleting child profile: $childName';
+  }
+
+  @override
+  String get deleteChildMessageFirst =>
+      'This will permanently delete this child\'s information and vaccination records.';
+
+  @override
+  String get deleteChildMessageUndo => 'This action cannot be undone.';
+
+  @override
+  String get deleteChildConfirm => 'Delete child';
+
+  @override
+  String get deleteChildSuccess => 'Child deleted.';
+
+  @override
+  String get deleteChildError => 'Could not delete child.';
 
   @override
   String appLanguageLoadError(Object error) {
@@ -295,6 +405,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingCaregiverAddressHint => 'Enter your street address';
 
   @override
+  String get onboardingErrorEmptyCaregiverName =>
+      'Please enter caregiver\'s name';
+
+  @override
+  String get onboardingErrorEmptyCaregiverPhone =>
+      'Please enter caregiver\'s phone number';
+
+  @override
+  String get onboardingErrorInvalidPhone => 'Please enter a valid phone number';
+
+  @override
   String onboardingStepLabel(Object current, Object total) {
     return 'Step $current of $total';
   }
@@ -336,7 +457,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingErrorInvalidDate => 'Please enter a valid Date of Birth';
 
   @override
-  String get onboardingErrorInvalidDob => 'Invalid Date of Birth';
+  String get onboardingErrorFutureDob =>
+      'Date of Birth cannot be in the future';
+
+  @override
+  String get onboardingErrorTooOldDob => 'Child must be under 18 years old';
 
   @override
   String onboardingErrorSaveSetup(Object error) {
@@ -452,9 +577,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordDoseTapToChange => 'Tap to change';
 
   @override
-  String get recordDoseTickedLabel => 'Ticked';
-
-  @override
   String get recordDoseShowMore => 'Show more vaccines';
 
   @override
@@ -513,10 +635,87 @@ class AppLocalizationsEn extends AppLocalizations {
       'Add your first child to see upcoming vaccines here.';
 
   @override
-  String get learnPlaceholderTitle => 'Learn';
+  String get learnTitle => 'Learn';
 
   @override
-  String get learnPlaceholderTitleNp => 'सिक्नुहोस्';
+  String get learnTopic1Title => 'Topic 1';
+
+  @override
+  String get learnTopic1Summary => 'A short summary of topic 1.';
+
+  @override
+  String get learnTopic1Body =>
+      'This is placeholder content for topic 1. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 1 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 1 and answer common questions.\n\nThis paragraph will say where to get more help with topic 1, such as the local health facility or a health worker.';
+
+  @override
+  String get learnTopic2Title => 'Topic 2';
+
+  @override
+  String get learnTopic2Summary => 'A short summary of topic 2.';
+
+  @override
+  String get learnTopic2Body =>
+      'This is placeholder content for topic 2. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 2 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 2 and answer common questions.\n\nThis paragraph will say where to get more help with topic 2, such as the local health facility or a health worker.';
+
+  @override
+  String get learnTopic3Title => 'Topic 3';
+
+  @override
+  String get learnTopic3Summary => 'A short summary of topic 3.';
+
+  @override
+  String get learnTopic3Body =>
+      'This is placeholder content for topic 3. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 3 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 3 and answer common questions.\n\nThis paragraph will say where to get more help with topic 3, such as the local health facility or a health worker.';
+
+  @override
+  String get learnTopic4Title => 'Topic 4';
+
+  @override
+  String get learnTopic4Summary => 'A short summary of topic 4.';
+
+  @override
+  String get learnTopic4Body =>
+      'This is placeholder content for topic 4. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 4 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 4 and answer common questions.\n\nThis paragraph will say where to get more help with topic 4, such as the local health facility or a health worker.';
+
+  @override
+  String get learnTopic5Title => 'Topic 5';
+
+  @override
+  String get learnTopic5Summary => 'A short summary of topic 5.';
+
+  @override
+  String get learnTopic5Body =>
+      'This is placeholder content for topic 5. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 5 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 5 and answer common questions.\n\nThis paragraph will say where to get more help with topic 5, such as the local health facility or a health worker.';
+
+  @override
+  String get learnTopic6Title => 'Topic 6';
+
+  @override
+  String get learnTopic6Summary => 'A short summary of topic 6.';
+
+  @override
+  String get learnTopic6Body =>
+      'This is placeholder content for topic 6. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 6 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 6 and answer common questions.\n\nThis paragraph will say where to get more help with topic 6, such as the local health facility or a health worker.';
+
+  @override
+  String get learnTopic7Title => 'Topic 7';
+
+  @override
+  String get learnTopic7Summary => 'A short summary of topic 7.';
+
+  @override
+  String get learnTopic7Body =>
+      'This is placeholder content for topic 7. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 7 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 7 and answer common questions.\n\nThis paragraph will say where to get more help with topic 7, such as the local health facility or a health worker.';
+
+  @override
+  String get learnTopic8Title => 'Topic 8';
+
+  @override
+  String get learnTopic8Summary => 'A short summary of topic 8.';
+
+  @override
+  String get learnTopic8Body =>
+      'This is placeholder content for topic 8. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 8 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 8 and answer common questions.\n\nThis paragraph will say where to get more help with topic 8, such as the local health facility or a health worker.';
 
   @override
   String get childStatusSetupIncomplete => 'Awaiting setup completion';
@@ -640,10 +839,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get onboardingErrorFutureDob =>
-      'Date of Birth cannot be in the future';
-
-  @override
   String get overdueVaccinesDialogTitle => 'Missed Vaccines';
 
   @override
@@ -656,4 +851,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get actionUnderstand => 'OK';
+
+  @override
+  String reminderTitleUpcoming(String childName) {
+    return 'Vaccination reminder – $childName';
+  }
+
+  @override
+  String reminderTitleMissed(String childName) {
+    return 'Vaccination missed – $childName';
+  }
+
+  @override
+  String reminderTitleOverdue(String childName) {
+    return 'Vaccination overdue – $childName';
+  }
+
+  @override
+  String reminderUpcoming(String vaccineName, String date) {
+    return 'Your child is due for $vaccineName on $date. Please visit your nearest health post or immunisation clinic.';
+  }
+
+  @override
+  String reminderMissedYesterday(String vaccineName, String date) {
+    return '$vaccineName was due on $date and has not been recorded yet. Completing every dose on time keeps your child protected. Please visit your nearest health post.';
+  }
+
+  @override
+  String reminderMissedWeek(String vaccineName) {
+    return '$vaccineName has now been missed for a week. Contact your nearest health facility about catch-up vaccination so your child stays protected.';
+  }
+
+  @override
+  String reminderOverdue(String vaccineName) {
+    return '$vaccineName is overdue. Contact your nearest health facility for catch-up vaccination.';
+  }
 }

@@ -218,6 +218,24 @@ abstract class AppLocalizations {
   /// **'Read aloud'**
   String get childReadAloudTooltip;
 
+  /// Tooltip text when read aloud is currently active to allow stopping it
+  ///
+  /// In en, this message translates to:
+  /// **'Stop reading aloud'**
+  String get childReadAloudStopTooltip;
+
+  /// Message shown when there is no text available to read aloud
+  ///
+  /// In en, this message translates to:
+  /// **'No text found to read aloud.'**
+  String get childReadAloudNoContent;
+
+  /// Error message when text-to-speech fails on device
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read text aloud. Please check your device speech settings.'**
+  String get childReadAloudError;
+
   /// Tooltip for the back button on child page
   ///
   /// In en, this message translates to:
@@ -488,6 +506,12 @@ abstract class AppLocalizations {
   /// **'Enter the phone number'**
   String get healthFacilityPhoneHint;
 
+  /// No description provided for @healthFacilityInvalidPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid phone number'**
+  String get healthFacilityInvalidPhone;
+
   /// No description provided for @healthFacilitySave.
   ///
   /// In en, this message translates to:
@@ -535,6 +559,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not save language.'**
   String get settingsLanguageSaveError;
+
+  /// No description provided for @manageProfilesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage profiles'**
+  String get manageProfilesTitle;
+
+  /// No description provided for @editCaregiverAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit caregiver details'**
+  String get editCaregiverAction;
+
+  /// No description provided for @editChildAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit child details'**
+  String get editChildAction;
+
+  /// No description provided for @deleteChildAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete child'**
+  String get deleteChildAction;
+
+  /// No description provided for @editCaregiverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit caregiver details'**
+  String get editCaregiverTitle;
+
+  /// No description provided for @editChildTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit child details'**
+  String get editChildTitle;
+
+  /// No description provided for @editChildTitleWithName.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {childName}\'s details'**
+  String editChildTitleWithName(String childName);
+
+  /// No description provided for @profileSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get profileSave;
+
+  /// No description provided for @profileCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get profileCancel;
+
+  /// No description provided for @profileContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get profileContinue;
+
+  /// No description provided for @profileBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get profileBack;
+
+  /// No description provided for @profileLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load profile details.'**
+  String get profileLoadError;
+
+  /// No description provided for @profileSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save profile details.'**
+  String get profileSaveError;
+
+  /// No description provided for @profileInvalidChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a name and date of birth.'**
+  String get profileInvalidChild;
+
+  /// No description provided for @profileChildNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Child details could not be found.'**
+  String get profileChildNotFound;
+
+  /// No description provided for @selectChildTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a child'**
+  String get selectChildTitle;
+
+  /// No description provided for @noChildrenMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No children have been added yet.'**
+  String get noChildrenMessage;
+
+  /// No description provided for @updateVaccinationScheduleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update vaccination schedule?'**
+  String get updateVaccinationScheduleTitle;
+
+  /// No description provided for @updateVaccinationScheduleProfileName.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating child profile: {childName}'**
+  String updateVaccinationScheduleProfileName(String childName);
+
+  /// No description provided for @updateVaccinationScheduleMessageFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing your child\'s date of birth or sex may change their vaccination schedule.'**
+  String get updateVaccinationScheduleMessageFirst;
+
+  /// No description provided for @updateVaccinationScheduleMessageSecond.
+  ///
+  /// In en, this message translates to:
+  /// **'These changes will be saved and used until you change the details again.'**
+  String get updateVaccinationScheduleMessageSecond;
+
+  /// No description provided for @updateVaccinationScheduleMessageThird.
+  ///
+  /// In en, this message translates to:
+  /// **'You can edit these details again later if needed.'**
+  String get updateVaccinationScheduleMessageThird;
+
+  /// No description provided for @deleteChildTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete child?'**
+  String get deleteChildTitle;
+
+  /// No description provided for @deleteChildProfileName.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting child profile: {childName}'**
+  String deleteChildProfileName(String childName);
+
+  /// No description provided for @deleteChildMessageFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently delete this child\'s information and vaccination records.'**
+  String get deleteChildMessageFirst;
+
+  /// No description provided for @deleteChildMessageUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone.'**
+  String get deleteChildMessageUndo;
+
+  /// No description provided for @deleteChildConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete child'**
+  String get deleteChildConfirm;
+
+  /// No description provided for @deleteChildSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Child deleted.'**
+  String get deleteChildSuccess;
+
+  /// No description provided for @deleteChildError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete child.'**
+  String get deleteChildError;
 
   /// No description provided for @appLanguageLoadError.
   ///
@@ -626,6 +824,24 @@ abstract class AppLocalizations {
   /// **'Enter your street address'**
   String get onboardingCaregiverAddressHint;
 
+  /// No description provided for @onboardingErrorEmptyCaregiverName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter caregiver\'s name'**
+  String get onboardingErrorEmptyCaregiverName;
+
+  /// No description provided for @onboardingErrorEmptyCaregiverPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter caregiver\'s phone number'**
+  String get onboardingErrorEmptyCaregiverPhone;
+
+  /// No description provided for @onboardingErrorInvalidPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid phone number'**
+  String get onboardingErrorInvalidPhone;
+
   /// No description provided for @onboardingStepLabel.
   ///
   /// In en, this message translates to:
@@ -704,11 +920,17 @@ abstract class AppLocalizations {
   /// **'Please enter a valid Date of Birth'**
   String get onboardingErrorInvalidDate;
 
-  /// No description provided for @onboardingErrorInvalidDob.
+  /// No description provided for @onboardingErrorFutureDob.
   ///
   /// In en, this message translates to:
-  /// **'Invalid Date of Birth'**
-  String get onboardingErrorInvalidDob;
+  /// **'Date of Birth cannot be in the future'**
+  String get onboardingErrorFutureDob;
+
+  /// No description provided for @onboardingErrorTooOldDob.
+  ///
+  /// In en, this message translates to:
+  /// **'Child must be under 18 years old'**
+  String get onboardingErrorTooOldDob;
 
   /// No description provided for @onboardingErrorSaveSetup.
   ///
@@ -854,12 +1076,6 @@ abstract class AppLocalizations {
   /// **'Tap to change'**
   String get recordDoseTapToChange;
 
-  /// Badge shown on a dose row the user has ticked
-  ///
-  /// In en, this message translates to:
-  /// **'Ticked'**
-  String get recordDoseTickedLabel;
-
   /// Button revealing doses that are not due yet
   ///
   /// In en, this message translates to:
@@ -926,17 +1142,155 @@ abstract class AppLocalizations {
   /// **'Add your first child to see upcoming vaccines here.'**
   String get homeEmptyStateSubtitle;
 
-  /// No description provided for @learnPlaceholderTitle.
+  /// No description provided for @learnTitle.
   ///
   /// In en, this message translates to:
   /// **'Learn'**
-  String get learnPlaceholderTitle;
+  String get learnTitle;
 
-  /// No description provided for @learnPlaceholderTitleNp.
+  /// No description provided for @learnTopic1Title.
   ///
   /// In en, this message translates to:
-  /// **'सिक्नुहोस्'**
-  String get learnPlaceholderTitleNp;
+  /// **'Topic 1'**
+  String get learnTopic1Title;
+
+  /// No description provided for @learnTopic1Summary.
+  ///
+  /// In en, this message translates to:
+  /// **'A short summary of topic 1.'**
+  String get learnTopic1Summary;
+
+  /// Full page text for Learn topic 1. Separate paragraphs with a blank line (\n\n).
+  ///
+  /// In en, this message translates to:
+  /// **'This is placeholder content for topic 1. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 1 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 1 and answer common questions.\n\nThis paragraph will say where to get more help with topic 1, such as the local health facility or a health worker.'**
+  String get learnTopic1Body;
+
+  /// No description provided for @learnTopic2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Topic 2'**
+  String get learnTopic2Title;
+
+  /// No description provided for @learnTopic2Summary.
+  ///
+  /// In en, this message translates to:
+  /// **'A short summary of topic 2.'**
+  String get learnTopic2Summary;
+
+  /// Full page text for Learn topic 2. Separate paragraphs with a blank line (\n\n).
+  ///
+  /// In en, this message translates to:
+  /// **'This is placeholder content for topic 2. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 2 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 2 and answer common questions.\n\nThis paragraph will say where to get more help with topic 2, such as the local health facility or a health worker.'**
+  String get learnTopic2Body;
+
+  /// No description provided for @learnTopic3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Topic 3'**
+  String get learnTopic3Title;
+
+  /// No description provided for @learnTopic3Summary.
+  ///
+  /// In en, this message translates to:
+  /// **'A short summary of topic 3.'**
+  String get learnTopic3Summary;
+
+  /// Full page text for Learn topic 3. Separate paragraphs with a blank line (\n\n).
+  ///
+  /// In en, this message translates to:
+  /// **'This is placeholder content for topic 3. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 3 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 3 and answer common questions.\n\nThis paragraph will say where to get more help with topic 3, such as the local health facility or a health worker.'**
+  String get learnTopic3Body;
+
+  /// No description provided for @learnTopic4Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Topic 4'**
+  String get learnTopic4Title;
+
+  /// No description provided for @learnTopic4Summary.
+  ///
+  /// In en, this message translates to:
+  /// **'A short summary of topic 4.'**
+  String get learnTopic4Summary;
+
+  /// Full page text for Learn topic 4. Separate paragraphs with a blank line (\n\n).
+  ///
+  /// In en, this message translates to:
+  /// **'This is placeholder content for topic 4. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 4 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 4 and answer common questions.\n\nThis paragraph will say where to get more help with topic 4, such as the local health facility or a health worker.'**
+  String get learnTopic4Body;
+
+  /// No description provided for @learnTopic5Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Topic 5'**
+  String get learnTopic5Title;
+
+  /// No description provided for @learnTopic5Summary.
+  ///
+  /// In en, this message translates to:
+  /// **'A short summary of topic 5.'**
+  String get learnTopic5Summary;
+
+  /// Full page text for Learn topic 5. Separate paragraphs with a blank line (\n\n).
+  ///
+  /// In en, this message translates to:
+  /// **'This is placeholder content for topic 5. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 5 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 5 and answer common questions.\n\nThis paragraph will say where to get more help with topic 5, such as the local health facility or a health worker.'**
+  String get learnTopic5Body;
+
+  /// No description provided for @learnTopic6Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Topic 6'**
+  String get learnTopic6Title;
+
+  /// No description provided for @learnTopic6Summary.
+  ///
+  /// In en, this message translates to:
+  /// **'A short summary of topic 6.'**
+  String get learnTopic6Summary;
+
+  /// Full page text for Learn topic 6. Separate paragraphs with a blank line (\n\n).
+  ///
+  /// In en, this message translates to:
+  /// **'This is placeholder content for topic 6. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 6 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 6 and answer common questions.\n\nThis paragraph will say where to get more help with topic 6, such as the local health facility or a health worker.'**
+  String get learnTopic6Body;
+
+  /// No description provided for @learnTopic7Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Topic 7'**
+  String get learnTopic7Title;
+
+  /// No description provided for @learnTopic7Summary.
+  ///
+  /// In en, this message translates to:
+  /// **'A short summary of topic 7.'**
+  String get learnTopic7Summary;
+
+  /// Full page text for Learn topic 7. Separate paragraphs with a blank line (\n\n).
+  ///
+  /// In en, this message translates to:
+  /// **'This is placeholder content for topic 7. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 7 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 7 and answer common questions.\n\nThis paragraph will say where to get more help with topic 7, such as the local health facility or a health worker.'**
+  String get learnTopic7Body;
+
+  /// No description provided for @learnTopic8Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Topic 8'**
+  String get learnTopic8Title;
+
+  /// No description provided for @learnTopic8Summary.
+  ///
+  /// In en, this message translates to:
+  /// **'A short summary of topic 8.'**
+  String get learnTopic8Summary;
+
+  /// Full page text for Learn topic 8. Separate paragraphs with a blank line (\n\n).
+  ///
+  /// In en, this message translates to:
+  /// **'This is placeholder content for topic 8. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 8 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 8 and answer common questions.\n\nThis paragraph will say where to get more help with topic 8, such as the local health facility or a health worker.'**
+  String get learnTopic8Body;
 
   /// No description provided for @childStatusSetupIncomplete.
   ///
@@ -1124,12 +1478,6 @@ abstract class AppLocalizations {
   /// **'Overdue by {count} day(s)'**
   String vaccineScheduleOverdueBy(Object count);
 
-  /// No description provided for @onboardingErrorFutureDob.
-  ///
-  /// In en, this message translates to:
-  /// **'Date of Birth cannot be in the future'**
-  String get onboardingErrorFutureDob;
-
   /// No description provided for @overdueVaccinesDialogTitle.
   ///
   /// In en, this message translates to:
@@ -1153,6 +1501,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OK'**
   String get actionUnderstand;
+
+  /// DRAFT, NOT CLIENT-SUPPLIED. Title for a dose that is coming up. The brief fixes the body wording only, so the child's name goes in the title: it keeps the body word for word while letting caregivers with several children tell reminders apart.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccination reminder – {childName}'**
+  String reminderTitleUpcoming(String childName);
+
+  /// DRAFT, NOT CLIENT-SUPPLIED. Title for the follow-ups after a dose was missed.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccination missed – {childName}'**
+  String reminderTitleMissed(String childName);
+
+  /// DRAFT, NOT CLIENT-SUPPLIED. Title once a dose is more than a week overdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccination overdue – {childName}'**
+  String reminderTitleOverdue(String childName);
+
+  /// CLIENT'S EXACT WORDING (brief section 5, push notification message). Do not reword. The brief also asks for the nearest immunisation service or outreach session in the week-before reminder; see the TODO in reminder_message.dart.
+  ///
+  /// In en, this message translates to:
+  /// **'Your child is due for {vaccineName} on {date}. Please visit your nearest health post or immunisation clinic.'**
+  String reminderUpcoming(String vaccineName, String date);
+
+  /// DRAFT, NEEDS CLIENT SIGN-OFF. Sent one day after a missed dose. The brief gives no exact wording here, only that it must carry the missed vaccine name, why finishing the schedule matters, and catch-up guidance where it applies.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccineName} was due on {date} and has not been recorded yet. Completing every dose on time keeps your child protected. Please visit your nearest health post.'**
+  String reminderMissedYesterday(String vaccineName, String date);
+
+  /// DRAFT, NEEDS CLIENT SIGN-OFF. Sent one week after a missed dose, same reasoning as reminderMissedYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccineName} has now been missed for a week. Contact your nearest health facility about catch-up vaccination so your child stays protected.'**
+  String reminderMissedWeek(String vaccineName);
+
+  /// CLIENT'S EXACT WORDING (brief section 5, overdue notification). Do not reword. Sent every fortnight once a dose is more than a week overdue.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccineName} is overdue. Contact your nearest health facility for catch-up vaccination.'**
+  String reminderOverdue(String vaccineName);
 }
 
 class _AppLocalizationsDelegate

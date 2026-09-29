@@ -6,6 +6,7 @@ import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/record_dose/domain/record_dose_controller.dart';
 
 const Color _pageBackground = Color(0xFFF5F9FC);
@@ -171,7 +172,10 @@ class _RecordDoseBody extends StatelessWidget {
                   recordDoseState.upcomingDues.isNotEmpty ? 76 : 24,
                 ),
                 children: <Widget>[
-                  _Header(localizations: localizations),
+                  _Header(
+                    localizations: localizations,
+                    recordDoseState: recordDoseState,
+                  ),
                   const SizedBox(height: 14),
                   Text(
                     localizations
@@ -296,9 +300,13 @@ class _ErrorBody extends StatelessWidget {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({required this.localizations});
+  const _Header({
+    required this.localizations,
+    this.recordDoseState,
+  });
 
   final AppLocalizations localizations;
+  final RecordDoseState? recordDoseState;
 
   @override
   Widget build(BuildContext context) {
@@ -321,6 +329,29 @@ class _Header extends StatelessWidget {
         ReadAloudButton(
           tooltip: localizations.childReadAloudTooltip,
           unavailableMessage: localizations.childReadAloudUnavailable,
+          textGetter: () {
+            final RecordDoseState? state = recordDoseState;
+            if (state == null) {
+              return ScreenSpeechHelper.extractVisibleText(context);
+            }
+            final List<String> ticked = state.visibleDues
+                .where(
+                    (VaccinationDue d) => state.selectedDueIds.contains(d.id))
+                .map((VaccinationDue d) => d.vaccineCode)
+                .toList();
+            final List<String> available = state.visibleDues
+                .map((VaccinationDue d) => d.vaccineCode)
+                .toList();
+
+            return ScreenSpeechHelper.recordDoseScreenText(
+              context: context,
+              localizations: localizations,
+              childName: state.child.name,
+              administeredDate: state.administeredDate,
+              tickedVaccineNames: ticked,
+              availableVaccineNames: available,
+            );
+          },
         ),
       ],
     );
@@ -563,13 +594,6 @@ class _DueTile extends StatelessWidget {
                                   ),
                             ),
                           ),
-                          if (isSelected)
-                            _Pill(
-                              label: localizations.recordDoseTickedLabel,
-                              background: _upToDateSurface,
-                              foreground: AppTheme.statusUpToDateText,
-                              icon: Icons.check_rounded,
-                            ),
                         ],
                       ),
                       const SizedBox(height: 6),

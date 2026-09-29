@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
+import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/onboarding/presentation/child_screen.dart';
+import 'package:tikasathi/features/settings/domain/phone_number_validation.dart';
 
 class CaregiverScreen extends ConsumerStatefulWidget {
   const CaregiverScreen({super.key});
@@ -25,9 +28,34 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
   }
 
   void _onContinue() {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+    final String name = _nameController.text.trim();
+    final String phone = _phoneController.text.trim();
+
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(localizations.onboardingErrorEmptyCaregiverName)),
+      );
+      return;
+    }
+    if (phone.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(localizations.onboardingErrorEmptyCaregiverPhone)),
+      );
+      return;
+    }
+    if (!isValidPhoneNumber(phone, allowEmpty: false)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(localizations.onboardingErrorInvalidPhone)),
+      );
+      return;
+    }
+
     ref.read(onboardingControllerProvider.notifier).updateCaregiverInfo(
-          name: _nameController.text.trim(),
-          phone: _phoneController.text.trim(),
+          name: name,
+          phone: phone,
           address: _addressController.text.trim(),
         );
 
@@ -53,6 +81,20 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
           icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: ReadAloudButton(
+              tooltip: localizations.childReadAloudTooltip,
+              unavailableMessage: localizations.childReadAloudUnavailable,
+              textGetter: () => ScreenSpeechHelper.caregiverScreenText(
+                context: context,
+                localizations: localizations,
+                isEditing: false,
+              ),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(

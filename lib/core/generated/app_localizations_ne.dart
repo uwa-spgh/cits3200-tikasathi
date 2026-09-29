@@ -73,6 +73,16 @@ class AppLocalizationsNe extends AppLocalizations {
   String get childReadAloudTooltip => 'पढाइ सुन्नुहोस्';
 
   @override
+  String get childReadAloudStopTooltip => 'पढाइ रोक्नुहोस्';
+
+  @override
+  String get childReadAloudNoContent => 'पढ्नको लागि कुनै पाठ भेटिएन।';
+
+  @override
+  String get childReadAloudError =>
+      'पढाइ सुनाउन सकिएन। कृपया आफ्नो यन्त्रको आवाज सेटिङ जाँच गर्नुहोस्।';
+
+  @override
   String get childBackTooltip => 'फर्कनुहोस्';
 
   @override
@@ -223,6 +233,10 @@ class AppLocalizationsNe extends AppLocalizations {
   String get healthFacilityPhoneHint => 'फोन नम्बर लेख्नुहोस्';
 
   @override
+  String get healthFacilityInvalidPhone =>
+      'कृपया मान्य फोन नम्बर प्रविष्ट गर्नुहोस्';
+
+  @override
   String get healthFacilitySave => 'बचत गर्नुहोस्';
 
   @override
@@ -246,6 +260,103 @@ class AppLocalizationsNe extends AppLocalizations {
 
   @override
   String get settingsLanguageSaveError => 'भाषा सेव गर्न सकिएन।';
+
+  @override
+  String get manageProfilesTitle => 'प्रोफाइलहरू व्यवस्थापन गर्नुहोस्';
+
+  @override
+  String get editCaregiverAction => 'हेरचाहकर्ताको विवरण सम्पादन गर्नुहोस्';
+
+  @override
+  String get editChildAction => 'बच्चाको विवरण सम्पादन गर्नुहोस्';
+
+  @override
+  String get deleteChildAction => 'बच्चा मेटाउनुहोस्';
+
+  @override
+  String get editCaregiverTitle => 'हेरचाहकर्ताको विवरण सम्पादन गर्नुहोस्';
+
+  @override
+  String get editChildTitle => 'बच्चाको विवरण सम्पादन गर्नुहोस्';
+
+  @override
+  String editChildTitleWithName(String childName) {
+    return '$childName को विवरण सम्पादन गर्नुहोस्';
+  }
+
+  @override
+  String get profileSave => 'बचत गर्नुहोस्';
+
+  @override
+  String get profileCancel => 'रद्द गर्नुहोस्';
+
+  @override
+  String get profileContinue => 'जारी राख्नुहोस्';
+
+  @override
+  String get profileBack => 'फर्कनुहोस्';
+
+  @override
+  String get profileLoadError => 'प्रोफाइल विवरण लोड गर्न सकिएन।';
+
+  @override
+  String get profileSaveError => 'प्रोफाइल विवरण बचत गर्न सकिएन।';
+
+  @override
+  String get profileInvalidChild => 'कृपया नाम र जन्म मिति प्रविष्ट गर्नुहोस्।';
+
+  @override
+  String get profileChildNotFound => 'बच्चाको विवरण फेला परेन।';
+
+  @override
+  String get selectChildTitle => 'बच्चा छान्नुहोस्';
+
+  @override
+  String get noChildrenMessage => 'अहिलेसम्म कुनै बच्चा थपिएको छैन।';
+
+  @override
+  String get updateVaccinationScheduleTitle => 'खोप तालिका अद्यावधिक गर्ने?';
+
+  @override
+  String updateVaccinationScheduleProfileName(String childName) {
+    return 'अद्यावधिक गरिने बच्चाको प्रोफाइल: $childName';
+  }
+
+  @override
+  String get updateVaccinationScheduleMessageFirst =>
+      'तपाईंको बच्चाको जन्म मिति वा लिङ्ग परिवर्तन गर्दा खोप तालिका परिवर्तन हुन सक्छ।';
+
+  @override
+  String get updateVaccinationScheduleMessageSecond =>
+      'यी परिवर्तनहरू बचत गरिनेछन् र तपाईंले विवरण फेरि परिवर्तन नगरेसम्म प्रयोग हुनेछन्।';
+
+  @override
+  String get updateVaccinationScheduleMessageThird =>
+      'आवश्यक परेमा तपाईंले यी विवरणहरू पछि फेरि सम्पादन गर्न सक्नुहुन्छ।';
+
+  @override
+  String get deleteChildTitle => 'बच्चा मेटाउने?';
+
+  @override
+  String deleteChildProfileName(String childName) {
+    return 'बच्चाको प्रोफाइल मेटाउँदै: $childName';
+  }
+
+  @override
+  String get deleteChildMessageFirst =>
+      'यसले यो बच्चाको जानकारी र खोपका अभिलेखहरू स्थायी रूपमा मेटाउनेछ।';
+
+  @override
+  String get deleteChildMessageUndo => 'यो कार्य पूर्ववत गर्न सकिँदैन।';
+
+  @override
+  String get deleteChildConfirm => 'बच्चा मेटाउनुहोस्';
+
+  @override
+  String get deleteChildSuccess => 'बच्चा मेटाइयो।';
+
+  @override
+  String get deleteChildError => 'बच्चा मेटाउन सकिएन।';
 
   @override
   String appLanguageLoadError(Object error) {
@@ -299,6 +410,18 @@ class AppLocalizationsNe extends AppLocalizations {
       'तपाईंको ठेगाना प्रविष्ट गर्नुहोस्';
 
   @override
+  String get onboardingErrorEmptyCaregiverName =>
+      'कृपया हेरचाहकर्ताको नाम प्रविष्ट गर्नुहोस्';
+
+  @override
+  String get onboardingErrorEmptyCaregiverPhone =>
+      'कृपया हेरचाहकर्ताको फोन नम्बर प्रविष्ट गर्नुहोस्';
+
+  @override
+  String get onboardingErrorInvalidPhone =>
+      'कृपया मान्य फोन नम्बर प्रविष्ट गर्नुहोस्';
+
+  @override
   String onboardingStepLabel(Object current, Object total) {
     return 'चरण $current/ $total';
   }
@@ -341,7 +464,11 @@ class AppLocalizationsNe extends AppLocalizations {
       'कृपया मान्य जन्म मिति प्रविष्ट गर्नुहोस्';
 
   @override
-  String get onboardingErrorInvalidDob => 'अवैध जन्म मिति';
+  String get onboardingErrorFutureDob => 'जन्म मिति भविष्यको हुन सक्दैन';
+
+  @override
+  String get onboardingErrorTooOldDob =>
+      'बच्चा १८ वर्षभन्दा कम उमेरको हुनुपर्छ';
 
   @override
   String onboardingErrorSaveSetup(Object error) {
@@ -459,9 +586,6 @@ class AppLocalizationsNe extends AppLocalizations {
   String get recordDoseTapToChange => 'परिवर्तन गर्न थिच्नुहोस्';
 
   @override
-  String get recordDoseTickedLabel => 'चिन्ह लगाइयो';
-
-  @override
   String get recordDoseShowMore => 'थप खोपहरू देखाउनुहोस्';
 
   @override
@@ -520,10 +644,87 @@ class AppLocalizationsNe extends AppLocalizations {
       'यहाँ आगामी खोपहरू हेर्न आफ्नो पहिलो बच्चा थप्नुहोस्।';
 
   @override
-  String get learnPlaceholderTitle => 'सिक्नुहोस्';
+  String get learnTitle => 'सिक्नुहोस्';
 
   @override
-  String get learnPlaceholderTitleNp => 'सिक्नुहोस्';
+  String get learnTopic1Title => 'विषय १';
+
+  @override
+  String get learnTopic1Summary => 'विषय १ को छोटो सारांश।';
+
+  @override
+  String get learnTopic1Body =>
+      'यो विषय १ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय १ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय १ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय १ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।';
+
+  @override
+  String get learnTopic2Title => 'विषय २';
+
+  @override
+  String get learnTopic2Summary => 'विषय २ को छोटो सारांश।';
+
+  @override
+  String get learnTopic2Body =>
+      'यो विषय २ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय २ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय २ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय २ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।';
+
+  @override
+  String get learnTopic3Title => 'विषय ३';
+
+  @override
+  String get learnTopic3Summary => 'विषय ३ को छोटो सारांश।';
+
+  @override
+  String get learnTopic3Body =>
+      'यो विषय ३ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ३ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ३ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ३ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।';
+
+  @override
+  String get learnTopic4Title => 'विषय ४';
+
+  @override
+  String get learnTopic4Summary => 'विषय ४ को छोटो सारांश।';
+
+  @override
+  String get learnTopic4Body =>
+      'यो विषय ४ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ४ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ४ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ४ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।';
+
+  @override
+  String get learnTopic5Title => 'विषय ५';
+
+  @override
+  String get learnTopic5Summary => 'विषय ५ को छोटो सारांश।';
+
+  @override
+  String get learnTopic5Body =>
+      'यो विषय ५ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ५ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ५ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ५ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।';
+
+  @override
+  String get learnTopic6Title => 'विषय ६';
+
+  @override
+  String get learnTopic6Summary => 'विषय ६ को छोटो सारांश।';
+
+  @override
+  String get learnTopic6Body =>
+      'यो विषय ६ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ६ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ६ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ६ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।';
+
+  @override
+  String get learnTopic7Title => 'विषय ७';
+
+  @override
+  String get learnTopic7Summary => 'विषय ७ को छोटो सारांश।';
+
+  @override
+  String get learnTopic7Body =>
+      'यो विषय ७ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ७ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ७ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ७ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।';
+
+  @override
+  String get learnTopic8Title => 'विषय ८';
+
+  @override
+  String get learnTopic8Summary => 'विषय ८ को छोटो सारांश।';
+
+  @override
+  String get learnTopic8Body =>
+      'यो विषय ८ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ८ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ८ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ८ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।';
 
   @override
   String get childStatusSetupIncomplete => 'सेटअप पूरा हुन बाँकी';
@@ -635,9 +836,6 @@ class AppLocalizationsNe extends AppLocalizations {
   }
 
   @override
-  String get onboardingErrorFutureDob => 'जन्म मिति भविष्यको हुन सक्दैन';
-
-  @override
   String get overdueVaccinesDialogTitle => 'छुटेका खोप';
 
   @override
@@ -650,4 +848,39 @@ class AppLocalizationsNe extends AppLocalizations {
 
   @override
   String get actionUnderstand => 'ठीक छ';
+
+  @override
+  String reminderTitleUpcoming(String childName) {
+    return 'खोपको सम्झना – $childName';
+  }
+
+  @override
+  String reminderTitleMissed(String childName) {
+    return 'खोप छुट्यो – $childName';
+  }
+
+  @override
+  String reminderTitleOverdue(String childName) {
+    return 'खोपको म्याद नाघ्यो – $childName';
+  }
+
+  @override
+  String reminderUpcoming(String vaccineName, String date) {
+    return 'तपाईंको बच्चालाई $date मा $vaccineName लगाउनुपर्छ। कृपया नजिकैको स्वास्थ्य चौकी वा खोप क्लिनिकमा जानुहोस्।';
+  }
+
+  @override
+  String reminderMissedYesterday(String vaccineName, String date) {
+    return '$vaccineName $date मा लगाउनुपर्ने थियो, तर अहिलेसम्म रेकर्ड भएको छैन। हरेक मात्रा समयमै पूरा गर्दा बच्चा सुरक्षित रहन्छ। कृपया नजिकैको स्वास्थ्य चौकीमा जानुहोस्।';
+  }
+
+  @override
+  String reminderMissedWeek(String vaccineName) {
+    return '$vaccineName एक हप्तादेखि छुटेको छ। बच्चा सुरक्षित रहोस् भन्नाका लागि क्याच-अप खोपबारे नजिकैको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।';
+  }
+
+  @override
+  String reminderOverdue(String vaccineName) {
+    return '$vaccineName को म्याद नाघिसक्यो। क्याच-अप खोपका लागि नजिकैको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।';
+  }
 }
