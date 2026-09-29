@@ -688,6 +688,8 @@ void main() {
       expect(enAddChild, contains('Add child details'));
       expect(enAddChild,
           contains('full name, date of birth, and select their sex'));
+      expect(enAddChild, contains('press save child'));
+      expect(enAddChild, isNot(contains('continue')));
       expect(enCaregiver, contains('Caregiver information'));
       expect(enCaregiver, contains('full name, phone number, and address'));
       expect(enCaregiverEdit, contains('Edit caregiver profile'));
@@ -718,6 +720,7 @@ void main() {
 
       expect(npAddChild, contains('बच्चाको विवरण दर्ता गर्नुहोस्'));
       expect(npAddChild, contains('पूरा नाम र जन्म मिति'));
+      expect(npAddChild, contains('बच्चा सेभ गर्नुहोस्'));
       expect(npCaregiver, contains('अभिभावकको विवरण'));
       expect(npCaregiver, contains('पूरा नाम, फोन नम्बर, र ठेगाना'));
     });

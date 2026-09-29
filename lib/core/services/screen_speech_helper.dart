@@ -288,11 +288,11 @@ class ScreenSpeechHelper {
     if (isNepali) {
       return 'बच्चाको विवरण दर्ता गर्नुहोस्। '
           'कृपया बच्चाको पूरा नाम र जन्म मिति लेख्नुहोस्, तथा छोरी वा छोरा छान्नुहोस्। '
-          'त्यसपछि अगाडि बढ्न जारी राख्नुहोस् थिच्नुहोस्।';
+          'त्यसपछि बच्चा सेभ गर्नुहोस् थिच्नुहोस्।';
     } else {
       return 'Add child details. '
           'Please enter your child\'s full name, date of birth, and select their sex: female or male. '
-          'Then tap continue to proceed.';
+          'Then press save child to proceed.';
     }
   }
 
