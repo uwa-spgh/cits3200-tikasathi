@@ -22,14 +22,15 @@ class VaccineScheduleScreen extends ConsumerWidget {
       backgroundColor: const Color(0xFFF5F9FC),
       body: SafeArea(
         child: state.when(
-          data: (details) => _VaccineScheduleTable(
-            dues: details.orderedDueVaccines,
-            records: details.orderedVaccineRecords
-                .where((record) =>
-                    details.now.difference(record.administeredDate).inDays <= 7)
-                .toList(),
-            now: details.now,
-          ),
+          data: (details) {
+            final start = details.orderedVaccineRecords.length - 5;
+            return _VaccineScheduleTable(
+              dues: details.orderedDueVaccines,
+              records:
+                  details.orderedVaccineRecords.sublist(start < 0 ? 0 : start),
+              now: details.now,
+            );
+          },
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stackTrace) =>
               Center(child: Text(localizations.childNotFound)),
