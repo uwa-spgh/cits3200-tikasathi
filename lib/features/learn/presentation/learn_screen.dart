@@ -112,7 +112,7 @@ class _FeaturedTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
     return InkWell(
-      key: Key('learn-topic-${topic.number}'),
+      key: Key('learn-${topic.id}'),
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Ink(
@@ -124,7 +124,7 @@ class _FeaturedTile extends StatelessWidget {
             Icon(topic.icon, size: 36, color: _tileAccent),
             const Spacer(),
             Text(
-              l10n.learnTopicTitle(topic.number),
+              topic.title(l10n),
               style: const TextStyle(
                 color: _tileAccent,
                 fontSize: 18,
@@ -133,7 +133,7 @@ class _FeaturedTile extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              topic.summary,
+              topic.summary(l10n),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(fontSize: 14, color: Color(0xFF334155)),
@@ -155,7 +155,7 @@ class _WideTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
     return InkWell(
-      key: Key('learn-topic-${topic.number}'),
+      key: Key('learn-${topic.id}'),
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Ink(
@@ -167,7 +167,7 @@ class _WideTile extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                l10n.learnTopicTitle(topic.number),
+                topic.title(l10n),
                 style: const TextStyle(
                   color: _tileAccent,
                   fontSize: 18,

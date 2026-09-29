@@ -35,7 +35,7 @@ class LearnTopicScreen extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      l10n.learnTopicTitle(topic.number),
+                      topic.title(l10n),
                       key: const Key('learn-topic-title'),
                       style: const TextStyle(
                         fontSize: 28,
@@ -52,7 +52,7 @@ class LearnTopicScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 24),
-              for (final String paragraph in topic.paragraphs) ...[
+              for (final String paragraph in topic.paragraphs(l10n)) ...[
                 Text(
                   paragraph,
                   style: const TextStyle(

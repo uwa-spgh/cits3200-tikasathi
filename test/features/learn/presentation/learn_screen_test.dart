@@ -9,17 +9,17 @@ import 'package:tikasathi/features/settings/data/settings_providers.dart';
 
 import '../../../helpers/fake_settings_repository.dart';
 
-Widget _app() => ProviderScope(
+Widget _app({Locale locale = const Locale('en')}) => ProviderScope(
       overrides: [
         settingsRepositoryProvider.overrideWith(
           (ref) => FakeSettingsRepository(),
         ),
       ],
-      child: const MaterialApp(
-        locale: Locale('en'),
+      child: MaterialApp(
+        locale: locale,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(body: LearnScreen()),
+        home: const Scaffold(body: LearnScreen()),
       ),
     );
 
@@ -59,7 +59,8 @@ void main() {
         tester.widget<Text>(find.byKey(const Key('learn-topic-title'))).data,
         'Topic 6',
       );
-      expect(find.textContaining('[6] Lorem ipsum'), findsOneWidget);
+      expect(find.textContaining('placeholder content for topic 6'),
+          findsOneWidget);
       expect(
         find.descendant(
           of: find.byType(LearnTopicScreen),
@@ -72,6 +73,21 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(LearnTopicScreen), findsNothing);
       expect(find.byKey(const Key('learn-title')), findsOneWidget);
+    });
+
+    testWidgets('shows topic content in Nepali when Nepali is selected',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(_app(locale: const Locale('ne')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('विषय १'), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('learn-topic-1')));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('विषय १ को लागि अस्थायी सामग्री'),
+          findsOneWidget);
+      expect(find.textContaining('placeholder'), findsNothing);
     });
   });
 }

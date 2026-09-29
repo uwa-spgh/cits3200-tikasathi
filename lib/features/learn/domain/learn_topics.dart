@@ -1,62 +1,98 @@
 import 'package:flutter/material.dart';
+import 'package:tikasathi/core/generated/app_localizations.dart';
+
+typedef LocalizedText = String Function(AppLocalizations l10n);
 
 /// One piece of educational content shown on the Learn page.
 ///
-/// The body text is sample lorem ipsum until real content is written, so it is
-/// the same in every language. Titles come from localisation via [number].
+/// The words live in the localisation files (`lib/core/l10n/app_*.arb`) under
+/// `learnTopic<N>Title`, `learnTopic<N>Summary` and `learnTopic<N>Body`, so
+/// content is replaced by editing those entries in both languages. Separate
+/// paragraphs in a body with a blank line.
 class LearnTopic {
   const LearnTopic({
-    required this.number,
+    required this.id,
     required this.icon,
+    required this.title,
     required this.summary,
-    required this.paragraphs,
+    required this.body,
   });
 
-  final int number;
+  /// Stable identifier, used for widget keys.
+  final String id;
   final IconData icon;
-  final String summary;
-  final List<String> paragraphs;
+  final LocalizedText title;
+  final LocalizedText summary;
+  final LocalizedText body;
+
+  /// The body split into paragraphs on blank lines.
+  List<String> paragraphs(AppLocalizations l10n) => body(l10n)
+      .split(RegExp(r'\n\s*\n'))
+      .map((String paragraph) => paragraph.trim())
+      .where((String paragraph) => paragraph.isNotEmpty)
+      .toList();
 }
-
-const List<String> _sampleParagraphs = <String>[
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod '
-      'tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim '
-      'veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea '
-      'commodo consequat.',
-  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum '
-      'dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non '
-      'proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-  'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium '
-      'doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo '
-      'inventore veritatis et quasi architecto beatae vitae dicta sunt '
-      'explicabo.',
-  'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut '
-      'fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem '
-      'sequi nesciunt.',
-];
-
-LearnTopic _sampleTopic(int number, IconData icon) => LearnTopic(
-      number: number,
-      icon: icon,
-      summary: 'Lorem ipsum dolor sit amet $number.',
-      paragraphs: <String>[
-        for (final String paragraph in _sampleParagraphs)
-          '[$number] $paragraph',
-      ],
-    );
 
 /// The four large tiles shown in the 2x2 grid at the top of the Learn page.
 final List<LearnTopic> featuredLearnTopics = <LearnTopic>[
-  _sampleTopic(1, Icons.vaccines_outlined),
-  _sampleTopic(2, Icons.calendar_month_outlined),
-  _sampleTopic(3, Icons.health_and_safety_outlined),
-  _sampleTopic(4, Icons.local_hospital_outlined),
+  LearnTopic(
+    id: 'topic-1',
+    icon: Icons.vaccines_outlined,
+    title: (l10n) => l10n.learnTopic1Title,
+    summary: (l10n) => l10n.learnTopic1Summary,
+    body: (l10n) => l10n.learnTopic1Body,
+  ),
+  LearnTopic(
+    id: 'topic-2',
+    icon: Icons.calendar_month_outlined,
+    title: (l10n) => l10n.learnTopic2Title,
+    summary: (l10n) => l10n.learnTopic2Summary,
+    body: (l10n) => l10n.learnTopic2Body,
+  ),
+  LearnTopic(
+    id: 'topic-3',
+    icon: Icons.health_and_safety_outlined,
+    title: (l10n) => l10n.learnTopic3Title,
+    summary: (l10n) => l10n.learnTopic3Summary,
+    body: (l10n) => l10n.learnTopic3Body,
+  ),
+  LearnTopic(
+    id: 'topic-4',
+    icon: Icons.local_hospital_outlined,
+    title: (l10n) => l10n.learnTopic4Title,
+    summary: (l10n) => l10n.learnTopic4Summary,
+    body: (l10n) => l10n.learnTopic4Body,
+  ),
 ];
 
 /// The four shorter full-width tiles listed below the grid.
 final List<LearnTopic> moreLearnTopics = <LearnTopic>[
-  _sampleTopic(5, Icons.help_outline),
-  _sampleTopic(6, Icons.child_care_outlined),
-  _sampleTopic(7, Icons.medical_information_outlined),
-  _sampleTopic(8, Icons.info_outline),
+  LearnTopic(
+    id: 'topic-5',
+    icon: Icons.help_outline,
+    title: (l10n) => l10n.learnTopic5Title,
+    summary: (l10n) => l10n.learnTopic5Summary,
+    body: (l10n) => l10n.learnTopic5Body,
+  ),
+  LearnTopic(
+    id: 'topic-6',
+    icon: Icons.child_care_outlined,
+    title: (l10n) => l10n.learnTopic6Title,
+    summary: (l10n) => l10n.learnTopic6Summary,
+    body: (l10n) => l10n.learnTopic6Body,
+  ),
+  LearnTopic(
+    id: 'topic-7',
+    icon: Icons.medical_information_outlined,
+    title: (l10n) => l10n.learnTopic7Title,
+    summary: (l10n) => l10n.learnTopic7Summary,
+    body: (l10n) => l10n.learnTopic7Body,
+  ),
+  LearnTopic(
+    id: 'topic-8',
+    icon: Icons.info_outline,
+    title: (l10n) => l10n.learnTopic8Title,
+    summary: (l10n) => l10n.learnTopic8Summary,
+    body: (l10n) => l10n.learnTopic8Body,
+  ),
 ];
