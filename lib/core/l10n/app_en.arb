@@ -481,8 +481,15 @@
   "homeSectionUpToDate": "Up to date",
   "homeEmptyStateTitle": "No children added yet.",
   "homeEmptyStateSubtitle": "Add your first child to see upcoming vaccines here.",
-  "learnPlaceholderTitle": "Learn",
-  "learnPlaceholderTitleNp": "सिक्नुहोस्",
+  "learnTitle": "Learn",
+  "learnTopicTitle": "Topic {number}",
+  "@learnTopicTitle": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "childStatusSetupIncomplete": "Awaiting setup completion",
   "homeSectionAwaitingSetup": "Awaiting setup completion",
   "homeActionCompleteSetup": "Complete setup",

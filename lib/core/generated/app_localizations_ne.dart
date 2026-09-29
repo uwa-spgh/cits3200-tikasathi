@@ -634,10 +634,12 @@ class AppLocalizationsNe extends AppLocalizations {
       'यहाँ आगामी खोपहरू हेर्न आफ्नो पहिलो बच्चा थप्नुहोस्।';
 
   @override
-  String get learnPlaceholderTitle => 'सिक्नुहोस्';
+  String get learnTitle => 'सिक्नुहोस्';
 
   @override
-  String get learnPlaceholderTitleNp => 'सिक्नुहोस्';
+  String learnTopicTitle(int number) {
+    return 'विषय $number';
+  }
 
   @override
   String get childStatusSetupIncomplete => 'सेटअप पूरा हुन बाँकी';

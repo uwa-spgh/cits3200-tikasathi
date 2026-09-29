@@ -1124,17 +1124,17 @@ abstract class AppLocalizations {
   /// **'Add your first child to see upcoming vaccines here.'**
   String get homeEmptyStateSubtitle;
 
-  /// No description provided for @learnPlaceholderTitle.
+  /// No description provided for @learnTitle.
   ///
   /// In en, this message translates to:
   /// **'Learn'**
-  String get learnPlaceholderTitle;
+  String get learnTitle;
 
-  /// No description provided for @learnPlaceholderTitleNp.
+  /// No description provided for @learnTopicTitle.
   ///
   /// In en, this message translates to:
-  /// **'सिक्नुहोस्'**
-  String get learnPlaceholderTitleNp;
+  /// **'Topic {number}'**
+  String learnTopicTitle(int number);
 
   /// No description provided for @childStatusSetupIncomplete.
   ///

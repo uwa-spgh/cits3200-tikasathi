@@ -1,0 +1,68 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/features/learn/presentation/learn_screen.dart';
+import 'package:tikasathi/features/learn/presentation/learn_topic_screen.dart';
+import 'package:tikasathi/features/settings/data/settings_providers.dart';
+
+import '../../../helpers/fake_settings_repository.dart';
+
+Widget _app() => ProviderScope(
+      overrides: [
+        settingsRepositoryProvider.overrideWith(
+          (ref) => FakeSettingsRepository(),
+        ),
+      ],
+      child: const MaterialApp(
+        locale: Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(body: LearnScreen()),
+      ),
+    );
+
+// The grid is itself a Scrollable, so target the page's outer one.
+final Finder _pageScrollable = find.byType(Scrollable).first;
+
+void main() {
+  group('LearnScreen', () {
+    testWidgets('shows four grid tiles and four full-width tiles',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(_app());
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('learn-title')), findsOneWidget);
+      expect(find.byType(GridView), findsOneWidget);
+      for (int number = 1; number <= 8; number++) {
+        final Finder tile = find.byKey(Key('learn-topic-$number'));
+        await tester.scrollUntilVisible(tile, 100, scrollable: _pageScrollable);
+        expect(tile, findsOneWidget);
+        expect(find.text('Topic $number'), findsOneWidget);
+      }
+    });
+
+    testWidgets('tapping a tile opens its full page and back returns',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(_app());
+      await tester.pumpAndSettle();
+
+      final Finder tile = find.byKey(const Key('learn-topic-6'));
+      await tester.scrollUntilVisible(tile, 100, scrollable: _pageScrollable);
+      await tester.tap(tile);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LearnTopicScreen), findsOneWidget);
+      expect(
+        tester.widget<Text>(find.byKey(const Key('learn-topic-title'))).data,
+        'Topic 6',
+      );
+      expect(find.textContaining('[6] Lorem ipsum'), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.arrow_back));
+      await tester.pumpAndSettle();
+      expect(find.byType(LearnTopicScreen), findsNothing);
+      expect(find.byKey(const Key('learn-title')), findsOneWidget);
+    });
+  });
+}

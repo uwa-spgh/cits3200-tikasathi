@@ -625,10 +625,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Add your first child to see upcoming vaccines here.';
 
   @override
-  String get learnPlaceholderTitle => 'Learn';
+  String get learnTitle => 'Learn';
 
   @override
-  String get learnPlaceholderTitleNp => 'सिक्नुहोस्';
+  String learnTopicTitle(int number) {
+    return 'Topic $number';
+  }
 
   @override
   String get childStatusSetupIncomplete => 'Awaiting setup completion';
