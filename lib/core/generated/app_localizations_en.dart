@@ -766,32 +766,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionUnderstand => 'OK';
 
   @override
-  String get reminderTitleUpcoming => 'Vaccination reminder';
-
-  @override
-  String get reminderTitleMissed => 'Vaccination missed';
-
-  @override
-  String get reminderTitleOverdue => 'Vaccination overdue';
-
-  @override
-  String reminderUpcoming(String childName, String vaccineName, String date) {
-    return 'For $childName: Your child is due for $vaccineName on $date. Please visit your nearest health post or immunisation clinic.';
+  String reminderTitleUpcoming(String childName) {
+    return 'Vaccination reminder – $childName';
   }
 
   @override
-  String reminderMissedYesterday(
-      String childName, String vaccineName, String date) {
-    return 'For $childName: $vaccineName was due on $date and has not been recorded yet. Completing every dose on time keeps your child protected. Please visit your nearest health post.';
+  String reminderTitleMissed(String childName) {
+    return 'Vaccination missed – $childName';
   }
 
   @override
-  String reminderMissedWeek(String childName, String vaccineName) {
-    return 'For $childName: $vaccineName has now been missed for a week. Contact your nearest health facility about catch-up vaccination so your child stays protected.';
+  String reminderTitleOverdue(String childName) {
+    return 'Vaccination overdue – $childName';
   }
 
   @override
-  String reminderOverdue(String childName, String vaccineName) {
-    return 'For $childName: $vaccineName is overdue. Contact your nearest health facility for catch-up vaccination.';
+  String reminderUpcoming(String vaccineName, String date) {
+    return 'Your child is due for $vaccineName on $date. Please visit your nearest health post or immunisation clinic.';
+  }
+
+  @override
+  String reminderMissedYesterday(String vaccineName, String date) {
+    return '$vaccineName was due on $date and has not been recorded yet. Completing every dose on time keeps your child protected. Please visit your nearest health post.';
+  }
+
+  @override
+  String reminderMissedWeek(String vaccineName) {
+    return '$vaccineName has now been missed for a week. Contact your nearest health facility about catch-up vaccination so your child stays protected.';
+  }
+
+  @override
+  String reminderOverdue(String vaccineName) {
+    return '$vaccineName is overdue. Contact your nearest health facility for catch-up vaccination.';
   }
 }

@@ -1346,48 +1346,47 @@ abstract class AppLocalizations {
   /// **'OK'**
   String get actionUnderstand;
 
-  /// DRAFT, NOT CLIENT-SUPPLIED. Notification title for a dose that is coming up. The client brief specifies body wording only, so every reminder title here needs client sign-off.
+  /// DRAFT, NOT CLIENT-SUPPLIED. Title for a dose that is coming up. The brief fixes the body wording only, so the child's name goes in the title: it keeps the body word for word while letting caregivers with several children tell reminders apart.
   ///
   /// In en, this message translates to:
-  /// **'Vaccination reminder'**
-  String get reminderTitleUpcoming;
+  /// **'Vaccination reminder – {childName}'**
+  String reminderTitleUpcoming(String childName);
 
-  /// DRAFT, NOT CLIENT-SUPPLIED. Notification title for the follow-ups after a dose was missed. Needs client sign-off.
+  /// DRAFT, NOT CLIENT-SUPPLIED. Title for the follow-ups after a dose was missed.
   ///
   /// In en, this message translates to:
-  /// **'Vaccination missed'**
-  String get reminderTitleMissed;
+  /// **'Vaccination missed – {childName}'**
+  String reminderTitleMissed(String childName);
 
-  /// DRAFT, NOT CLIENT-SUPPLIED. Notification title once a dose is more than a week overdue. Needs client sign-off.
+  /// DRAFT, NOT CLIENT-SUPPLIED. Title once a dose is more than a week overdue.
   ///
   /// In en, this message translates to:
-  /// **'Vaccination overdue'**
-  String get reminderTitleOverdue;
+  /// **'Vaccination overdue – {childName}'**
+  String reminderTitleOverdue(String childName);
 
-  /// Advance, preparation and same-day reminder. The sentence after the child name is the client's exact required wording (brief section 5) and must not be reworded. The 'For {childName}:' prefix is OURS, added so caregivers with several children can tell the reminders apart, and is NOT yet client-approved. The brief also asks for the nearest immunisation service or outreach session here. The app only stores one facility the caregiver typed in themselves (HealthFacilitators), which is not the same thing, and adding it would change the client's fixed sentence, so it is left out. See the TODO in reminder_message.dart.
+  /// CLIENT'S EXACT WORDING (brief section 5, push notification message). Do not reword. The brief also asks for the nearest immunisation service or outreach session in the week-before reminder; see the TODO in reminder_message.dart.
   ///
   /// In en, this message translates to:
-  /// **'For {childName}: Your child is due for {vaccineName} on {date}. Please visit your nearest health post or immunisation clinic.'**
-  String reminderUpcoming(String childName, String vaccineName, String date);
+  /// **'Your child is due for {vaccineName} on {date}. Please visit your nearest health post or immunisation clinic.'**
+  String reminderUpcoming(String vaccineName, String date);
 
-  /// DRAFT, NEEDS CLIENT SIGN-OFF. Sent one day after a missed dose. The brief does not give exact wording for this one, only that it must carry the missed vaccine name, why finishing the schedule matters, and catch-up guidance where it applies.
+  /// DRAFT, NEEDS CLIENT SIGN-OFF. Sent one day after a missed dose. The brief gives no exact wording here, only that it must carry the missed vaccine name, why finishing the schedule matters, and catch-up guidance where it applies.
   ///
   /// In en, this message translates to:
-  /// **'For {childName}: {vaccineName} was due on {date} and has not been recorded yet. Completing every dose on time keeps your child protected. Please visit your nearest health post.'**
-  String reminderMissedYesterday(
-      String childName, String vaccineName, String date);
+  /// **'{vaccineName} was due on {date} and has not been recorded yet. Completing every dose on time keeps your child protected. Please visit your nearest health post.'**
+  String reminderMissedYesterday(String vaccineName, String date);
 
   /// DRAFT, NEEDS CLIENT SIGN-OFF. Sent one week after a missed dose, same reasoning as reminderMissedYesterday.
   ///
   /// In en, this message translates to:
-  /// **'For {childName}: {vaccineName} has now been missed for a week. Contact your nearest health facility about catch-up vaccination so your child stays protected.'**
-  String reminderMissedWeek(String childName, String vaccineName);
+  /// **'{vaccineName} has now been missed for a week. Contact your nearest health facility about catch-up vaccination so your child stays protected.'**
+  String reminderMissedWeek(String vaccineName);
 
-  /// Sent every fortnight once a dose is more than a week overdue. The sentence after the child name is the client's exact required wording (brief section 5) and must not be reworded. The 'For {childName}:' prefix is OURS and is NOT yet client-approved.
+  /// CLIENT'S EXACT WORDING (brief section 5, overdue notification). Do not reword. Sent every fortnight once a dose is more than a week overdue.
   ///
   /// In en, this message translates to:
-  /// **'For {childName}: {vaccineName} is overdue. Contact your nearest health facility for catch-up vaccination.'**
-  String reminderOverdue(String childName, String vaccineName);
+  /// **'{vaccineName} is overdue. Contact your nearest health facility for catch-up vaccination.'**
+  String reminderOverdue(String vaccineName);
 }
 
 class _AppLocalizationsDelegate

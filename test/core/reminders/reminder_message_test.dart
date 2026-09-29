@@ -38,7 +38,7 @@ void main() {
       ]) {
         expect(
           messageFor(kind).body,
-          'For Aarav: Your child is due for PENTA (Dose 2) on 4 October 2026. '
+          'Your child is due for PENTA (Dose 2) on 4 October 2026. '
           'Please visit your nearest health post or immunisation clinic.',
           reason: 'wording for $kind',
         );
@@ -49,29 +49,41 @@ void main() {
     test('uses the client wording once a dose is overdue', () {
       expect(
         messageFor(ReminderKind.overdueRecurring).body,
-        'For Aarav: PENTA (Dose 2) is overdue. Contact your nearest health '
-        'facility for catch-up vaccination.',
+        'PENTA (Dose 2) is overdue. Contact your nearest health facility '
+        'for catch-up vaccination.',
       );
     });
 
-    test('names the child, the vaccine and the dose in every message', () {
+    test('names the child in the title and the vaccine in the body', () {
       for (final ReminderKind kind in ReminderKind.values) {
         final ReminderMessage message = messageFor(kind);
-        expect(message.body, contains('Aarav'), reason: 'child name for $kind');
+        expect(message.title, contains('Aarav'), reason: 'child for $kind');
         expect(
           message.body,
           contains('PENTA (Dose 2)'),
           reason: 'vaccine for $kind',
         );
-        expect(message.title, isNotEmpty, reason: 'title for $kind');
       }
     });
 
-    test('tells the caregiver which child each reminder is about', () {
-      expect(messageFor(ReminderKind.sameDay, childName: 'Sita').body,
-          startsWith('For Sita:'));
-      expect(messageFor(ReminderKind.sameDay, childName: 'Bikash').body,
-          startsWith('For Bikash:'));
+    // The brief's fixed sentence says "your child", so with two children the
+    // bodies are identical; only the title tells them apart.
+    test('tells two children apart by title, not body', () {
+      final ReminderMessage sita =
+          messageFor(ReminderKind.sameDay, childName: 'Sita');
+      final ReminderMessage bikash =
+          messageFor(ReminderKind.sameDay, childName: 'Bikash');
+
+      expect(sita.body, bikash.body);
+      expect(sita.title, contains('Sita'));
+      expect(bikash.title, contains('Bikash'));
+    });
+
+    test('keeps the child name out of every body', () {
+      for (final ReminderKind kind in ReminderKind.values) {
+        expect(messageFor(kind).body, isNot(contains('Aarav')),
+            reason: 'body for $kind');
+      }
     });
 
     // The follow-ups have no client-supplied wording. The brief only requires
@@ -105,7 +117,7 @@ void main() {
           final ReminderMessage english = messageFor(kind);
 
           expect(nepali.body, isNot(english.body), reason: 'body for $kind');
-          expect(nepali.body, contains('Aarav'));
+          expect(nepali.title, contains('Aarav'));
           expect(nepali.body, contains('PENTA'));
         }
       });

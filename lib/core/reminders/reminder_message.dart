@@ -32,9 +32,10 @@ String reminderVaccineName(
 /// row, so renaming a child or changing a due date cannot leave stale wording
 /// behind.
 ///
-/// The upcoming and overdue wording is specified by the client brief and must
-/// not be reworded without them. The two follow-up variants and every title are
-/// ours; see the notes in `app_en.arb`.
+/// The upcoming and overdue bodies are the client brief's exact wording and must
+/// not be reworded. The child's name goes in the title instead, which the brief
+/// leaves open, so caregivers with several children can tell reminders apart.
+/// The two follow-up bodies and every title are ours; see `app_en.arb`.
 ///
 /// TODO(facility locator): the brief wants the nearest immunisation service or
 /// outreach session in the advance reminder. The app has no such data yet —
@@ -60,24 +61,20 @@ ReminderMessage buildReminderMessage({
     ReminderKind.preparation ||
     ReminderKind.sameDay =>
       (
-        title: localizations.reminderTitleUpcoming,
-        body: localizations.reminderUpcoming(childName, vaccineName, date),
+        title: localizations.reminderTitleUpcoming(childName),
+        body: localizations.reminderUpcoming(vaccineName, date),
       ),
     ReminderKind.followUpDay => (
-        title: localizations.reminderTitleMissed,
-        body: localizations.reminderMissedYesterday(
-          childName,
-          vaccineName,
-          date,
-        ),
+        title: localizations.reminderTitleMissed(childName),
+        body: localizations.reminderMissedYesterday(vaccineName, date),
       ),
     ReminderKind.followUpWeek => (
-        title: localizations.reminderTitleMissed,
-        body: localizations.reminderMissedWeek(childName, vaccineName),
+        title: localizations.reminderTitleMissed(childName),
+        body: localizations.reminderMissedWeek(vaccineName),
       ),
     ReminderKind.overdueRecurring => (
-        title: localizations.reminderTitleOverdue,
-        body: localizations.reminderOverdue(childName, vaccineName),
+        title: localizations.reminderTitleOverdue(childName),
+        body: localizations.reminderOverdue(vaccineName),
       ),
   };
 }
