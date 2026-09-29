@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
+import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/onboarding/presentation/child_screen.dart';
 import 'package:tikasathi/features/settings/domain/phone_number_validation.dart';
@@ -79,6 +81,20 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
           icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: ReadAloudButton(
+              tooltip: localizations.childReadAloudTooltip,
+              unavailableMessage: localizations.childReadAloudUnavailable,
+              textGetter: () => ScreenSpeechHelper.caregiverScreenText(
+                context: context,
+                localizations: localizations,
+                isEditing: false,
+              ),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(

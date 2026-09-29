@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
+import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/settings/domain/health_facility_controller.dart';
 import 'package:tikasathi/features/settings/domain/phone_number_validation.dart';
 
@@ -81,6 +83,28 @@ class _HealthFacilityScreenState extends ConsumerState<HealthFacilityScreen> {
           tooltip: localizations.healthFacilityBack,
           onPressed: isSaving ? null : () => Navigator.of(context).pop(),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: ReadAloudButton(
+              tooltip: localizations.childReadAloudTooltip,
+              unavailableMessage: localizations.childReadAloudUnavailable,
+              textGetter: () => ScreenSpeechHelper.healthFacilityScreenText(
+                context: context,
+                localizations: localizations,
+                facilityName: _nameController.text.isNotEmpty
+                    ? _nameController.text
+                    : widget.facility?.name,
+                facilityAddress: _addressController.text.isNotEmpty
+                    ? _addressController.text
+                    : widget.facility?.address,
+                facilityPhone: _phoneController.text.isNotEmpty
+                    ? _phoneController.text
+                    : widget.facility?.phone,
+              ),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(

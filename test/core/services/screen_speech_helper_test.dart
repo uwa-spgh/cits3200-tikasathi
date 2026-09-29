@@ -200,7 +200,10 @@ void main() {
         ),
       );
 
-      expect(enText, contains('Child profile for Maya'));
+      expect(enText, isNot(contains('Age:')));
+      expect(enText, isNot(contains('Date of birth:')));
+      expect(enText, isNot(contains('Born on:')));
+      expect(enText, isNot(contains('Sex:')));
       expect(enText, contains('Next vaccine: Penta 1'));
       expect(enText, contains('Completed vaccines: 1 doses'));
 
@@ -222,7 +225,9 @@ void main() {
         ),
       );
 
-      expect(npText, contains('Mayaको खोप विवरण'));
+      expect(npText, isNot(contains('उमेर:')));
+      expect(npText, isNot(contains('जन्म मिति:')));
+      expect(npText, isNot(contains('लिङ्ग:')));
       expect(npText, contains('अर्को खोप: Penta 1'));
       expect(npText, contains('लागेका खोपहरू: 1 मात्रा'));
     });
@@ -567,6 +572,154 @@ void main() {
       expect(npOnboarding,
           contains('उमेर अनुसारका खोपहरू देखाइएको छ: BCG, OPV 0'));
       expect(npOnboarding, contains('तपाईं यसलाई अहिले छोड्न पनि सक्नुहुन्छ'));
+    });
+
+    testWidgets('healthFacilityScreenText formats populated and empty states',
+        (WidgetTester tester) async {
+      late String enPopulated;
+      late String enEmpty;
+      late String npPopulated;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) {
+              final AppLocalizations l10n = AppLocalizations.of(context)!;
+              enPopulated = ScreenSpeechHelper.healthFacilityScreenText(
+                context: context,
+                localizations: l10n,
+                facilityName: 'Kanti Children Hospital',
+                facilityAddress: 'Kathmandu',
+                facilityPhone: '9841234567',
+              );
+              enEmpty = ScreenSpeechHelper.healthFacilityScreenText(
+                context: context,
+                localizations: l10n,
+                facilityName: '',
+                facilityAddress: '',
+                facilityPhone: '',
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(enPopulated, contains('Local health facility details'));
+      expect(enPopulated, contains('Name: Kanti Children Hospital'));
+      expect(enPopulated, contains('Address: Kathmandu'));
+      expect(enPopulated, contains('Phone number: 9841234567'));
+      expect(enPopulated, contains('You can edit these details and tap save'));
+
+      expect(enEmpty, contains('Local health facility details'));
+      expect(
+          enEmpty,
+          contains(
+              'Please enter your local health facility name, address, and phone number'));
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('ne'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) {
+              final AppLocalizations l10n = AppLocalizations.of(context)!;
+              npPopulated = ScreenSpeechHelper.healthFacilityScreenText(
+                context: context,
+                localizations: l10n,
+                facilityName: 'कान्ति बाल अस्पताल',
+                facilityAddress: 'काठमाडौँ',
+                facilityPhone: '9841234567',
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(npPopulated, contains('स्थानीय स्वास्थ्य संस्थाको विवरण'));
+      expect(npPopulated, contains('नाम: कान्ति बाल अस्पताल'));
+      expect(npPopulated, contains('ठेगाना: काठमाडौँ'));
+      expect(npPopulated, contains('फोन नम्बर: 9841234567'));
+    });
+
+    testWidgets(
+        'addChildScreenText and caregiverScreenText format simple instructions',
+        (WidgetTester tester) async {
+      late String enAddChild;
+      late String npAddChild;
+      late String enCaregiver;
+      late String enCaregiverEdit;
+      late String npCaregiver;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) {
+              final AppLocalizations l10n = AppLocalizations.of(context)!;
+              enAddChild = ScreenSpeechHelper.addChildScreenText(
+                context: context,
+                localizations: l10n,
+                isOnboardingFlow: true,
+              );
+              enCaregiver = ScreenSpeechHelper.caregiverScreenText(
+                context: context,
+                localizations: l10n,
+                isEditing: false,
+              );
+              enCaregiverEdit = ScreenSpeechHelper.caregiverScreenText(
+                context: context,
+                localizations: l10n,
+                isEditing: true,
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(enAddChild, contains('Add child details'));
+      expect(enAddChild,
+          contains('full name, date of birth, and select their sex'));
+      expect(enCaregiver, contains('Caregiver information'));
+      expect(enCaregiver, contains('full name, phone number, and address'));
+      expect(enCaregiverEdit, contains('Edit caregiver profile'));
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('ne'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) {
+              final AppLocalizations l10n = AppLocalizations.of(context)!;
+              npAddChild = ScreenSpeechHelper.addChildScreenText(
+                context: context,
+                localizations: l10n,
+                isOnboardingFlow: false,
+              );
+              npCaregiver = ScreenSpeechHelper.caregiverScreenText(
+                context: context,
+                localizations: l10n,
+                isEditing: false,
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(npAddChild, contains('बच्चाको विवरण दर्ता गर्नुहोस्'));
+      expect(npAddChild, contains('पूरा नाम र जन्म मिति'));
+      expect(npCaregiver, contains('अभिभावकको विवरण'));
+      expect(npCaregiver, contains('पूरा नाम, फोन नम्बर, र ठेगाना'));
     });
   });
 }

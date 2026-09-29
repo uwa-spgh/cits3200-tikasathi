@@ -126,7 +126,7 @@ class ScreenSpeechHelper {
     return buffer.toString().trim();
   }
 
-  /// Builds a spoken summary of a child profile.
+  /// Builds a concise, vaccine-focused spoken summary of a child profile.
   static String childProfileScreenText({
     required BuildContext context,
     required AppLocalizations localizations,
@@ -134,44 +134,192 @@ class ScreenSpeechHelper {
   }) {
     final bool isNepali = Localizations.localeOf(context).languageCode == 'ne';
     final String locale = Localizations.localeOf(context).languageCode;
-    final String bornDate =
-        DateFormat('d MMMM y', locale).format(details.child.dateOfBirth);
-    final String age = details.ageLabel(localizations);
-    final String sex =
-        details.child.sex.toLowerCase() == 'male' || details.child.sex == 'केटा'
-            ? (isNepali ? 'बालक' : 'Male')
-            : (isNepali ? 'बालिका' : 'Female');
-
+    final String childName = details.child.name;
     final StringBuffer buffer = StringBuffer();
-    if (isNepali) {
-      buffer.write('${details.child.name}को खोप विवरण। ');
-      buffer.write('उमेर: $age। ');
-      buffer.write('जन्म मिति: $bornDate। ');
-      buffer.write('लिङ्ग: $sex। ');
 
-      if (details.dueVaccines.isNotEmpty) {
-        final VaccinationDue next = details.dueVaccines.first;
-        final String dueDate =
-            DateFormat('d MMMM y', locale).format(next.dueDate);
-        buffer.write('अर्को खोप: ${next.vaccineCode}, मिति: $dueDate। ');
+    if (!details.isSetupComplete) {
+      if (isNepali) {
+        return '$childNameको दर्ता पूरा गर्न बाँकी छ। खोप तालिका हेर्न कृपया दर्ता पूरा गर्नुहोस्।';
+      } else {
+        return 'Setup is pending for $childName. Please complete registration to track vaccines.';
       }
+    }
+
+    final VaccinationDue? nextDue = details.nextDue;
+    final String? nextDueDate = nextDue != null
+        ? DateFormat('d MMMM y', locale).format(nextDue.dueDate)
+        : null;
+
+    if (isNepali) {
+      if (details.hasOverdueDoses) {
+        if (nextDue != null) {
+          buffer.write(
+            '$childNameको खोप लगाउने मिति नाघिसकेको छ। अर्को खोप: ${nextDue.vaccineCode}, मिति: $nextDueDate। ',
+          );
+        } else {
+          buffer.write('$childNameको खोप लगाउने मिति नाघिसकेको छ। ');
+        }
+      } else if (details.hasDosesDueToday) {
+        if (nextDue != null) {
+          buffer.write(
+            'आज $childNameको खोप लगाउने मिति हो: ${nextDue.vaccineCode}। ',
+          );
+        } else {
+          buffer.write('आज $childNameको खोप लगाउने मिति हो। ');
+        }
+      } else if (details.hasDosesDueSoon) {
+        if (nextDue != null) {
+          buffer.write(
+            '$childNameको अर्को खोप: ${nextDue.vaccineCode}, मिति: $nextDueDate। ',
+          );
+        }
+      } else {
+        if (nextDue != null) {
+          buffer.write(
+            '$childNameको खोप पूर्ण अवस्थामा छ। अर्को खोप: ${nextDue.vaccineCode}, मिति: $nextDueDate। ',
+          );
+        } else {
+          buffer.write('$childNameका सबै खोपहरू पूर्ण भएका छन्। ');
+        }
+      }
+
       buffer.write('लागेका खोपहरू: ${details.records.length} मात्रा।');
     } else {
-      buffer.write('Child profile for ${details.child.name}. ');
-      buffer.write('Age: $age. ');
-      buffer.write('Born on: $bornDate. ');
-      buffer.write('Sex: $sex. ');
-
-      if (details.dueVaccines.isNotEmpty) {
-        final VaccinationDue next = details.dueVaccines.first;
-        final String dueDate =
-            DateFormat('d MMMM y', locale).format(next.dueDate);
-        buffer.write('Next vaccine: ${next.vaccineCode}, due on: $dueDate. ');
+      if (details.hasOverdueDoses) {
+        if (nextDue != null) {
+          buffer.write(
+            '$childName has overdue vaccines. Next vaccine: ${nextDue.vaccineCode}, due on $nextDueDate. ',
+          );
+        } else {
+          buffer.write('$childName has overdue vaccines. ');
+        }
+      } else if (details.hasDosesDueToday) {
+        if (nextDue != null) {
+          buffer.write(
+            'Vaccines are due today for $childName: ${nextDue.vaccineCode}. ',
+          );
+        } else {
+          buffer.write('Vaccines are due today for $childName. ');
+        }
+      } else if (details.hasDosesDueSoon) {
+        if (nextDue != null) {
+          buffer.write(
+            'Next vaccine for $childName: ${nextDue.vaccineCode}, due on $nextDueDate. ',
+          );
+        }
+      } else {
+        if (nextDue != null) {
+          buffer.write(
+            'Vaccinations are up to date for $childName. Next vaccine: ${nextDue.vaccineCode}, due on $nextDueDate. ',
+          );
+        } else {
+          buffer.write('All vaccinations are completed for $childName. ');
+        }
       }
+
       buffer.write('Completed vaccines: ${details.records.length} doses.');
     }
 
     return buffer.toString().trim();
+  }
+
+  /// Builds a spoken summary of the Health Facility details screen.
+  static String healthFacilityScreenText({
+    required BuildContext context,
+    required AppLocalizations localizations,
+    required String? facilityName,
+    required String? facilityAddress,
+    required String? facilityPhone,
+  }) {
+    final bool isNepali = Localizations.localeOf(context).languageCode == 'ne';
+    final bool hasInfo =
+        (facilityName != null && facilityName.trim().isNotEmpty) ||
+            (facilityAddress != null && facilityAddress.trim().isNotEmpty) ||
+            (facilityPhone != null && facilityPhone.trim().isNotEmpty);
+
+    final StringBuffer buffer = StringBuffer();
+    if (isNepali) {
+      buffer.write('स्थानीय स्वास्थ्य संस्थाको विवरण। ');
+      if (hasInfo) {
+        if (facilityName != null && facilityName.trim().isNotEmpty) {
+          buffer.write('नाम: ${facilityName.trim()}। ');
+        }
+        if (facilityAddress != null && facilityAddress.trim().isNotEmpty) {
+          buffer.write('ठेगाना: ${facilityAddress.trim()}। ');
+        }
+        if (facilityPhone != null && facilityPhone.trim().isNotEmpty) {
+          buffer.write('फोन नम्बर: ${facilityPhone.trim()}। ');
+        }
+        buffer.write('तपाईं यी विवरणहरू परिवर्तन गर्न र सेभ गर्न सक्नुहुन्छ।');
+      } else {
+        buffer.write(
+          'कृपया आफ्नो स्थानीय स्वास्थ्य संस्थाको नाम, ठेगाना, र फोन नम्बर प्रविष्ट गर्नुहोस्, र सेभ थिच्नुहोस्।',
+        );
+      }
+    } else {
+      buffer.write('Local health facility details. ');
+      if (hasInfo) {
+        if (facilityName != null && facilityName.trim().isNotEmpty) {
+          buffer.write('Name: ${facilityName.trim()}. ');
+        }
+        if (facilityAddress != null && facilityAddress.trim().isNotEmpty) {
+          buffer.write('Address: ${facilityAddress.trim()}. ');
+        }
+        if (facilityPhone != null && facilityPhone.trim().isNotEmpty) {
+          buffer.write('Phone number: ${facilityPhone.trim()}. ');
+        }
+        buffer.write('You can edit these details and tap save.');
+      } else {
+        buffer.write(
+          'Please enter your local health facility name, address, and phone number, then tap save.',
+        );
+      }
+    }
+    return buffer.toString().trim();
+  }
+
+  /// Builds a spoken summary for adding or registering a child.
+  static String addChildScreenText({
+    required BuildContext context,
+    required AppLocalizations localizations,
+    required bool isOnboardingFlow,
+  }) {
+    final bool isNepali = Localizations.localeOf(context).languageCode == 'ne';
+    if (isNepali) {
+      return 'बच्चाको विवरण दर्ता गर्नुहोस्। '
+          'कृपया बच्चाको पूरा नाम र जन्म मिति लेख्नुहोस्, तथा छोरी वा छोरा छान्नुहोस्। '
+          'त्यसपछि अगाडि बढ्न जारी राख्नुहोस् थिच्नुहोस्।';
+    } else {
+      return 'Add child details. '
+          'Please enter your child\'s full name, date of birth, and select their sex: female or male. '
+          'Then tap continue to proceed.';
+    }
+  }
+
+  /// Builds a spoken summary for caregiver details (onboarding and editing).
+  static String caregiverScreenText({
+    required BuildContext context,
+    required AppLocalizations localizations,
+    bool isEditing = false,
+  }) {
+    final bool isNepali = Localizations.localeOf(context).languageCode == 'ne';
+    if (isNepali) {
+      if (isEditing) {
+        return 'अभिभावकको विवरण। '
+            'कृपया आफ्नो नाम, फोन नम्बर, वा ठेगाना सम्पादन गर्नुहोस्, र सेभ थिच्नुहोस्।';
+      }
+      return 'अभिभावकको विवरण। '
+          'कृपया आफ्नो पूरा नाम, फोन नम्बर, र ठेगाना लेख्नुहोस्। '
+          'त्यसपछि बच्चा दर्ता गर्न जारी राख्नुहोस् थिच्नुहोस्।';
+    } else {
+      if (isEditing) {
+        return 'Edit caregiver profile. '
+            'Please update your name, phone number, or address, then tap save.';
+      }
+      return 'Caregiver information. '
+          'Please enter your full name, phone number, and address. '
+          'Then tap continue to add your child.';
+    }
   }
 
   /// Builds a spoken summary of Vaccine Records & History.

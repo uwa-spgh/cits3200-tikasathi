@@ -5,11 +5,13 @@ import 'package:uuid/uuid.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
+import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
+import 'package:tikasathi/features/child/domain/date_of_birth_validation.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/onboarding/presentation/retroactive_vaccine_screen.dart';
-import 'package:tikasathi/features/child/domain/date_of_birth_validation.dart';
 
 class ChildScreen extends ConsumerStatefulWidget {
   const ChildScreen({
@@ -241,6 +243,20 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
           icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: ReadAloudButton(
+              tooltip: localizations.childReadAloudTooltip,
+              unavailableMessage: localizations.childReadAloudUnavailable,
+              textGetter: () => ScreenSpeechHelper.addChildScreenText(
+                context: context,
+                localizations: localizations,
+                isOnboardingFlow: widget.isOnboardingFlow,
+              ),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(

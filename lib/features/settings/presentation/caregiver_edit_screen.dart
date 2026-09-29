@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
+import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/settings/domain/phone_number_validation.dart';
 
 class CaregiverEditScreen extends ConsumerStatefulWidget {
@@ -115,6 +117,20 @@ class _CaregiverEditScreenState extends ConsumerState<CaregiverEditScreen> {
           tooltip: l10n.profileBack,
           onPressed: _saving ? null : () => Navigator.of(context).pop(),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: ReadAloudButton(
+              tooltip: l10n.childReadAloudTooltip,
+              unavailableMessage: l10n.childReadAloudUnavailable,
+              textGetter: () => ScreenSpeechHelper.caregiverScreenText(
+                context: context,
+                localizations: l10n,
+                isEditing: true,
+              ),
+            ),
+          ),
+        ],
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
