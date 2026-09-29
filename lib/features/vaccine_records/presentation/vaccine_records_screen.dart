@@ -228,10 +228,50 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
                 if (details == null) {
                   return ScreenSpeechHelper.extractVisibleText(context);
                 }
+
+                final child = details.child;
+                final now = DateTime.now();
+                final age = now.difference(child.dateOfBirth);
+
+                final List<String> visibleNames = <String>[];
+                final List<String> tickedNames = <String>[];
+
+                nipCatalogue
+                    .forEach((String vaccineCode, List<DayDuration> ages) {
+                  for (int i = 0; i < ages.length; i++) {
+                    final int doseNumber = i + 1;
+                    final DayDuration doseAge = ages[i];
+                    final bool isPast = age >= doseAge.duration;
+                    final String key = '$vaccineCode-$doseNumber';
+                    final bool isChecked = _checkedDoses.containsKey(key);
+
+                    if (vaccineCode == "HPV" &&
+                        childSexFromString(child.sex) != ChildSex.female) {
+                      continue;
+                    }
+
+                    if (isPast || _showAll || isChecked) {
+                      final String displayName = doseNumber > 1
+                          ? '$vaccineCode $doseNumber'
+                          : vaccineCode;
+                      if (!visibleNames.contains(displayName)) {
+                        visibleNames.add(displayName);
+                      }
+                      if (isChecked && !tickedNames.contains(displayName)) {
+                        tickedNames.add(displayName);
+                      }
+                    }
+                  }
+                });
+
                 return ScreenSpeechHelper.vaccineRecordsScreenText(
                   context: context,
                   localizations: localizations,
                   childName: details.child.name,
+                  isRegistrationFlow: _isRegistration,
+                  showAllVaccines: _showAll,
+                  visibleVaccineNames: visibleNames,
+                  tickedVaccineNames: tickedNames,
                   records: details.records,
                   dues: details.dueVaccines,
                 );

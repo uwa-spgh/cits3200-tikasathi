@@ -79,7 +79,11 @@ Every pull request to the `main` or `develop` branch will trigger a workflow tha
 ### Accessibility & Text-to-Speech (TTS)
 - **100% Offline Speech Synthesis:** Interfaces natively with device engines (Android `TextToSpeech` and iOS `AVSpeechSynthesizer`), adhering strictly to offline-first principles with zero cloud dependencies.
 - **Cross-Language Resolution:** Seamlessly supports English and Nepali based on the active user app language. For Nepali, detects on-device `ne-NP` voices and gracefully falls back to phonetic Hindi (`hi-IN`), which shares identical Devanagari script and phonetics, guaranteeing voice playback on iOS and low-resource devices.
-- **Low-Literacy Conversational Narratives:** `ScreenSpeechHelper` provides friendly, structured spoken explanations of screen cards, statuses, due dates, and steps instead of disjointed raw UI labels.
+- **Low-Literacy Conversational Narratives:** `ScreenSpeechHelper` provides friendly, actionable spoken instructions tailored to what is actively displayed on screen:
+  - *Onboarding / New Child Registration:* Guides the caregiver to tick vaccines already received for their child under the age-appropriate or all-vaccines view, dynamically reading ticked items and reminding them that registration can be skipped for now.
+  - *Home Dashboard:* Conveys clear, actionable status cards for registered children (awaiting setup, due today, due soon, up-to-date) without redundant app title prefixes.
+  - *Record Dose Screen:* Articulates the 2 actual on-screen steps (checking the administered date and ticking received vaccines), announcing currently ticked vaccines or available options.
+  - *Child Vaccine History:* Narrates completed vaccines concisely and only includes upcoming doses when the user selects the "All vaccines" tab.
 - **One-Tap Interactive Control:** Top-of-screen `ReadAloudButton` toggles between idle and active playback, switching visually to a stop icon with localized tooltips and automatically cancelling audio when navigating or switching tabs.
 - **Fallback Screen Text Crawler:** Automatically extracts visible text elements from the active widget tree when a screen doesn't declare a custom narrative.
 

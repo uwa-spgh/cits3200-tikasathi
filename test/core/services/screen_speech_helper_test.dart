@@ -109,8 +109,12 @@ void main() {
       );
 
       expect(enEmpty, contains('Welcome to TikaSathi'));
+      expect(enEmpty,
+          isNot(contains('TikaSathi Childhood Immunisation Tracking')));
       expect(enPopulated, contains('Vaccinations are up to date for: Aarav'));
       expect(enPopulated, contains('Vaccines due today for: Maya'));
+      expect(enPopulated,
+          isNot(contains('TikaSathi Childhood Immunisation Tracking')));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -137,9 +141,11 @@ void main() {
       );
 
       expect(npEmpty, contains('टिकासार्थीमा स्वागत छ'));
+      expect(npEmpty, isNot(contains('टिकासार्थी बाल खोप ट्र्याकिङ')));
       expect(
           npPopulated, contains('खोप पूर्ण अवस्थामा रहेका बालबालिका: Aarav'));
       expect(npPopulated, contains('आज खोप लगाउने मिति भएका बालबालिका: Maya'));
+      expect(npPopulated, isNot(contains('टिकासार्थी बाल खोप ट्र्याकिङ')));
     });
 
     testWidgets('childProfileScreenText builds natural narrative',
@@ -270,13 +276,10 @@ void main() {
       expect(npText, contains('पेन्टाभालेन्ट'));
     });
 
-    testWidgets(
-        'settingsScreenText and recordDoseScreenText format instructions',
+    testWidgets('settingsScreenText formats instructions',
         (WidgetTester tester) async {
       late String enSettings;
       late String npSettings;
-      late String enRecord;
-      late String npRecord;
 
       await tester.pumpWidget(
         MaterialApp(
@@ -291,10 +294,6 @@ void main() {
                 localizations: l10n,
                 currentLanguage: AppLanguage.english,
               );
-              enRecord = ScreenSpeechHelper.recordDoseScreenText(
-                context: context,
-                localizations: l10n,
-              );
               return const SizedBox();
             },
           ),
@@ -302,7 +301,6 @@ void main() {
       );
 
       expect(enSettings, contains('Settings'));
-      expect(enRecord, contains('Step 1: Select child'));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -317,10 +315,6 @@ void main() {
                 localizations: l10n,
                 currentLanguage: AppLanguage.nepali,
               );
-              npRecord = ScreenSpeechHelper.recordDoseScreenText(
-                context: context,
-                localizations: l10n,
-              );
               return const SizedBox();
             },
           ),
@@ -328,7 +322,251 @@ void main() {
       );
 
       expect(npSettings, contains('सेटिङहरू'));
-      expect(npRecord, contains('चरण १: खोप लगाउने बच्चा छान्नुहोस्'));
+    });
+
+    testWidgets(
+        'recordDoseScreenText formats 2 steps with ticked or available vaccines',
+        (WidgetTester tester) async {
+      late String enNoTicks;
+      late String enWithTicks;
+      late String npWithTicks;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) {
+              final AppLocalizations l10n = AppLocalizations.of(context)!;
+              enNoTicks = ScreenSpeechHelper.recordDoseScreenText(
+                context: context,
+                localizations: l10n,
+                childName: 'Aarav',
+                administeredDate: DateTime(2025, 6, 1),
+                tickedVaccineNames: const <String>[],
+                availableVaccineNames: const <String>['BCG', 'OPV 0'],
+              );
+              enWithTicks = ScreenSpeechHelper.recordDoseScreenText(
+                context: context,
+                localizations: l10n,
+                childName: 'Aarav',
+                administeredDate: DateTime(2025, 6, 1),
+                tickedVaccineNames: const <String>['BCG'],
+                availableVaccineNames: const <String>['BCG', 'OPV 0'],
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(enNoTicks, contains('Log vaccine dose for Aarav'));
+      expect(enNoTicks, contains('Step 1: Check the date given'));
+      expect(enNoTicks, contains('Step 2: Tick the given vaccines'));
+      expect(enNoTicks, contains('No vaccines ticked yet'));
+      expect(enNoTicks, contains('Available vaccines: BCG, OPV 0'));
+      expect(enNoTicks, isNot(contains('Step 3')));
+      expect(enNoTicks, isNot(contains('Step 4')));
+
+      expect(enWithTicks, contains('Step 1: Check the date given'));
+      expect(enWithTicks, contains('Step 2: Tick the given vaccines'));
+      expect(enWithTicks, contains('Ticked vaccines: BCG'));
+      expect(enWithTicks, contains('Tap save to record'));
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('ne'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) {
+              final AppLocalizations l10n = AppLocalizations.of(context)!;
+              npWithTicks = ScreenSpeechHelper.recordDoseScreenText(
+                context: context,
+                localizations: l10n,
+                childName: 'Aarav',
+                administeredDate: DateTime(2025, 6, 1),
+                tickedVaccineNames: const <String>['BCG'],
+                availableVaccineNames: const <String>['BCG', 'OPV 0'],
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(npWithTicks, contains('Aaravको खोप मात्रा दर्ता'));
+      expect(npWithTicks, contains('चरण १: खोप लगाएको मिति जाँच गर्नुहोस्'));
+      expect(npWithTicks, contains('चरण २: लगाइएका खोपहरूमा चिन्ह लगाउनुहोस्'));
+      expect(npWithTicks, contains('चिन्ह लगाइएका खोपहरू: BCG'));
+      expect(npWithTicks, isNot(contains('चरण ३')));
+      expect(npWithTicks, isNot(contains('चरण ४')));
+    });
+
+    testWidgets(
+        'vaccineRecordsScreenText reflects onboarding vs history flow correctly',
+        (WidgetTester tester) async {
+      late String enOnboardingAgeAppropriate;
+      late String enOnboardingAll;
+      late String enHistoryAgeAppropriate;
+      late String enHistoryAll;
+      late String npOnboarding;
+
+      final List<VaccinationRecord> records = <VaccinationRecord>[
+        VaccinationRecord(
+          id: 'r1',
+          childId: 'c1',
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+          administeredDate: DateTime(2025, 1, 1),
+        ),
+      ];
+
+      final List<VaccinationDue> dues = <VaccinationDue>[
+        VaccinationDue(
+          id: 'd1',
+          childId: 'c1',
+          vaccineCode: 'Penta 1',
+          doseNumber: 1,
+          dueDate: DateTime(2025, 3, 1),
+        ),
+      ];
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) {
+              final AppLocalizations l10n = AppLocalizations.of(context)!;
+              enOnboardingAgeAppropriate =
+                  ScreenSpeechHelper.vaccineRecordsScreenText(
+                context: context,
+                localizations: l10n,
+                childName: 'Maya',
+                isRegistrationFlow: true,
+                showAllVaccines: false,
+                visibleVaccineNames: const <String>['BCG', 'OPV 0'],
+                tickedVaccineNames: const <String>['BCG'],
+                records: records,
+                dues: dues,
+              );
+              enOnboardingAll = ScreenSpeechHelper.vaccineRecordsScreenText(
+                context: context,
+                localizations: l10n,
+                childName: 'Maya',
+                isRegistrationFlow: true,
+                showAllVaccines: true,
+                visibleVaccineNames: const <String>[
+                  'BCG',
+                  'OPV 0',
+                  'Penta 1',
+                  'Rota 1'
+                ],
+                tickedVaccineNames: const <String>['BCG'],
+                records: records,
+                dues: dues,
+              );
+              enHistoryAgeAppropriate =
+                  ScreenSpeechHelper.vaccineRecordsScreenText(
+                context: context,
+                localizations: l10n,
+                childName: 'Maya',
+                isRegistrationFlow: false,
+                showAllVaccines: false,
+                visibleVaccineNames: const <String>['BCG'],
+                tickedVaccineNames: const <String>['BCG'],
+                records: records,
+                dues: dues,
+              );
+              enHistoryAll = ScreenSpeechHelper.vaccineRecordsScreenText(
+                context: context,
+                localizations: l10n,
+                childName: 'Maya',
+                isRegistrationFlow: false,
+                showAllVaccines: true,
+                visibleVaccineNames: const <String>['BCG', 'Penta 1'],
+                tickedVaccineNames: const <String>['BCG'],
+                records: records,
+                dues: dues,
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      // Onboarding with age-appropriate tab
+      expect(
+        enOnboardingAgeAppropriate,
+        contains('Please tick the vaccines already given to Maya'),
+      );
+      expect(
+        enOnboardingAgeAppropriate,
+        contains('Showing age-appropriate vaccines: BCG, OPV 0'),
+      );
+      expect(enOnboardingAgeAppropriate, contains('Ticked vaccines: BCG'));
+      expect(
+        enOnboardingAgeAppropriate,
+        contains('You can also skip this for now'),
+      );
+      expect(
+        enOnboardingAgeAppropriate,
+        isNot(contains('Upcoming vaccines')),
+      );
+
+      // Onboarding with all vaccines tab
+      expect(
+        enOnboardingAll,
+        contains('Showing all schedule vaccines: BCG, OPV 0, Penta 1, Rota 1'),
+      );
+
+      // Child page history: age-appropriate selected -> does NOT read upcoming vaccines
+      expect(enHistoryAgeAppropriate, contains('Vaccine history for Maya'));
+      expect(enHistoryAgeAppropriate, contains('Completed vaccines: BCG'));
+      expect(
+        enHistoryAgeAppropriate,
+        isNot(contains('Upcoming vaccines')),
+      );
+
+      // Child page history: all vaccines selected -> reads upcoming vaccines
+      expect(enHistoryAll, contains('Vaccine history for Maya'));
+      expect(enHistoryAll, contains('Completed vaccines: BCG'));
+      expect(enHistoryAll, contains('Upcoming vaccines: Penta 1'));
+
+      // Nepali onboarding
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('ne'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) {
+              final AppLocalizations l10n = AppLocalizations.of(context)!;
+              npOnboarding = ScreenSpeechHelper.vaccineRecordsScreenText(
+                context: context,
+                localizations: l10n,
+                childName: 'Maya',
+                isRegistrationFlow: true,
+                showAllVaccines: false,
+                visibleVaccineNames: const <String>['BCG', 'OPV 0'],
+                tickedVaccineNames: const <String>[],
+                records: records,
+                dues: dues,
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(npOnboarding,
+          contains('कृपया Maya लाई लगाइसकेका खोपहरूमा चिन्ह लगाउनुहोस्'));
+      expect(npOnboarding,
+          contains('उमेर अनुसारका खोपहरू देखाइएको छ: BCG, OPV 0'));
+      expect(npOnboarding, contains('तपाईं यसलाई अहिले छोड्न पनि सक्नुहुन्छ'));
     });
   });
 }

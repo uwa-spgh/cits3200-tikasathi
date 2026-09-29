@@ -172,7 +172,10 @@ class _RecordDoseBody extends StatelessWidget {
                   recordDoseState.upcomingDues.isNotEmpty ? 76 : 24,
                 ),
                 children: <Widget>[
-                  _Header(localizations: localizations),
+                  _Header(
+                    localizations: localizations,
+                    recordDoseState: recordDoseState,
+                  ),
                   const SizedBox(height: 14),
                   Text(
                     localizations
@@ -297,9 +300,13 @@ class _ErrorBody extends StatelessWidget {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({required this.localizations});
+  const _Header({
+    required this.localizations,
+    this.recordDoseState,
+  });
 
   final AppLocalizations localizations;
+  final RecordDoseState? recordDoseState;
 
   @override
   Widget build(BuildContext context) {
@@ -322,10 +329,29 @@ class _Header extends StatelessWidget {
         ReadAloudButton(
           tooltip: localizations.childReadAloudTooltip,
           unavailableMessage: localizations.childReadAloudUnavailable,
-          textGetter: () => ScreenSpeechHelper.recordDoseScreenText(
-            context: context,
-            localizations: localizations,
-          ),
+          textGetter: () {
+            final RecordDoseState? state = recordDoseState;
+            if (state == null) {
+              return ScreenSpeechHelper.extractVisibleText(context);
+            }
+            final List<String> ticked = state.visibleDues
+                .where(
+                    (VaccinationDue d) => state.selectedDueIds.contains(d.id))
+                .map((VaccinationDue d) => d.vaccineCode)
+                .toList();
+            final List<String> available = state.visibleDues
+                .map((VaccinationDue d) => d.vaccineCode)
+                .toList();
+
+            return ScreenSpeechHelper.recordDoseScreenText(
+              context: context,
+              localizations: localizations,
+              childName: state.child.name,
+              administeredDate: state.administeredDate,
+              tickedVaccineNames: ticked,
+              availableVaccineNames: available,
+            );
+          },
         ),
       ],
     );
