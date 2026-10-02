@@ -64,21 +64,20 @@ class _VaccineScheduleTable extends StatelessWidget {
     }
 
     final todayDivider = Padding(
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-      child: Row(children: [
-        Text(
-            '${localizations.vaccineScheduleToday} · ${DateFormat('d MMM y', locale).format(now)}',
-            style: const TextStyle(
-                fontSize: 13,
-                color: Color(0xFF0F52BA),
-                fontWeight: FontWeight.w500)),
-        Flexible(
-            child: Container(
-                height: 2,
-                color: const Color(0xFF0F52BA),
-                margin: const EdgeInsets.fromLTRB(
-                    12, 0, 12, 0)))
-      ]));
+        padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+        child: Row(children: [
+          Text(
+              '${localizations.vaccineScheduleToday} · ${DateFormat('d MMM y', locale).format(now)}',
+              style: const TextStyle(
+                  fontSize: 13,
+                  color: Color(0xFF0F52BA),
+                  fontWeight: FontWeight.w500)),
+          Flexible(
+              child: Container(
+                  height: 2,
+                  color: const Color(0xFF0F52BA),
+                  margin: const EdgeInsets.fromLTRB(12, 0, 12, 0)))
+        ]));
 
     return Align(
       alignment: Alignment.topCenter,
@@ -130,18 +129,25 @@ class _VaccineScheduleTable extends StatelessWidget {
                             index == dues.length + records.length - 1;
                         final isPast = index < todayDividerIndex;
 
-                        final statusColor = data.isDue ? isPast ? const Color(0xFFF5B544) : const Color(0xFF94A3B8) : const Color(0xFF166534);
-                        final statusDarker = data.isDue ? isPast ? const Color(0xFFF5B544) : const Color(0xFF475569) : const Color(0xFF166534);
+                        final statusColor = data.isDue
+                            ? isPast
+                                ? const Color(0xFFF5B544)
+                                : const Color(0xFF94A3B8)
+                            : const Color(0xFF166534);
+                        final statusDarker = data.isDue
+                            ? isPast
+                                ? const Color(0xFFF5B544)
+                                : const Color(0xFF475569)
+                            : const Color(0xFF166534);
 
                         final vaccineRow = makeVaccineRow(
-                          '${data.vaccineCode} (${localizations.dose} ${data.doseNumber})',
-                          DateFormat('d MMM y', locale).format(data.date),
-                          isFirst,
-                          isLast,
-                          statusColor,
-                          statusDarker,
-                          data.isDue
-                        );
+                            '${data.vaccineCode} (${localizations.dose} ${data.doseNumber})',
+                            DateFormat('d MMM y', locale).format(data.date),
+                            isFirst,
+                            isLast,
+                            statusColor,
+                            statusDarker,
+                            data.isDue);
 
                         if (index == todayDividerIndex) {
                           return Column(children: [todayDivider, vaccineRow]);
@@ -195,12 +201,15 @@ Row makeVaccineRow(String vaccine, String date, bool isFirst, bool isLast,
   ]);
 }
 
-typedef _VaccineData = ({bool isDue, String vaccineCode, int doseNumber, DateTime date});
+typedef _VaccineData = ({
+  bool isDue,
+  String vaccineCode,
+  int doseNumber,
+  DateTime date
+});
 
 List<_VaccineData> _merge(
-  List<VaccinationDue> dues,
-  List<VaccinationRecord> records
-) {
+    List<VaccinationDue> dues, List<VaccinationRecord> records) {
   int duesIndex = 0;
   int recordsIndex = 0;
   final result = <_VaccineData>[];
@@ -208,7 +217,7 @@ List<_VaccineData> _merge(
     if (duesIndex == dues.length) {
       final record = records[recordsIndex];
       result.add((
-        isDue: false, 
+        isDue: false,
         vaccineCode: record.vaccineCode,
         doseNumber: record.doseNumber,
         date: record.administeredDate
@@ -217,7 +226,7 @@ List<_VaccineData> _merge(
     } else if (recordsIndex == records.length) {
       final due = dues[duesIndex];
       result.add((
-        isDue: true, 
+        isDue: true,
         vaccineCode: due.vaccineCode,
         doseNumber: due.doseNumber,
         date: due.dueDate
@@ -228,7 +237,7 @@ List<_VaccineData> _merge(
       final record = records[recordsIndex];
       if (due.dueDate.isBefore(record.administeredDate)) {
         result.add((
-          isDue: true, 
+          isDue: true,
           vaccineCode: due.vaccineCode,
           doseNumber: due.doseNumber,
           date: due.dueDate
@@ -236,7 +245,7 @@ List<_VaccineData> _merge(
         duesIndex++;
       } else {
         result.add((
-          isDue: false, 
+          isDue: false,
           vaccineCode: record.vaccineCode,
           doseNumber: record.doseNumber,
           date: record.administeredDate
