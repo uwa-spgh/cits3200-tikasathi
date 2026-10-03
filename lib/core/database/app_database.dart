@@ -20,6 +20,7 @@ part 'tables/vaccination_dues.dart';
 part 'tables/reminders.dart';
 part 'tables/health_facilitators.dart';
 part 'daos/health_facilitators_dao.dart';
+part 'daos/backup_dao.dart';
 part 'app_database.g.dart';
 
 /// The central Drift database for TikaSathi.
@@ -47,6 +48,7 @@ part 'app_database.g.dart';
     VaccinationDuesDao,
     RemindersDao,
     HealthFacilitatorsDao,
+    BackupDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {

@@ -138,11 +138,16 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
   }
 
   /// Reminders not yet handed to the device, soonest first.
-  Future<List<Reminder>> getPendingReminders() {
-    return (select(reminders)
-          ..where((row) => row.deliveredAt.isNull())
-          ..orderBy([(row) => OrderingTerm.asc(row.scheduledFor)]))
-        .get();
+  ///
+  /// [limit] is the window the device can hold. Later rows stay in the table.
+  Future<List<Reminder>> getPendingReminders({int? limit}) {
+    final query = select(reminders)
+      ..where((row) => row.deliveredAt.isNull())
+      ..orderBy([(row) => OrderingTerm.asc(row.scheduledFor)]);
+    if (limit != null) {
+      query.limit(limit);
+    }
+    return query.get();
   }
 
   /// Pending reminders that were due at or before [instant], soonest first.

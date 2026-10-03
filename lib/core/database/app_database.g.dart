@@ -1714,6 +1714,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final RemindersDao remindersDao = RemindersDao(this as AppDatabase);
   late final HealthFacilitatorsDao healthFacilitatorsDao =
       HealthFacilitatorsDao(this as AppDatabase);
+  late final BackupDao backupDao = BackupDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3374,6 +3375,15 @@ mixin _$RemindersDaoMixin on DatabaseAccessor<AppDatabase> {
   $RemindersTable get reminders => attachedDatabase.reminders;
 }
 mixin _$HealthFacilitatorsDaoMixin on DatabaseAccessor<AppDatabase> {
+  $HealthFacilitatorsTable get healthFacilitators =>
+      attachedDatabase.healthFacilitators;
+}
+mixin _$BackupDaoMixin on DatabaseAccessor<AppDatabase> {
+  $ChildProfilesTable get childProfiles => attachedDatabase.childProfiles;
+  $VaccinationRecordsTable get vaccinationRecords =>
+      attachedDatabase.vaccinationRecords;
+  $VaccinationDuesTable get vaccinationDues => attachedDatabase.vaccinationDues;
+  $RemindersTable get reminders => attachedDatabase.reminders;
   $HealthFacilitatorsTable get healthFacilitators =>
       attachedDatabase.healthFacilitators;
 }
