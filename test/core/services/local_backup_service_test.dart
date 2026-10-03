@@ -1,6 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -279,6 +280,398 @@ void main() {
       expect(profiles.onboardingCompleted, isTrue);
     });
 
+    test('an empty database exports and imports cleanly', () async {
+      profiles.caregiver = <String, String?>{
+        'name': null,
+        'phone': null,
+        'address': null,
+      };
+      profiles.onboardingCompleted = false;
+      settings.language = AppLanguage.nepali;
+
+      final String json = await service.buildBackupJson(
+        createdAt: DateTime(2026, 10, 3, 9),
+      );
+
+      await _seed(database);
+      profiles.caregiver = <String, String?>{
+        'name': 'Maya',
+        'phone': '9800000000',
+        'address': 'Ward 4',
+      };
+      profiles.onboardingCompleted = true;
+      settings.language = AppLanguage.english;
+
+      await service.importJson(json);
+
+      final BackupRows rows = await database.backupDao.readAll();
+      expect(rows.childProfiles, isEmpty);
+      expect(rows.vaccinationRecords, isEmpty);
+      expect(rows.vaccinationDues, isEmpty);
+      expect(rows.reminders, isEmpty);
+      expect(rows.healthFacilitators, isEmpty);
+      expect(profiles.caregiver['name'], isNull);
+      expect(profiles.caregiver['phone'], isNull);
+      expect(profiles.caregiver['address'], isNull);
+      expect(profiles.onboardingCompleted, isFalse);
+      expect(settings.language, AppLanguage.nepali);
+    });
+
+    test('several children each keep their records, dues, and reminders',
+        () async {
+      await _insertBundle(
+        database,
+        childId: 'child-1',
+        name: 'Aarav Sharma',
+        dateOfBirth: DateTime(2020, 1, 2, 8),
+        sex: 'male',
+        administeredDate: DateTime(2020, 3, 2, 9, 15),
+        facilityName: 'Ward clinic',
+        dueDate: DateTime(2020, 2, 13, 8),
+        scheduledFor: DateTime(2026, 11, 1, 8),
+      );
+      await _insertBundle(
+        database,
+        childId: 'child-2',
+        name: 'Maya Gurung',
+        dateOfBirth: DateTime(2021, 5, 6, 15, 30, 45),
+        sex: 'female',
+        administeredDate: DateTime(2021, 7, 6, 11, 5, 30),
+        facilityName: 'Outreach camp',
+        dueDate: DateTime(2021, 6, 17, 15, 30, 45),
+        scheduledFor: DateTime(2026, 12, 2, 15, 30, 45),
+        kind: ReminderKind.advance,
+      );
+      await _insertBundle(
+        database,
+        childId: 'child-3',
+        name: 'राम बहादुर',
+        dateOfBirth: DateTime(2022, 11, 12, 23, 5, 9),
+        sex: 'male',
+        administeredDate: DateTime(2023, 1, 12, 10),
+        facilityName: 'पोखरा',
+        dueDate: DateTime(2022, 12, 24, 23, 5, 9),
+        scheduledFor: DateTime(2027, 1, 3, 7, 45),
+        kind: ReminderKind.followUpWeek,
+      );
+      final BackupRows original = await database.backupDao.readAll();
+      expect(original.childProfiles, hasLength(3));
+      expect(original.vaccinationRecords, hasLength(3));
+      expect(original.vaccinationDues, hasLength(3));
+      expect(original.reminders, hasLength(3));
+
+      final String json = await service.buildBackupJson();
+      await database.childProfilesDao.insertChildProfile(
+        ChildProfilesCompanion.insert(
+          id: 'extra',
+          name: 'Extra',
+          dateOfBirth: DateTime(2024, 1, 1),
+          sex: 'female',
+        ),
+      );
+
+      await service.importJson(json);
+      await service.importJson(json);
+
+      final BackupRows restored = await database.backupDao.readAll();
+      _expectRows(restored, original);
+      expect(restored.childProfiles, hasLength(3));
+      expect(restored.vaccinationRecords, hasLength(3));
+      expect(restored.vaccinationDues, hasLength(3));
+      expect(restored.reminders, hasLength(3));
+    });
+
+    test('Nepali names and addresses survive the round trip', () async {
+      const String childName = 'सीता गुरुङ';
+      const String facility = 'वडा स्वास्थ्य चौकी';
+      const String caregiverAddress = 'काठमाडौं महानगरपालिका-४, बागमती';
+      const String clinicAddress = 'पोखरा महानगरपालिका-८, कास्की';
+
+      await _insertBundle(
+        database,
+        childId: 'child-ne',
+        name: childName,
+        dateOfBirth: DateTime(2023, 4, 15, 14, 45, 30),
+        sex: 'female',
+        administeredDate: DateTime(2023, 6, 1, 10, 30),
+        facilityName: facility,
+        dueDate: DateTime(2023, 5, 27, 9),
+        scheduledFor: DateTime(2026, 10, 4, 9),
+      );
+      await database.healthFacilitatorsDao.saveLocalFacilitator(
+        name: 'स्थानीय क्लिनिक',
+        address: clinicAddress,
+        phone: '९८०१११२२३३',
+      );
+      profiles.caregiver = <String, String?>{
+        'name': 'माता सीता',
+        'phone': '9800000000',
+        'address': caregiverAddress,
+      };
+      profiles.onboardingCompleted = true;
+      settings.language = AppLanguage.nepali;
+      final BackupRows original = await database.backupDao.readAll();
+
+      final String json = await service.buildBackupJson();
+      expect(json, contains(childName));
+      expect(json, contains(facility));
+      expect(json, contains(caregiverAddress));
+      expect(json, contains(clinicAddress));
+
+      await database.backupDao.replaceAll(BackupRows.empty);
+      profiles.caregiver = <String, String?>{
+        'name': 'Maya',
+        'phone': null,
+        'address': 'Ward 4',
+      };
+      settings.language = AppLanguage.english;
+
+      await service.importJson(json);
+
+      _expectRows(await database.backupDao.readAll(), original);
+      expect(profiles.caregiver['name'], 'माता सीता');
+      expect(profiles.caregiver['address'], caregiverAddress);
+      expect(settings.language, AppLanguage.nepali);
+    });
+
+    test('dates and times come back exactly the same', () async {
+      final DateTime birth = DateTime(2023, 6, 1, 15, 45, 30);
+      final DateTime given = DateTime(2023, 8, 1, 8, 5, 59);
+      final DateTime due = DateTime(2024, 1, 2, 23, 59, 58);
+      final DateTime scheduled = DateTime(2024, 1, 2, 7, 15);
+      final DateTime utcGiven = DateTime.utc(2023, 12, 31, 18);
+
+      await _insertBundle(
+        database,
+        childId: 'child-time',
+        name: 'Aarav',
+        dateOfBirth: birth,
+        sex: 'male',
+        administeredDate: given,
+        facilityName: 'Ward clinic',
+        dueDate: due,
+        scheduledFor: scheduled,
+      );
+      await database.vaccinationRecordsDao.insertVaccinationRecord(
+        VaccinationRecordsCompanion.insert(
+          id: 'record-utc',
+          childId: 'child-time',
+          vaccineCode: 'PENTA',
+          doseNumber: 2,
+          administeredDate: utcGiven,
+        ),
+      );
+      final BackupRows before = await database.backupDao.readAll();
+      final VaccinationRecord storedGiven = before.vaccinationRecords
+          .singleWhere(
+              (VaccinationRecord row) => row.id == 'record-child-time');
+      final VaccinationRecord storedUtc = before.vaccinationRecords
+          .singleWhere((VaccinationRecord row) => row.id == 'record-utc');
+
+      final String json = await service.buildBackupJson(
+        createdAt: DateTime(2026, 10, 3, 15, 45, 30),
+      );
+      expect(json, contains(storedGiven.administeredDate.toIso8601String()));
+      expect(json, contains('T15:45:30'));
+      expect(json, contains(storedUtc.administeredDate.toIso8601String()));
+
+      await database.backupDao.replaceAll(BackupRows.empty);
+      await service.importJson(json);
+
+      final BackupRows after = await database.backupDao.readAll();
+      _expectRows(after, before);
+      final VaccinationRecord restoredGiven = after.vaccinationRecords
+          .singleWhere(
+              (VaccinationRecord row) => row.id == 'record-child-time');
+      final ChildProfile restoredChild = after.childProfiles.single;
+      expect(restoredGiven.administeredDate.hour,
+          storedGiven.administeredDate.hour);
+      expect(
+        restoredGiven.administeredDate.minute,
+        storedGiven.administeredDate.minute,
+      );
+      expect(
+        restoredGiven.administeredDate.second,
+        storedGiven.administeredDate.second,
+      );
+      expect(
+        restoredGiven.administeredDate.isUtc,
+        storedGiven.administeredDate.isUtc,
+      );
+      expect(
+        restoredGiven.administeredDate.millisecondsSinceEpoch,
+        storedGiven.administeredDate.millisecondsSinceEpoch,
+      );
+      expect(
+        restoredChild.dateOfBirth.millisecondsSinceEpoch,
+        before.childProfiles.single.dateOfBirth.millisecondsSinceEpoch,
+      );
+      expect(restoredChild.dateOfBirth.hour, 15);
+      expect(restoredChild.dateOfBirth.minute, 45);
+      expect(restoredChild.dateOfBirth.second, 30);
+    });
+
+    test('importing twice in a row does not duplicate anything', () async {
+      final BackupRows original = await _seed(database);
+      profiles.caregiver = <String, String?>{
+        'name': 'Maya',
+        'phone': '9800000000',
+        'address': 'Ward 4',
+      };
+      final String json = await service.buildBackupJson();
+
+      await service.importJson(json);
+      await service.importJson(json);
+
+      final BackupRows restored = await database.backupDao.readAll();
+      _expectRows(restored, original);
+      expect(restored.childProfiles, hasLength(1));
+      expect(restored.vaccinationRecords, hasLength(1));
+      expect(restored.vaccinationDues, hasLength(1));
+      expect(restored.reminders, hasLength(1));
+      expect(restored.healthFacilitators, hasLength(2));
+      expect(rescheduleCalls, 2);
+    });
+
+    test('a corrupted file, a non-JSON file, and an empty file change nothing',
+        () async {
+      await _seed(database);
+      profiles.caregiver = <String, String?>{
+        'name': 'Maya',
+        'phone': '9800000000',
+        'address': 'Ward 4',
+      };
+      profiles.onboardingCompleted = true;
+      settings.language = AppLanguage.english;
+      final BackupRows before = await database.backupDao.readAll();
+
+      final List<String> rejected = <String>[
+        '{"app": "tikasathi", "backupVersion":',
+        'this is not json',
+        '',
+      ];
+      for (final String json in rejected) {
+        await expectLater(
+          service.importJson(json),
+          throwsA(
+            isA<BackupValidationException>().having(
+              (BackupValidationException error) => error.reason,
+              'reason',
+              BackupRejection.missingKeys,
+            ),
+          ),
+        );
+      }
+
+      _expectRows(await database.backupDao.readAll(), before);
+      expect(profiles.caregiver['name'], 'Maya');
+      expect(profiles.onboardingCompleted, isTrue);
+      expect(settings.language, AppLanguage.english);
+      expect(rescheduleCalls, 0);
+    });
+
+    test('a backup from an older schemaVersion is rejected', () async {
+      await _seed(database);
+      final BackupRows before = await database.backupDao.readAll();
+      final String valid = await service.buildBackupJson();
+      final Map<String, dynamic> older =
+          jsonDecode(valid) as Map<String, dynamic>;
+      expect(database.schemaVersion, greaterThan(1));
+      older['schemaVersion'] = 1;
+
+      await expectLater(
+        service.importJson(jsonEncode(older)),
+        throwsA(
+          isA<BackupValidationException>().having(
+            (BackupValidationException error) => error.reason,
+            'reason',
+            BackupRejection.unsupportedSchemaVersion,
+          ),
+        ),
+      );
+
+      _expectRows(await database.backupDao.readAll(), before);
+      expect(rescheduleCalls, 0);
+    });
+
+    test('reminders are re-registered after import', () async {
+      final _MockNotificationService notifications = _MockNotificationService();
+      when(() => notifications.registeredNotificationIds())
+          .thenAnswer((_) async => <int>{});
+      when(() => notifications.cancelReminder(any())).thenAnswer((_) async {});
+      when(
+        () => notifications.scheduleReminder(
+          notificationId: any(named: 'notificationId'),
+          when: any(named: 'when'),
+          title: any(named: 'title'),
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer((_) async {});
+      when(
+        () => notifications.showNotificationNow(
+          notificationId: any(named: 'notificationId'),
+          title: any(named: 'title'),
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer((_) async {});
+      final ReminderScheduler scheduler =
+          ReminderScheduler(database, notifications, settings);
+      final LocalBackupService wired = LocalBackupService(
+        database: database,
+        profiles: profiles,
+        settings: settings,
+        rescheduleReminders: () async {
+          await scheduler.catchUpMissed();
+          await scheduler.sync(
+            await database.remindersDao.getPendingReminders(),
+          );
+        },
+      );
+
+      await database.childProfilesDao.insertChildProfile(
+        ChildProfilesCompanion.insert(
+          id: 'child-1',
+          name: 'Aarav',
+          dateOfBirth: DateTime(2024, 1, 1),
+          sex: 'male',
+        ),
+      );
+      await database.vaccinationDuesDao.insertVaccinationDue(
+        VaccinationDuesCompanion.insert(
+          id: 'due-1',
+          childId: 'child-1',
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+          dueDate: DateTime(2026, 11, 1, 9),
+        ),
+      );
+      final DateTime scheduledFor =
+          DateTime.now().add(const Duration(days: 10));
+      final Reminder reminder = await database.remindersDao.insertReminderAt(
+        dueId: 'due-1',
+        scheduledFor: scheduledFor,
+        kind: ReminderKind.advance,
+      );
+      final String json = await wired.buildBackupJson();
+      await database.backupDao.replaceAll(BackupRows.empty);
+      clearInteractions(notifications);
+
+      await wired.importJson(json);
+
+      final List<Reminder> pending =
+          await database.remindersDao.getPendingReminders();
+      expect(pending, hasLength(1));
+      expect(pending.single.notificationId, reminder.notificationId);
+      verify(
+        () => notifications.scheduleReminder(
+          notificationId: reminder.notificationId,
+          when: any(named: 'when'),
+          title: any(named: 'title'),
+          body: any(named: 'body'),
+        ),
+      ).called(1);
+    });
+
     test('import registers only the device reminder window', () async {
       final _MockNotificationService notifications = _MockNotificationService();
       when(() => notifications.registeredNotificationIds())
@@ -359,7 +752,76 @@ void main() {
       ).called(ReminderScheduler.registrationLimit);
     });
 
+    test('exportToFile and importFromFile round trip through a path', () async {
+      final BackupRows original = await _seed(database);
+      final Directory directory =
+          await Directory.systemTemp.createTemp('tikasathi_backup');
+      final String path = '${directory.path}/tikasathi-backup-test.json';
+      try {
+        await service.exportToFile(path, createdAt: DateTime(2026, 10, 3, 9));
+        expect(await File(path).readAsString(), contains('"app": "tikasathi"'));
+
+        await database.backupDao.replaceAll(BackupRows.empty);
+        profiles.caregiver = <String, String?>{
+          'name': null,
+          'phone': null,
+          'address': null,
+        };
+        await service.importFromFile(path);
+
+        _expectRows(await database.backupDao.readAll(), original);
+      } finally {
+        await directory.delete(recursive: true);
+      }
+    });
   });
+}
+
+Future<void> _insertBundle(
+  AppDatabase database, {
+  required String childId,
+  required String name,
+  required DateTime dateOfBirth,
+  required String sex,
+  required DateTime administeredDate,
+  required String? facilityName,
+  required DateTime dueDate,
+  required DateTime scheduledFor,
+  ReminderKind kind = ReminderKind.sameDay,
+}) async {
+  await database.childProfilesDao.insertChildProfile(
+    ChildProfilesCompanion.insert(
+      id: childId,
+      name: name,
+      dateOfBirth: dateOfBirth,
+      sex: sex,
+    ),
+  );
+  await database.childProfilesDao.setSetupComplete(childId, true);
+  await database.vaccinationRecordsDao.insertVaccinationRecord(
+    VaccinationRecordsCompanion.insert(
+      id: 'record-$childId',
+      childId: childId,
+      vaccineCode: 'PENTA',
+      doseNumber: 1,
+      administeredDate: administeredDate,
+      facilityName: Value(facilityName),
+    ),
+  );
+  await database.vaccinationDuesDao.insertVaccinationDue(
+    VaccinationDuesCompanion.insert(
+      id: 'due-$childId',
+      childId: childId,
+      vaccineCode: 'BCG',
+      doseNumber: 1,
+      dueDate: dueDate,
+    ),
+  );
+  await database.remindersDao.insertReminderAt(
+    dueId: 'due-$childId',
+    scheduledFor: scheduledFor,
+    kind: kind,
+  );
 }
 
 Future<BackupRows> _seed(AppDatabase database) async {

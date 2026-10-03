@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tikasathi/core/database/app_database.dart';
@@ -114,6 +115,23 @@ class LocalBackupService {
     };
 
     return const JsonEncoder.withIndent('  ').convert(document);
+  }
+
+  /// Writes the backup JSON to [path].
+  ///
+  /// The settings screen still shares a file through the system sheet. Tests
+  /// pass a path here because that sheet cannot be driven.
+  Future<void> exportToFile(String path, {DateTime? createdAt}) async {
+    final String json = await buildBackupJson(createdAt: createdAt);
+    final File file = File(path);
+    await file.parent.create(recursive: true);
+    await file.writeAsString(json, flush: true);
+  }
+
+  /// Restores the backup stored at [path]. Same checks as [importJson].
+  Future<void> importFromFile(String path) async {
+    final String json = await File(path).readAsString();
+    await importJson(json);
   }
 
   /// Checks [jsonText] without writing. Throws [BackupValidationException].
