@@ -280,6 +280,30 @@ void main() {
       expect(profiles.onboardingCompleted, isTrue);
     });
 
+    test('a failed rollback still reports the original error', () async {
+      final _BrokenRollbackStore brokenProfiles = _BrokenRollbackStore();
+      final LocalBackupService failing = LocalBackupService(
+        database: database,
+        profiles: brokenProfiles,
+        settings: settings,
+        rescheduleReminders: () async {
+          throw StateError('notifications unavailable');
+        },
+      );
+      final String json = await service.buildBackupJson();
+
+      await expectLater(
+        failing.importJson(json),
+        throwsA(
+          isA<StateError>().having(
+            (StateError e) => e.message,
+            'message',
+            'notifications unavailable',
+          ),
+        ),
+      );
+    });
+
     test('an empty database exports and imports cleanly', () async {
       profiles.caregiver = <String, String?>{
         'name': null,
@@ -950,5 +974,28 @@ class _MemoryProfileStore implements BackupProfileStore {
   @override
   Future<void> writeOnboardingCompleted(bool completed) async {
     onboardingCompleted = completed;
+  }
+}
+
+/// Accepts the import's profile write, then fails every write after it, as a
+/// full disk would during the rollback.
+class _BrokenRollbackStore extends _MemoryProfileStore {
+  int writes = 0;
+
+  @override
+  Future<void> writeCaregiverProfile({
+    required String? name,
+    required String? phone,
+    required String? address,
+  }) async {
+    writes += 1;
+    if (writes > 1) {
+      throw StateError('rollback write failed');
+    }
+    await super.writeCaregiverProfile(
+      name: name,
+      phone: phone,
+      address: address,
+    );
   }
 }

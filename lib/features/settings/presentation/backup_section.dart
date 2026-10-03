@@ -30,28 +30,30 @@ class _BackupSectionState extends ConsumerState<BackupSection> {
     }
     setState(() => _busy = true);
     final AppLocalizations localizations = AppLocalizations.of(context)!;
+    File? file;
     try {
       final String json =
           await ref.read(localBackupServiceProvider).buildBackupJson();
       final Directory directory = await getTemporaryDirectory();
       final String name = LocalBackupService.fileNameFor(DateTime.now());
-      final File file = File(p.join(directory.path, name));
-      await file.writeAsString(json);
+      final File exportFile = File(p.join(directory.path, name));
+      file = exportFile;
+      await exportFile.writeAsString(json);
       if (!mounted) {
         return;
       }
       final RenderBox? box = context.findRenderObject() as RenderBox?;
-      await SharePlus.instance.share(
+      final ShareResult result = await SharePlus.instance.share(
         ShareParams(
           files: <XFile>[
-            XFile(file.path, mimeType: 'application/json', name: name),
+            XFile(exportFile.path, mimeType: 'application/json', name: name),
           ],
           fileNameOverrides: <String>[name],
           sharePositionOrigin:
               box == null ? null : box.localToGlobal(Offset.zero) & box.size,
         ),
       );
-      if (!mounted) {
+      if (!mounted || result.status == ShareResultStatus.dismissed) {
         return;
       }
       _showMessage(localizations.backupExportSuccess);
@@ -60,9 +62,21 @@ class _BackupSectionState extends ConsumerState<BackupSection> {
         _showMessage(localizations.backupExportError);
       }
     } finally {
+      await _deleteQuietly(file);
       if (mounted) {
         setState(() => _busy = false);
       }
+    }
+  }
+
+  /// The export holds a child's health data, so it must not outlive the share.
+  Future<void> _deleteQuietly(File? file) async {
+    try {
+      if (file != null && await file.exists()) {
+        await file.delete();
+      }
+    } catch (_) {
+      // The cache directory is cleared by the OS; nothing more to do.
     }
   }
 

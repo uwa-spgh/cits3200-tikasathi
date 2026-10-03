@@ -175,14 +175,18 @@ class LocalBackupService {
         await reschedule();
       }
     } catch (error, stackTrace) {
-      await _database.backupDao.replaceAll(previousRows);
-      await _profiles.writeCaregiverProfile(
-        name: previousCaregiver['name'],
-        phone: previousCaregiver['phone'],
-        address: previousCaregiver['address'],
-      );
-      await _settings.setLanguage(previousLanguage);
-      await _profiles.writeOnboardingCompleted(previousOnboarding);
+      try {
+        await _database.backupDao.replaceAll(previousRows);
+        await _profiles.writeCaregiverProfile(
+          name: previousCaregiver['name'],
+          phone: previousCaregiver['phone'],
+          address: previousCaregiver['address'],
+        );
+        await _settings.setLanguage(previousLanguage);
+        await _profiles.writeOnboardingCompleted(previousOnboarding);
+      } catch (_) {
+        // A failed rollback must not hide the error that caused it.
+      }
       Error.throwWithStackTrace(error, stackTrace);
     }
   }

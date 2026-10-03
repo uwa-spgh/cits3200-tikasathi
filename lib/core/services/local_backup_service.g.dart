@@ -7,7 +7,7 @@ part of 'local_backup_service.dart';
 // **************************************************************************
 
 String _$localBackupServiceHash() =>
-    r'cd3a4b3f6bdc8ae2363be34cc7f433c10de60244';
+    r'90c9d7a187176fee09e6ea185907495be17a2537';
 
 /// See also [localBackupService].
 @ProviderFor(localBackupService)
