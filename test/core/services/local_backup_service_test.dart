@@ -3,13 +3,18 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/reminders/reminder_schedule.dart';
+import 'package:tikasathi/core/reminders/reminder_scheduler.dart';
 import 'package:tikasathi/core/services/local_backup_service.dart';
+import 'package:tikasathi/core/services/notification_service.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 
 import '../../helpers/fake_settings_repository.dart';
+
+class _MockNotificationService extends Mock implements NotificationService {}
 
 void main() {
   group('LocalBackupService', () {
@@ -273,6 +278,87 @@ void main() {
       expect(settings.language, AppLanguage.nepali);
       expect(profiles.onboardingCompleted, isTrue);
     });
+
+    test('import registers only the device reminder window', () async {
+      final _MockNotificationService notifications = _MockNotificationService();
+      when(() => notifications.registeredNotificationIds())
+          .thenAnswer((_) async => <int>{});
+      when(() => notifications.cancelReminder(any())).thenAnswer((_) async {});
+      when(
+        () => notifications.scheduleReminder(
+          notificationId: any(named: 'notificationId'),
+          when: any(named: 'when'),
+          title: any(named: 'title'),
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer((_) async {});
+      when(
+        () => notifications.showNotificationNow(
+          notificationId: any(named: 'notificationId'),
+          title: any(named: 'title'),
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer((_) async {});
+      final ReminderScheduler scheduler =
+          ReminderScheduler(database, notifications, settings);
+      final LocalBackupService wired = LocalBackupService(
+        database: database,
+        profiles: profiles,
+        settings: settings,
+        rescheduleReminders: () => rescheduleRestoredReminders(
+          database: database,
+          scheduler: scheduler,
+        ),
+      );
+
+      await database.childProfilesDao.insertChildProfile(
+        ChildProfilesCompanion.insert(
+          id: 'child-1',
+          name: 'Aarav',
+          dateOfBirth: DateTime(2026, 9, 19),
+          sex: 'male',
+        ),
+      );
+      await database.vaccinationDuesDao.insertVaccinationDue(
+        VaccinationDuesCompanion.insert(
+          id: 'due-1',
+          childId: 'child-1',
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+          dueDate: DateTime(2026, 11, 1, 9),
+        ),
+      );
+      final DateTime base = DateTime.now().add(const Duration(days: 1));
+      const int extra = ReminderScheduler.registrationLimit + 1;
+      for (int index = 0; index < extra; index++) {
+        await database.remindersDao.insertReminderAt(
+          dueId: 'due-1',
+          scheduledFor: base.add(Duration(hours: index)),
+          kind: ReminderKind.advance,
+        );
+      }
+      final List<Reminder> before =
+          await database.remindersDao.getPendingReminders();
+      expect(before, hasLength(extra));
+      final String json = await wired.buildBackupJson();
+      await database.backupDao.replaceAll(BackupRows.empty);
+      clearInteractions(notifications);
+
+      await wired.importJson(json);
+
+      final List<Reminder> restored =
+          await database.remindersDao.getPendingReminders();
+      expect(restored, hasLength(extra));
+      verify(
+        () => notifications.scheduleReminder(
+          notificationId: any(named: 'notificationId'),
+          when: any(named: 'when'),
+          title: any(named: 'title'),
+          body: any(named: 'body'),
+        ),
+      ).called(ReminderScheduler.registrationLimit);
+    });
+
   });
 }
 

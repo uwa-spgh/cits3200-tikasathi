@@ -513,6 +513,23 @@ DateTime _parseDate(String value) {
   }
 }
 
+/// Registers restored reminders with the device.
+///
+/// The running app only keeps a short window scheduled. Android rejects a
+/// package that goes past 500 concurrent alarms, so a full restore must use
+/// that same window. Every reminder still stays in the table.
+Future<void> rescheduleRestoredReminders({
+  required AppDatabase database,
+  required ReminderScheduler scheduler,
+}) async {
+  await scheduler.catchUpMissed();
+  await scheduler.sync(
+    await database.remindersDao.getPendingReminders(
+      limit: ReminderScheduler.registrationLimit,
+    ),
+  );
+}
+
 ReminderKind _requiredKind(Map<String, dynamic> json) {
   final String name = _requiredString(json, 'kind');
   for (final ReminderKind kind in ReminderKind.values) {
@@ -531,11 +548,9 @@ LocalBackupService localBackupService(LocalBackupServiceRef ref) {
     database: database,
     profiles: ref.watch(secureStorageServiceProvider),
     settings: ref.watch(settingsRepositoryProvider),
-    rescheduleReminders: () async {
-      await scheduler.catchUpMissed();
-      await scheduler.sync(
-        await database.remindersDao.getPendingReminders(),
-      );
-    },
+    rescheduleReminders: () => rescheduleRestoredReminders(
+      database: database,
+      scheduler: scheduler,
+    ),
   );
 }
