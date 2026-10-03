@@ -15,6 +15,7 @@ import 'package:tikasathi/features/settings/presentation/health_facility_card.da
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_helpers.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
+import 'package:tikasathi/features/settings/presentation/backup_section.dart';
 import 'package:tikasathi/features/settings/presentation/caregiver_edit_screen.dart';
 import 'package:tikasathi/features/settings/presentation/child_edit_screen.dart';
 
@@ -276,6 +277,8 @@ class SettingsScreen extends ConsumerWidget {
                 key: const Key('health-facilitator-action'),
                 facility: facilitator,
               ),
+              const SizedBox(height: 18),
+              const BackupSection(),
               const SizedBox(height: 32),
               ElevatedButton(
                 onPressed: () => _testNotifications(context, ref, isNp: isNp),
