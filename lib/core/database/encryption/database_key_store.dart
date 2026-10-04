@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 /// Keeps the key that encrypts the local database in the device's secure
@@ -20,10 +21,19 @@ class DatabaseKeyStore {
   final FlutterSecureStorage _storage;
   final Random _random;
 
-  /// The stored key, or null when none exists yet or the stored value is
-  /// not a well-formed key.
+  /// The stored key, or null when none exists yet, the stored value is not a
+  /// well-formed key, or the platform could not read it.
+  ///
+  /// Android can fail to decrypt secure storage when its Keystore is reset.
+  /// The key is as good as lost then, so that is reported as no key rather
+  /// than crashing every launch.
   Future<String?> read() async {
-    final String? value = await _storage.read(key: storageKey);
+    final String? value;
+    try {
+      value = await _storage.read(key: storageKey);
+    } on PlatformException {
+      return null;
+    }
     if (value == null || !_validKey.hasMatch(value)) {
       return null;
     }

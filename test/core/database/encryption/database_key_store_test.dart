@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tikasathi/core/database/encryption/database_key_store.dart';
@@ -55,6 +56,12 @@ void main() {
 
       expect(await store.read(), isNull);
     });
+
+    test('treats a platform failure to read storage as no key', () async {
+      final DatabaseKeyStore broken = DatabaseKeyStore(_BrokenStorage());
+
+      expect(await broken.read(), isNull);
+    });
   });
 }
 
@@ -71,4 +78,11 @@ class _ConstantRandom implements Random {
 
   @override
   double nextDouble() => 0;
+}
+
+class _BrokenStorage implements FlutterSecureStorage {
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    throw PlatformException(code: 'keystore');
+  }
 }
