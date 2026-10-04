@@ -1,5 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tikasathi/core/database/app_database.dart';
+import 'package:tikasathi/core/database/app_database_provider.dart';
+import 'package:tikasathi/core/database/database_recovery.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/reminders/reminder_scheduler.dart';
 import 'package:tikasathi/core/services/notification_service.dart';
@@ -9,12 +14,14 @@ import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart'
 import 'package:tikasathi/features/onboarding/presentation/language_screen.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
+import 'package:tikasathi/features/startup/presentation/database_locked_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Reused as the app's scope so the initialised service is the one it reads.
   final ProviderContainer container = ProviderContainer();
+  await _recoverIfDatabaseLocked(container);
   await container.read(notificationServiceProvider).initialize();
   await container.read(notificationServiceProvider).requestPermission();
 
@@ -29,6 +36,33 @@ Future<void> main() async {
       child: const TikaSathiApp(),
     ),
   );
+}
+
+/// Opens the database before anything uses it. If its key is gone, the data
+/// is unreadable: show the recovery screen and wait until the person has
+/// started fresh.
+Future<void> _recoverIfDatabaseLocked(ProviderContainer container) async {
+  if (await canOpenDatabase(container.read(appDatabaseProvider))) {
+    return;
+  }
+  final Completer<void> startedFresh = Completer<void>();
+  runApp(
+    UncontrolledProviderScope(
+      container: container,
+      child: DatabaseLockedApp(
+        onStartFresh: () async {
+          await eraseLocalData(
+            databaseFile: await databaseFile(),
+            secureStorage: container.read(secureStorageServiceProvider),
+          );
+          // The old provider holds the failed database. Build a new one.
+          container.invalidate(appDatabaseProvider);
+          startedFresh.complete();
+        },
+      ),
+    ),
+  );
+  await startedFresh.future;
 }
 
 class TikaSathiApp extends ConsumerStatefulWidget {
