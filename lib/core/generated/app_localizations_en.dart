@@ -898,7 +898,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupPrivacyNote =>
-      'Keep this file somewhere safe. It contains your child\'s health information.';
+      'Keep this file somewhere safe and only share it with people you trust. It contains your child\'s health information.';
 
   @override
   String get backupReplaceTitle => 'Replace data on this phone?';

@@ -310,7 +310,7 @@ void main() {
       expect(
         enSettings,
         contains(
-            "Keep this file somewhere safe. It contains your child's health information."),
+            "Keep this file somewhere safe and only share it with people you trust. It contains your child's health information."),
       );
 
       await tester.pumpWidget(

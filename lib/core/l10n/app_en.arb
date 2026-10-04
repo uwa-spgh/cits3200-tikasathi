@@ -663,7 +663,7 @@
   "backupSectionTitle": "Backup",
   "backupExportAction": "Export backup",
   "backupImportAction": "Import backup",
-  "backupPrivacyNote": "Keep this file somewhere safe. It contains your child's health information.",
+  "backupPrivacyNote": "Keep this file somewhere safe and only share it with people you trust. It contains your child's health information.",
   "backupReplaceTitle": "Replace data on this phone?",
   "backupReplaceMessage": "This will replace all data on this phone. Continue?",
   "backupReplaceConfirm": "Continue",

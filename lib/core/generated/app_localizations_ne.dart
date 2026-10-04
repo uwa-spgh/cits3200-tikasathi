@@ -895,7 +895,7 @@ class AppLocalizationsNe extends AppLocalizations {
 
   @override
   String get backupPrivacyNote =>
-      'यो फाइल सुरक्षित ठाउँमा राख्नुहोस्। यसमा तपाईंको बच्चाको स्वास्थ्य जानकारी छ।';
+      'यो फाइल सुरक्षित ठाउँमा राख्नुहोस् र विश्वास गर्ने मानिससँग मात्र साझा गर्नुहोस्। यसमा तपाईंको बच्चाको स्वास्थ्य जानकारी छ।';
 
   @override
   String get backupReplaceTitle => 'यस फोनको डाटा बदल्ने?';

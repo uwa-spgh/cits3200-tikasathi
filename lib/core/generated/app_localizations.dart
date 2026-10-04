@@ -1565,7 +1565,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupPrivacyNote.
   ///
   /// In en, this message translates to:
-  /// **'Keep this file somewhere safe. It contains your child\'s health information.'**
+  /// **'Keep this file somewhere safe and only share it with people you trust. It contains your child\'s health information.'**
   String get backupPrivacyNote;
 
   /// No description provided for @backupReplaceTitle.
