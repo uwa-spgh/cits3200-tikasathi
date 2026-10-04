@@ -11,6 +11,8 @@ AppDatabase appDatabase(AppDatabaseRef ref) {
   final db = AppDatabase(
     keyStore: DatabaseKeyStore(ref.watch(secureStorageProvider)),
   );
-  ref.onDispose(db.close);
+  // A database that never opened, such as one whose key was lost, throws the
+  // same error again on close. There is nothing to close, so drop it.
+  ref.onDispose(() => db.close().then((_) {}, onError: (Object _) {}));
   return db;
 }

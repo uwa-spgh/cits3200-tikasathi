@@ -78,11 +78,15 @@ class AppDatabase extends _$AppDatabase {
   }
 }
 
-/// Opens the encrypted database file in the app's documents directory.
+/// The database file in the app's documents directory.
+Future<File> databaseFile() async {
+  final dbFolder = await getApplicationDocumentsDirectory();
+  return File(p.join(dbFolder.path, 'tikasathi.sqlite'));
+}
+
+/// Opens the encrypted database file.
 LazyDatabase _openConnection(DatabaseKeyStore keyStore) {
   return LazyDatabase(() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'tikasathi.sqlite'));
-    return openEncryptedDatabase(file: file, keys: keyStore);
+    return openEncryptedDatabase(file: await databaseFile(), keys: keyStore);
   });
 }
