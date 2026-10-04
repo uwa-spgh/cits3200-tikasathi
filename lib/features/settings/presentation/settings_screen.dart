@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -280,58 +281,63 @@ class SettingsScreen extends ConsumerWidget {
               const SizedBox(height: 18),
               const BackupSection(),
               const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: () => _testNotifications(context, ref, isNp: isNp),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+              // Developer tools. Clearing storage also destroys the database
+              // key, so none of this may reach a release build.
+              if (kDebugMode) ...<Widget>[
+                ElevatedButton(
+                  onPressed: () => _testNotifications(context, ref, isNp: isNp),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: Text(isNp
+                      ? 'DEBUG: सूचना परीक्षण गर्नुहोस्'
+                      : 'DEBUG: Test Notifications'),
                 ),
-                child: Text(isNp
-                    ? 'DEBUG: सूचना परीक्षण गर्नुहोस्'
-                    : 'DEBUG: Test Notifications'),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => _remindInTwoMinutes(context, ref, isNp: isNp),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () =>
+                      _remindInTwoMinutes(context, ref, isNp: isNp),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: Text(isNp
+                      ? 'DEBUG: २ मिनेटमा रिमाइन्डर'
+                      : 'DEBUG: Remind Me In 2 Minutes'),
                 ),
-                child: Text(isNp
-                    ? 'DEBUG: २ मिनेटमा रिमाइन्डर'
-                    : 'DEBUG: Remind Me In 2 Minutes'),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () async {
-                  // Debug: Clear secure storage
-                  await ref.read(secureStorageServiceProvider).clearAll();
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () async {
+                    // Debug: Clear secure storage
+                    await ref.read(secureStorageServiceProvider).clearAll();
 
-                  // Debug: Clear database tables
-                  final db = ref.read(appDatabaseProvider);
-                  await db.delete(db.reminders).go();
-                  await db.delete(db.vaccinationRecords).go();
-                  await db.delete(db.vaccinationDues).go();
-                  await db.delete(db.childProfiles).go();
-                  await db.delete(db.healthFacilitators).go();
+                    // Debug: Clear database tables
+                    final db = ref.read(appDatabaseProvider);
+                    await db.delete(db.reminders).go();
+                    await db.delete(db.vaccinationRecords).go();
+                    await db.delete(db.vaccinationDues).go();
+                    await db.delete(db.childProfiles).go();
+                    await db.delete(db.healthFacilitators).go();
 
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(isNp
-                            ? 'सबै डाटा मेटाइयो (डिबग)। सुरुदेखि हेर्न एप रिस्टार्ट गर्नुहोस्।'
-                            : 'All data cleared (Debug). Restart the app to see the onboarding screen again.'),
-                      ),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(isNp
+                              ? 'सबै डाटा मेटाइयो (डिबग)। सुरुदेखि हेर्न एप रिस्टार्ट गर्नुहोस्।'
+                              : 'All data cleared (Debug). Restart the app to see the onboarding screen again.'),
+                        ),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: Text(isNp
+                      ? 'DEBUG: सबै डाटा मेटाउनुहोस्'
+                      : 'DEBUG: Clear All Storage'),
                 ),
-                child: Text(isNp
-                    ? 'DEBUG: सबै डाटा मेटाउनुहोस्'
-                    : 'DEBUG: Clear All Storage'),
-              ),
+              ],
             ],
           ),
         ),
