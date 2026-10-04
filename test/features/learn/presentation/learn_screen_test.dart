@@ -120,5 +120,43 @@ void main() {
       expect(find.text(topic.title(_en)), findsNothing);
       expect(find.text(_shown(topic, _en).first), findsNothing);
     });
+
+    for (final Locale locale in AppLocalizations.supportedLocales) {
+      testWidgets(
+          'colours myth labels red and fact labels green in '
+          '${locale.languageCode}', (WidgetTester tester) async {
+        final AppLocalizations l10n = lookupAppLocalizations(locale);
+        await tester.pumpWidget(_app(locale: locale));
+        await tester.pumpAndSettle();
+
+        final LearnTopic topic = learnTopics[5];
+        final Finder tab = find.byKey(Key('learn-${topic.id}'));
+        await tester.scrollUntilVisible(tab, 100, scrollable: _pageScrollable);
+        await tester.tap(
+          find.descendant(of: tab, matching: find.text(topic.title(l10n))),
+        );
+        await tester.pumpAndSettle();
+
+        final List<TextSpan> spans = <TextSpan>[];
+        for (final RichText text in tester.widgetList<RichText>(
+          find.descendant(of: tab, matching: find.byType(RichText)),
+        )) {
+          text.text.visitChildren((InlineSpan span) {
+            if (span is TextSpan) {
+              spans.add(span);
+            }
+            return true;
+          });
+        }
+        Iterable<Color?> coloursOf(String label) => spans
+            .where((TextSpan span) => span.text == label)
+            .map((TextSpan span) => span.style?.color);
+
+        expect(coloursOf(l10n.learnMythLabel), isNotEmpty);
+        expect(coloursOf(l10n.learnMythLabel), everyElement(mythColor));
+        expect(coloursOf(l10n.learnFactLabel), isNotEmpty);
+        expect(coloursOf(l10n.learnFactLabel), everyElement(factColor));
+      });
+    }
   });
 }

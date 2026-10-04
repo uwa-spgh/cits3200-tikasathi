@@ -494,6 +494,14 @@
   "homeEmptyStateTitle": "No children added yet.",
   "homeEmptyStateSubtitle": "Add your first child to see upcoming vaccines here.",
   "learnTitle": "Learn",
+  "learnMythLabel": "Myth:",
+  "@learnMythLabel": {
+    "description": "Label for a myth on the Learn page. Bold text in a Learn topic that exactly matches this label is shown in red."
+  },
+  "learnFactLabel": "Fact:",
+  "@learnFactLabel": {
+    "description": "Label for a fact on the Learn page. Bold text in a Learn topic that exactly matches this label is shown in green."
+  },
   "learnTopic1Title": "Why are vaccines important?",
   "learnTopic1Body": "**Vaccines keep your child safe.**\n• Some diseases can make a child very sick.\n• Some diseases can make a child weak for life.\n• Some diseases can kill a child.\n• Vaccines stop these diseases before they start.\n\n**Vaccines protect other children too.**\n• When many children are vaccinated, the disease cannot spread.\n• This keeps your family, your neighbours and your village safe.\n\n**Vaccines are free.**\n• Vaccines are free at the health post and immunisation clinics.\n\n**Your child needs all the doses.**\n• One dose is not enough for many vaccines.\n• Each dose helps your child's body become stronger.\n• Follow the dates in the app.",
   "@learnTopic1Body": {

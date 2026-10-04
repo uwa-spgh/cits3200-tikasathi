@@ -647,6 +647,12 @@ class AppLocalizationsNe extends AppLocalizations {
   String get learnTitle => 'सिक्नुहोस्';
 
   @override
+  String get learnMythLabel => 'भ्रम:';
+
+  @override
+  String get learnFactLabel => 'तथ्य:';
+
+  @override
   String get learnTopic1Title => 'खोप किन महत्त्वपूर्ण छ?';
 
   @override

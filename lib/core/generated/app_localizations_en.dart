@@ -638,6 +638,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get learnTitle => 'Learn';
 
   @override
+  String get learnMythLabel => 'Myth:';
+
+  @override
+  String get learnFactLabel => 'Fact:';
+
+  @override
   String get learnTopic1Title => 'Why are vaccines important?';
 
   @override

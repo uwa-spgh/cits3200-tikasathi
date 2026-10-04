@@ -69,6 +69,24 @@ const Color _tileBackground = Color(0xFFEFF5FF);
 const Color _tileBorder = Color(0xFFCFE0FA);
 const Color _tileAccent = Color(0xFF0E64C5);
 const Color _bodyText = Color(0xFF334155);
+const Color _boldText = Color(0xFF0F172A);
+
+/// Colours for the "Myth:" and "Fact:" labels, public for tests.
+const Color mythColor = Color(0xFFB51D1D);
+const Color factColor = Color(0xFF166534);
+
+/// Bold text matching the localised "Myth:" or "Fact:" label is coloured red
+/// or green; any other bold text uses the heading colour.
+Color _boldColor(AppLocalizations l10n, String text) {
+  final String label = text.trim();
+  if (label == l10n.learnMythLabel) {
+    return mythColor;
+  }
+  if (label == l10n.learnFactLabel) {
+    return factColor;
+  }
+  return _boldText;
+}
 
 class _TopicTab extends StatelessWidget {
   const _TopicTab({required this.topic});
@@ -113,9 +131,9 @@ class _TopicTab extends StatelessWidget {
                     TextSpan(
                       text: run.text,
                       style: run.bold
-                          ? const TextStyle(
+                          ? TextStyle(
                               fontWeight: FontWeight.w700,
-                              color: Color(0xFF0F172A),
+                              color: _boldColor(l10n, run.text),
                             )
                           : null,
                     ),

@@ -1148,6 +1148,18 @@ abstract class AppLocalizations {
   /// **'Learn'**
   String get learnTitle;
 
+  /// Label for a myth on the Learn page. Bold text in a Learn topic that exactly matches this label is shown in red.
+  ///
+  /// In en, this message translates to:
+  /// **'Myth:'**
+  String get learnMythLabel;
+
+  /// Label for a fact on the Learn page. Bold text in a Learn topic that exactly matches this label is shown in green.
+  ///
+  /// In en, this message translates to:
+  /// **'Fact:'**
+  String get learnFactLabel;
+
   /// No description provided for @learnTopic1Title.
   ///
   /// In en, this message translates to:
