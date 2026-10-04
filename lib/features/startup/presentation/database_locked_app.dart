@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
+import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
 
@@ -75,6 +76,15 @@ class _DatabaseLockedScreenState extends State<DatabaseLockedScreen> {
               children: <Widget>[
                 const Icon(Icons.lock_outline,
                     size: 64, color: Color(0xFF0F52BA)),
+                const SizedBox(height: 16),
+                Center(
+                  child: ReadAloudButton(
+                    tooltip: localizations.childReadAloudTooltip,
+                    unavailableMessage: localizations.childReadAloudUnavailable,
+                    text: '${localizations.databaseLockedTitle}. '
+                        '${localizations.databaseLockedMessage}',
+                  ),
+                ),
                 const SizedBox(height: 24),
                 Text(
                   localizations.databaseLockedTitle,

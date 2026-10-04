@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/startup/presentation/database_locked_app.dart';
 
 void main() {
@@ -13,11 +15,13 @@ void main() {
       Locale locale = const Locale('en'),
     }) {
       return tester.pumpWidget(
-        MaterialApp(
-          locale: locale,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: DatabaseLockedScreen(onStartFresh: onStartFresh),
+        ProviderScope(
+          child: MaterialApp(
+            locale: locale,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: DatabaseLockedScreen(onStartFresh: onStartFresh),
+          ),
         ),
       );
     }
@@ -32,6 +36,12 @@ void main() {
       expect(find.textContaining('import it after starting fresh'),
           findsOneWidget);
       expect(find.text('Start fresh'), findsOneWidget);
+    });
+
+    testWidgets('can be read aloud', (tester) async {
+      await pump(tester, onStartFresh: () async {});
+
+      expect(find.byType(ReadAloudButton), findsOneWidget);
     });
 
     testWidgets('is available in Nepali', (tester) async {
