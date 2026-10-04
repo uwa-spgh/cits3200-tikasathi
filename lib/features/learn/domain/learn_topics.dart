@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 
 typedef LocalizedText = String Function(AppLocalizations l10n);
 
-/// One question-style section on the Learn page, shown as a collapsible tab.
+/// One piece of educational content on the Learn page, shown either as a large
+/// tile that opens a full page or as a collapsible drop-down.
 ///
 /// The words live in the localisation files (`lib/core/l10n/app_*.arb`) under
 /// `learnTopic<N>Title` and `learnTopic<N>Body`, so content is replaced by
@@ -14,6 +16,7 @@ typedef LocalizedText = String Function(AppLocalizations l10n);
 class LearnTopic {
   const LearnTopic({
     required this.id,
+    required this.icon,
     required this.title,
     required this.body,
     this.table,
@@ -21,6 +24,7 @@ class LearnTopic {
 
   /// Stable identifier, used for widget keys.
   final String id;
+  final IconData icon;
   final LocalizedText title;
   final LocalizedText body;
   final LocalizedText? table;
@@ -62,57 +66,78 @@ List<TextRun> boldRuns(String text) {
   ];
 }
 
-/// The collapsible tabs shown on the Learn page, in order.
-final List<LearnTopic> learnTopics = <LearnTopic>[
+/// The four large tiles in the 2x2 grid at the top of the Learn page. Tapping
+/// one opens its full page.
+final List<LearnTopic> featuredLearnTopics = <LearnTopic>[
   LearnTopic(
     id: 'topic-1',
+    icon: Icons.health_and_safety_outlined,
     title: (l10n) => l10n.learnTopic1Title,
     body: (l10n) => l10n.learnTopic1Body,
   ),
   LearnTopic(
-    id: 'topic-2',
-    title: (l10n) => l10n.learnTopic2Title,
-    body: (l10n) => l10n.learnTopic2Body,
-  ),
-  LearnTopic(
-    id: 'topic-3',
-    title: (l10n) => l10n.learnTopic3Title,
-    body: (l10n) => l10n.learnTopic3Body,
-  ),
-  LearnTopic(
-    id: 'topic-4',
-    title: (l10n) => l10n.learnTopic4Title,
-    body: (l10n) => l10n.learnTopic4Body,
-  ),
-  LearnTopic(
     id: 'topic-5',
+    icon: Icons.thermostat_outlined,
     title: (l10n) => l10n.learnTopic5Title,
     body: (l10n) => l10n.learnTopic5Body,
   ),
   LearnTopic(
     id: 'topic-6',
+    icon: Icons.fact_check_outlined,
     title: (l10n) => l10n.learnTopic6Title,
     body: (l10n) => l10n.learnTopic6Body,
   ),
   LearnTopic(
-    id: 'topic-7',
-    title: (l10n) => l10n.learnTopic7Title,
-    body: (l10n) => l10n.learnTopic7Body,
-  ),
-  LearnTopic(
-    id: 'topic-8',
-    title: (l10n) => l10n.learnTopic8Title,
-    body: (l10n) => l10n.learnTopic8Body,
-  ),
-  LearnTopic(
-    id: 'topic-9',
-    title: (l10n) => l10n.learnTopic9Title,
-    body: (l10n) => l10n.learnTopic9Body,
-  ),
-  LearnTopic(
     id: 'topic-10',
+    icon: Icons.vaccines_outlined,
     title: (l10n) => l10n.learnTopic10Title,
     body: (l10n) => l10n.learnTopic10Body,
     table: (l10n) => l10n.learnTopic10Table,
   ),
 ];
+
+/// The collapsible drop-downs listed below the grid, in order.
+final List<LearnTopic> moreLearnTopics = <LearnTopic>[
+  LearnTopic(
+    id: 'topic-2',
+    icon: Icons.calendar_month_outlined,
+    title: (l10n) => l10n.learnTopic2Title,
+    body: (l10n) => l10n.learnTopic2Body,
+  ),
+  LearnTopic(
+    id: 'topic-3',
+    icon: Icons.event_busy_outlined,
+    title: (l10n) => l10n.learnTopic3Title,
+    body: (l10n) => l10n.learnTopic3Body,
+  ),
+  LearnTopic(
+    id: 'topic-4',
+    icon: Icons.verified_user_outlined,
+    title: (l10n) => l10n.learnTopic4Title,
+    body: (l10n) => l10n.learnTopic4Body,
+  ),
+  LearnTopic(
+    id: 'topic-7',
+    icon: Icons.badge_outlined,
+    title: (l10n) => l10n.learnTopic7Title,
+    body: (l10n) => l10n.learnTopic7Body,
+  ),
+  LearnTopic(
+    id: 'topic-8',
+    icon: Icons.location_on_outlined,
+    title: (l10n) => l10n.learnTopic8Title,
+    body: (l10n) => l10n.learnTopic8Body,
+  ),
+  LearnTopic(
+    id: 'topic-9',
+    icon: Icons.checklist,
+    title: (l10n) => l10n.learnTopic9Title,
+    body: (l10n) => l10n.learnTopic9Body,
+  ),
+];
+
+/// Every Learn topic: the featured tiles followed by the drop-downs.
+List<LearnTopic> get allLearnTopics => <LearnTopic>[
+      ...featuredLearnTopics,
+      ...moreLearnTopics,
+    ];

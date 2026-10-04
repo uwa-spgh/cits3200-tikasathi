@@ -4,25 +4,36 @@ import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/learn/domain/learn_topics.dart';
 
 void main() {
-  test('there are ten topics with unique ids', () {
-    expect(learnTopics, hasLength(10));
+  test('there are four featured and six more topics with unique ids', () {
+    expect(featuredLearnTopics, hasLength(4));
+    expect(moreLearnTopics, hasLength(6));
     expect(
-      learnTopics.map((LearnTopic topic) => topic.id).toSet(),
+      allLearnTopics.map((LearnTopic topic) => topic.id).toSet(),
       hasLength(10),
     );
   });
 
-  test('only the last topic has a table', () {
-    expect(learnTopics.last.table, isNotNull);
-    for (final LearnTopic topic in learnTopics.take(9)) {
-      expect(topic.table, isNull, reason: topic.id);
+  test('the featured tiles are topics 1, 5, 6 and 10', () {
+    expect(
+      featuredLearnTopics.map((LearnTopic topic) => topic.id),
+      <String>['topic-1', 'topic-5', 'topic-6', 'topic-10'],
+    );
+  });
+
+  test('only topic 10 has a table', () {
+    for (final LearnTopic topic in allLearnTopics) {
+      expect(
+        topic.table != null,
+        topic.id == 'topic-10',
+        reason: topic.id,
+      );
     }
   });
 
   for (final Locale locale in AppLocalizations.supportedLocales) {
     test('every topic has its own content in ${locale.languageCode}', () {
       final AppLocalizations l10n = lookupAppLocalizations(locale);
-      for (final LearnTopic topic in learnTopics) {
+      for (final LearnTopic topic in allLearnTopics) {
         expect(topic.title(l10n), isNotEmpty, reason: topic.id);
         expect(
           topic.paragraphs(l10n).isNotEmpty || topic.tableRows(l10n).isNotEmpty,
@@ -31,15 +42,15 @@ void main() {
         );
       }
       expect(
-        learnTopics.map((LearnTopic topic) => topic.body(l10n)).toSet(),
-        hasLength(learnTopics.length),
+        allLearnTopics.map((LearnTopic topic) => topic.body(l10n)).toSet(),
+        hasLength(allLearnTopics.length),
         reason: 'each topic should have distinct body text',
       );
     });
 
     test('the table rows all match the header in ${locale.languageCode}', () {
       final List<List<String>> rows =
-          learnTopics.last.tableRows(lookupAppLocalizations(locale));
+          featuredLearnTopics.last.tableRows(lookupAppLocalizations(locale));
       expect(rows.length, greaterThan(1));
       for (final List<String> row in rows) {
         expect(row, hasLength(rows.first.length));
@@ -51,6 +62,7 @@ void main() {
   test('paragraphs splits the body on blank lines and trims them', () {
     final LearnTopic topic = LearnTopic(
       id: 'test',
+      icon: Icons.info_outline,
       title: (_) => 'Title',
       body: (_) => 'First line\nstill first.\n\n  Second.  \n \n\n\nThird.',
     );
@@ -65,12 +77,14 @@ void main() {
     final AppLocalizations l10n = lookupAppLocalizations(const Locale('en'));
     final LearnTopic withTable = LearnTopic(
       id: 'test',
+      icon: Icons.info_outline,
       title: (_) => 'Title',
       body: (_) => 'Body',
       table: (_) => 'A | B\n\n 1|2 \n',
     );
     final LearnTopic withoutTable = LearnTopic(
       id: 'test',
+      icon: Icons.info_outline,
       title: (_) => 'Title',
       body: (_) => 'Body',
     );

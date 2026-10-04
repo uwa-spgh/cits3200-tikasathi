@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/learn/domain/learn_topics.dart';
+import 'package:tikasathi/features/learn/presentation/learn_topic_content.dart';
+import 'package:tikasathi/features/learn/presentation/learn_topic_screen.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
 
-/// Learn tab: an FAQ-style list of collapsible tabs. Tapping a tab's title
-/// expands it to show that topic's information.
+/// Learn tab: a 2x2 grid of featured topics, each opening a full page, followed
+/// by FAQ-style drop-downs that expand in place.
 class LearnScreen extends ConsumerWidget {
   const LearnScreen({super.key});
 
@@ -55,38 +57,97 @@ class LearnScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 16),
+          // Rows of two tiles; IntrinsicHeight keeps both tiles in a row the
+          // same height when one title wraps onto more lines.
+          for (int index = 0;
+              index < featuredLearnTopics.length;
+              index += 2) ...[
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _featuredTile(context, featuredLearnTopics[index]),
+                  const SizedBox(width: 12),
+                  if (index + 1 < featuredLearnTopics.length)
+                    _featuredTile(context, featuredLearnTopics[index + 1])
+                  else
+                    const Spacer(),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
           const _TopicList(),
         ],
       ),
     );
   }
+
+  Widget _featuredTile(BuildContext context, LearnTopic topic) => Expanded(
+        child: _FeaturedTile(
+          topic: topic,
+          onTap: () => _openTopic(context, topic),
+        ),
+      );
+
+  void _openTopic(BuildContext context, LearnTopic topic) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => LearnTopicScreen(topic: topic),
+      ),
+    );
+  }
 }
 
-const Color _tileBackground = Color(0xFFEFF5FF);
-const Color _tileBorder = Color(0xFFCFE0FA);
-const Color _tileAccent = Color(0xFF0E64C5);
-const Color _bodyText = Color(0xFF334155);
-const Color _boldText = Color(0xFF0F172A);
+/// A large tile in the featured grid: an icon above the topic's title.
+class _FeaturedTile extends StatelessWidget {
+  const _FeaturedTile({required this.topic, required this.onTap});
 
-/// Colours for the "Myth:" and "Fact:" labels, public for tests.
-const Color mythColor = Color(0xFFB51D1D);
-const Color factColor = Color(0xFF166534);
+  final LearnTopic topic;
+  final VoidCallback onTap;
 
-/// Bold text matching the localised "Myth:" or "Fact:" label is coloured red
-/// or green; any other bold text uses the heading colour.
-Color _boldColor(AppLocalizations l10n, String text) {
-  final String label = text.trim();
-  if (label == l10n.learnMythLabel) {
-    return mythColor;
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    return InkWell(
+      key: Key('learn-${topic.id}'),
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Ink(
+        decoration: BoxDecoration(
+          color: learnTileBackground,
+          border: Border.all(color: learnTileBorder),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 140),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(topic.icon, size: 36, color: learnAccent),
+                const SizedBox(height: 12),
+                Text(
+                  topic.title(l10n),
+                  style: const TextStyle(
+                    color: learnAccent,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
-  if (label == l10n.learnFactLabel) {
-    return factColor;
-  }
-  return _boldText;
 }
 
-/// The topic tabs, of which at most one is expanded at a time: opening a tab
-/// collapses whichever tab was open before.
+/// The drop-downs, of which at most one is expanded at a time: opening one
+/// collapses whichever was open before.
 class _TopicList extends StatefulWidget {
   const _TopicList();
 
@@ -96,7 +157,7 @@ class _TopicList extends StatefulWidget {
 
 class _TopicListState extends State<_TopicList> {
   final List<ExpansibleController> _controllers = <ExpansibleController>[
-    for (final LearnTopic _ in learnTopics) ExpansibleController(),
+    for (final LearnTopic _ in moreLearnTopics) ExpansibleController(),
   ];
 
   @override
@@ -123,9 +184,9 @@ class _TopicListState extends State<_TopicList> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (int index = 0; index < learnTopics.length; index++) ...[
+        for (int index = 0; index < moreLearnTopics.length; index++) ...[
           _TopicTab(
-            topic: learnTopics[index],
+            topic: moreLearnTopics[index],
             controller: _controllers[index],
             onExpansionChanged: (bool expanded) =>
                 _onExpansionChanged(index, expanded),
@@ -151,9 +212,8 @@ class _TopicTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
-    final List<List<String>> tableRows = topic.tableRows(l10n);
     final RoundedRectangleBorder shape = RoundedRectangleBorder(
-      side: const BorderSide(color: _tileBorder),
+      side: const BorderSide(color: learnTileBorder),
       borderRadius: BorderRadius.circular(16),
     );
     return ExpansionTile(
@@ -162,95 +222,23 @@ class _TopicTab extends StatelessWidget {
       onExpansionChanged: onExpansionChanged,
       shape: shape,
       collapsedShape: shape,
-      backgroundColor: _tileBackground,
-      collapsedBackgroundColor: _tileBackground,
-      iconColor: _tileAccent,
-      collapsedIconColor: _tileAccent,
+      backgroundColor: learnTileBackground,
+      collapsedBackgroundColor: learnTileBackground,
+      iconColor: learnAccent,
+      collapsedIconColor: learnAccent,
       tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+      leading: Icon(topic.icon, color: learnAccent),
       title: Text(
         topic.title(l10n),
         style: const TextStyle(
-          color: _tileAccent,
+          color: learnAccent,
           fontSize: 18,
           fontWeight: FontWeight.w700,
         ),
       ),
-      children: [
-        for (final String paragraph in topic.paragraphs(l10n))
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Text.rich(
-              TextSpan(
-                children: [
-                  for (final TextRun run in boldRuns(paragraph))
-                    TextSpan(
-                      text: run.text,
-                      style: run.bold
-                          ? TextStyle(
-                              fontWeight: FontWeight.w700,
-                              color: _boldColor(l10n, run.text),
-                            )
-                          : null,
-                    ),
-                ],
-              ),
-              style: const TextStyle(
-                fontSize: 16,
-                height: 1.5,
-                color: _bodyText,
-              ),
-            ),
-          ),
-        if (tableRows.isNotEmpty) _TopicTable(rows: tableRows),
-      ],
-    );
-  }
-}
-
-/// A bordered table whose first row is styled as the header.
-class _TopicTable extends StatelessWidget {
-  const _TopicTable({required this.rows});
-
-  final List<List<String>> rows;
-
-  @override
-  Widget build(BuildContext context) {
-    final int columnCount = rows.first.length;
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: Table(
-        key: const Key('learn-topic-table'),
-        border: TableBorder.all(
-          color: _tileBorder,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        children: [
-          for (int index = 0; index < rows.length; index++)
-            TableRow(
-              decoration: BoxDecoration(
-                color: index == 0 ? _tileAccent : Colors.white,
-              ),
-              children: [
-                for (int column = 0; column < columnCount; column++)
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Text(
-                      column < rows[index].length ? rows[index][column] : '',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: index == 0 ? Colors.white : _bodyText,
-                        fontWeight:
-                            index == 0 ? FontWeight.w700 : FontWeight.normal,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-        ],
-      ),
+      children: [LearnTopicContent(topic: topic)],
     );
   }
 }

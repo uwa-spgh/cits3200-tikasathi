@@ -5,6 +5,8 @@ import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/learn/domain/learn_topics.dart';
 import 'package:tikasathi/features/learn/presentation/learn_screen.dart';
+import 'package:tikasathi/features/learn/presentation/learn_topic_content.dart';
+import 'package:tikasathi/features/learn/presentation/learn_topic_screen.dart';
 import 'package:tikasathi/features/settings/data/settings_providers.dart';
 
 import '../../../helpers/fake_settings_repository.dart';
@@ -45,35 +47,108 @@ Future<void> _toggle(WidgetTester tester, LearnTopic topic) async {
   await tester.pumpAndSettle();
 }
 
+Future<void> _openTile(WidgetTester tester, LearnTopic topic) async {
+  final Finder tile = find.byKey(Key('learn-${topic.id}'));
+  await tester.scrollUntilVisible(tile, 100, scrollable: _pageScrollable);
+  await tester.tap(tile);
+  await tester.pumpAndSettle();
+}
+
+/// Every [TextSpan] rendered inside [finder].
+List<TextSpan> _spansIn(WidgetTester tester, Finder finder) {
+  final List<TextSpan> spans = <TextSpan>[];
+  for (final RichText text in tester.widgetList<RichText>(
+    find.descendant(of: finder, matching: find.byType(RichText)),
+  )) {
+    text.text.visitChildren((InlineSpan span) {
+      if (span is TextSpan) {
+        spans.add(span);
+      }
+      return true;
+    });
+  }
+  return spans;
+}
+
 void main() {
   group('LearnScreen', () {
-    testWidgets('shows ten collapsed tabs', (WidgetTester tester) async {
+    testWidgets('shows four tiles and six collapsed drop-downs with icons',
+        (WidgetTester tester) async {
       await tester.pumpWidget(_app());
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('learn-title')), findsOneWidget);
       expect(find.byType(ReadAloudButton), findsOneWidget);
-      for (final LearnTopic topic in learnTopics) {
-        final Finder tab = find.byKey(Key('learn-${topic.id}'));
-        await tester.scrollUntilVisible(tab, 100, scrollable: _pageScrollable);
+      expect(find.byType(ExpansionTile), findsNWidgets(6));
+      for (final LearnTopic topic in allLearnTopics) {
+        final Finder entry = find.byKey(Key('learn-${topic.id}'));
+        await tester.scrollUntilVisible(
+          entry,
+          100,
+          scrollable: _pageScrollable,
+        );
         expect(
-          find.descendant(of: tab, matching: find.text(topic.title(_en))),
+          find.descendant(of: entry, matching: find.text(topic.title(_en))),
+          findsOneWidget,
+        );
+        expect(
+          find.descendant(of: entry, matching: find.byIcon(topic.icon)),
           findsOneWidget,
         );
         for (final String paragraph in _shown(topic, _en)) {
           expect(find.text(paragraph), findsNothing);
         }
       }
+      for (final LearnTopic topic in featuredLearnTopics) {
+        expect(
+          find.ancestor(
+            of: find.byKey(Key('learn-${topic.id}')),
+            matching: find.byType(ExpansionTile),
+          ),
+          findsNothing,
+          reason: '${topic.id} should be a tile, not a drop-down',
+        );
+      }
       expect(find.byType(Table), findsNothing);
     });
 
-    testWidgets('tapping a tab expands and collapses its content',
+    testWidgets('tapping a tile opens its full page and back returns',
         (WidgetTester tester) async {
       await tester.pumpWidget(_app());
       await tester.pumpAndSettle();
 
-      final LearnTopic topic = learnTopics[5];
-      final LearnTopic neighbour = learnTopics[4];
+      final LearnTopic topic = featuredLearnTopics[1];
+      await _openTile(tester, topic);
+
+      expect(find.byType(LearnTopicScreen), findsOneWidget);
+      expect(
+        tester.widget<Text>(find.byKey(const Key('learn-topic-title'))).data,
+        topic.title(_en),
+      );
+      for (final String paragraph in _shown(topic, _en)) {
+        expect(find.text(paragraph), findsOneWidget);
+      }
+      expect(
+        find.descendant(
+          of: find.byType(LearnTopicScreen),
+          matching: find.byType(ReadAloudButton),
+        ),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.byIcon(Icons.arrow_back));
+      await tester.pumpAndSettle();
+      expect(find.byType(LearnTopicScreen), findsNothing);
+      expect(find.byKey(const Key('learn-title')), findsOneWidget);
+    });
+
+    testWidgets('tapping a drop-down expands and collapses its content',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(_app());
+      await tester.pumpAndSettle();
+
+      final LearnTopic topic = moreLearnTopics[2];
+      final LearnTopic neighbour = moreLearnTopics[1];
 
       await _toggle(tester, topic);
       for (final String paragraph in _shown(topic, _en)) {
@@ -85,13 +160,13 @@ void main() {
       expect(find.text(_shown(topic, _en).first), findsNothing);
     });
 
-    testWidgets('opening a tab closes the tab that was open',
+    testWidgets('opening a drop-down closes the one that was open',
         (WidgetTester tester) async {
       await tester.pumpWidget(_app());
       await tester.pumpAndSettle();
 
-      final LearnTopic first = learnTopics[0];
-      final LearnTopic second = learnTopics[1];
+      final LearnTopic first = moreLearnTopics[0];
+      final LearnTopic second = moreLearnTopics[1];
 
       await _toggle(tester, first);
       expect(find.text(_shown(first, _en).first), findsOneWidget);
@@ -101,17 +176,26 @@ void main() {
       expect(find.text(_shown(first, _en).first), findsNothing);
     });
 
-    testWidgets('the last tab shows its table when expanded',
+    testWidgets('the vaccine tile page shows its table',
         (WidgetTester tester) async {
       await tester.pumpWidget(_app());
       await tester.pumpAndSettle();
 
-      final LearnTopic topic = learnTopics.last;
+      final LearnTopic topic = featuredLearnTopics.last;
       final List<List<String>> rows = topic.tableRows(_en);
+      await _openTile(tester, topic);
 
-      await _toggle(tester, topic);
       final Finder table = find.byKey(const Key('learn-topic-table'));
-      await tester.scrollUntilVisible(table, 100, scrollable: _pageScrollable);
+      await tester.scrollUntilVisible(
+        table,
+        100,
+        scrollable: find
+            .descendant(
+              of: find.byType(LearnTopicScreen),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
       expect(table, findsOneWidget);
       expect(
         find.descendant(of: table, matching: find.text(rows.first.first)),
@@ -128,12 +212,14 @@ void main() {
       await tester.pumpWidget(_app(locale: const Locale('ne')));
       await tester.pumpAndSettle();
 
-      final LearnTopic topic = learnTopics.first;
-      await tester.tap(find.text(topic.title(_ne)));
+      final LearnTopic topic = featuredLearnTopics.first;
+      expect(find.text(topic.title(_ne)), findsOneWidget);
+      expect(find.text(topic.title(_en)), findsNothing);
+
+      await tester.tap(find.byKey(Key('learn-${topic.id}')));
       await tester.pumpAndSettle();
 
       expect(find.text(_shown(topic, _ne).first), findsOneWidget);
-      expect(find.text(topic.title(_en)), findsNothing);
       expect(find.text(_shown(topic, _en).first), findsNothing);
     });
 
@@ -145,25 +231,13 @@ void main() {
         await tester.pumpWidget(_app(locale: locale));
         await tester.pumpAndSettle();
 
-        final LearnTopic topic = learnTopics[5];
-        final Finder tab = find.byKey(Key('learn-${topic.id}'));
-        await tester.scrollUntilVisible(tab, 100, scrollable: _pageScrollable);
-        await tester.tap(
-          find.descendant(of: tab, matching: find.text(topic.title(l10n))),
+        final LearnTopic topic = featuredLearnTopics.firstWhere(
+          (LearnTopic topic) => topic.id == 'topic-6',
         );
-        await tester.pumpAndSettle();
+        await _openTile(tester, topic);
 
-        final List<TextSpan> spans = <TextSpan>[];
-        for (final RichText text in tester.widgetList<RichText>(
-          find.descendant(of: tab, matching: find.byType(RichText)),
-        )) {
-          text.text.visitChildren((InlineSpan span) {
-            if (span is TextSpan) {
-              spans.add(span);
-            }
-            return true;
-          });
-        }
+        final List<TextSpan> spans =
+            _spansIn(tester, find.byType(LearnTopicScreen));
         Iterable<Color?> coloursOf(String label) => spans
             .where((TextSpan span) => span.text == label)
             .map((TextSpan span) => span.style?.color);
@@ -172,6 +246,23 @@ void main() {
         expect(coloursOf(l10n.learnMythLabel), everyElement(mythColor));
         expect(coloursOf(l10n.learnFactLabel), isNotEmpty);
         expect(coloursOf(l10n.learnFactLabel), everyElement(factColor));
+      });
+    }
+
+    for (final Locale locale in AppLocalizations.supportedLocales) {
+      testWidgets(
+          'tiles fit a small phone with large text in ${locale.languageCode}',
+          (WidgetTester tester) async {
+        tester.view.physicalSize = const Size(320, 640);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = 1.5;
+        addTearDown(tester.view.reset);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+        await tester.pumpWidget(_app(locale: locale));
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
       });
     }
   });
