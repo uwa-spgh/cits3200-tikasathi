@@ -1154,13 +1154,7 @@ abstract class AppLocalizations {
   /// **'Topic 1'**
   String get learnTopic1Title;
 
-  /// No description provided for @learnTopic1Summary.
-  ///
-  /// In en, this message translates to:
-  /// **'A short summary of topic 1.'**
-  String get learnTopic1Summary;
-
-  /// Full page text for Learn topic 1. Separate paragraphs with a blank line (\n\n).
+  /// Expanded text for Learn topic 1. Separate paragraphs with a blank line (\n\n).
   ///
   /// In en, this message translates to:
   /// **'This is placeholder content for topic 1. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 1 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 1 and answer common questions.\n\nThis paragraph will say where to get more help with topic 1, such as the local health facility or a health worker.'**
@@ -1172,13 +1166,7 @@ abstract class AppLocalizations {
   /// **'Topic 2'**
   String get learnTopic2Title;
 
-  /// No description provided for @learnTopic2Summary.
-  ///
-  /// In en, this message translates to:
-  /// **'A short summary of topic 2.'**
-  String get learnTopic2Summary;
-
-  /// Full page text for Learn topic 2. Separate paragraphs with a blank line (\n\n).
+  /// Expanded text for Learn topic 2. Separate paragraphs with a blank line (\n\n).
   ///
   /// In en, this message translates to:
   /// **'This is placeholder content for topic 2. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 2 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 2 and answer common questions.\n\nThis paragraph will say where to get more help with topic 2, such as the local health facility or a health worker.'**
@@ -1190,13 +1178,7 @@ abstract class AppLocalizations {
   /// **'Topic 3'**
   String get learnTopic3Title;
 
-  /// No description provided for @learnTopic3Summary.
-  ///
-  /// In en, this message translates to:
-  /// **'A short summary of topic 3.'**
-  String get learnTopic3Summary;
-
-  /// Full page text for Learn topic 3. Separate paragraphs with a blank line (\n\n).
+  /// Expanded text for Learn topic 3. Separate paragraphs with a blank line (\n\n).
   ///
   /// In en, this message translates to:
   /// **'This is placeholder content for topic 3. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 3 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 3 and answer common questions.\n\nThis paragraph will say where to get more help with topic 3, such as the local health facility or a health worker.'**
@@ -1208,13 +1190,7 @@ abstract class AppLocalizations {
   /// **'Topic 4'**
   String get learnTopic4Title;
 
-  /// No description provided for @learnTopic4Summary.
-  ///
-  /// In en, this message translates to:
-  /// **'A short summary of topic 4.'**
-  String get learnTopic4Summary;
-
-  /// Full page text for Learn topic 4. Separate paragraphs with a blank line (\n\n).
+  /// Expanded text for Learn topic 4. Separate paragraphs with a blank line (\n\n).
   ///
   /// In en, this message translates to:
   /// **'This is placeholder content for topic 4. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 4 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 4 and answer common questions.\n\nThis paragraph will say where to get more help with topic 4, such as the local health facility or a health worker.'**
@@ -1226,13 +1202,7 @@ abstract class AppLocalizations {
   /// **'Topic 5'**
   String get learnTopic5Title;
 
-  /// No description provided for @learnTopic5Summary.
-  ///
-  /// In en, this message translates to:
-  /// **'A short summary of topic 5.'**
-  String get learnTopic5Summary;
-
-  /// Full page text for Learn topic 5. Separate paragraphs with a blank line (\n\n).
+  /// Expanded text for Learn topic 5. Separate paragraphs with a blank line (\n\n).
   ///
   /// In en, this message translates to:
   /// **'This is placeholder content for topic 5. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 5 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 5 and answer common questions.\n\nThis paragraph will say where to get more help with topic 5, such as the local health facility or a health worker.'**
@@ -1244,13 +1214,7 @@ abstract class AppLocalizations {
   /// **'Topic 6'**
   String get learnTopic6Title;
 
-  /// No description provided for @learnTopic6Summary.
-  ///
-  /// In en, this message translates to:
-  /// **'A short summary of topic 6.'**
-  String get learnTopic6Summary;
-
-  /// Full page text for Learn topic 6. Separate paragraphs with a blank line (\n\n).
+  /// Expanded text for Learn topic 6. Separate paragraphs with a blank line (\n\n).
   ///
   /// In en, this message translates to:
   /// **'This is placeholder content for topic 6. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 6 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 6 and answer common questions.\n\nThis paragraph will say where to get more help with topic 6, such as the local health facility or a health worker.'**
@@ -1262,13 +1226,7 @@ abstract class AppLocalizations {
   /// **'Topic 7'**
   String get learnTopic7Title;
 
-  /// No description provided for @learnTopic7Summary.
-  ///
-  /// In en, this message translates to:
-  /// **'A short summary of topic 7.'**
-  String get learnTopic7Summary;
-
-  /// Full page text for Learn topic 7. Separate paragraphs with a blank line (\n\n).
+  /// Expanded text for Learn topic 7. Separate paragraphs with a blank line (\n\n).
   ///
   /// In en, this message translates to:
   /// **'This is placeholder content for topic 7. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 7 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 7 and answer common questions.\n\nThis paragraph will say where to get more help with topic 7, such as the local health facility or a health worker.'**
@@ -1280,17 +1238,41 @@ abstract class AppLocalizations {
   /// **'Topic 8'**
   String get learnTopic8Title;
 
-  /// No description provided for @learnTopic8Summary.
-  ///
-  /// In en, this message translates to:
-  /// **'A short summary of topic 8.'**
-  String get learnTopic8Summary;
-
-  /// Full page text for Learn topic 8. Separate paragraphs with a blank line (\n\n).
+  /// Expanded text for Learn topic 8. Separate paragraphs with a blank line (\n\n).
   ///
   /// In en, this message translates to:
   /// **'This is placeholder content for topic 8. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 8 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 8 and answer common questions.\n\nThis paragraph will say where to get more help with topic 8, such as the local health facility or a health worker.'**
   String get learnTopic8Body;
+
+  /// No description provided for @learnTopic9Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Topic 9'**
+  String get learnTopic9Title;
+
+  /// Expanded text for Learn topic 9. Separate paragraphs with a blank line (\n\n).
+  ///
+  /// In en, this message translates to:
+  /// **'This is placeholder content for topic 9. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 9 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 9 and answer common questions.\n\nThis paragraph will say where to get more help with topic 9, such as the local health facility or a health worker.'**
+  String get learnTopic9Body;
+
+  /// No description provided for @learnTopic10Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Topic 10'**
+  String get learnTopic10Title;
+
+  /// Expanded text for Learn topic 10. Separate paragraphs with a blank line (\n\n).
+  ///
+  /// In en, this message translates to:
+  /// **'This is placeholder content for topic 10. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 10 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 10 and answer common questions.\n\nThis paragraph will say where to get more help with topic 10, such as the local health facility or a health worker.'**
+  String get learnTopic10Body;
+
+  /// Table shown under Learn topic 10. One row per line; the first line is the header row. Separate cells with |.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading 1 | Heading 2 | Heading 3\nRow 1, cell 1 | Row 1, cell 2 | Row 1, cell 3\nRow 2, cell 1 | Row 2, cell 2 | Row 2, cell 3\nRow 3, cell 1 | Row 3, cell 2 | Row 3, cell 3\nRow 4, cell 1 | Row 4, cell 2 | Row 4, cell 3'**
+  String get learnTopic10Table;
 
   /// No description provided for @childStatusSetupIncomplete.
   ///

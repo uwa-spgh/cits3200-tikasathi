@@ -3,12 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/learn/domain/learn_topics.dart';
-import 'package:tikasathi/features/learn/presentation/learn_topic_screen.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
 
-/// Learn tab: a 2x2 grid of featured topics followed by shorter full-width
-/// topics. Tapping any tile opens its full page of information.
+/// Learn tab: an FAQ-style list of collapsible tabs. Tapping a tab's title
+/// expands it to show that topic's information.
 class LearnScreen extends ConsumerWidget {
   const LearnScreen({super.key});
 
@@ -56,37 +55,11 @@ class LearnScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 16),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
-            children: [
-              for (final LearnTopic topic in featuredLearnTopics)
-                _FeaturedTile(
-                  topic: topic,
-                  onTap: () => _openTopic(context, topic),
-                ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          for (final LearnTopic topic in moreLearnTopics) ...[
-            _WideTile(
-              topic: topic,
-              onTap: () => _openTopic(context, topic),
-            ),
+          for (final LearnTopic topic in learnTopics) ...[
+            _TopicTab(topic: topic),
             const SizedBox(height: 12),
           ],
         ],
-      ),
-    );
-  }
-
-  void _openTopic(BuildContext context, LearnTopic topic) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => LearnTopicScreen(topic: topic),
       ),
     );
   }
@@ -95,89 +68,100 @@ class LearnScreen extends ConsumerWidget {
 const Color _tileBackground = Color(0xFFEFF5FF);
 const Color _tileBorder = Color(0xFFCFE0FA);
 const Color _tileAccent = Color(0xFF0E64C5);
+const Color _bodyText = Color(0xFF334155);
 
-BoxDecoration _tileDecoration() => BoxDecoration(
-      color: _tileBackground,
-      border: Border.all(color: _tileBorder),
-      borderRadius: BorderRadius.circular(16),
-    );
-
-class _FeaturedTile extends StatelessWidget {
-  const _FeaturedTile({required this.topic, required this.onTap});
+class _TopicTab extends StatelessWidget {
+  const _TopicTab({required this.topic});
 
   final LearnTopic topic;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
-    return InkWell(
-      key: Key('learn-${topic.id}'),
-      onTap: onTap,
+    final List<List<String>> tableRows = topic.tableRows(l10n);
+    final RoundedRectangleBorder shape = RoundedRectangleBorder(
+      side: const BorderSide(color: _tileBorder),
       borderRadius: BorderRadius.circular(16),
-      child: Ink(
-        padding: const EdgeInsets.all(16),
-        decoration: _tileDecoration(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(topic.icon, size: 36, color: _tileAccent),
-            const Spacer(),
-            Text(
-              topic.title(l10n),
-              style: const TextStyle(
-                color: _tileAccent,
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              topic.summary(l10n),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 14, color: Color(0xFF334155)),
-            ),
-          ],
+    );
+    return ExpansionTile(
+      key: Key('learn-${topic.id}'),
+      shape: shape,
+      collapsedShape: shape,
+      backgroundColor: _tileBackground,
+      collapsedBackgroundColor: _tileBackground,
+      iconColor: _tileAccent,
+      collapsedIconColor: _tileAccent,
+      tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+      title: Text(
+        topic.title(l10n),
+        style: const TextStyle(
+          color: _tileAccent,
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
         ),
       ),
+      children: [
+        for (final String paragraph in topic.paragraphs(l10n))
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Text(
+              paragraph,
+              style: const TextStyle(
+                fontSize: 16,
+                height: 1.5,
+                color: _bodyText,
+              ),
+            ),
+          ),
+        if (tableRows.isNotEmpty) _TopicTable(rows: tableRows),
+      ],
     );
   }
 }
 
-class _WideTile extends StatelessWidget {
-  const _WideTile({required this.topic, required this.onTap});
+/// A bordered table whose first row is styled as the header.
+class _TopicTable extends StatelessWidget {
+  const _TopicTable({required this.rows});
 
-  final LearnTopic topic;
-  final VoidCallback onTap;
+  final List<List<String>> rows;
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
-    return InkWell(
-      key: Key('learn-${topic.id}'),
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Ink(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: _tileDecoration(),
-        child: Row(
-          children: [
-            Icon(topic.icon, color: _tileAccent),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                topic.title(l10n),
-                style: const TextStyle(
-                  color: _tileAccent,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            const Icon(Icons.chevron_right, color: _tileAccent),
-          ],
+    final int columnCount = rows.first.length;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Table(
+        key: const Key('learn-topic-table'),
+        border: TableBorder.all(
+          color: _tileBorder,
+          borderRadius: BorderRadius.circular(8),
         ),
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        children: [
+          for (int index = 0; index < rows.length; index++)
+            TableRow(
+              decoration: BoxDecoration(
+                color: index == 0 ? _tileAccent : Colors.white,
+              ),
+              children: [
+                for (int column = 0; column < columnCount; column++)
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Text(
+                      column < rows[index].length ? rows[index][column] : '',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: index == 0 ? Colors.white : _bodyText,
+                        fontWeight:
+                            index == 0 ? FontWeight.w700 : FontWeight.normal,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+        ],
       ),
     );
   }
