@@ -306,6 +306,12 @@ void main() {
       );
 
       expect(enSettings, contains('Settings'));
+      expect(enSettings, contains('Export backup'));
+      expect(
+        enSettings,
+        contains(
+            "Keep this file somewhere safe. It contains your child's health information."),
+      );
 
       await tester.pumpWidget(
         MaterialApp(
@@ -327,6 +333,8 @@ void main() {
       );
 
       expect(npSettings, contains('सेटिङहरू'));
+      expect(npSettings, contains('ब्याकअप निकाल्नुहोस्'));
+      expect(npSettings, contains('तपाईंको बच्चाको स्वास्थ्य जानकारी'));
     });
 
     testWidgets(

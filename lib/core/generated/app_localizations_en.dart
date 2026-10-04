@@ -886,4 +886,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String reminderOverdue(String vaccineName) {
     return '$vaccineName is overdue. Contact your nearest health facility for catch-up vaccination.';
   }
+
+  @override
+  String get backupSectionTitle => 'Backup';
+
+  @override
+  String get backupExportAction => 'Export backup';
+
+  @override
+  String get backupImportAction => 'Import backup';
+
+  @override
+  String get backupPrivacyNote =>
+      'Keep this file somewhere safe. It contains your child\'s health information.';
+
+  @override
+  String get backupReplaceTitle => 'Replace data on this phone?';
+
+  @override
+  String get backupReplaceMessage =>
+      'This will replace all data on this phone. Continue?';
+
+  @override
+  String get backupReplaceConfirm => 'Continue';
+
+  @override
+  String get backupExportSuccess => 'Backup file ready to save.';
+
+  @override
+  String get backupImportSuccess => 'Backup imported.';
+
+  @override
+  String get backupExportError => 'Could not export the backup.';
+
+  @override
+  String get backupImportError => 'Could not import the backup.';
+
+  @override
+  String get backupInvalidFile =>
+      'This file is not a TikaSathi backup this app can read.';
 }

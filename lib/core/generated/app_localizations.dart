@@ -1543,6 +1543,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{vaccineName} is overdue. Contact your nearest health facility for catch-up vaccination.'**
   String reminderOverdue(String vaccineName);
+
+  /// No description provided for @backupSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get backupSectionTitle;
+
+  /// No description provided for @backupExportAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Export backup'**
+  String get backupExportAction;
+
+  /// No description provided for @backupImportAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Import backup'**
+  String get backupImportAction;
+
+  /// No description provided for @backupPrivacyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep this file somewhere safe. It contains your child\'s health information.'**
+  String get backupPrivacyNote;
+
+  /// No description provided for @backupReplaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace data on this phone?'**
+  String get backupReplaceTitle;
+
+  /// No description provided for @backupReplaceMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will replace all data on this phone. Continue?'**
+  String get backupReplaceMessage;
+
+  /// No description provided for @backupReplaceConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get backupReplaceConfirm;
+
+  /// No description provided for @backupExportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup file ready to save.'**
+  String get backupExportSuccess;
+
+  /// No description provided for @backupImportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup imported.'**
+  String get backupImportSuccess;
+
+  /// No description provided for @backupExportError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not export the backup.'**
+  String get backupExportError;
+
+  /// No description provided for @backupImportError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not import the backup.'**
+  String get backupImportError;
+
+  /// No description provided for @backupInvalidFile.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is not a TikaSathi backup this app can read.'**
+  String get backupInvalidFile;
 }
 
 class _AppLocalizationsDelegate

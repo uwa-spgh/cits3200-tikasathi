@@ -659,5 +659,17 @@
         "type": "String"
       }
     }
-  }
+  },
+  "backupSectionTitle": "Backup",
+  "backupExportAction": "Export backup",
+  "backupImportAction": "Import backup",
+  "backupPrivacyNote": "Keep this file somewhere safe. It contains your child's health information.",
+  "backupReplaceTitle": "Replace data on this phone?",
+  "backupReplaceMessage": "This will replace all data on this phone. Continue?",
+  "backupReplaceConfirm": "Continue",
+  "backupExportSuccess": "Backup file ready to save.",
+  "backupImportSuccess": "Backup imported.",
+  "backupExportError": "Could not export the backup.",
+  "backupImportError": "Could not import the backup.",
+  "backupInvalidFile": "This file is not a TikaSathi backup this app can read."
 }

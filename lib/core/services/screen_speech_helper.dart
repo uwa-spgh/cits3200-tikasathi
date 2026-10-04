@@ -477,16 +477,22 @@ class ScreenSpeechHelper {
   }) {
     final bool isNepali = currentLanguage == AppLanguage.nepali;
 
+    final String backup = '${localizations.backupSectionTitle}. '
+        '${localizations.backupExportAction}. '
+        '${localizations.backupImportAction}. '
+        '${localizations.backupPrivacyNote}';
     if (isNepali) {
       return 'सेटिङहरू। भाषा छनोट: हाल नेपाली भाषा चयन गरिएको छ। '
           'अभिभावकको विवरण हेर्न र सम्पादन गर्न सकिन्छ। '
           'बालबालिकाको विवरण सम्पादन गर्न सकिन्छ। '
-          'नजिकैको स्वास्थ्य संस्थाको सम्पर्क विवरण उपलब्ध छ।';
+          'नजिकैको स्वास्थ्य संस्थाको सम्पर्क विवरण उपलब्ध छ। '
+          '$backup';
     } else {
       return 'Settings. Language options: English or Nepali. '
           'Caregiver profile management. '
           'Child profiles editing. '
-          'Local health facility contact information.';
+          'Local health facility contact information. '
+          '$backup';
     }
   }
 

@@ -883,4 +883,43 @@ class AppLocalizationsNe extends AppLocalizations {
   String reminderOverdue(String vaccineName) {
     return '$vaccineName को म्याद नाघिसक्यो। क्याच-अप खोपका लागि नजिकैको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।';
   }
+
+  @override
+  String get backupSectionTitle => 'ब्याकअप';
+
+  @override
+  String get backupExportAction => 'ब्याकअप निकाल्नुहोस्';
+
+  @override
+  String get backupImportAction => 'ब्याकअप ल्याउनुहोस्';
+
+  @override
+  String get backupPrivacyNote =>
+      'यो फाइल सुरक्षित ठाउँमा राख्नुहोस्। यसमा तपाईंको बच्चाको स्वास्थ्य जानकारी छ।';
+
+  @override
+  String get backupReplaceTitle => 'यस फोनको डाटा बदल्ने?';
+
+  @override
+  String get backupReplaceMessage =>
+      'यसले यस फोनको सबै डाटा बदल्नेछ। जारी राख्ने?';
+
+  @override
+  String get backupReplaceConfirm => 'जारी राख्नुहोस्';
+
+  @override
+  String get backupExportSuccess => 'ब्याकअप फाइल बचत गर्न तयार छ।';
+
+  @override
+  String get backupImportSuccess => 'ब्याकअप ल्याइयो।';
+
+  @override
+  String get backupExportError => 'ब्याकअप निकाल्न सकिएन।';
+
+  @override
+  String get backupImportError => 'ब्याकअप ल्याउन सकिएन।';
+
+  @override
+  String get backupInvalidFile =>
+      'यो फाइल यो एपले पढ्न सक्ने टिकासथी ब्याकअप होइन।';
 }
