@@ -22,7 +22,7 @@ Future<QueryExecutor> openEncryptedDatabase({
   await prepareSqlCipherOnAndroid();
   useSqlCipher();
 
-  final String key = await _prepareKey(file, keys);
+  final String key = await resolveDatabaseKey(file: file, keys: keys);
   return NativeDatabase.createInBackground(
     file,
     isolateSetup: useSqlCipher,
@@ -30,12 +30,27 @@ Future<QueryExecutor> openEncryptedDatabase({
   );
 }
 
-Future<String> _prepareKey(File file, DatabaseKeyStore keys) async {
+/// Encrypts the plaintext database at `path` with `hexKey`.
+typedef EncryptDatabase = void Function({
+  required String path,
+  required String hexKey,
+});
+
+/// Decides which key opens [file], creating it and encrypting an old
+/// plaintext database along the way.
+///
+/// Public so the decision table can be tested without a SQLCipher library;
+/// [encrypt] stands in for the real encryption there.
+Future<String> resolveDatabaseKey({
+  required File file,
+  required DatabaseKeyStore keys,
+  EncryptDatabase encrypt = encryptPlaintextDatabase,
+}) async {
   final String? stored = await keys.read();
 
   if (isPlaintextSqlite(file)) {
     final String key = stored ?? await keys.create();
-    encryptPlaintextDatabase(path: file.path, hexKey: key);
+    encrypt(path: file.path, hexKey: key);
     return key;
   }
 
