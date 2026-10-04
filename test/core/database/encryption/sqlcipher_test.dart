@@ -9,27 +9,51 @@ import 'package:sqlite3/sqlite3.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/encryption/sqlcipher.dart';
 
-/// Where Homebrew installs SQLCipher (`brew install sqlcipher`). These tests
-/// need a real SQLCipher library, so they are skipped when it is absent.
-const String _hostSqlCipher =
-    '/opt/homebrew/opt/sqlcipher/lib/libsqlcipher.dylib';
+/// Where a SQLCipher library lives on the machine running the tests:
+/// `brew install sqlcipher` on macOS, `apt install libsqlcipher-dev` on Linux.
+const List<String> _hostSqlCipherPaths = <String>[
+  '/opt/homebrew/opt/sqlcipher/lib/libsqlcipher.dylib',
+  '/usr/local/opt/sqlcipher/lib/libsqlcipher.dylib',
+  '/usr/lib/x86_64-linux-gnu/libsqlcipher.so',
+  '/usr/lib/aarch64-linux-gnu/libsqlcipher.so',
+];
+
+String? _findHostSqlCipher() {
+  for (final String path in _hostSqlCipherPaths) {
+    if (File(path).existsSync()) {
+      return path;
+    }
+  }
+  return null;
+}
 
 final String _key = 'ab' * 32;
 final String _otherKey = 'cd' * 32;
 
 void main() {
-  final bool hasSqlCipher = File(_hostSqlCipher).existsSync();
+  final String? hostSqlCipher = _findHostSqlCipher();
+  // CI must install the library. A missing one there is a failure, not a skip,
+  // so the encryption tests can never go quiet without anyone noticing.
+  final bool isCi = Platform.environment['CI'] == 'true';
+  if (hostSqlCipher == null && isCi) {
+    test('SQLCipher is installed on CI', () {
+      fail('Install libsqlcipher-dev in the CI workflow.');
+    });
+    return;
+  }
 
-  group('SQLCipher encryption', skip: hasSqlCipher ? false : 'needs SQLCipher',
-      () {
+  group('SQLCipher encryption',
+      skip: hostSqlCipher == null ? 'needs SQLCipher' : false, () {
     late Directory directory;
     late String path;
 
     setUpAll(() {
-      open.overrideFor(
+      for (final OperatingSystem os in <OperatingSystem>[
         OperatingSystem.macOS,
-        () => DynamicLibrary.open(_hostSqlCipher),
-      );
+        OperatingSystem.linux,
+      ]) {
+        open.overrideFor(os, () => DynamicLibrary.open(hostSqlCipher!));
+      }
     });
 
     setUp(() {
