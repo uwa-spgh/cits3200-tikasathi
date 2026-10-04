@@ -4,7 +4,10 @@
     <!-- Lets the notification plugin restore scheduled reminders after a reboot,
          which Android otherwise clears. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <!-- The database key lives in the Android Keystore and cannot move to a new
+         phone. Auto Backup would copy the encrypted database without it. -->
     <application
+        android:allowBackup="false"
         android:label="tikasathi"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
