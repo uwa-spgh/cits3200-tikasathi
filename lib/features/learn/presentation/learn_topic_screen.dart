@@ -32,8 +32,6 @@ class LearnTopicScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(topic.icon, size: 32, color: learnAccent),
-                  const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       topic.title(l10n),

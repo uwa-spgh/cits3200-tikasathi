@@ -135,6 +135,13 @@ void main() {
         ),
         findsOneWidget,
       );
+      expect(
+        find.descendant(
+          of: find.byType(LearnTopicScreen),
+          matching: find.byIcon(topic.icon),
+        ),
+        findsNothing,
+      );
 
       await tester.tap(find.byIcon(Icons.arrow_back));
       await tester.pumpAndSettle();
