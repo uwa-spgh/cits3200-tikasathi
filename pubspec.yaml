@@ -18,8 +18,10 @@ dependencies:
   
   # Database
   drift: ^2.14.1
-  # Bundles SQLCipher. Do not add sqlite3_flutter_libs back, the two clash.
+  # SQLCipher encrypts the database. Do not add sqlite3_flutter_libs back,
+  # the two clash.
   sqlcipher_flutter_libs: ^0.6.8
+  sqlite3: ^2.9.4
   path_provider: ^2.1.2
   path: ^1.8.3
   
