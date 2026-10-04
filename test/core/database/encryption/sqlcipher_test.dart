@@ -11,7 +11,8 @@ import 'package:tikasathi/core/database/encryption/sqlcipher.dart';
 
 /// Where Homebrew installs SQLCipher (`brew install sqlcipher`). These tests
 /// need a real SQLCipher library, so they are skipped when it is absent.
-const String _hostSqlCipher = '/opt/homebrew/opt/sqlcipher/lib/libsqlcipher.dylib';
+const String _hostSqlCipher =
+    '/opt/homebrew/opt/sqlcipher/lib/libsqlcipher.dylib';
 
 final String _key = 'ab' * 32;
 final String _otherKey = 'cd' * 32;
