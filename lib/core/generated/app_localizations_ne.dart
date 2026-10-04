@@ -922,4 +922,18 @@ class AppLocalizationsNe extends AppLocalizations {
   @override
   String get backupInvalidFile =>
       'यो फाइल यो एपले पढ्न सक्ने टिकासथी ब्याकअप होइन।';
+
+  @override
+  String get databaseLockedTitle => 'तपाईंको सुरक्षित डाटा खोल्न सकिएन';
+
+  @override
+  String get databaseLockedMessage =>
+      'यस फोनमा टिकासथीको डाटा सुरक्षित राख्ने साँचो अब छैन, त्यसैले डाटा पढ्न सकिँदैन। फोनको सुरक्षा रिसेट गरेपछि यस्तो हुन सक्छ। तपाईंसँग ब्याकअप फाइल छ भने नयाँ सुरु गरेपछि ल्याउन सक्नुहुन्छ।';
+
+  @override
+  String get databaseLockedAction => 'नयाँ सुरु गर्नुहोस्';
+
+  @override
+  String get databaseLockedError =>
+      'नयाँ सुरु गर्न सकिएन। फेरि प्रयास गर्नुहोस्।';
 }

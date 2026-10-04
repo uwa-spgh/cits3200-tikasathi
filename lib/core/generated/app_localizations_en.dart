@@ -925,4 +925,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get backupInvalidFile =>
       'This file is not a TikaSathi backup this app can read.';
+
+  @override
+  String get databaseLockedTitle => 'Your saved data cannot be opened';
+
+  @override
+  String get databaseLockedMessage =>
+      'This phone no longer has the key that protects the data in TikaSathi, so the data cannot be read. This can happen after the phone\'s security is reset. If you have a backup file, you can import it after starting fresh.';
+
+  @override
+  String get databaseLockedAction => 'Start fresh';
+
+  @override
+  String get databaseLockedError => 'Could not start fresh. Please try again.';
 }

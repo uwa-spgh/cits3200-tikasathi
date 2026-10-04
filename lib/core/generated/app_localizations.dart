@@ -1615,6 +1615,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This file is not a TikaSathi backup this app can read.'**
   String get backupInvalidFile;
+
+  /// No description provided for @databaseLockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your saved data cannot be opened'**
+  String get databaseLockedTitle;
+
+  /// No description provided for @databaseLockedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone no longer has the key that protects the data in TikaSathi, so the data cannot be read. This can happen after the phone\'s security is reset. If you have a backup file, you can import it after starting fresh.'**
+  String get databaseLockedMessage;
+
+  /// No description provided for @databaseLockedAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Start fresh'**
+  String get databaseLockedAction;
+
+  /// No description provided for @databaseLockedError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not start fresh. Please try again.'**
+  String get databaseLockedError;
 }
 
 class _AppLocalizationsDelegate
