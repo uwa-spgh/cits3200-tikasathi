@@ -55,14 +55,23 @@ ReminderMessage buildReminderMessage({
     doseNumber,
   );
   final String date = DateFormat('d MMMM y', languageCode).format(dueDate);
+  final String due = localizations.reminderUpcoming(vaccineName, date);
 
+  // The brief's 3-touch approach: the day before reinforces that tomorrow is
+  // the day, and the day itself opens with its own quoted phrase. Both lead
+  // into the client's fixed sentence rather than rewording it.
   return switch (kind) {
-    ReminderKind.advance ||
-    ReminderKind.preparation ||
-    ReminderKind.sameDay =>
-      (
+    ReminderKind.advance => (
         title: localizations.reminderTitleUpcoming(childName),
-        body: localizations.reminderUpcoming(vaccineName, date),
+        body: due,
+      ),
+    ReminderKind.preparation => (
+        title: localizations.reminderTitleUpcoming(childName),
+        body: '${localizations.reminderLeadTomorrow} $due',
+      ),
+    ReminderKind.sameDay => (
+        title: localizations.reminderTitleUpcoming(childName),
+        body: '${localizations.reminderLeadToday} $due',
       ),
     ReminderKind.followUpDay => (
         title: localizations.reminderTitleMissed(childName),

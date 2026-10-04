@@ -1526,6 +1526,18 @@ abstract class AppLocalizations {
   /// **'Your child is due for {vaccineName} on {date}. Please visit your nearest health post or immunisation clinic.'**
   String reminderUpcoming(String vaccineName, String date);
 
+  /// Opens the day-before reminder, ahead of the client's exact push sentence (reminderUpcoming). The brief (section 5, 3-touch approach) asks this reminder to reinforce that tomorrow is the scheduled vaccination day; this is that phrase. Combining it with the push sentence is our reading of the brief and needs client sign-off.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow is the scheduled vaccination day.'**
+  String get reminderLeadTomorrow;
+
+  /// Opens the same-day reminder, ahead of the client's exact push sentence. The brief quotes this phrase directly for the final reminder. Combining it with the push sentence is our reading of the brief and needs client sign-off.
+  ///
+  /// In en, this message translates to:
+  /// **'Today is your child\'s vaccination day.'**
+  String get reminderLeadToday;
+
   /// DRAFT, NEEDS CLIENT SIGN-OFF. Sent one day after a missed dose. The brief gives no exact wording here, only that it must carry the missed vaccine name, why finishing the schedule matters, and catch-up guidance where it applies.
   ///
   /// In en, this message translates to:

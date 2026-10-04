@@ -873,6 +873,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get reminderLeadTomorrow =>
+      'Tomorrow is the scheduled vaccination day.';
+
+  @override
+  String get reminderLeadToday => 'Today is your child\'s vaccination day.';
+
+  @override
   String reminderMissedYesterday(String vaccineName, String date) {
     return '$vaccineName was due on $date and has not been recorded yet. Completing every dose on time keeps your child protected. Please visit your nearest health post.';
   }
