@@ -7,7 +7,7 @@ typedef LocalizedText = String Function(AppLocalizations l10n);
 /// The words live in the localisation files (`lib/core/l10n/app_*.arb`) under
 /// `learnTopic<N>Title` and `learnTopic<N>Body`, so content is replaced by
 /// editing those entries in both languages. Separate paragraphs in a body with
-/// a blank line.
+/// a blank line. Wrap text in `**double asterisks**` to show it in bold.
 ///
 /// A topic may also have a [table], written one row per line with cells
 /// separated by `|`. The first line is the header row.
@@ -46,6 +46,20 @@ class LearnTopic {
             line.split('|').map((String cell) => cell.trim()).toList())
         .toList();
   }
+}
+
+/// A stretch of text that is either all bold or all plain.
+typedef TextRun = ({String text, bool bold});
+
+/// Splits [text] on `**` markers into alternating plain and bold runs,
+/// dropping the markers and any empty runs. An unclosed `**` makes the rest of
+/// the text bold.
+List<TextRun> boldRuns(String text) {
+  final List<String> parts = text.split('**');
+  return <TextRun>[
+    for (int index = 0; index < parts.length; index++)
+      if (parts[index].isNotEmpty) (text: parts[index], bold: index.isOdd),
+  ];
 }
 
 /// The collapsible tabs shown on the Learn page, in order.

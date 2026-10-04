@@ -28,6 +28,12 @@ Widget _app({Locale locale = const Locale('en')}) => ProviderScope(
       ),
     );
 
+/// A topic's paragraphs as they appear on screen, without `**` markers.
+List<String> _shown(LearnTopic topic, AppLocalizations l10n) => <String>[
+      for (final String paragraph in topic.paragraphs(l10n))
+        boldRuns(paragraph).map((TextRun run) => run.text).join(),
+    ];
+
 final Finder _pageScrollable = find.byType(Scrollable).first;
 
 Future<void> _toggle(WidgetTester tester, LearnTopic topic) async {
@@ -54,7 +60,9 @@ void main() {
           find.descendant(of: tab, matching: find.text(topic.title(_en))),
           findsOneWidget,
         );
-        expect(find.text(topic.paragraphs(_en).first), findsNothing);
+        for (final String paragraph in _shown(topic, _en)) {
+          expect(find.text(paragraph), findsNothing);
+        }
       }
       expect(find.byType(Table), findsNothing);
     });
@@ -68,13 +76,13 @@ void main() {
       final LearnTopic neighbour = learnTopics[4];
 
       await _toggle(tester, topic);
-      for (final String paragraph in topic.paragraphs(_en)) {
+      for (final String paragraph in _shown(topic, _en)) {
         expect(find.text(paragraph), findsOneWidget);
       }
-      expect(find.text(neighbour.paragraphs(_en).first), findsNothing);
+      expect(find.text(_shown(neighbour, _en).first), findsNothing);
 
       await _toggle(tester, topic);
-      expect(find.text(topic.paragraphs(_en).first), findsNothing);
+      expect(find.text(_shown(topic, _en).first), findsNothing);
     });
 
     testWidgets('the last tab shows its table when expanded',
@@ -108,9 +116,9 @@ void main() {
       await tester.tap(find.text(topic.title(_ne)));
       await tester.pumpAndSettle();
 
-      expect(find.text(topic.paragraphs(_ne).first), findsOneWidget);
+      expect(find.text(_shown(topic, _ne).first), findsOneWidget);
       expect(find.text(topic.title(_en)), findsNothing);
-      expect(find.text(topic.paragraphs(_en).first), findsNothing);
+      expect(find.text(_shown(topic, _en).first), findsNothing);
     });
   });
 }

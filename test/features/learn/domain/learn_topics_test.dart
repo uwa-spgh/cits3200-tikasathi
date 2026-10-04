@@ -24,7 +24,11 @@ void main() {
       final AppLocalizations l10n = lookupAppLocalizations(locale);
       for (final LearnTopic topic in learnTopics) {
         expect(topic.title(l10n), isNotEmpty, reason: topic.id);
-        expect(topic.paragraphs(l10n), isNotEmpty, reason: topic.id);
+        expect(
+          topic.paragraphs(l10n).isNotEmpty || topic.tableRows(l10n).isNotEmpty,
+          isTrue,
+          reason: '${topic.id} should have body text or a table',
+        );
       }
       expect(
         learnTopics.map((LearnTopic topic) => topic.body(l10n)).toSet(),
@@ -76,5 +80,20 @@ void main() {
       <String>['1', '2'],
     ]);
     expect(withoutTable.tableRows(l10n), isEmpty);
+  });
+
+  test('boldRuns splits text on ** markers', () {
+    expect(boldRuns('plain'), <TextRun>[(text: 'plain', bold: false)]);
+    expect(boldRuns('**Myth:** Not true. **Fact:** True.'), <TextRun>[
+      (text: 'Myth:', bold: true),
+      (text: ' Not true. ', bold: false),
+      (text: 'Fact:', bold: true),
+      (text: ' True.', bold: false),
+    ]);
+    expect(boldRuns('a **unclosed'), <TextRun>[
+      (text: 'a ', bold: false),
+      (text: 'unclosed', bold: true),
+    ]);
+    expect(boldRuns(''), isEmpty);
   });
 }

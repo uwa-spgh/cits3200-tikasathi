@@ -106,8 +106,21 @@ class _TopicTab extends StatelessWidget {
         for (final String paragraph in topic.paragraphs(l10n))
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child: Text(
-              paragraph,
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  for (final TextRun run in boldRuns(paragraph))
+                    TextSpan(
+                      text: run.text,
+                      style: run.bold
+                          ? const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF0F172A),
+                            )
+                          : null,
+                    ),
+                ],
+              ),
               style: const TextStyle(
                 fontSize: 16,
                 height: 1.5,
