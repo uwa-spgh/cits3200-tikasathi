@@ -55,10 +55,7 @@ class LearnScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 16),
-          for (final LearnTopic topic in learnTopics) ...[
-            _TopicTab(topic: topic),
-            const SizedBox(height: 12),
-          ],
+          const _TopicList(),
         ],
       ),
     );
@@ -88,10 +85,68 @@ Color _boldColor(AppLocalizations l10n, String text) {
   return _boldText;
 }
 
+/// The topic tabs, of which at most one is expanded at a time: opening a tab
+/// collapses whichever tab was open before.
+class _TopicList extends StatefulWidget {
+  const _TopicList();
+
+  @override
+  State<_TopicList> createState() => _TopicListState();
+}
+
+class _TopicListState extends State<_TopicList> {
+  final List<ExpansibleController> _controllers = <ExpansibleController>[
+    for (final LearnTopic _ in learnTopics) ExpansibleController(),
+  ];
+
+  @override
+  void dispose() {
+    for (final ExpansibleController controller in _controllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  void _onExpansionChanged(int index, bool expanded) {
+    if (!expanded) {
+      return;
+    }
+    for (int other = 0; other < _controllers.length; other++) {
+      if (other != index && _controllers[other].isExpanded) {
+        _controllers[other].collapse();
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (int index = 0; index < learnTopics.length; index++) ...[
+          _TopicTab(
+            topic: learnTopics[index],
+            controller: _controllers[index],
+            onExpansionChanged: (bool expanded) =>
+                _onExpansionChanged(index, expanded),
+          ),
+          const SizedBox(height: 12),
+        ],
+      ],
+    );
+  }
+}
+
 class _TopicTab extends StatelessWidget {
-  const _TopicTab({required this.topic});
+  const _TopicTab({
+    required this.topic,
+    required this.controller,
+    required this.onExpansionChanged,
+  });
 
   final LearnTopic topic;
+  final ExpansibleController controller;
+  final ValueChanged<bool> onExpansionChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +158,8 @@ class _TopicTab extends StatelessWidget {
     );
     return ExpansionTile(
       key: Key('learn-${topic.id}'),
+      controller: controller,
+      onExpansionChanged: onExpansionChanged,
       shape: shape,
       collapsedShape: shape,
       backgroundColor: _tileBackground,

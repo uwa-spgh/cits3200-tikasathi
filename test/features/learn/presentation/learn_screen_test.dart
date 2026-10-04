@@ -85,6 +85,22 @@ void main() {
       expect(find.text(_shown(topic, _en).first), findsNothing);
     });
 
+    testWidgets('opening a tab closes the tab that was open',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(_app());
+      await tester.pumpAndSettle();
+
+      final LearnTopic first = learnTopics[0];
+      final LearnTopic second = learnTopics[1];
+
+      await _toggle(tester, first);
+      expect(find.text(_shown(first, _en).first), findsOneWidget);
+
+      await _toggle(tester, second);
+      expect(find.text(_shown(second, _en).first), findsOneWidget);
+      expect(find.text(_shown(first, _en).first), findsNothing);
+    });
+
     testWidgets('the last tab shows its table when expanded',
         (WidgetTester tester) async {
       await tester.pumpWidget(_app());
