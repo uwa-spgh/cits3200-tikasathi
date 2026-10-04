@@ -898,6 +898,10 @@ class AppLocalizationsNe extends AppLocalizations {
       'यो फाइल सुरक्षित ठाउँमा राख्नुहोस् र विश्वास गर्ने मानिससँग मात्र साझा गर्नुहोस्। यसमा तपाईंको बच्चाको स्वास्थ्य जानकारी छ।';
 
   @override
+  String get backupPhoneChangeNote =>
+      'फोन परिवर्तन गर्दा तपाईंको रेकर्ड आफैँ सर्दैन। फोन बदल्नुअघि ब्याकअप निकाल्नुहोस्।';
+
+  @override
   String get backupReplaceTitle => 'यस फोनको डाटा बदल्ने?';
 
   @override

@@ -1568,6 +1568,12 @@ abstract class AppLocalizations {
   /// **'Keep this file somewhere safe and only share it with people you trust. It contains your child\'s health information.'**
   String get backupPrivacyNote;
 
+  /// No description provided for @backupPhoneChangeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your records do not move to a new phone by themselves. Before changing phones, export a backup.'**
+  String get backupPhoneChangeNote;
+
   /// No description provided for @backupReplaceTitle.
   ///
   /// In en, this message translates to:

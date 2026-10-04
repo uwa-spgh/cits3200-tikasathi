@@ -244,6 +244,15 @@ class _BackupSectionState extends ConsumerState<BackupSection> {
         ),
         const SizedBox(height: 8),
         Text(
+          localizations.backupPhoneChangeNote,
+          style: const TextStyle(
+            fontSize: 14,
+            height: 1.4,
+            color: Color(0xFF64748B),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
           localizations.backupPrivacyNote,
           style: const TextStyle(
             fontSize: 14,

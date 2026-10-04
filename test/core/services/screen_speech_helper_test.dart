@@ -307,6 +307,7 @@ void main() {
 
       expect(enSettings, contains('Settings'));
       expect(enSettings, contains('Export backup'));
+      expect(enSettings, contains('Before changing phones'));
       expect(
         enSettings,
         contains(

@@ -901,6 +901,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Keep this file somewhere safe and only share it with people you trust. It contains your child\'s health information.';
 
   @override
+  String get backupPhoneChangeNote =>
+      'Your records do not move to a new phone by themselves. Before changing phones, export a backup.';
+
+  @override
   String get backupReplaceTitle => 'Replace data on this phone?';
 
   @override
