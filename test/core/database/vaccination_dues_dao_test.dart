@@ -515,6 +515,95 @@ void main() {
       expect(dues, isNotEmpty);
     });
 
+    test('preserves a manual schedule override across recalculation', () async {
+      const childId = 'override-child';
+      await insertChild(childId);
+      await vaccinationDuesDao.insertDuesForChild(childId);
+
+      await database.manualVaccinationScheduleOverridesDao.saveOverride(
+        childId: childId,
+        sourceVaccineCode: 'PENTA',
+        sourceDoseNumber: 1,
+        vaccineCode: 'MR',
+        doseNumber: 1,
+        dueDate: DateTime(2027, 1, 20),
+      );
+      await vaccinationDuesDao.recalculateDuesForChild(childId);
+
+      final dues = await duesFor(childId);
+      expect(
+        dues.any((due) =>
+            due.vaccineCode == 'MR' &&
+            due.doseNumber == 1 &&
+            due.dueDate == DateTime(2027, 1, 20)),
+        isTrue,
+      );
+      expect(
+        dues.any((due) => due.vaccineCode == 'PENTA' && due.doseNumber == 1),
+        isFalse,
+      );
+    });
+
+    test('does not materialise an administered override target', () async {
+      const childId = 'administered-override-child';
+      await insertChild(childId);
+      await vaccinationRecordsDao.insertVaccinationRecord(
+        VaccinationRecordsCompanion.insert(
+          id: 'record-1',
+          childId: childId,
+          vaccineCode: 'MR',
+          doseNumber: 1,
+          administeredDate: DateTime(2026, 1, 1),
+        ),
+      );
+      await database.manualVaccinationScheduleOverridesDao.saveOverride(
+        childId: childId,
+        sourceVaccineCode: 'PENTA',
+        sourceDoseNumber: 1,
+        vaccineCode: 'MR',
+        doseNumber: 1,
+        dueDate: DateTime(2027, 1, 20),
+      );
+
+      await vaccinationDuesDao.recalculateDuesForChild(childId);
+
+      expect(
+        (await duesFor(childId))
+            .any((due) => due.vaccineCode == 'MR' && due.doseNumber == 1),
+        isFalse,
+      );
+      expect(
+        await database.manualVaccinationScheduleOverridesDao.forChild(childId),
+        hasLength(1),
+      );
+    });
+
+    test('rejects two overrides targeting the same dose', () async {
+      const childId = 'conflicting-override-child';
+      await insertChild(childId);
+      final dao = database.manualVaccinationScheduleOverridesDao;
+      await dao.saveOverride(
+        childId: childId,
+        sourceVaccineCode: 'PENTA',
+        sourceDoseNumber: 1,
+        vaccineCode: 'MR',
+        doseNumber: 1,
+        dueDate: DateTime(2027, 1, 20),
+      );
+
+      await expectLater(
+        dao.saveOverride(
+          childId: childId,
+          sourceVaccineCode: 'PENTA',
+          sourceDoseNumber: 2,
+          vaccineCode: 'MR',
+          doseNumber: 1,
+          dueDate: DateTime(2027, 2, 20),
+        ),
+        throwsA(isA<StateError>()),
+      );
+    });
+
     group('reminders', () {
       Future<List<Reminder>> remindersFor(String childId) {
         return (database.select(database.reminders)

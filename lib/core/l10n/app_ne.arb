@@ -233,6 +233,28 @@
   "editCaregiverAction": "हेरचाहकर्ताको विवरण सम्पादन गर्नुहोस्",
   "editChildAction": "बच्चाको विवरण सम्पादन गर्नुहोस्",
   "deleteChildAction": "बच्चा मेटाउनुहोस्",
+  "editVaccineScheduleAction": "बच्चाको खोप तालिका सम्पादन गर्नुहोस् (स्वास्थ्यकर्मीका लागि)",
+  "healthcareProfessionalQuestion": "के तपाईं स्वास्थ्यकर्मी हुनुहुन्छ?",
+  "healthcareProfessionalConfirm": "हो",
+  "healthcareProfessionalDecline": "होइन",
+  "scheduleEditorTitle": "खोप तालिका सम्पादन गर्नुहोस्",
+  "scheduleEditorEmpty": "कुनै बाँकी खोप तालिका छैन।",
+  "scheduleEditorEdit": "निर्धारित खोप सम्पादन गर्नुहोस्",
+  "scheduleEditorVaccine": "खोप",
+  "scheduleEditorDose": "खोप मात्रा",
+  "scheduleEditorDueDate": "निर्धारित मिति",
+  "scheduleEditorSave": "तालिका परिवर्तनहरू बचत गर्नुहोस्",
+  "scheduleEditorSaveConfirmTitle": "तालिका परिवर्तनहरू बचत गर्ने?",
+  "scheduleEditorSaveConfirmMessage": "बच्चाको खोप तालिकामा स्वास्थ्यकर्मीका परिवर्तनहरू बचत गर्ने?",
+  "scheduleEditorRestore": "पूर्वनिर्धारित खोप तालिका पुनर्स्थापना गर्नुहोस्",
+  "scheduleEditorRestoreTitle": "पूर्वनिर्धारित खोप तालिका पुनर्स्थापना गर्ने?",
+  "scheduleEditorRestoreMessage": "यसले स्वास्थ्यकर्मीका सबै परिवर्तन हटाएर बच्चाको मानक खोप तालिका पुनर्स्थापना गर्नेछ। खोप इतिहास परिवर्तन हुनेछैन।",
+  "scheduleEditorRestoreConfirm": "पुनर्स्थापना गर्नुहोस्",
+  "scheduleEditorInvalidDose": "यो खोप र मात्रा संयोजन मान्य छैन।",
+  "scheduleEditorDuplicateDose": "यो खोप र मात्रा बच्चाका लागि पहिले नै निर्धारित छ।",
+  "scheduleEditorAdministeredDose": "यो खोप र मात्रा पहिले नै लगाइसकिएको छ।",
+  "scheduleEditorSaveSuccess": "खोप तालिका अद्यावधिक भयो।",
+  "scheduleEditorSaveError": "खोप तालिका अद्यावधिक गर्न सकिएन।",
   "editCaregiverTitle": "हेरचाहकर्ताको विवरण सम्पादन गर्नुहोस्",
   "editChildTitle": "बच्चाको विवरण सम्पादन गर्नुहोस्",
   "editChildTitleWithName": "{childName} को विवरण सम्पादन गर्नुहोस्",
@@ -443,6 +465,38 @@
   "vaccineScheduleDueHeader": "मिति",
   "vaccineScheduleReturn": "फिर्ता",
   "vaccineScheduleEmpty": "आगामी खोपहरू छैनन्।",
+  "vaccineScheduleDueGroupSingular": "{date} मा {vaccines} लगाउनुपर्नेछ",
+  "vaccineScheduleDueGroupPlural": "{date} मा {vaccines} लगाउनुपर्नेछ",
+  "@vaccineScheduleDueGroupSingular": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "vaccines": {
+        "type": "String"
+      }
+    }
+  },
+  "@vaccineScheduleDueGroupPlural": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "vaccines": {
+        "type": "String"
+      }
+    }
+  },
+  "@vaccineScheduleDueGroup": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "vaccines": {
+        "type": "String"
+      }
+    }
+  },
   "vaccineScheduleToday": "आज",
   "vaccineScheduleInDays": "{count} दिनमा",
   "vaccineScheduleInMonths": "{count} महिनामा",

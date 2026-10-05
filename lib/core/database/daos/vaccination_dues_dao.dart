@@ -99,13 +99,61 @@ class VaccinationDuesDao extends DatabaseAccessor<AppDatabase>
   /// due out from under them trips the foreign key.
   Future<void> recalculateDuesForChild(String childId) async {
     final generatedDues = await _generateDuesForChild(childId);
+    final overrides = await attachedDatabase
+        .manualVaccinationScheduleOverridesDao
+        .forChild(childId);
+    final records = await (select(vaccinationRecords)
+          ..where((row) => row.childId.equals(childId)))
+        .get();
+    final administeredKeys = records
+        .map((record) => '${record.vaccineCode}:${record.doseNumber}')
+        .toSet();
+
+    final overrideSources = overrides
+        .map((override) =>
+            '${override.sourceVaccineCode}:${override.sourceDoseNumber}')
+        .toSet();
+    final overrideTargets = overrides
+        .map((override) => '${override.vaccineCode}:${override.doseNumber}');
+    final targetSet = overrideTargets.toSet();
+    if (targetSet.length != overrides.length) {
+      throw StateError('duplicate manual vaccine schedule override');
+    }
+    for (final override in overrides) {
+      if (!doesDoseExist(override.vaccineCode, override.doseNumber)) {
+        throw StateError('invalid manual vaccine schedule override');
+      }
+    }
+
+    final Map<String, GeneratedDue> merged = <String, GeneratedDue>{};
+    for (final generated in generatedDues) {
+      final key = '${generated.vaccineCode}:${generated.doseNumber}';
+      if (overrideSources.contains(key) || targetSet.contains(key)) {
+        continue;
+      }
+      if (!administeredKeys.contains(key)) {
+        merged[key] = generated;
+      }
+    }
+    for (final override in overrides) {
+      final key = '${override.vaccineCode}:${override.doseNumber}';
+      if (administeredKeys.contains(key)) {
+        continue;
+      }
+      merged[key] = (
+        vaccineCode: override.vaccineCode,
+        doseNumber: override.doseNumber,
+        dueDate: override.dueDate,
+      );
+    }
+
     await transaction(() async {
       await (delete(reminders)..where((row) => row.childId.equals(childId)))
           .go();
       await (delete(vaccinationDues)
             ..where((row) => row.childId.equals(childId)))
           .go();
-      await _insertGeneratedDuesInTransaction(childId, generatedDues);
+      await _insertGeneratedDuesInTransaction(childId, merged.values.toList());
     });
   }
 

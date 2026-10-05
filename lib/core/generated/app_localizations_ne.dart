@@ -274,6 +274,80 @@ class AppLocalizationsNe extends AppLocalizations {
   String get deleteChildAction => 'बच्चा मेटाउनुहोस्';
 
   @override
+  String get editVaccineScheduleAction =>
+      'बच्चाको खोप तालिका सम्पादन गर्नुहोस् (स्वास्थ्यकर्मीका लागि)';
+
+  @override
+  String get healthcareProfessionalQuestion =>
+      'के तपाईं स्वास्थ्यकर्मी हुनुहुन्छ?';
+
+  @override
+  String get healthcareProfessionalConfirm => 'हो';
+
+  @override
+  String get healthcareProfessionalDecline => 'होइन';
+
+  @override
+  String get scheduleEditorTitle => 'खोप तालिका सम्पादन गर्नुहोस्';
+
+  @override
+  String get scheduleEditorEmpty => 'कुनै बाँकी खोप तालिका छैन।';
+
+  @override
+  String get scheduleEditorEdit => 'निर्धारित खोप सम्पादन गर्नुहोस्';
+
+  @override
+  String get scheduleEditorVaccine => 'खोप';
+
+  @override
+  String get scheduleEditorDose => 'खोप मात्रा';
+
+  @override
+  String get scheduleEditorDueDate => 'निर्धारित मिति';
+
+  @override
+  String get scheduleEditorSave => 'तालिका परिवर्तनहरू बचत गर्नुहोस्';
+
+  @override
+  String get scheduleEditorSaveConfirmTitle => 'तालिका परिवर्तनहरू बचत गर्ने?';
+
+  @override
+  String get scheduleEditorSaveConfirmMessage =>
+      'बच्चाको खोप तालिकामा स्वास्थ्यकर्मीका परिवर्तनहरू बचत गर्ने?';
+
+  @override
+  String get scheduleEditorRestore =>
+      'पूर्वनिर्धारित खोप तालिका पुनर्स्थापना गर्नुहोस्';
+
+  @override
+  String get scheduleEditorRestoreTitle =>
+      'पूर्वनिर्धारित खोप तालिका पुनर्स्थापना गर्ने?';
+
+  @override
+  String get scheduleEditorRestoreMessage =>
+      'यसले स्वास्थ्यकर्मीका सबै परिवर्तन हटाएर बच्चाको मानक खोप तालिका पुनर्स्थापना गर्नेछ। खोप इतिहास परिवर्तन हुनेछैन।';
+
+  @override
+  String get scheduleEditorRestoreConfirm => 'पुनर्स्थापना गर्नुहोस्';
+
+  @override
+  String get scheduleEditorInvalidDose => 'यो खोप र मात्रा संयोजन मान्य छैन।';
+
+  @override
+  String get scheduleEditorDuplicateDose =>
+      'यो खोप र मात्रा बच्चाका लागि पहिले नै निर्धारित छ।';
+
+  @override
+  String get scheduleEditorAdministeredDose =>
+      'यो खोप र मात्रा पहिले नै लगाइसकिएको छ।';
+
+  @override
+  String get scheduleEditorSaveSuccess => 'खोप तालिका अद्यावधिक भयो।';
+
+  @override
+  String get scheduleEditorSaveError => 'खोप तालिका अद्यावधिक गर्न सकिएन।';
+
+  @override
   String get editCaregiverTitle => 'हेरचाहकर्ताको विवरण सम्पादन गर्नुहोस्';
 
   @override
@@ -806,6 +880,16 @@ class AppLocalizationsNe extends AppLocalizations {
 
   @override
   String get vaccineScheduleEmpty => 'आगामी खोपहरू छैनन्।';
+
+  @override
+  String vaccineScheduleDueGroupSingular(String date, String vaccines) {
+    return '$date मा $vaccines लगाउनुपर्नेछ';
+  }
+
+  @override
+  String vaccineScheduleDueGroupPlural(String date, String vaccines) {
+    return '$date मा $vaccines लगाउनुपर्नेछ';
+  }
 
   @override
   String get vaccineScheduleToday => 'आज';

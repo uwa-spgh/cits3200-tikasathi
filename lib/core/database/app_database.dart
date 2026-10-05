@@ -21,6 +21,8 @@ part 'tables/reminders.dart';
 part 'tables/health_facilitators.dart';
 part 'daos/health_facilitators_dao.dart';
 part 'daos/backup_dao.dart';
+part 'tables/manual_vaccination_schedule_overrides.dart';
+part 'daos/manual_vaccination_schedule_overrides_dao.dart';
 part 'app_database.g.dart';
 
 /// The central Drift database for TikaSathi.
@@ -41,6 +43,7 @@ part 'app_database.g.dart';
     VaccinationDues,
     Reminders,
     HealthFacilitators,
+    ManualVaccinationScheduleOverrides,
   ],
   daos: [
     ChildProfilesDao,
@@ -49,6 +52,7 @@ part 'app_database.g.dart';
     RemindersDao,
     HealthFacilitatorsDao,
     BackupDao,
+    ManualVaccinationScheduleOverridesDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -56,7 +60,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration {
@@ -67,6 +71,9 @@ class AppDatabase extends _$AppDatabase {
       onUpgrade: (Migrator m, int from, int to) async {
         if (from == 1) {
           await m.addColumn(childProfiles, childProfiles.isSetupComplete);
+        }
+        if (from < 3) {
+          await m.createTable(manualVaccinationScheduleOverrides);
         }
       },
       beforeOpen: (OpeningDetails details) async {

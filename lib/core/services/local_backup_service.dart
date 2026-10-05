@@ -98,6 +98,11 @@ class LocalBackupService {
       'vaccinationDues': <Map<String, Object?>>[
         for (final VaccinationDue row in rows.vaccinationDues) _dueToJson(row),
       ],
+      'manualScheduleOverrides': <Map<String, Object?>>[
+        for (final ManualVaccinationScheduleOverride row
+            in rows.manualScheduleOverrides)
+          _overrideToJson(row),
+      ],
       'reminders': <Map<String, Object?>>[
         for (final Reminder row in rows.reminders) _reminderToJson(row),
       ],
@@ -157,6 +162,7 @@ class LocalBackupService {
         childProfiles: document.childProfiles,
         vaccinationRecords: document.vaccinationRecords,
         vaccinationDues: document.vaccinationDues,
+        manualScheduleOverrides: document.manualScheduleOverrides,
         reminders: document.reminders,
         healthFacilitators: document.healthFacilitators,
       ),
@@ -216,7 +222,8 @@ class LocalBackupService {
         BackupRejection.unsupportedBackupVersion,
       );
     }
-    if (root['schemaVersion'] != _database.schemaVersion) {
+    final schemaVersion = root['schemaVersion'];
+    if (schemaVersion != _database.schemaVersion && schemaVersion != 2) {
       throw const BackupValidationException(
         BackupRejection.unsupportedSchemaVersion,
       );
@@ -248,6 +255,12 @@ class LocalBackupService {
             in _asMapList(root['vaccinationDues']))
           _dueFromJson(row),
       ],
+      manualScheduleOverrides: <ManualVaccinationScheduleOverride>[
+        for (final Map<String, dynamic> row in _asMapList(
+          root['manualScheduleOverrides'] ?? <dynamic>[],
+        ))
+          _overrideFromJson(row),
+      ],
       reminders: <Reminder>[
         for (final Map<String, dynamic> row in _asMapList(root['reminders']))
           _reminderFromJson(row),
@@ -271,6 +284,7 @@ class _BackupDocument {
     required this.childProfiles,
     required this.vaccinationRecords,
     required this.vaccinationDues,
+    required this.manualScheduleOverrides,
     required this.reminders,
     required this.healthFacilitators,
     required this.caregiverName,
@@ -283,6 +297,7 @@ class _BackupDocument {
   final List<ChildProfile> childProfiles;
   final List<VaccinationRecord> vaccinationRecords;
   final List<VaccinationDue> vaccinationDues;
+  final List<ManualVaccinationScheduleOverride> manualScheduleOverrides;
   final List<Reminder> reminders;
   final List<HealthFacilitator> healthFacilitators;
   final String? caregiverName;
@@ -317,6 +332,18 @@ Map<String, Object?> _dueToJson(VaccinationDue row) {
   return <String, Object?>{
     'id': row.id,
     'childId': row.childId,
+    'vaccineCode': row.vaccineCode,
+    'doseNumber': row.doseNumber,
+    'dueDate': row.dueDate.toIso8601String(),
+  };
+}
+
+Map<String, Object?> _overrideToJson(ManualVaccinationScheduleOverride row) {
+  return <String, Object?>{
+    'id': row.id,
+    'childId': row.childId,
+    'sourceVaccineCode': row.sourceVaccineCode,
+    'sourceDoseNumber': row.sourceDoseNumber,
     'vaccineCode': row.vaccineCode,
     'doseNumber': row.doseNumber,
     'dueDate': row.dueDate.toIso8601String(),
@@ -391,6 +418,27 @@ VaccinationDue _dueFromJson(Map<String, dynamic> json) {
   return VaccinationDue(
     id: _requiredString(json, 'id'),
     childId: _requiredString(json, 'childId'),
+    vaccineCode: _requiredString(json, 'vaccineCode'),
+    doseNumber: _requiredInt(json, 'doseNumber'),
+    dueDate: _requiredDate(json, 'dueDate'),
+  );
+}
+
+ManualVaccinationScheduleOverride _overrideFromJson(Map<String, dynamic> json) {
+  _requireKeys(json, const <String>[
+    'id',
+    'childId',
+    'sourceVaccineCode',
+    'sourceDoseNumber',
+    'vaccineCode',
+    'doseNumber',
+    'dueDate',
+  ]);
+  return ManualVaccinationScheduleOverride(
+    id: _requiredString(json, 'id'),
+    childId: _requiredString(json, 'childId'),
+    sourceVaccineCode: _requiredString(json, 'sourceVaccineCode'),
+    sourceDoseNumber: _requiredInt(json, 'sourceDoseNumber'),
     vaccineCode: _requiredString(json, 'vaccineCode'),
     doseNumber: _requiredInt(json, 'doseNumber'),
     dueDate: _requiredDate(json, 'dueDate'),

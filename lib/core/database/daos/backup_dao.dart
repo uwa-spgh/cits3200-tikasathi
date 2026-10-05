@@ -6,6 +6,7 @@ class BackupRows {
     required this.childProfiles,
     required this.vaccinationRecords,
     required this.vaccinationDues,
+    required this.manualScheduleOverrides,
     required this.reminders,
     required this.healthFacilitators,
   });
@@ -13,6 +14,7 @@ class BackupRows {
   final List<ChildProfile> childProfiles;
   final List<VaccinationRecord> vaccinationRecords;
   final List<VaccinationDue> vaccinationDues;
+  final List<ManualVaccinationScheduleOverride> manualScheduleOverrides;
   final List<Reminder> reminders;
   final List<HealthFacilitator> healthFacilitators;
 
@@ -20,6 +22,7 @@ class BackupRows {
     childProfiles: [],
     vaccinationRecords: [],
     vaccinationDues: [],
+    manualScheduleOverrides: [],
     reminders: [],
     healthFacilitators: [],
   );
@@ -33,6 +36,7 @@ class BackupRows {
   ChildProfiles,
   VaccinationRecords,
   VaccinationDues,
+  ManualVaccinationScheduleOverrides,
   Reminders,
   HealthFacilitators,
 ])
@@ -44,6 +48,8 @@ class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
       childProfiles: await select(childProfiles).get(),
       vaccinationRecords: await select(vaccinationRecords).get(),
       vaccinationDues: await select(vaccinationDues).get(),
+      manualScheduleOverrides:
+          await select(manualVaccinationScheduleOverrides).get(),
       reminders: await select(reminders).get(),
       healthFacilitators: await select(healthFacilitators).get(),
     );
@@ -58,6 +64,7 @@ class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
       await delete(reminders).go();
       await delete(vaccinationRecords).go();
       await delete(vaccinationDues).go();
+      await delete(manualVaccinationScheduleOverrides).go();
       await delete(childProfiles).go();
       await delete(healthFacilitators).go();
 
@@ -69,6 +76,12 @@ class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
       }
       for (final VaccinationDue row in rows.vaccinationDues) {
         await into(vaccinationDues).insert(row.toCompanion(false));
+      }
+      for (final ManualVaccinationScheduleOverride row
+          in rows.manualScheduleOverrides) {
+        await into(manualVaccinationScheduleOverrides).insert(
+          row.toCompanion(false),
+        );
       }
       for (final VaccinationRecord row in rows.vaccinationRecords) {
         await into(vaccinationRecords).insert(row.toCompanion(false));

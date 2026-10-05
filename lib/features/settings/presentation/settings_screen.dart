@@ -18,6 +18,7 @@ import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart'
 import 'package:tikasathi/features/settings/presentation/backup_section.dart';
 import 'package:tikasathi/features/settings/presentation/caregiver_edit_screen.dart';
 import 'package:tikasathi/features/settings/presentation/child_edit_screen.dart';
+import 'package:tikasathi/features/vaccine_schedule/presentation/vaccine_schedule_editor_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -272,6 +273,11 @@ class SettingsScreen extends ConsumerWidget {
                 title: localizations.deleteChildAction,
                 onTap: () => _chooseChild(context, ref, delete: true),
               ),
+              const SizedBox(height: 14),
+              _HealthcareScheduleAction(
+                title: localizations.editVaccineScheduleAction,
+                onTap: () => _chooseChildForSchedule(context, ref),
+              ),
               const SizedBox(height: 18),
               HealthFacilityCard(
                 key: const Key('health-facilitator-action'),
@@ -355,6 +361,7 @@ class SettingsScreen extends ConsumerWidget {
           .showSnackBar(SnackBar(content: Text(l10n.noChildrenMessage)));
       return;
     }
+
     final selected = children.length == 1
         ? children.single
         : await showDialog<ChildProfile>(
@@ -508,6 +515,75 @@ class SettingsScreen extends ConsumerWidget {
           .showSnackBar(SnackBar(content: Text(l10n.deleteChildError)));
     }
   }
+
+  Future<void> _chooseChildForSchedule(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.healthcareProfessionalQuestion),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l10n.healthcareProfessionalDecline),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(l10n.healthcareProfessionalConfirm),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+    final children = await ref
+        .read(appDatabaseProvider)
+        .childProfilesDao
+        .getAllChildProfiles();
+    if (!context.mounted) return;
+    if (children.isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.noChildrenMessage)));
+      return;
+    }
+    final selected = children.length == 1
+        ? children.single
+        : await showDialog<ChildProfile>(
+            context: context,
+            builder: (dialogContext) => AlertDialog(
+              title: Text(l10n.selectChildTitle),
+              content: SizedBox(
+                width: double.maxFinite,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: children.length,
+                  itemBuilder: (_, index) {
+                    final child = children[index];
+                    return ListTile(
+                      title: Text(child.name),
+                      subtitle: Text(childSexLabel(child.sex, l10n)),
+                      onTap: () => Navigator.of(dialogContext).pop(child),
+                    );
+                  },
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: Text(l10n.profileCancel),
+                ),
+              ],
+            ),
+          );
+    if (selected == null || !context.mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => VaccineScheduleEditorScreen(childId: selected.id),
+      ),
+    );
+  }
 }
 
 class _ProfileAction extends StatelessWidget {
@@ -548,6 +624,50 @@ class _ProfileAction extends StatelessWidget {
               ),
             ),
             const Icon(Icons.chevron_right, color: Color(0xFF0E64C5)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HealthcareScheduleAction extends StatelessWidget {
+  const _HealthcareScheduleAction({
+    required this.title,
+    required this.onTap,
+  });
+
+  final String title;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFF8E6),
+          border: Border.all(color: const Color(0xFFE08A00), width: 2),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.health_and_safety_outlined,
+                color: Color(0xFF9A5B00)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(
+                  color: Color(0xFF9A5B00),
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            const Icon(Icons.chevron_right, color: Color(0xFF9A5B00)),
           ],
         ),
       ),

@@ -236,6 +236,28 @@
   "editCaregiverAction": "Edit caregiver details",
   "editChildAction": "Edit child details",
   "deleteChildAction": "Delete child",
+  "editVaccineScheduleAction": "Edit child's vaccination schedule (FOR HEALTHCARE PROFESSIONAL)",
+  "healthcareProfessionalQuestion": "Are you a healthcare professional?",
+  "healthcareProfessionalConfirm": "Yes",
+  "healthcareProfessionalDecline": "No",
+  "scheduleEditorTitle": "Edit vaccine schedule",
+  "scheduleEditorEmpty": "No outstanding vaccines are scheduled.",
+  "scheduleEditorEdit": "Edit scheduled vaccine",
+  "scheduleEditorVaccine": "Vaccine",
+  "scheduleEditorDose": "Dose number",
+  "scheduleEditorDueDate": "Scheduled date",
+  "scheduleEditorSave": "Save schedule changes",
+  "scheduleEditorSaveConfirmTitle": "Save schedule changes?",
+  "scheduleEditorSaveConfirmMessage": "Save these healthcare professional changes to the child's vaccine schedule?",
+  "scheduleEditorRestore": "Restore default vaccine schedule",
+  "scheduleEditorRestoreTitle": "Restore default vaccine schedule?",
+  "scheduleEditorRestoreMessage": "This will remove all healthcare professional changes and restore the standard vaccination schedule for this child. Vaccination history will not be changed.",
+  "scheduleEditorRestoreConfirm": "Restore",
+  "scheduleEditorInvalidDose": "That vaccine and dose combination is not valid.",
+  "scheduleEditorDuplicateDose": "That vaccine and dose is already scheduled for this child.",
+  "scheduleEditorAdministeredDose": "That vaccine and dose has already been administered.",
+  "scheduleEditorSaveSuccess": "Vaccine schedule updated.",
+  "scheduleEditorSaveError": "Could not update the vaccine schedule.",
   "editCaregiverTitle": "Edit caregiver details",
   "editChildTitle": "Edit child details",
   "editChildTitleWithName": "Edit {childName}'s details",
@@ -581,6 +603,38 @@
   "vaccineScheduleDueHeader": "Date due",
   "vaccineScheduleReturn": "Return",
   "vaccineScheduleEmpty": "There are no upcoming vaccines.",
+  "vaccineScheduleDueGroupSingular": "{vaccines} is due on {date}",
+  "vaccineScheduleDueGroupPlural": "{vaccines} are due on {date}",
+  "@vaccineScheduleDueGroupSingular": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "vaccines": {
+        "type": "String"
+      }
+    }
+  },
+  "@vaccineScheduleDueGroupPlural": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "vaccines": {
+        "type": "String"
+      }
+    }
+  },
+  "@vaccineScheduleDueGroup": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "vaccines": {
+        "type": "String"
+      }
+    }
+  },
   "vaccineScheduleToday": "Today",
   "vaccineScheduleInDays": "{count, plural, one {In # day} other {In # days}}",
   "vaccineScheduleInMonths": "{count, plural, one {In # month} other {In # months}}",

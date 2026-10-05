@@ -281,6 +281,67 @@ void main() {
       expect(npText, contains('पेन्टाभालेन्ट'));
     });
 
+    testWidgets('vaccineScheduleScreenText groups outstanding vaccines by date',
+        (WidgetTester tester) async {
+      late String groupedText;
+      final dues = <VaccinationDue>[
+        VaccinationDue(
+          id: 'd1',
+          childId: 'c1',
+          vaccineCode: 'PENTA',
+          doseNumber: 1,
+          dueDate: DateTime(2026, 10, 10),
+        ),
+        VaccinationDue(
+          id: 'd2',
+          childId: 'c1',
+          vaccineCode: 'PCV',
+          doseNumber: 1,
+          dueDate: DateTime(2026, 10, 10),
+        ),
+        VaccinationDue(
+          id: 'd3',
+          childId: 'c1',
+          vaccineCode: 'MMR',
+          doseNumber: 1,
+          dueDate: DateTime(2026, 11, 20),
+        ),
+      ];
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) {
+              groupedText = ScreenSpeechHelper.vaccineScheduleScreenText(
+                context: context,
+                localizations: AppLocalizations.of(context)!,
+                dues: dues,
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(
+        groupedText,
+        contains(
+          'PENTA 1 and PCV 1 are due on 10 October 2026.',
+        ),
+      );
+      expect(
+        groupedText,
+        contains('MMR 1 is due on 20 November 2026.'),
+      );
+      expect(
+        groupedText.split('10 October 2026').length - 1,
+        1,
+      );
+    });
+
     testWidgets('settingsScreenText formats instructions',
         (WidgetTester tester) async {
       late String enSettings;

@@ -1,7 +1,12 @@
 part of '../app_database.dart';
 
-@DriftAccessor(
-    tables: [ChildProfiles, VaccinationDues, VaccinationRecords, Reminders])
+@DriftAccessor(tables: [
+  ChildProfiles,
+  VaccinationDues,
+  VaccinationRecords,
+  Reminders,
+  ManualVaccinationScheduleOverrides,
+])
 class ChildProfilesDao extends DatabaseAccessor<AppDatabase>
     with _$ChildProfilesDaoMixin {
   ChildProfilesDao(super.db);
@@ -46,6 +51,9 @@ class ChildProfilesDao extends DatabaseAccessor<AppDatabase>
     return transaction(() async {
       await (delete(reminders)..where((row) => row.childId.equals(id))).go();
       await (delete(vaccinationDues)..where((row) => row.childId.equals(id)))
+          .go();
+      await (delete(manualVaccinationScheduleOverrides)
+            ..where((row) => row.childId.equals(id)))
           .go();
       await (delete(vaccinationRecords)..where((row) => row.childId.equals(id)))
           .go();

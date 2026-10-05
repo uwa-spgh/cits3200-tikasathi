@@ -584,6 +584,138 @@ abstract class AppLocalizations {
   /// **'Delete child'**
   String get deleteChildAction;
 
+  /// No description provided for @editVaccineScheduleAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit child\'s vaccination schedule (FOR HEALTHCARE PROFESSIONAL)'**
+  String get editVaccineScheduleAction;
+
+  /// No description provided for @healthcareProfessionalQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you a healthcare professional?'**
+  String get healthcareProfessionalQuestion;
+
+  /// No description provided for @healthcareProfessionalConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get healthcareProfessionalConfirm;
+
+  /// No description provided for @healthcareProfessionalDecline.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get healthcareProfessionalDecline;
+
+  /// No description provided for @scheduleEditorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit vaccine schedule'**
+  String get scheduleEditorTitle;
+
+  /// No description provided for @scheduleEditorEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No outstanding vaccines are scheduled.'**
+  String get scheduleEditorEmpty;
+
+  /// No description provided for @scheduleEditorEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit scheduled vaccine'**
+  String get scheduleEditorEdit;
+
+  /// No description provided for @scheduleEditorVaccine.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine'**
+  String get scheduleEditorVaccine;
+
+  /// No description provided for @scheduleEditorDose.
+  ///
+  /// In en, this message translates to:
+  /// **'Dose number'**
+  String get scheduleEditorDose;
+
+  /// No description provided for @scheduleEditorDueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled date'**
+  String get scheduleEditorDueDate;
+
+  /// No description provided for @scheduleEditorSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save schedule changes'**
+  String get scheduleEditorSave;
+
+  /// No description provided for @scheduleEditorSaveConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save schedule changes?'**
+  String get scheduleEditorSaveConfirmTitle;
+
+  /// No description provided for @scheduleEditorSaveConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Save these healthcare professional changes to the child\'s vaccine schedule?'**
+  String get scheduleEditorSaveConfirmMessage;
+
+  /// No description provided for @scheduleEditorRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore default vaccine schedule'**
+  String get scheduleEditorRestore;
+
+  /// No description provided for @scheduleEditorRestoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore default vaccine schedule?'**
+  String get scheduleEditorRestoreTitle;
+
+  /// No description provided for @scheduleEditorRestoreMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will remove all healthcare professional changes and restore the standard vaccination schedule for this child. Vaccination history will not be changed.'**
+  String get scheduleEditorRestoreMessage;
+
+  /// No description provided for @scheduleEditorRestoreConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get scheduleEditorRestoreConfirm;
+
+  /// No description provided for @scheduleEditorInvalidDose.
+  ///
+  /// In en, this message translates to:
+  /// **'That vaccine and dose combination is not valid.'**
+  String get scheduleEditorInvalidDose;
+
+  /// No description provided for @scheduleEditorDuplicateDose.
+  ///
+  /// In en, this message translates to:
+  /// **'That vaccine and dose is already scheduled for this child.'**
+  String get scheduleEditorDuplicateDose;
+
+  /// No description provided for @scheduleEditorAdministeredDose.
+  ///
+  /// In en, this message translates to:
+  /// **'That vaccine and dose has already been administered.'**
+  String get scheduleEditorAdministeredDose;
+
+  /// No description provided for @scheduleEditorSaveSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine schedule updated.'**
+  String get scheduleEditorSaveSuccess;
+
+  /// No description provided for @scheduleEditorSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update the vaccine schedule.'**
+  String get scheduleEditorSaveError;
+
   /// No description provided for @editCaregiverTitle.
   ///
   /// In en, this message translates to:
@@ -1441,6 +1573,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'There are no upcoming vaccines.'**
   String get vaccineScheduleEmpty;
+
+  /// No description provided for @vaccineScheduleDueGroupSingular.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} is due on {date}'**
+  String vaccineScheduleDueGroupSingular(String date, String vaccines);
+
+  /// No description provided for @vaccineScheduleDueGroupPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} are due on {date}'**
+  String vaccineScheduleDueGroupPlural(String date, String vaccines);
 
   /// No description provided for @vaccineScheduleToday.
   ///
