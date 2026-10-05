@@ -252,13 +252,21 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFF0F172A))),
                         const SizedBox(height: 32),
+                        Text(
+                          l10n.onboardingChildNameLabel,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF0F172A),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
                         TextField(
                           controller: _nameController,
                           textInputAction: TextInputAction.next,
                           decoration: _decoration(
-                            l10n.onboardingChildNameLabel,
                             l10n.onboardingChildNameHint,
-                          ).copyWith(labelText: null),
+                          ),
                         ),
                         const SizedBox(height: 24),
                         Text(l10n.onboardingChildDobLabel,
@@ -395,8 +403,7 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
     );
   }
 
-  InputDecoration _decoration(String label, String hint) => InputDecoration(
-        labelText: label,
+  InputDecoration _decoration(String hint) => InputDecoration(
         hintText: hint,
         filled: true,
         fillColor: Colors.white,
