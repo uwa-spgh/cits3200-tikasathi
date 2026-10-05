@@ -538,8 +538,10 @@
     }
   },
   "homeSectionDueToday": "Due today",
+  "homeSectionOverdue": "Overdue",
   "homeSectionDueSoon": "Due soon",
   "homeSectionUpToDate": "Up to date",
+  "homeScrollInstruction": "Scroll down to see all children.",
   "homeEmptyStateTitle": "No children added yet.",
   "homeEmptyStateSubtitle": "Add your first child to see upcoming vaccines here.",
   "learnTitle": "Learn",

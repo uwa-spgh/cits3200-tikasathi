@@ -81,6 +81,9 @@ class ScreenSpeechHelper {
               'दर्ता पूरा गर्न बाँकी बालबालिका: $names। खोप रेकर्ड सुरु गर्न दर्ता पूरा गर्नुहोस्। ',
             );
             break;
+          case HomeVaccinationGroup.overdue:
+            buffer.write('ढिलो भएका खोप भएका बालबालिका: $names। ');
+            break;
           case HomeVaccinationGroup.dueToday:
             buffer.write('आज खोप लगाउने मिति भएका बालबालिका: $names। ');
             break;
@@ -110,6 +113,9 @@ class ScreenSpeechHelper {
               'Setup pending for: $names. Please complete setup to track vaccines. ',
             );
             break;
+          case HomeVaccinationGroup.overdue:
+            buffer.write('Overdue vaccines for: $names. ');
+            break;
           case HomeVaccinationGroup.dueToday:
             buffer.write('Vaccines due today for: $names. ');
             break;
@@ -121,6 +127,13 @@ class ScreenSpeechHelper {
             break;
         }
       }
+    }
+
+    final ScrollPosition? position = Scrollable.maybeOf(context)?.position;
+    if (position != null &&
+        position.hasContentDimensions &&
+        position.pixels < position.maxScrollExtent) {
+      buffer.write(' ${localizations.homeScrollInstruction}');
     }
 
     return buffer.toString().trim();

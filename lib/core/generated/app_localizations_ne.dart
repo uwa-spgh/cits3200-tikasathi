@@ -733,10 +733,17 @@ class AppLocalizationsNe extends AppLocalizations {
   String get homeSectionDueToday => 'आज दिइने';
 
   @override
+  String get homeSectionOverdue => 'ढिलो भएको';
+
+  @override
   String get homeSectionDueSoon => 'चाँडै दिइने';
 
   @override
   String get homeSectionUpToDate => 'पूरा भएको';
+
+  @override
+  String get homeScrollInstruction =>
+      'सबै बालबालिका हेर्न तल स्क्रोल गर्नुहोस्।';
 
   @override
   String get homeEmptyStateTitle => 'अहिलेसम्म कुनै बच्चा थपिएको छैन।';

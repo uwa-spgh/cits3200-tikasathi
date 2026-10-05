@@ -148,6 +148,83 @@ void main() {
       expect(npPopulated, isNot(contains('टिकासार्थी बाल खोप ट्र्याकिङ')));
     });
 
+    testWidgets(
+        'adds a localized scroll instruction only when content overflows',
+        (WidgetTester tester) async {
+      final List<HomeStatusGroup> groups = <HomeStatusGroup>[
+        HomeStatusGroup(
+          group: HomeVaccinationGroup.upToDate,
+          children: <HomeChildSummary>[
+            HomeChildSummary(
+              name: 'Aarav',
+              dateOfBirth: DateTime(2025, 1, 1),
+              avatarEmoji: '👶',
+              canRecordDose: false,
+            ),
+          ],
+        ),
+      ];
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: ListView(
+            children: <Widget>[
+              Builder(
+                builder: (BuildContext context) => Container(
+                  key: const Key('overflow-context'),
+                  height: 50,
+                ),
+              ),
+              const SizedBox(height: 1000),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final BuildContext overflowContext =
+          tester.element(find.byKey(const Key('overflow-context')));
+      final AppLocalizations overflowLocalizations =
+          AppLocalizations.of(overflowContext)!;
+      final String overflowText = ScreenSpeechHelper.homeScreenText(
+        context: overflowContext,
+        localizations: overflowLocalizations,
+        groups: groups,
+      );
+
+      expect(overflowText, endsWith('Scroll down to see all children.'));
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) => Container(
+              key: const Key('fitting-context'),
+              height: 50,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final BuildContext fittingContext =
+          tester.element(find.byKey(const Key('fitting-context')));
+      final AppLocalizations fittingLocalizations =
+          AppLocalizations.of(fittingContext)!;
+      final String fittingText = ScreenSpeechHelper.homeScreenText(
+        context: fittingContext,
+        localizations: fittingLocalizations,
+        groups: groups,
+      );
+
+      expect(fittingText, isNot(contains('Scroll down to see all children.')));
+    });
+
     testWidgets('childProfileScreenText builds natural narrative',
         (WidgetTester tester) async {
       late String enText;
