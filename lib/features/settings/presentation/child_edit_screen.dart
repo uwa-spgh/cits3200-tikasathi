@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
+import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
 import 'package:tikasathi/features/vaccine_records/presentation/missed_vaccines_dialog.dart';
 import 'package:tikasathi/features/child/domain/date_of_birth_validation.dart';
@@ -235,6 +237,19 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
           tooltip: l10n.profileBack,
           onPressed: _saving ? null : () => Navigator.of(context).pop(),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: ReadAloudButton(
+              tooltip: l10n.childReadAloudTooltip,
+              unavailableMessage: l10n.childReadAloudUnavailable,
+              textGetter: () => ScreenSpeechHelper.childEditScreenText(
+                context: context,
+                localizations: l10n,
+              ),
+            ),
+          ),
+        ],
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())

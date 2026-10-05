@@ -248,7 +248,7 @@ class ScreenSpeechHelper {
           buffer.write('ठेगाना: ${facilityAddress.trim()}। ');
         }
         if (facilityPhone != null && facilityPhone.trim().isNotEmpty) {
-          buffer.write('फोन नम्बर: ${facilityPhone.trim()}। ');
+          buffer.write('फोन नम्बर: ${_spellPhoneNumber(facilityPhone)}। ');
         }
         buffer.write('तपाईं यी विवरणहरू परिवर्तन गर्न र सेभ गर्न सक्नुहुन्छ।');
       } else {
@@ -266,7 +266,7 @@ class ScreenSpeechHelper {
           buffer.write('Address: ${facilityAddress.trim()}. ');
         }
         if (facilityPhone != null && facilityPhone.trim().isNotEmpty) {
-          buffer.write('Phone number: ${facilityPhone.trim()}. ');
+          buffer.write('Phone number: ${_spellPhoneNumber(facilityPhone)}. ');
         }
         buffer.write('You can edit these details and tap save.');
       } else {
@@ -276,6 +276,10 @@ class ScreenSpeechHelper {
       }
     }
     return buffer.toString().trim();
+  }
+
+  static String _spellPhoneNumber(String phone) {
+    return phone.trim().split('').join(' ');
   }
 
   /// Builds a spoken summary for adding or registering a child.
@@ -320,6 +324,20 @@ class ScreenSpeechHelper {
           'Please enter your full name, phone number, and address. '
           'Then tap continue to add your child.';
     }
+  }
+
+  /// Builds a spoken summary for editing child details.
+  static String childEditScreenText({
+    required BuildContext context,
+    required AppLocalizations localizations,
+  }) {
+    final bool isNepali = Localizations.localeOf(context).languageCode == 'ne';
+    if (isNepali) {
+      return 'बच्चाको प्रोफाइल सम्पादन गर्नुहोस्। '
+          'कृपया बच्चाको नाम, जन्म मिति, वा लिङ्ग सम्पादन गर्नुहोस्, र सेभ थिच्नुहोस्।';
+    }
+    return 'Edit child profile. '
+        'Please update the child\'s name, date of birth, or sex, then tap save.';
   }
 
   /// Builds a spoken summary of Vaccine Records & History.
