@@ -724,10 +724,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeSectionDueToday => 'Due today';
 
   @override
+  String get homeSectionOverdue => 'Overdue';
+
+  @override
   String get homeSectionDueSoon => 'Due soon';
 
   @override
   String get homeSectionUpToDate => 'Up to date';
+
+  @override
+  String get homeScrollInstruction => 'Scroll down to see all children.';
 
   @override
   String get homeEmptyStateTitle => 'No children added yet.';

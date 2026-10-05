@@ -17,6 +17,7 @@ class HomeRepository {
 
     final Map<HomeVaccinationGroup, List<HomeChildSummary>> groupedChildren = {
       HomeVaccinationGroup.awaitingSetup: <HomeChildSummary>[],
+      HomeVaccinationGroup.overdue: <HomeChildSummary>[],
       HomeVaccinationGroup.dueToday: <HomeChildSummary>[],
       HomeVaccinationGroup.dueSoon: <HomeChildSummary>[],
       HomeVaccinationGroup.upToDate: <HomeChildSummary>[],
@@ -57,6 +58,7 @@ class HomeRepository {
     final statusGroups = <HomeStatusGroup>[];
     for (final group in <HomeVaccinationGroup>[
       HomeVaccinationGroup.awaitingSetup,
+      HomeVaccinationGroup.overdue,
       HomeVaccinationGroup.dueToday,
       HomeVaccinationGroup.dueSoon,
       HomeVaccinationGroup.upToDate,
@@ -87,14 +89,26 @@ class HomeRepository {
 
     final nowDate = DateTime(now.year, now.month, now.day);
 
-    // Any due date on or before today counts as due TODAY (covers overdue)
+    final hasOverdue = dueRows.any((VaccinationDue due) {
+      final dueDate = DateTime(
+        due.dueDate.year,
+        due.dueDate.month,
+        due.dueDate.day,
+      );
+      return dueDate.isBefore(nowDate);
+    });
+
+    if (hasOverdue) {
+      return HomeVaccinationGroup.overdue;
+    }
+
     final hasDueToday = dueRows.any((VaccinationDue due) {
       final dueDate = DateTime(
         due.dueDate.year,
         due.dueDate.month,
         due.dueDate.day,
       );
-      return !dueDate.isAfter(nowDate); // dueDate <= nowDate
+      return dueDate == nowDate;
     });
 
     if (hasDueToday) {
@@ -103,13 +117,7 @@ class HomeRepository {
 
     // Due soon: strictly after today and within the next 14 calendar days
     final hasDueSoon = dueRows.any((VaccinationDue due) {
-      final dueDate = DateTime(
-        due.dueDate.year,
-        due.dueDate.month,
-        due.dueDate.day,
-      );
-      final difference = dueDate.difference(nowDate).inDays;
-      return difference > 0 && difference <= 14;
+      return isDueSoon(due.dueDate, nowDate);
     });
 
     if (hasDueSoon) {

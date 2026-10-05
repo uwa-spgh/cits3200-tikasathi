@@ -134,7 +134,7 @@ void main() {
       expect(groups.single.children.single.canRecordDose, isFalse);
     });
 
-    test('overdue due date is classified as dueToday (not upToDate)', () async {
+    test('overdue due date is classified as overdue', () async {
       await database.childProfilesDao.insertChildProfile(
         ChildProfilesCompanion.insert(
           id: 'c1',
@@ -157,7 +157,42 @@ void main() {
 
       final groups = await repository.loadHomeStatusGroups(now: now);
       expect(groups.length, 1);
-      expect(groups.single.group, HomeVaccinationGroup.dueToday);
+      expect(groups.single.group, HomeVaccinationGroup.overdue);
+    });
+
+    test('overdue takes priority over due today', () async {
+      await database.childProfilesDao.insertChildProfile(
+        ChildProfilesCompanion.insert(
+          id: 'c-overdue-priority',
+          name: 'Test',
+          dateOfBirth: DateTime(2025, 1, 1),
+          sex: 'female',
+          isSetupComplete: const Value(true),
+        ),
+      );
+
+      await database.vaccinationDuesDao.insertVaccinationDue(
+        VaccinationDuesCompanion.insert(
+          id: 'd-overdue',
+          childId: 'c-overdue-priority',
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+          dueDate: DateTime(2026, 8, 20),
+        ),
+      );
+      await database.vaccinationDuesDao.insertVaccinationDue(
+        VaccinationDuesCompanion.insert(
+          id: 'd-today',
+          childId: 'c-overdue-priority',
+          vaccineCode: 'BOPV',
+          doseNumber: 1,
+          dueDate: now,
+        ),
+      );
+
+      final groups = await repository.loadHomeStatusGroups(now: now);
+
+      expect(groups.single.group, HomeVaccinationGroup.overdue);
     });
 
     test('due today => dueToday', () async {

@@ -424,8 +424,10 @@
     }
   },
   "homeSectionDueToday": "आज दिइने",
+  "homeSectionOverdue": "ढिलो भएको",
   "homeSectionDueSoon": "चाँडै दिइने",
   "homeSectionUpToDate": "पूरा भएको",
+  "homeScrollInstruction": "सबै बालबालिका हेर्न तल स्क्रोल गर्नुहोस्।",
   "homeEmptyStateTitle": "अहिलेसम्म कुनै बच्चा थपिएको छैन।",
   "homeEmptyStateSubtitle": "यहाँ आगामी खोपहरू हेर्न आफ्नो पहिलो बच्चा थप्नुहोस्।",
   "learnTitle": "सिक्नुहोस्",

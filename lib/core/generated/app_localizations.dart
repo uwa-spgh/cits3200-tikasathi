@@ -1293,6 +1293,12 @@ abstract class AppLocalizations {
   /// **'Due today'**
   String get homeSectionDueToday;
 
+  /// No description provided for @homeSectionOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get homeSectionOverdue;
+
   /// No description provided for @homeSectionDueSoon.
   ///
   /// In en, this message translates to:
@@ -1304,6 +1310,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Up to date'**
   String get homeSectionUpToDate;
+
+  /// No description provided for @homeScrollInstruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll down to see all children.'**
+  String get homeScrollInstruction;
 
   /// No description provided for @homeEmptyStateTitle.
   ///
