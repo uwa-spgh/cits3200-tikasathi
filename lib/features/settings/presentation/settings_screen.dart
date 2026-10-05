@@ -9,9 +9,7 @@ import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
-import 'package:tikasathi/features/settings/domain/health_facility_controller.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
-import 'package:tikasathi/features/settings/presentation/health_facility_card.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_helpers.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
@@ -28,20 +26,12 @@ class SettingsScreen extends ConsumerWidget {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
     final AsyncValue<AppLanguage> languageState =
         ref.watch(languageControllerProvider);
-    final AsyncValue<HealthFacility?> facilitatorState =
-        ref.watch(healthFacilityProvider);
 
     return languageState.when(
-      data: (AppLanguage language) => facilitatorState.when(
-        data: (facilitator) => _buildContent(
-          context,
-          ref,
-          isNp: language == AppLanguage.nepali,
-          facilitator: facilitator,
-        ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => Center(
-            child: Text(localizations.appLanguageLoadError(error.toString()))),
+      data: (AppLanguage language) => _buildContent(
+        context,
+        ref,
+        isNp: language == AppLanguage.nepali,
       ),
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stackTrace) => Center(
@@ -175,7 +165,6 @@ class SettingsScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref, {
     required bool isNp,
-    required HealthFacility? facilitator,
   }) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
     return SafeArea(
@@ -277,11 +266,6 @@ class SettingsScreen extends ConsumerWidget {
               _HealthcareScheduleAction(
                 title: localizations.editVaccineScheduleAction,
                 onTap: () => _chooseChildForSchedule(context, ref),
-              ),
-              const SizedBox(height: 18),
-              HealthFacilityCard(
-                key: const Key('health-facilitator-action'),
-                facility: facilitator,
               ),
               const SizedBox(height: 18),
               const BackupSection(),
