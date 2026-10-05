@@ -272,7 +272,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get editVaccineScheduleAction =>
-      'Edit child\'s vaccination schedule (FOR HEALTHCARE PROFESSIONAL)';
+      'Edit child\'s vaccination schedule (HEALTHCARE PROFESSIONAL ONLY)';
 
   @override
   String get healthcareProfessionalQuestion =>

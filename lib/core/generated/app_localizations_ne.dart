@@ -275,7 +275,7 @@ class AppLocalizationsNe extends AppLocalizations {
 
   @override
   String get editVaccineScheduleAction =>
-      'बच्चाको खोप तालिका सम्पादन गर्नुहोस् (स्वास्थ्यकर्मीका लागि)';
+      'बच्चाको खोप तालिका सम्पादन गर्नुहोस् (स्वास्थ्यकर्मीका लागि मात्र)';
 
   @override
   String get healthcareProfessionalQuestion =>

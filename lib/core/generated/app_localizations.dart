@@ -587,7 +587,7 @@ abstract class AppLocalizations {
   /// No description provided for @editVaccineScheduleAction.
   ///
   /// In en, this message translates to:
-  /// **'Edit child\'s vaccination schedule (FOR HEALTHCARE PROFESSIONAL)'**
+  /// **'Edit child\'s vaccination schedule (HEALTHCARE PROFESSIONAL ONLY)'**
   String get editVaccineScheduleAction;
 
   /// No description provided for @healthcareProfessionalQuestion.

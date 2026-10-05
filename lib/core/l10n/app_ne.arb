@@ -233,7 +233,7 @@
   "editCaregiverAction": "हेरचाहकर्ताको विवरण सम्पादन गर्नुहोस्",
   "editChildAction": "बच्चाको विवरण सम्पादन गर्नुहोस्",
   "deleteChildAction": "बच्चा मेटाउनुहोस्",
-  "editVaccineScheduleAction": "बच्चाको खोप तालिका सम्पादन गर्नुहोस् (स्वास्थ्यकर्मीका लागि)",
+  "editVaccineScheduleAction": "बच्चाको खोप तालिका सम्पादन गर्नुहोस् (स्वास्थ्यकर्मीका लागि मात्र)",
   "healthcareProfessionalQuestion": "के तपाईं स्वास्थ्यकर्मी हुनुहुन्छ?",
   "healthcareProfessionalConfirm": "हो",
   "healthcareProfessionalDecline": "होइन",

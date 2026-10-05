@@ -236,7 +236,7 @@
   "editCaregiverAction": "Edit caregiver details",
   "editChildAction": "Edit child details",
   "deleteChildAction": "Delete child",
-  "editVaccineScheduleAction": "Edit child's vaccination schedule (FOR HEALTHCARE PROFESSIONAL)",
+  "editVaccineScheduleAction": "Edit child's vaccination schedule (HEALTHCARE PROFESSIONAL ONLY)",
   "healthcareProfessionalQuestion": "Are you a healthcare professional?",
   "healthcareProfessionalConfirm": "Yes",
   "healthcareProfessionalDecline": "No",
