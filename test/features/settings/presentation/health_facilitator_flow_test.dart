@@ -15,6 +15,76 @@ import 'package:tikasathi/features/settings/presentation/health_facilitator_scre
 import '../../../helpers/fake_settings_repository.dart';
 
 void main() {
+  testWidgets('limits facility fields when creating and editing',
+      (WidgetTester tester) async {
+    final database = AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(database.close);
+
+    Future<void> pumpForm({HealthFacility? facility}) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            appDatabaseProvider.overrideWithValue(database),
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(language: AppLanguage.english),
+            ),
+          ],
+          child: MaterialApp(
+            locale: const Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(body: HealthFacilitatorScreen(facility: facility)),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    await pumpForm();
+    await tester.enterText(find.byType(TextField).at(0), 'n' * 51);
+    await tester.enterText(find.byType(TextField).at(1), 'a' * 81);
+    await tester.enterText(find.byType(TextField).at(2), '1' * 21);
+
+    expect(find.byType(TextField).at(0), findsOneWidget);
+    expect(
+      tester.widget<TextField>(find.byType(TextField).at(0)).controller!.text,
+      hasLength(50),
+    );
+    expect(
+      tester.widget<TextField>(find.byType(TextField).at(1)).controller!.text,
+      hasLength(80),
+    );
+    expect(
+      tester.widget<TextField>(find.byType(TextField).at(2)).controller!.text,
+      hasLength(20),
+    );
+
+    await pumpForm(
+      facility: const HealthFacilitator(
+        id: 'local',
+        name: 'Existing facility',
+        address: 'Existing address',
+        phone: '9800000000',
+      ),
+    );
+    await tester.enterText(find.byType(TextField).at(0), 'n' * 51);
+    await tester.enterText(find.byType(TextField).at(1), 'a' * 81);
+    await tester.enterText(find.byType(TextField).at(2), '1' * 21);
+
+    expect(
+      tester.widget<TextField>(find.byType(TextField).at(0)).controller!.text,
+      hasLength(50),
+    );
+    expect(
+      tester.widget<TextField>(find.byType(TextField).at(1)).controller!.text,
+      hasLength(80),
+    );
+    expect(
+      tester.widget<TextField>(find.byType(TextField).at(2)).controller!.text,
+      hasLength(20),
+    );
+  });
+
   testWidgets('allows an empty optional facilitator phone number',
       (WidgetTester tester) async {
     final database = AppDatabase.forTesting(NativeDatabase.memory());

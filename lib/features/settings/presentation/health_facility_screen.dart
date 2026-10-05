@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
@@ -137,6 +138,7 @@ class _HealthFacilityScreenState extends ConsumerState<HealthFacilityScreen> {
                 hint: localizations.healthFacilityNameHint,
                 controller: _nameController,
                 icon: Icons.person_outline,
+                maxLength: 50,
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 24),
@@ -145,6 +147,7 @@ class _HealthFacilityScreenState extends ConsumerState<HealthFacilityScreen> {
                 hint: localizations.healthFacilityAddressHint,
                 controller: _addressController,
                 icon: Icons.location_on_outlined,
+                maxLength: 80,
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 24),
@@ -154,6 +157,7 @@ class _HealthFacilityScreenState extends ConsumerState<HealthFacilityScreen> {
                 controller: _phoneController,
                 icon: Icons.phone_outlined,
                 keyboardType: TextInputType.phone,
+                maxLength: 20,
                 textInputAction: TextInputAction.done,
               ),
               const SizedBox(height: 48),
@@ -194,6 +198,7 @@ class _HealthFacilityScreenState extends ConsumerState<HealthFacilityScreen> {
     required String hint,
     required TextEditingController controller,
     required IconData icon,
+    required int maxLength,
     TextInputType keyboardType = TextInputType.text,
     TextInputAction textInputAction = TextInputAction.next,
   }) {
@@ -213,6 +218,9 @@ class _HealthFacilityScreenState extends ConsumerState<HealthFacilityScreen> {
           controller: controller,
           keyboardType: keyboardType,
           textInputAction: textInputAction,
+          inputFormatters: <TextInputFormatter>[
+            LengthLimitingTextInputFormatter(maxLength),
+          ],
           decoration: InputDecoration(
             prefixIcon: Icon(icon, color: const Color(0xFF0F766E)),
             hintText: hint,
