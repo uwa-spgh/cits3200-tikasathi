@@ -124,7 +124,10 @@ void main() {
     await tester.pump();
 
     expect(find.text('Save your closest health facility'), findsOneWidget);
-    await tester.tap(find.byKey(const Key('health-facilitator-action')));
+    final facilitatorAction =
+        find.byKey(const Key('health-facilitator-action'));
+    await tester.ensureVisible(facilitatorAction);
+    await tester.tap(facilitatorAction);
     await tester.pumpAndSettle();
     expect(find.byType(HealthFacilitatorScreen), findsOneWidget);
 
@@ -145,7 +148,8 @@ void main() {
     expect(find.textContaining('Facility Name: Maya'), findsOneWidget);
     expect(find.textContaining('Address: Ward 4'), findsOneWidget);
     expect(find.textContaining('Phone Number: 9800000000'), findsOneWidget);
-    await tester.tap(find.byKey(const Key('health-facilitator-action')));
+    await tester.ensureVisible(facilitatorAction);
+    await tester.tap(facilitatorAction);
     await tester.pumpAndSettle();
     expect(find.byType(HealthFacilitatorScreen), findsOneWidget);
     expect(
