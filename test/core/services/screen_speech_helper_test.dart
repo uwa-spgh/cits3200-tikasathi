@@ -367,6 +367,16 @@ void main() {
       );
 
       expect(enSettings, contains('Settings'));
+      expect(
+        enSettings,
+        'Settings. Language options: English or Nepali. '
+        'Manage profiles: Caregiver profile editing. '
+        'Child profiles editing. Delete child profile. '
+        "Edit child's vaccination schedule. "
+        'This is for healthcare professionals only. '
+        'Backup. Export backup. Import backup. '
+        "Keep this file somewhere safe. It contains your child's health information.",
+      );
       expect(enSettings, contains('Export backup'));
       expect(
         enSettings,
@@ -386,6 +396,15 @@ void main() {
                 context: context,
                 localizations: l10n,
                 currentLanguage: AppLanguage.nepali,
+              );
+              expect(
+                npSettings,
+                'सेटिङहरू। भाषा छनोट: हाल नेपाली भाषा चयन गरिएको छ। '
+                'प्रोफाइलहरू व्यवस्थापन गर्नुहोस्: हेरचाहकर्ताको प्रोफाइल सम्पादन। '
+                'बालबालिकाको प्रोफाइल सम्पादन। बालबालिकाको प्रोफाइल मेटाउनुहोस्। '
+                'बच्चाको खोप तालिका सम्पादन गर्नुहोस्। यो स्वास्थ्यकर्मीका लागि मात्र हो। '
+                '${l10n.backupSectionTitle}. ${l10n.backupExportAction}. '
+                '${l10n.backupImportAction}. ${l10n.backupPrivacyNote}',
               );
               return const SizedBox();
             },
@@ -680,7 +699,7 @@ void main() {
       expect(enPopulated, contains('Local health facility details'));
       expect(enPopulated, contains('Name: Kanti Children Hospital'));
       expect(enPopulated, contains('Address: Kathmandu'));
-      expect(enPopulated, contains('Phone number: 9841234567'));
+      expect(enPopulated, contains('Phone number: 9 8 4 1 2 3 4 5 6 7'));
       expect(enPopulated, contains('You can edit these details and tap save'));
 
       expect(enEmpty, contains('Local health facility details'));
@@ -713,7 +732,7 @@ void main() {
       expect(npPopulated, contains('स्थानीय स्वास्थ्य संस्थाको विवरण'));
       expect(npPopulated, contains('नाम: कान्ति बाल अस्पताल'));
       expect(npPopulated, contains('ठेगाना: काठमाडौँ'));
-      expect(npPopulated, contains('फोन नम्बर: 9841234567'));
+      expect(npPopulated, contains('फोन नम्बर: 9 8 4 1 2 3 4 5 6 7'));
     });
 
     testWidgets(
@@ -723,7 +742,9 @@ void main() {
       late String npAddChild;
       late String enCaregiver;
       late String enCaregiverEdit;
+      late String enChildEdit;
       late String npCaregiver;
+      late String npChildEdit;
 
       await tester.pumpWidget(
         MaterialApp(
@@ -748,6 +769,10 @@ void main() {
                 localizations: l10n,
                 isEditing: true,
               );
+              enChildEdit = ScreenSpeechHelper.childEditScreenText(
+                context: context,
+                localizations: l10n,
+              );
               return const SizedBox();
             },
           ),
@@ -762,6 +787,11 @@ void main() {
       expect(enCaregiver, contains('Caregiver information'));
       expect(enCaregiver, contains('full name, phone number, and address'));
       expect(enCaregiverEdit, contains('Edit caregiver profile'));
+      expect(
+        enChildEdit,
+        'Edit child profile. Please update the child\'s name, date of birth, '
+        'or sex, then tap save.',
+      );
 
       await tester.pumpWidget(
         MaterialApp(
@@ -781,6 +811,10 @@ void main() {
                 localizations: l10n,
                 isEditing: false,
               );
+              npChildEdit = ScreenSpeechHelper.childEditScreenText(
+                context: context,
+                localizations: l10n,
+              );
               return const SizedBox();
             },
           ),
@@ -792,6 +826,11 @@ void main() {
       expect(npAddChild, contains('बच्चा सेभ गर्नुहोस्'));
       expect(npCaregiver, contains('अभिभावकको विवरण'));
       expect(npCaregiver, contains('पूरा नाम, फोन नम्बर, र ठेगाना'));
+      expect(
+        npChildEdit,
+        'बच्चाको प्रोफाइल सम्पादन गर्नुहोस्। '
+        'कृपया बच्चाको नाम, जन्म मिति, वा लिङ्ग सम्पादन गर्नुहोस्, र सेभ थिच्नुहोस्।',
+      );
     });
   });
 }

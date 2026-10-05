@@ -248,7 +248,7 @@ class ScreenSpeechHelper {
           buffer.write('ठेगाना: ${facilityAddress.trim()}। ');
         }
         if (facilityPhone != null && facilityPhone.trim().isNotEmpty) {
-          buffer.write('फोन नम्बर: ${facilityPhone.trim()}। ');
+          buffer.write('फोन नम्बर: ${_spellPhoneNumber(facilityPhone)}। ');
         }
         buffer.write('तपाईं यी विवरणहरू परिवर्तन गर्न र सेभ गर्न सक्नुहुन्छ।');
       } else {
@@ -266,7 +266,7 @@ class ScreenSpeechHelper {
           buffer.write('Address: ${facilityAddress.trim()}. ');
         }
         if (facilityPhone != null && facilityPhone.trim().isNotEmpty) {
-          buffer.write('Phone number: ${facilityPhone.trim()}. ');
+          buffer.write('Phone number: ${_spellPhoneNumber(facilityPhone)}. ');
         }
         buffer.write('You can edit these details and tap save.');
       } else {
@@ -276,6 +276,10 @@ class ScreenSpeechHelper {
       }
     }
     return buffer.toString().trim();
+  }
+
+  static String _spellPhoneNumber(String phone) {
+    return phone.trim().split('').join(' ');
   }
 
   /// Builds a spoken summary for adding or registering a child.
@@ -320,6 +324,20 @@ class ScreenSpeechHelper {
           'Please enter your full name, phone number, and address. '
           'Then tap continue to add your child.';
     }
+  }
+
+  /// Builds a spoken summary for editing child details.
+  static String childEditScreenText({
+    required BuildContext context,
+    required AppLocalizations localizations,
+  }) {
+    final bool isNepali = Localizations.localeOf(context).languageCode == 'ne';
+    if (isNepali) {
+      return 'बच्चाको प्रोफाइल सम्पादन गर्नुहोस्। '
+          'कृपया बच्चाको नाम, जन्म मिति, वा लिङ्ग सम्पादन गर्नुहोस्, र सेभ थिच्नुहोस्।';
+    }
+    return 'Edit child profile. '
+        'Please update the child\'s name, date of birth, or sex, then tap save.';
   }
 
   /// Builds a spoken summary of Vaccine Records & History.
@@ -521,15 +539,16 @@ class ScreenSpeechHelper {
         '${localizations.backupPrivacyNote}';
     if (isNepali) {
       return 'सेटिङहरू। भाषा छनोट: हाल नेपाली भाषा चयन गरिएको छ। '
-          'अभिभावकको विवरण हेर्न र सम्पादन गर्न सकिन्छ। '
-          'बालबालिकाको विवरण सम्पादन गर्न सकिन्छ। '
-          'नजिकैको स्वास्थ्य संस्थाको सम्पर्क विवरण उपलब्ध छ। '
+          'प्रोफाइलहरू व्यवस्थापन गर्नुहोस्: हेरचाहकर्ताको प्रोफाइल सम्पादन। '
+          'बालबालिकाको प्रोफाइल सम्पादन। बालबालिकाको प्रोफाइल मेटाउनुहोस्। '
+          'बच्चाको खोप तालिका सम्पादन गर्नुहोस्। यो स्वास्थ्यकर्मीका लागि मात्र हो। '
           '$backup';
     } else {
       return 'Settings. Language options: English or Nepali. '
-          'Caregiver profile management. '
-          'Child profiles editing. '
-          'Local health facility contact information. '
+          'Manage profiles: Caregiver profile editing. '
+          'Child profiles editing. Delete child profile. '
+          "Edit child's vaccination schedule. "
+          'This is for healthcare professionals only. '
           '$backup';
     }
   }
