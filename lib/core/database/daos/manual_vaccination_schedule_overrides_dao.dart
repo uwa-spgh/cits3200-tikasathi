@@ -18,22 +18,7 @@ class ManualVaccinationScheduleOverridesDao
         .get();
   }
 
-  Future<ManualVaccinationScheduleOverride?> forSource(
-    String childId,
-    String vaccineCode,
-    int doseNumber,
-  ) {
-    return (select(manualVaccinationScheduleOverrides)
-          ..where(
-            (row) =>
-                row.childId.equals(childId) &
-                row.sourceVaccineCode.equals(vaccineCode) &
-                row.sourceDoseNumber.equals(doseNumber),
-          ))
-        .getSingleOrNull();
-  }
-
-  Future<ManualVaccinationScheduleOverride?> forTarget(
+  Future<ManualVaccinationScheduleOverride?> forVaccineDose(
     String childId,
     String vaccineCode,
     int doseNumber,
@@ -48,10 +33,8 @@ class ManualVaccinationScheduleOverridesDao
         .getSingleOrNull();
   }
 
-  Future<void> saveOverride({
+  Future<void> saveDateOverride({
     required String childId,
-    required String sourceVaccineCode,
-    required int sourceDoseNumber,
     required String vaccineCode,
     required int doseNumber,
     required DateTime dueDate,
@@ -60,31 +43,49 @@ class ManualVaccinationScheduleOverridesDao
       throw StateError('invalid vaccine or dose');
     }
 
-    final existingSource = await forSource(
-      childId,
-      sourceVaccineCode,
-      sourceDoseNumber,
-    );
-    final existingTarget = await forTarget(childId, vaccineCode, doseNumber);
-    if (existingTarget != null && existingTarget.id != existingSource?.id) {
-      throw StateError('vaccine dose is already scheduled');
-    }
-
+    final existing = await forVaccineDose(childId, vaccineCode, doseNumber);
     final companion = ManualVaccinationScheduleOverridesCompanion(
       childId: Value(childId),
-      sourceVaccineCode: Value(sourceVaccineCode),
-      sourceDoseNumber: Value(sourceDoseNumber),
       vaccineCode: Value(vaccineCode),
       doseNumber: Value(doseNumber),
       dueDate: Value(dueDate),
+      isRemoved: const Value(false),
     );
-    if (existingSource == null) {
+    if (existing == null) {
       await into(manualVaccinationScheduleOverrides).insert(
         companion.copyWith(id: Value(const Uuid().v4())),
       );
     } else {
       await (update(manualVaccinationScheduleOverrides)
-            ..where((row) => row.id.equals(existingSource.id)))
+            ..where((row) => row.id.equals(existing.id)))
+          .write(companion);
+    }
+  }
+
+  Future<void> removeDose({
+    required String childId,
+    required String vaccineCode,
+    required int doseNumber,
+  }) async {
+    if (!doesDoseExist(vaccineCode, doseNumber)) {
+      throw StateError('invalid vaccine or dose');
+    }
+
+    final existing = await forVaccineDose(childId, vaccineCode, doseNumber);
+    final companion = ManualVaccinationScheduleOverridesCompanion(
+      childId: Value(childId),
+      vaccineCode: Value(vaccineCode),
+      doseNumber: Value(doseNumber),
+      dueDate: const Value(null),
+      isRemoved: const Value(true),
+    );
+    if (existing == null) {
+      await into(manualVaccinationScheduleOverrides).insert(
+        companion.copyWith(id: Value(const Uuid().v4())),
+      );
+    } else {
+      await (update(manualVaccinationScheduleOverrides)
+            ..where((row) => row.id.equals(existing.id)))
           .write(companion);
     }
   }

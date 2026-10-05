@@ -223,7 +223,9 @@ class LocalBackupService {
       );
     }
     final schemaVersion = root['schemaVersion'];
-    if (schemaVersion != _database.schemaVersion && schemaVersion != 2) {
+    if (schemaVersion != _database.schemaVersion &&
+        schemaVersion != 2 &&
+        schemaVersion != 3) {
       throw const BackupValidationException(
         BackupRejection.unsupportedSchemaVersion,
       );
@@ -342,11 +344,10 @@ Map<String, Object?> _overrideToJson(ManualVaccinationScheduleOverride row) {
   return <String, Object?>{
     'id': row.id,
     'childId': row.childId,
-    'sourceVaccineCode': row.sourceVaccineCode,
-    'sourceDoseNumber': row.sourceDoseNumber,
     'vaccineCode': row.vaccineCode,
     'doseNumber': row.doseNumber,
-    'dueDate': row.dueDate.toIso8601String(),
+    'dueDate': row.dueDate?.toIso8601String(),
+    'isRemoved': row.isRemoved,
   };
 }
 
@@ -428,20 +429,23 @@ ManualVaccinationScheduleOverride _overrideFromJson(Map<String, dynamic> json) {
   _requireKeys(json, const <String>[
     'id',
     'childId',
-    'sourceVaccineCode',
-    'sourceDoseNumber',
     'vaccineCode',
     'doseNumber',
     'dueDate',
+    'isRemoved',
   ]);
+  final bool isRemoved = _requiredBool(json, 'isRemoved');
+  final DateTime? dueDate = _optionalDate(json, 'dueDate');
+  if (isRemoved != (dueDate == null)) {
+    throw const BackupValidationException(BackupRejection.missingKeys);
+  }
   return ManualVaccinationScheduleOverride(
     id: _requiredString(json, 'id'),
     childId: _requiredString(json, 'childId'),
-    sourceVaccineCode: _requiredString(json, 'sourceVaccineCode'),
-    sourceDoseNumber: _requiredInt(json, 'sourceDoseNumber'),
     vaccineCode: _requiredString(json, 'vaccineCode'),
     doseNumber: _requiredInt(json, 'doseNumber'),
-    dueDate: _requiredDate(json, 'dueDate'),
+    dueDate: dueDate,
+    isRemoved: isRemoved,
   );
 }
 

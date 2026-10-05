@@ -350,6 +350,23 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not update the vaccine schedule.';
 
   @override
+  String get scheduleEditorRemove => 'Remove from schedule';
+
+  @override
+  String get scheduleEditorRemoveTitle => 'Remove vaccine from schedule?';
+
+  @override
+  String scheduleEditorRemoveMessage(Object vaccineCode, Object doseNumber) {
+    return 'Are you sure you want to remove $vaccineCode dose $doseNumber from this child\'s vaccine schedule? This will not affect vaccination history.';
+  }
+
+  @override
+  String scheduleEditorRemoveSuccess(
+      Object vaccineCode, Object doseNumber, Object childName) {
+    return '$vaccineCode dose $doseNumber removed from $childName\'s schedule.';
+  }
+
+  @override
   String get editCaregiverTitle => 'Edit caregiver details';
 
   @override

@@ -722,6 +722,31 @@ abstract class AppLocalizations {
   /// **'Could not update the vaccine schedule.'**
   String get scheduleEditorSaveError;
 
+  /// No description provided for @scheduleEditorRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from schedule'**
+  String get scheduleEditorRemove;
+
+  /// No description provided for @scheduleEditorRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove vaccine from schedule?'**
+  String get scheduleEditorRemoveTitle;
+
+  /// No description provided for @scheduleEditorRemoveMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove {vaccineCode} dose {doseNumber} from this child\'s vaccine schedule? This will not affect vaccination history.'**
+  String scheduleEditorRemoveMessage(Object vaccineCode, Object doseNumber);
+
+  /// No description provided for @scheduleEditorRemoveSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccineCode} dose {doseNumber} removed from {childName}\'s schedule.'**
+  String scheduleEditorRemoveSuccess(
+      Object vaccineCode, Object doseNumber, Object childName);
+
   /// No description provided for @editCaregiverTitle.
   ///
   /// In en, this message translates to:

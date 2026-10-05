@@ -266,6 +266,23 @@
   "scheduleEditorAdministeredDose": "That vaccine and dose has already been administered.",
   "scheduleEditorSaveSuccess": "Vaccine schedule updated.",
   "scheduleEditorSaveError": "Could not update the vaccine schedule.",
+  "scheduleEditorRemove": "Remove from schedule",
+  "scheduleEditorRemoveTitle": "Remove vaccine from schedule?",
+  "scheduleEditorRemoveMessage": "Are you sure you want to remove {vaccineCode} dose {doseNumber} from this child's vaccine schedule? This will not affect vaccination history.",
+  "@scheduleEditorRemoveMessage": {
+    "placeholders": {
+      "vaccineCode": {},
+      "doseNumber": {}
+    }
+  },
+  "scheduleEditorRemoveSuccess": "{vaccineCode} dose {doseNumber} removed from {childName}'s schedule.",
+  "@scheduleEditorRemoveSuccess": {
+    "placeholders": {
+      "vaccineCode": {},
+      "doseNumber": {},
+      "childName": {}
+    }
+  },
   "editCaregiverTitle": "Edit caregiver details",
   "editChildTitle": "Edit child details",
   "editChildTitleWithName": "Edit {childName}'s details",

@@ -353,6 +353,23 @@ class AppLocalizationsNe extends AppLocalizations {
   String get scheduleEditorSaveError => 'खोप तालिका अद्यावधिक गर्न सकिएन।';
 
   @override
+  String get scheduleEditorRemove => 'तालिकाबाट हटाउनुहोस्';
+
+  @override
+  String get scheduleEditorRemoveTitle => 'खोपलाई तालिकाबाट हटाउने?';
+
+  @override
+  String scheduleEditorRemoveMessage(Object vaccineCode, Object doseNumber) {
+    return '$vaccineCode मात्रा $doseNumber लाई बच्चाको खोप तालिकाबाट हटाउने? यसले खोप इतिहासमा असर गर्दैन।';
+  }
+
+  @override
+  String scheduleEditorRemoveSuccess(
+      Object vaccineCode, Object doseNumber, Object childName) {
+    return '$childName को तालिकाबाट $vaccineCode मात्रा $doseNumber हटाइयो।';
+  }
+
+  @override
   String get editCaregiverTitle => 'हेरचाहकर्ताको विवरण सम्पादन गर्नुहोस्';
 
   @override

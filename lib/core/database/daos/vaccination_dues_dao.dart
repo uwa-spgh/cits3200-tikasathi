@@ -109,41 +109,36 @@ class VaccinationDuesDao extends DatabaseAccessor<AppDatabase>
         .map((record) => '${record.vaccineCode}:${record.doseNumber}')
         .toSet();
 
-    final overrideSources = overrides
-        .map((override) =>
-            '${override.sourceVaccineCode}:${override.sourceDoseNumber}')
-        .toSet();
-    final overrideTargets = overrides
-        .map((override) => '${override.vaccineCode}:${override.doseNumber}');
-    final targetSet = overrideTargets.toSet();
-    if (targetSet.length != overrides.length) {
-      throw StateError('duplicate manual vaccine schedule override');
-    }
     for (final override in overrides) {
       if (!doesDoseExist(override.vaccineCode, override.doseNumber)) {
         throw StateError('invalid manual vaccine schedule override');
       }
+      if (!override.isRemoved && override.dueDate == null) {
+        throw StateError('manual date is required for an active override');
+      }
     }
+
+    final overrideKeys = overrides
+        .map((override) => '${override.vaccineCode}:${override.doseNumber}')
+        .toSet();
 
     final Map<String, GeneratedDue> merged = <String, GeneratedDue>{};
     for (final generated in generatedDues) {
       final key = '${generated.vaccineCode}:${generated.doseNumber}';
-      if (overrideSources.contains(key) || targetSet.contains(key)) {
+      if (overrideKeys.contains(key) || administeredKeys.contains(key)) {
         continue;
       }
-      if (!administeredKeys.contains(key)) {
-        merged[key] = generated;
-      }
+      merged[key] = generated;
     }
     for (final override in overrides) {
       final key = '${override.vaccineCode}:${override.doseNumber}';
-      if (administeredKeys.contains(key)) {
+      if (override.isRemoved || administeredKeys.contains(key)) {
         continue;
       }
       merged[key] = (
         vaccineCode: override.vaccineCode,
         doseNumber: override.doseNumber,
-        dueDate: override.dueDate,
+        dueDate: override.dueDate!,
       );
     }
 

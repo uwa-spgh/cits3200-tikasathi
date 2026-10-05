@@ -9,6 +9,15 @@ import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
 
+enum _ScheduleEditAction { save, remove }
+
+class _ScheduleEditResult {
+  const _ScheduleEditResult(this.action, this.date);
+
+  final _ScheduleEditAction action;
+  final DateTime date;
+}
+
 class VaccineScheduleEditorScreen extends ConsumerStatefulWidget {
   const VaccineScheduleEditorScreen({required this.childId, super.key});
 
@@ -196,46 +205,44 @@ class _VaccineScheduleEditorScreenState
     VaccinationDue due,
   ) async {
     final l10n = AppLocalizations.of(context)!;
-    String vaccine = due.vaccineCode;
-    int dose = due.doseNumber;
     DateTime date = due.dueDate;
-    final selectedDate = await showDialog<DateTime>(
+    final result = await showDialog<_ScheduleEditResult>(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: Text(l10n.scheduleEditorEdit),
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          titlePadding: const EdgeInsets.fromLTRB(32, 32, 32, 0),
+          contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 0),
+          actionsPadding: const EdgeInsets.fromLTRB(32, 24, 32, 28),
+          title: Text(
+            l10n.scheduleEditorEdit,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              DropdownButtonFormField<String>(
-                initialValue: vaccine,
-                decoration:
-                    InputDecoration(labelText: l10n.scheduleEditorVaccine),
-                items: [
-                  for (final code in nipCatalogue.keys)
-                    DropdownMenuItem(value: code, child: Text(code)),
-                ],
-                onChanged: (value) {
-                  if (value == null) return;
-                  setDialogState(() {
-                    vaccine = value;
-                    dose = 1;
-                  });
-                },
+              Text(
+                due.vaccineCode,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF334155),
+                ),
               ),
-              DropdownButtonFormField<int>(
-                initialValue: dose,
-                decoration: InputDecoration(labelText: l10n.scheduleEditorDose),
-                items: [
-                  for (int index = 1;
-                      index <= nipCatalogue[vaccine]!.length;
-                      index++)
-                    DropdownMenuItem(value: index, child: Text('$index')),
-                ],
-                onChanged: (value) {
-                  if (value != null) setDialogState(() => dose = value);
-                },
+              const SizedBox(height: 4),
+              Text(
+                '${l10n.scheduleEditorDose} ${due.doseNumber}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF475569),
+                ),
               ),
+              const SizedBox(height: 20),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(l10n.scheduleEditorDueDate),
@@ -250,6 +257,14 @@ class _VaccineScheduleEditorScreenState
                         date.isBefore(DateTime.now()) ? DateTime.now() : date,
                     firstDate: child.dateOfBirth,
                     lastDate: DateTime(2100),
+                    builder: (context, picker) => Theme(
+                      data: Theme.of(context).copyWith(
+                        colorScheme: const ColorScheme.light(
+                          primary: Color(0xFF0F52BA),
+                        ),
+                      ),
+                      child: picker!,
+                    ),
                   );
                   if (picked != null) {
                     setDialogState(() => date = picked);
@@ -263,33 +278,41 @@ class _VaccineScheduleEditorScreenState
               onPressed: () => Navigator.of(dialogContext).pop(),
               child: Text(l10n.profileCancel),
             ),
+            OutlinedButton(
+              onPressed: () => Navigator.of(dialogContext).pop(
+                _ScheduleEditResult(_ScheduleEditAction.remove, date),
+              ),
+              child: Text(l10n.scheduleEditorRemove),
+            ),
             FilledButton(
-              onPressed: () => Navigator.of(dialogContext).pop(date),
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF0F52BA),
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () => Navigator.of(dialogContext).pop(
+                _ScheduleEditResult(_ScheduleEditAction.save, date),
+              ),
               child: Text(l10n.profileSave),
             ),
           ],
         ),
       ),
     );
-    if (selectedDate == null || !context.mounted) return;
+    if (result == null || !context.mounted) return;
+
+    if (result.action == _ScheduleEditAction.remove) {
+      await _confirmRemoveDue(context, child, due);
+      return;
+    }
 
     setState(() => _saving = true);
     try {
       final db = ref.read(appDatabaseProvider);
-      final existing = await db.manualVaccinationScheduleOverridesDao.forTarget(
-        widget.childId,
-        due.vaccineCode,
-        due.doseNumber,
-      );
-      final sourceCode = existing?.sourceVaccineCode ?? due.vaccineCode;
-      final sourceDose = existing?.sourceDoseNumber ?? due.doseNumber;
-      await db.manualVaccinationScheduleOverridesDao.saveOverride(
+      await db.manualVaccinationScheduleOverridesDao.saveDateOverride(
         childId: widget.childId,
-        sourceVaccineCode: sourceCode,
-        sourceDoseNumber: sourceDose,
-        vaccineCode: vaccine,
-        doseNumber: dose,
-        dueDate: selectedDate,
+        vaccineCode: due.vaccineCode,
+        doseNumber: due.doseNumber,
+        dueDate: result.date,
       );
       await db.vaccinationDuesDao.recalculateDuesForChild(widget.childId);
       ref.invalidate(childProfileProvider(widget.childId));
@@ -311,6 +334,101 @@ class _VaccineScheduleEditorScreenState
       }
     } finally {
       if (context.mounted) setState(() => _saving = false);
+    }
+  }
+
+  Future<void> _confirmRemoveDue(
+    BuildContext context,
+    ChildProfile child,
+    VaccinationDue due,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        titlePadding: const EdgeInsets.fromLTRB(32, 32, 32, 0),
+        contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 0),
+        actionsPadding: const EdgeInsets.fromLTRB(32, 28, 32, 28),
+        title: Text(
+          l10n.scheduleEditorRemoveTitle,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          l10n.scheduleEditorRemoveMessage(
+            due.vaccineCode,
+            due.doseNumber.toString(),
+          ),
+        ),
+        actions: [
+          Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FilledButton(
+                  autofocus: true,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF0F52BA),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                  ),
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
+                  child: Text(l10n.profileCancel),
+                ),
+                const SizedBox(width: 12),
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF0F52BA),
+                    side: const BorderSide(color: Color(0xFF0F52BA)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                  ),
+                  onPressed: () => Navigator.of(dialogContext).pop(true),
+                  child: Text(l10n.scheduleEditorRemove),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    setState(() => _saving = true);
+    try {
+      final db = ref.read(appDatabaseProvider);
+      await db.manualVaccinationScheduleOverridesDao.removeDose(
+        childId: widget.childId,
+        vaccineCode: due.vaccineCode,
+        doseNumber: due.doseNumber,
+      );
+      await db.vaccinationDuesDao.recalculateDuesForChild(widget.childId);
+      ref.invalidate(childProfileProvider(widget.childId));
+      ref.invalidate(homeStatusGroupsProvider);
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            l10n.scheduleEditorRemoveSuccess(
+              due.vaccineCode,
+              due.doseNumber.toString(),
+              child.name,
+            ),
+          ),
+        ),
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.scheduleEditorSaveError)),
+      );
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
   }
 

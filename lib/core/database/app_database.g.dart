@@ -1718,18 +1718,6 @@ class $ManualVaccinationScheduleOverridesTable
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES child_profiles (id)'));
-  static const VerificationMeta _sourceVaccineCodeMeta =
-      const VerificationMeta('sourceVaccineCode');
-  @override
-  late final GeneratedColumn<String> sourceVaccineCode =
-      GeneratedColumn<String>('source_vaccine_code', aliasedName, false,
-          type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _sourceDoseNumberMeta =
-      const VerificationMeta('sourceDoseNumber');
-  @override
-  late final GeneratedColumn<int> sourceDoseNumber = GeneratedColumn<int>(
-      'source_dose_number', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _vaccineCodeMeta =
       const VerificationMeta('vaccineCode');
   @override
@@ -1746,18 +1734,21 @@ class $ManualVaccinationScheduleOverridesTable
       const VerificationMeta('dueDate');
   @override
   late final GeneratedColumn<DateTime> dueDate = GeneratedColumn<DateTime>(
-      'due_date', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+      'due_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _isRemovedMeta =
+      const VerificationMeta('isRemoved');
   @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        childId,
-        sourceVaccineCode,
-        sourceDoseNumber,
-        vaccineCode,
-        doseNumber,
-        dueDate
-      ];
+  late final GeneratedColumn<bool> isRemoved = GeneratedColumn<bool>(
+      'is_removed', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_removed" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, childId, vaccineCode, doseNumber, dueDate, isRemoved];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1780,22 +1771,6 @@ class $ManualVaccinationScheduleOverridesTable
     } else if (isInserting) {
       context.missing(_childIdMeta);
     }
-    if (data.containsKey('source_vaccine_code')) {
-      context.handle(
-          _sourceVaccineCodeMeta,
-          sourceVaccineCode.isAcceptableOrUnknown(
-              data['source_vaccine_code']!, _sourceVaccineCodeMeta));
-    } else if (isInserting) {
-      context.missing(_sourceVaccineCodeMeta);
-    }
-    if (data.containsKey('source_dose_number')) {
-      context.handle(
-          _sourceDoseNumberMeta,
-          sourceDoseNumber.isAcceptableOrUnknown(
-              data['source_dose_number']!, _sourceDoseNumberMeta));
-    } else if (isInserting) {
-      context.missing(_sourceDoseNumberMeta);
-    }
     if (data.containsKey('vaccine_code')) {
       context.handle(
           _vaccineCodeMeta,
@@ -1815,8 +1790,10 @@ class $ManualVaccinationScheduleOverridesTable
     if (data.containsKey('due_date')) {
       context.handle(_dueDateMeta,
           dueDate.isAcceptableOrUnknown(data['due_date']!, _dueDateMeta));
-    } else if (isInserting) {
-      context.missing(_dueDateMeta);
+    }
+    if (data.containsKey('is_removed')) {
+      context.handle(_isRemovedMeta,
+          isRemoved.isAcceptableOrUnknown(data['is_removed']!, _isRemovedMeta));
     }
     return context;
   }
@@ -1825,7 +1802,6 @@ class $ManualVaccinationScheduleOverridesTable
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   List<Set<GeneratedColumn>> get uniqueKeys => [
-        {childId, sourceVaccineCode, sourceDoseNumber},
         {childId, vaccineCode, doseNumber},
       ];
   @override
@@ -1837,16 +1813,14 @@ class $ManualVaccinationScheduleOverridesTable
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       childId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}child_id'])!,
-      sourceVaccineCode: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}source_vaccine_code'])!,
-      sourceDoseNumber: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}source_dose_number'])!,
       vaccineCode: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}vaccine_code'])!,
       doseNumber: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}dose_number'])!,
       dueDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}due_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}due_date']),
+      isRemoved: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_removed'])!,
     );
   }
 
@@ -1860,29 +1834,28 @@ class ManualVaccinationScheduleOverride extends DataClass
     implements Insertable<ManualVaccinationScheduleOverride> {
   final String id;
   final String childId;
-  final String sourceVaccineCode;
-  final int sourceDoseNumber;
   final String vaccineCode;
   final int doseNumber;
-  final DateTime dueDate;
+  final DateTime? dueDate;
+  final bool isRemoved;
   const ManualVaccinationScheduleOverride(
       {required this.id,
       required this.childId,
-      required this.sourceVaccineCode,
-      required this.sourceDoseNumber,
       required this.vaccineCode,
       required this.doseNumber,
-      required this.dueDate});
+      this.dueDate,
+      required this.isRemoved});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['child_id'] = Variable<String>(childId);
-    map['source_vaccine_code'] = Variable<String>(sourceVaccineCode);
-    map['source_dose_number'] = Variable<int>(sourceDoseNumber);
     map['vaccine_code'] = Variable<String>(vaccineCode);
     map['dose_number'] = Variable<int>(doseNumber);
-    map['due_date'] = Variable<DateTime>(dueDate);
+    if (!nullToAbsent || dueDate != null) {
+      map['due_date'] = Variable<DateTime>(dueDate);
+    }
+    map['is_removed'] = Variable<bool>(isRemoved);
     return map;
   }
 
@@ -1890,11 +1863,12 @@ class ManualVaccinationScheduleOverride extends DataClass
     return ManualVaccinationScheduleOverridesCompanion(
       id: Value(id),
       childId: Value(childId),
-      sourceVaccineCode: Value(sourceVaccineCode),
-      sourceDoseNumber: Value(sourceDoseNumber),
       vaccineCode: Value(vaccineCode),
       doseNumber: Value(doseNumber),
-      dueDate: Value(dueDate),
+      dueDate: dueDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dueDate),
+      isRemoved: Value(isRemoved),
     );
   }
 
@@ -1904,11 +1878,10 @@ class ManualVaccinationScheduleOverride extends DataClass
     return ManualVaccinationScheduleOverride(
       id: serializer.fromJson<String>(json['id']),
       childId: serializer.fromJson<String>(json['childId']),
-      sourceVaccineCode: serializer.fromJson<String>(json['sourceVaccineCode']),
-      sourceDoseNumber: serializer.fromJson<int>(json['sourceDoseNumber']),
       vaccineCode: serializer.fromJson<String>(json['vaccineCode']),
       doseNumber: serializer.fromJson<int>(json['doseNumber']),
-      dueDate: serializer.fromJson<DateTime>(json['dueDate']),
+      dueDate: serializer.fromJson<DateTime?>(json['dueDate']),
+      isRemoved: serializer.fromJson<bool>(json['isRemoved']),
     );
   }
   @override
@@ -1917,47 +1890,39 @@ class ManualVaccinationScheduleOverride extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'childId': serializer.toJson<String>(childId),
-      'sourceVaccineCode': serializer.toJson<String>(sourceVaccineCode),
-      'sourceDoseNumber': serializer.toJson<int>(sourceDoseNumber),
       'vaccineCode': serializer.toJson<String>(vaccineCode),
       'doseNumber': serializer.toJson<int>(doseNumber),
-      'dueDate': serializer.toJson<DateTime>(dueDate),
+      'dueDate': serializer.toJson<DateTime?>(dueDate),
+      'isRemoved': serializer.toJson<bool>(isRemoved),
     };
   }
 
   ManualVaccinationScheduleOverride copyWith(
           {String? id,
           String? childId,
-          String? sourceVaccineCode,
-          int? sourceDoseNumber,
           String? vaccineCode,
           int? doseNumber,
-          DateTime? dueDate}) =>
+          Value<DateTime?> dueDate = const Value.absent(),
+          bool? isRemoved}) =>
       ManualVaccinationScheduleOverride(
         id: id ?? this.id,
         childId: childId ?? this.childId,
-        sourceVaccineCode: sourceVaccineCode ?? this.sourceVaccineCode,
-        sourceDoseNumber: sourceDoseNumber ?? this.sourceDoseNumber,
         vaccineCode: vaccineCode ?? this.vaccineCode,
         doseNumber: doseNumber ?? this.doseNumber,
-        dueDate: dueDate ?? this.dueDate,
+        dueDate: dueDate.present ? dueDate.value : this.dueDate,
+        isRemoved: isRemoved ?? this.isRemoved,
       );
   ManualVaccinationScheduleOverride copyWithCompanion(
       ManualVaccinationScheduleOverridesCompanion data) {
     return ManualVaccinationScheduleOverride(
       id: data.id.present ? data.id.value : this.id,
       childId: data.childId.present ? data.childId.value : this.childId,
-      sourceVaccineCode: data.sourceVaccineCode.present
-          ? data.sourceVaccineCode.value
-          : this.sourceVaccineCode,
-      sourceDoseNumber: data.sourceDoseNumber.present
-          ? data.sourceDoseNumber.value
-          : this.sourceDoseNumber,
       vaccineCode:
           data.vaccineCode.present ? data.vaccineCode.value : this.vaccineCode,
       doseNumber:
           data.doseNumber.present ? data.doseNumber.value : this.doseNumber,
       dueDate: data.dueDate.present ? data.dueDate.value : this.dueDate,
+      isRemoved: data.isRemoved.present ? data.isRemoved.value : this.isRemoved,
     );
   }
 
@@ -1966,85 +1931,75 @@ class ManualVaccinationScheduleOverride extends DataClass
     return (StringBuffer('ManualVaccinationScheduleOverride(')
           ..write('id: $id, ')
           ..write('childId: $childId, ')
-          ..write('sourceVaccineCode: $sourceVaccineCode, ')
-          ..write('sourceDoseNumber: $sourceDoseNumber, ')
           ..write('vaccineCode: $vaccineCode, ')
           ..write('doseNumber: $doseNumber, ')
-          ..write('dueDate: $dueDate')
+          ..write('dueDate: $dueDate, ')
+          ..write('isRemoved: $isRemoved')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, childId, sourceVaccineCode,
-      sourceDoseNumber, vaccineCode, doseNumber, dueDate);
+  int get hashCode =>
+      Object.hash(id, childId, vaccineCode, doseNumber, dueDate, isRemoved);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is ManualVaccinationScheduleOverride &&
           other.id == this.id &&
           other.childId == this.childId &&
-          other.sourceVaccineCode == this.sourceVaccineCode &&
-          other.sourceDoseNumber == this.sourceDoseNumber &&
           other.vaccineCode == this.vaccineCode &&
           other.doseNumber == this.doseNumber &&
-          other.dueDate == this.dueDate);
+          other.dueDate == this.dueDate &&
+          other.isRemoved == this.isRemoved);
 }
 
 class ManualVaccinationScheduleOverridesCompanion
     extends UpdateCompanion<ManualVaccinationScheduleOverride> {
   final Value<String> id;
   final Value<String> childId;
-  final Value<String> sourceVaccineCode;
-  final Value<int> sourceDoseNumber;
   final Value<String> vaccineCode;
   final Value<int> doseNumber;
-  final Value<DateTime> dueDate;
+  final Value<DateTime?> dueDate;
+  final Value<bool> isRemoved;
   final Value<int> rowid;
   const ManualVaccinationScheduleOverridesCompanion({
     this.id = const Value.absent(),
     this.childId = const Value.absent(),
-    this.sourceVaccineCode = const Value.absent(),
-    this.sourceDoseNumber = const Value.absent(),
     this.vaccineCode = const Value.absent(),
     this.doseNumber = const Value.absent(),
     this.dueDate = const Value.absent(),
+    this.isRemoved = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ManualVaccinationScheduleOverridesCompanion.insert({
     required String id,
     required String childId,
-    required String sourceVaccineCode,
-    required int sourceDoseNumber,
     required String vaccineCode,
     required int doseNumber,
-    required DateTime dueDate,
+    this.dueDate = const Value.absent(),
+    this.isRemoved = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         childId = Value(childId),
-        sourceVaccineCode = Value(sourceVaccineCode),
-        sourceDoseNumber = Value(sourceDoseNumber),
         vaccineCode = Value(vaccineCode),
-        doseNumber = Value(doseNumber),
-        dueDate = Value(dueDate);
+        doseNumber = Value(doseNumber);
   static Insertable<ManualVaccinationScheduleOverride> custom({
     Expression<String>? id,
     Expression<String>? childId,
-    Expression<String>? sourceVaccineCode,
-    Expression<int>? sourceDoseNumber,
     Expression<String>? vaccineCode,
     Expression<int>? doseNumber,
     Expression<DateTime>? dueDate,
+    Expression<bool>? isRemoved,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (childId != null) 'child_id': childId,
-      if (sourceVaccineCode != null) 'source_vaccine_code': sourceVaccineCode,
-      if (sourceDoseNumber != null) 'source_dose_number': sourceDoseNumber,
       if (vaccineCode != null) 'vaccine_code': vaccineCode,
       if (doseNumber != null) 'dose_number': doseNumber,
       if (dueDate != null) 'due_date': dueDate,
+      if (isRemoved != null) 'is_removed': isRemoved,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2052,20 +2007,18 @@ class ManualVaccinationScheduleOverridesCompanion
   ManualVaccinationScheduleOverridesCompanion copyWith(
       {Value<String>? id,
       Value<String>? childId,
-      Value<String>? sourceVaccineCode,
-      Value<int>? sourceDoseNumber,
       Value<String>? vaccineCode,
       Value<int>? doseNumber,
-      Value<DateTime>? dueDate,
+      Value<DateTime?>? dueDate,
+      Value<bool>? isRemoved,
       Value<int>? rowid}) {
     return ManualVaccinationScheduleOverridesCompanion(
       id: id ?? this.id,
       childId: childId ?? this.childId,
-      sourceVaccineCode: sourceVaccineCode ?? this.sourceVaccineCode,
-      sourceDoseNumber: sourceDoseNumber ?? this.sourceDoseNumber,
       vaccineCode: vaccineCode ?? this.vaccineCode,
       doseNumber: doseNumber ?? this.doseNumber,
       dueDate: dueDate ?? this.dueDate,
+      isRemoved: isRemoved ?? this.isRemoved,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2079,12 +2032,6 @@ class ManualVaccinationScheduleOverridesCompanion
     if (childId.present) {
       map['child_id'] = Variable<String>(childId.value);
     }
-    if (sourceVaccineCode.present) {
-      map['source_vaccine_code'] = Variable<String>(sourceVaccineCode.value);
-    }
-    if (sourceDoseNumber.present) {
-      map['source_dose_number'] = Variable<int>(sourceDoseNumber.value);
-    }
     if (vaccineCode.present) {
       map['vaccine_code'] = Variable<String>(vaccineCode.value);
     }
@@ -2093,6 +2040,9 @@ class ManualVaccinationScheduleOverridesCompanion
     }
     if (dueDate.present) {
       map['due_date'] = Variable<DateTime>(dueDate.value);
+    }
+    if (isRemoved.present) {
+      map['is_removed'] = Variable<bool>(isRemoved.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -2105,11 +2055,10 @@ class ManualVaccinationScheduleOverridesCompanion
     return (StringBuffer('ManualVaccinationScheduleOverridesCompanion(')
           ..write('id: $id, ')
           ..write('childId: $childId, ')
-          ..write('sourceVaccineCode: $sourceVaccineCode, ')
-          ..write('sourceDoseNumber: $sourceDoseNumber, ')
           ..write('vaccineCode: $vaccineCode, ')
           ..write('doseNumber: $doseNumber, ')
           ..write('dueDate: $dueDate, ')
+          ..write('isRemoved: $isRemoved, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3850,22 +3799,20 @@ typedef $$ManualVaccinationScheduleOverridesTableCreateCompanionBuilder
     = ManualVaccinationScheduleOverridesCompanion Function({
   required String id,
   required String childId,
-  required String sourceVaccineCode,
-  required int sourceDoseNumber,
   required String vaccineCode,
   required int doseNumber,
-  required DateTime dueDate,
+  Value<DateTime?> dueDate,
+  Value<bool> isRemoved,
   Value<int> rowid,
 });
 typedef $$ManualVaccinationScheduleOverridesTableUpdateCompanionBuilder
     = ManualVaccinationScheduleOverridesCompanion Function({
   Value<String> id,
   Value<String> childId,
-  Value<String> sourceVaccineCode,
-  Value<int> sourceDoseNumber,
   Value<String> vaccineCode,
   Value<int> doseNumber,
-  Value<DateTime> dueDate,
+  Value<DateTime?> dueDate,
+  Value<bool> isRemoved,
   Value<int> rowid,
 });
 
@@ -3905,14 +3852,6 @@ class $$ManualVaccinationScheduleOverridesTableFilterComposer
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get sourceVaccineCode => $composableBuilder(
-      column: $table.sourceVaccineCode,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get sourceDoseNumber => $composableBuilder(
-      column: $table.sourceDoseNumber,
-      builder: (column) => ColumnFilters(column));
-
   ColumnFilters<String> get vaccineCode => $composableBuilder(
       column: $table.vaccineCode, builder: (column) => ColumnFilters(column));
 
@@ -3921,6 +3860,9 @@ class $$ManualVaccinationScheduleOverridesTableFilterComposer
 
   ColumnFilters<DateTime> get dueDate => $composableBuilder(
       column: $table.dueDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isRemoved => $composableBuilder(
+      column: $table.isRemoved, builder: (column) => ColumnFilters(column));
 
   $$ChildProfilesTableFilterComposer get childId {
     final $$ChildProfilesTableFilterComposer composer = $composerBuilder(
@@ -3955,14 +3897,6 @@ class $$ManualVaccinationScheduleOverridesTableOrderingComposer
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get sourceVaccineCode => $composableBuilder(
-      column: $table.sourceVaccineCode,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get sourceDoseNumber => $composableBuilder(
-      column: $table.sourceDoseNumber,
-      builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get vaccineCode => $composableBuilder(
       column: $table.vaccineCode, builder: (column) => ColumnOrderings(column));
 
@@ -3971,6 +3905,9 @@ class $$ManualVaccinationScheduleOverridesTableOrderingComposer
 
   ColumnOrderings<DateTime> get dueDate => $composableBuilder(
       column: $table.dueDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isRemoved => $composableBuilder(
+      column: $table.isRemoved, builder: (column) => ColumnOrderings(column));
 
   $$ChildProfilesTableOrderingComposer get childId {
     final $$ChildProfilesTableOrderingComposer composer = $composerBuilder(
@@ -4005,12 +3942,6 @@ class $$ManualVaccinationScheduleOverridesTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get sourceVaccineCode => $composableBuilder(
-      column: $table.sourceVaccineCode, builder: (column) => column);
-
-  GeneratedColumn<int> get sourceDoseNumber => $composableBuilder(
-      column: $table.sourceDoseNumber, builder: (column) => column);
-
   GeneratedColumn<String> get vaccineCode => $composableBuilder(
       column: $table.vaccineCode, builder: (column) => column);
 
@@ -4019,6 +3950,9 @@ class $$ManualVaccinationScheduleOverridesTableAnnotationComposer
 
   GeneratedColumn<DateTime> get dueDate =>
       $composableBuilder(column: $table.dueDate, builder: (column) => column);
+
+  GeneratedColumn<bool> get isRemoved =>
+      $composableBuilder(column: $table.isRemoved, builder: (column) => column);
 
   $$ChildProfilesTableAnnotationComposer get childId {
     final $$ChildProfilesTableAnnotationComposer composer = $composerBuilder(
@@ -4074,41 +4008,37 @@ class $$ManualVaccinationScheduleOverridesTableTableManager
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
             Value<String> childId = const Value.absent(),
-            Value<String> sourceVaccineCode = const Value.absent(),
-            Value<int> sourceDoseNumber = const Value.absent(),
             Value<String> vaccineCode = const Value.absent(),
             Value<int> doseNumber = const Value.absent(),
-            Value<DateTime> dueDate = const Value.absent(),
+            Value<DateTime?> dueDate = const Value.absent(),
+            Value<bool> isRemoved = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               ManualVaccinationScheduleOverridesCompanion(
             id: id,
             childId: childId,
-            sourceVaccineCode: sourceVaccineCode,
-            sourceDoseNumber: sourceDoseNumber,
             vaccineCode: vaccineCode,
             doseNumber: doseNumber,
             dueDate: dueDate,
+            isRemoved: isRemoved,
             rowid: rowid,
           ),
           createCompanionCallback: ({
             required String id,
             required String childId,
-            required String sourceVaccineCode,
-            required int sourceDoseNumber,
             required String vaccineCode,
             required int doseNumber,
-            required DateTime dueDate,
+            Value<DateTime?> dueDate = const Value.absent(),
+            Value<bool> isRemoved = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               ManualVaccinationScheduleOverridesCompanion.insert(
             id: id,
             childId: childId,
-            sourceVaccineCode: sourceVaccineCode,
-            sourceDoseNumber: sourceDoseNumber,
             vaccineCode: vaccineCode,
             doseNumber: doseNumber,
             dueDate: dueDate,
+            isRemoved: isRemoved,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
