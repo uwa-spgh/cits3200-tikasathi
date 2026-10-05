@@ -133,6 +133,38 @@ void main() {
       expect(find.text('तपाईंको बच्चाहरू'), findsOneWidget);
     });
 
+    testWidgets('uses the Child page Due Today visual convention',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(),
+            ),
+            healthFacilitatorProvider.overrideWith(
+              (ref) => Stream.value(null),
+            ),
+          ],
+          child: MaterialApp(
+            locale: const Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(body: HomeScreen(groups: buildHomeGroups())),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final Container card = tester.widget<Container>(
+        find.byKey(const Key('home-group-dueToday')),
+      );
+      final BoxDecoration decoration = card.decoration! as BoxDecoration;
+      expect(decoration.color, const Color(0xFFFFF8E6));
+      expect((decoration.border! as Border).top.color, const Color(0xFFE08A00));
+      expect(find.byIcon(Icons.notification_important_rounded), findsOneWidget);
+      expect(find.text('Due today'), findsOneWidget);
+    });
+
     testWidgets(
         'onboarding child screen keeps the onboarding header and action',
         (WidgetTester tester) async {

@@ -103,13 +103,7 @@ class HomeRepository {
 
     // Due soon: strictly after today and within the next 14 calendar days
     final hasDueSoon = dueRows.any((VaccinationDue due) {
-      final dueDate = DateTime(
-        due.dueDate.year,
-        due.dueDate.month,
-        due.dueDate.day,
-      );
-      final difference = dueDate.difference(nowDate).inDays;
-      return difference > 0 && difference <= 14;
+      return isDueSoon(due.dueDate, nowDate);
     });
 
     if (hasDueSoon) {

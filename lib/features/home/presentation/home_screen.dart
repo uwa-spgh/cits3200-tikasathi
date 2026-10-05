@@ -616,10 +616,10 @@ class _GroupStyle {
         );
       case HomeVaccinationGroup.dueToday:
         return const _GroupStyle(
-          headerColor: Color(0xFFC9292B),
-          bodyColor: Colors.white,
-          borderColor: Color(0xFFC9292B),
-          icon: Icons.warning_rounded,
+          headerColor: Color(0xFFE08A00),
+          bodyColor: Color(0xFFFFF8E6),
+          borderColor: Color(0xFFE08A00),
+          icon: Icons.notification_important_rounded,
         );
       case HomeVaccinationGroup.dueSoon:
         return const _GroupStyle(
