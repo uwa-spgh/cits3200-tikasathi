@@ -264,6 +264,8 @@
   "scheduleEditorSaveSuccess": "खोप तालिका अद्यावधिक भयो।",
   "scheduleEditorSaveError": "खोप तालिका अद्यावधिक गर्न सकिएन।",
   "scheduleEditorRemove": "तालिकाबाट हटाउनुहोस्",
+  "scheduleEditorRemoveConfirm": "हटाउनुहोस्",
+  "scheduleEditorDueDateChange": "खोपको तालिका मिति परिवर्तन गर्ने?",
   "scheduleEditorRemoveTitle": "खोपलाई तालिकाबाट हटाउने?",
   "scheduleEditorRemoveMessage": "{vaccineCode} मात्रा {doseNumber} लाई बच्चाको खोप तालिकाबाट हटाउने? यसले खोप इतिहासमा असर गर्दैन।",
   "@scheduleEditorRemoveMessage": {

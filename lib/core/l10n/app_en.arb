@@ -267,6 +267,8 @@
   "scheduleEditorSaveSuccess": "Vaccine schedule updated.",
   "scheduleEditorSaveError": "Could not update the vaccine schedule.",
   "scheduleEditorRemove": "Remove from schedule",
+  "scheduleEditorRemoveConfirm": "Remove",
+  "scheduleEditorDueDateChange": "Change scheduled date?",
   "scheduleEditorRemoveTitle": "Remove vaccine from schedule?",
   "scheduleEditorRemoveMessage": "Are you sure you want to remove {vaccineCode} dose {doseNumber} from this child's vaccine schedule? This will not affect vaccination history.",
   "@scheduleEditorRemoveMessage": {

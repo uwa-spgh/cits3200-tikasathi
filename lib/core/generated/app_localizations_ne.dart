@@ -356,6 +356,12 @@ class AppLocalizationsNe extends AppLocalizations {
   String get scheduleEditorRemove => 'तालिकाबाट हटाउनुहोस्';
 
   @override
+  String get scheduleEditorRemoveConfirm => 'हटाउनुहोस्';
+
+  @override
+  String get scheduleEditorDueDateChange => 'खोपको तालिका मिति परिवर्तन गर्ने?';
+
+  @override
   String get scheduleEditorRemoveTitle => 'खोपलाई तालिकाबाट हटाउने?';
 
   @override

@@ -728,6 +728,18 @@ abstract class AppLocalizations {
   /// **'Remove from schedule'**
   String get scheduleEditorRemove;
 
+  /// No description provided for @scheduleEditorRemoveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get scheduleEditorRemoveConfirm;
+
+  /// No description provided for @scheduleEditorDueDateChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change scheduled date?'**
+  String get scheduleEditorDueDateChange;
+
   /// No description provided for @scheduleEditorRemoveTitle.
   ///
   /// In en, this message translates to:

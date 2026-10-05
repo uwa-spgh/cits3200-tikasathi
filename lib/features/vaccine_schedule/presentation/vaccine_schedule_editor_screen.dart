@@ -9,7 +9,7 @@ import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
 
-enum _ScheduleEditAction { save, remove }
+enum _ScheduleEditAction { save }
 
 class _ScheduleEditResult {
   const _ScheduleEditResult(this.action, this.date);
@@ -243,13 +243,16 @@ class _VaccineScheduleEditorScreenState
                 ),
               ),
               const SizedBox(height: 20),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.scheduleEditorDueDate),
-                subtitle: Text(DateFormat(
-                        'd MMM y', Localizations.localeOf(context).languageCode)
-                    .format(date)),
-                trailing: const Icon(Icons.edit_calendar),
+              Text(
+                l10n.scheduleEditorDueDateChange,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 8),
+              InkWell(
+                borderRadius: BorderRadius.circular(8),
                 onTap: () async {
                   final picked = await showDatePicker(
                     context: dialogContext,
@@ -270,40 +273,98 @@ class _VaccineScheduleEditorScreenState
                     setDialogState(() => date = picked);
                   }
                 },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: const Color(0xFF0F52BA),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          DateFormat(
+                            'd MMM y',
+                            Localizations.localeOf(context).languageCode,
+                          ).format(date),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Color(0xFF334155),
+                          ),
+                        ),
+                      ),
+                      const Icon(
+                        Icons.edit_calendar,
+                        color: Color(0xFF0F52BA),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.red,
+                    side: const BorderSide(color: Colors.red),
+                    padding: const EdgeInsets.symmetric(vertical: 13),
+                  ),
+                  onPressed: () async {
+                    final removed = await _confirmRemoveDue(
+                      dialogContext,
+                      child,
+                      due,
+                    );
+                    if (removed && dialogContext.mounted) {
+                      Navigator.of(dialogContext).pop();
+                    }
+                  },
+                  icon: const Icon(Icons.remove_circle_outline),
+                  label: Text(l10n.scheduleEditorRemove),
+                ),
               ),
             ],
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: Text(l10n.profileCancel),
-            ),
-            OutlinedButton(
-              onPressed: () => Navigator.of(dialogContext).pop(
-                _ScheduleEditResult(_ScheduleEditAction.remove, date),
+            Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFF0F52BA),
+                      side: const BorderSide(color: Color(0xFF0F52BA)),
+                    ),
+                    onPressed: () => Navigator.of(dialogContext).pop(),
+                    child: Text(l10n.profileCancel),
+                  ),
+                  const SizedBox(width: 12),
+                  FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xFF0F52BA),
+                      foregroundColor: Colors.white,
+                    ),
+                    onPressed: () => Navigator.of(dialogContext).pop(
+                      _ScheduleEditResult(_ScheduleEditAction.save, date),
+                    ),
+                    child: Text(l10n.profileSave),
+                  ),
+                ],
               ),
-              child: Text(l10n.scheduleEditorRemove),
-            ),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: const Color(0xFF0F52BA),
-                foregroundColor: Colors.white,
-              ),
-              onPressed: () => Navigator.of(dialogContext).pop(
-                _ScheduleEditResult(_ScheduleEditAction.save, date),
-              ),
-              child: Text(l10n.profileSave),
             ),
           ],
         ),
       ),
     );
     if (result == null || !context.mounted) return;
-
-    if (result.action == _ScheduleEditAction.remove) {
-      await _confirmRemoveDue(context, child, due);
-      return;
-    }
 
     setState(() => _saving = true);
     try {
@@ -337,7 +398,7 @@ class _VaccineScheduleEditorScreenState
     }
   }
 
-  Future<void> _confirmRemoveDue(
+  Future<bool> _confirmRemoveDue(
     BuildContext context,
     ChildProfile child,
     VaccinationDue due,
@@ -382,15 +443,15 @@ class _VaccineScheduleEditorScreenState
                 const SizedBox(width: 12),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF0F52BA),
-                    side: const BorderSide(color: Color(0xFF0F52BA)),
+                    foregroundColor: Colors.red,
+                    side: const BorderSide(color: Colors.red),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 20,
                       vertical: 12,
                     ),
                   ),
                   onPressed: () => Navigator.of(dialogContext).pop(true),
-                  child: Text(l10n.scheduleEditorRemove),
+                  child: Text(l10n.scheduleEditorRemoveConfirm),
                 ),
               ],
             ),
@@ -398,7 +459,7 @@ class _VaccineScheduleEditorScreenState
         ],
       ),
     );
-    if (confirmed != true || !mounted) return;
+    if (confirmed != true || !mounted) return false;
     setState(() => _saving = true);
     try {
       final db = ref.read(appDatabaseProvider);
@@ -410,7 +471,7 @@ class _VaccineScheduleEditorScreenState
       await db.vaccinationDuesDao.recalculateDuesForChild(widget.childId);
       ref.invalidate(childProfileProvider(widget.childId));
       ref.invalidate(homeStatusGroupsProvider);
-      if (!context.mounted) return;
+      if (!context.mounted) return true;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -422,11 +483,13 @@ class _VaccineScheduleEditorScreenState
           ),
         ),
       );
+      return true;
     } catch (_) {
-      if (!context.mounted) return;
+      if (!context.mounted) return false;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.scheduleEditorSaveError)),
       );
+      return false;
     } finally {
       if (mounted) setState(() => _saving = false);
     }

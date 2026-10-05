@@ -353,6 +353,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scheduleEditorRemove => 'Remove from schedule';
 
   @override
+  String get scheduleEditorRemoveConfirm => 'Remove';
+
+  @override
+  String get scheduleEditorDueDateChange => 'Change scheduled date?';
+
+  @override
   String get scheduleEditorRemoveTitle => 'Remove vaccine from schedule?';
 
   @override
