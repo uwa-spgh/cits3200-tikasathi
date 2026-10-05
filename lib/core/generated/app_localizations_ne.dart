@@ -291,6 +291,11 @@ class AppLocalizationsNe extends AppLocalizations {
   String get scheduleEditorTitle => 'खोप तालिका सम्पादन गर्नुहोस्';
 
   @override
+  String scheduleEditorTitleForChild(String childName) {
+    return '$childName को खोप तालिका सम्पादन गर्नुहोस्';
+  }
+
+  @override
   String get scheduleEditorEmpty => 'कुनै बाँकी खोप तालिका छैन।';
 
   @override

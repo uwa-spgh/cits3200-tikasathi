@@ -288,6 +288,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scheduleEditorTitle => 'Edit vaccine schedule';
 
   @override
+  String scheduleEditorTitleForChild(String childName) {
+    return 'Edit $childName\'s vaccine schedule';
+  }
+
+  @override
   String get scheduleEditorEmpty => 'No outstanding vaccines are scheduled.';
 
   @override

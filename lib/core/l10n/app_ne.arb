@@ -238,6 +238,14 @@
   "healthcareProfessionalConfirm": "हो",
   "healthcareProfessionalDecline": "होइन",
   "scheduleEditorTitle": "खोप तालिका सम्पादन गर्नुहोस्",
+  "scheduleEditorTitleForChild": "{childName} को खोप तालिका सम्पादन गर्नुहोस्",
+  "@scheduleEditorTitleForChild": {
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
   "scheduleEditorEmpty": "कुनै बाँकी खोप तालिका छैन।",
   "scheduleEditorEdit": "निर्धारित खोप सम्पादन गर्नुहोस्",
   "scheduleEditorVaccine": "खोप",

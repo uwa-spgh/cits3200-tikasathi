@@ -614,6 +614,12 @@ abstract class AppLocalizations {
   /// **'Edit vaccine schedule'**
   String get scheduleEditorTitle;
 
+  /// No description provided for @scheduleEditorTitleForChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {childName}\'s vaccine schedule'**
+  String scheduleEditorTitleForChild(String childName);
+
   /// No description provided for @scheduleEditorEmpty.
   ///
   /// In en, this message translates to:

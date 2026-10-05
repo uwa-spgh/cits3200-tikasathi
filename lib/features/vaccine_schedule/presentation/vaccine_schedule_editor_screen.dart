@@ -19,6 +19,172 @@ class VaccineScheduleEditorScreen extends ConsumerStatefulWidget {
       _VaccineScheduleEditorScreenState();
 }
 
+class _ScheduleFilterToggleCard extends StatelessWidget {
+  const _ScheduleFilterToggleCard({
+    required this.showAll,
+    required this.onToggle,
+    required this.localizations,
+  });
+
+  final bool showAll;
+  final ValueChanged<bool> onToggle;
+  final AppLocalizations localizations;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE2E8F0),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _ScheduleFilterSegment(
+              isSelected: !showAll,
+              label: localizations.vaccineHistoryFilterAgeAppropriate,
+              icon: Icons.child_care_rounded,
+              onTap: () => onToggle(false),
+            ),
+          ),
+          const SizedBox(width: 4),
+          Expanded(
+            child: _ScheduleFilterSegment(
+              isSelected: showAll,
+              label: localizations.vaccineHistoryFilterAll,
+              icon: Icons.format_list_bulleted_rounded,
+              onTap: () => onToggle(true),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ScheduleFilterSegment extends StatelessWidget {
+  const _ScheduleFilterSegment({
+    required this.isSelected,
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
+
+  final bool isSelected;
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: isSelected ? Colors.white : Colors.transparent,
+      borderRadius: BorderRadius.circular(10),
+      elevation: isSelected ? 1 : 0,
+      shadowColor: const Color(0x1A000000),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 18,
+                color: isSelected
+                    ? const Color(0xFF0F52BA)
+                    : const Color(0xFF64748B),
+              ),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                    color: isSelected
+                        ? const Color(0xFF0F52BA)
+                        : const Color(0xFF64748B),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ScheduleDueRow extends StatelessWidget {
+  const _ScheduleDueRow({
+    required this.vaccineCode,
+    required this.doseNumber,
+    required this.dueDate,
+    required this.localizations,
+    required this.onEdit,
+  });
+
+  final String vaccineCode;
+  final int doseNumber;
+  final DateTime dueDate;
+  final AppLocalizations localizations;
+  final VoidCallback? onEdit;
+
+  @override
+  Widget build(BuildContext context) {
+    final label = '$vaccineCode (${localizations.dose} $doseNumber)';
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                      color: Color(0xFF334155),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    DateFormat(
+                      'd MMM y',
+                      Localizations.localeOf(context).languageCode,
+                    ).format(dueDate),
+                    style: const TextStyle(color: Color(0xFF64748B)),
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              iconSize: 28,
+              color: const Color(0xFF0F52BA),
+              icon: const Icon(Icons.edit_calendar),
+              onPressed: onEdit,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _VaccineScheduleEditorScreenState
     extends ConsumerState<VaccineScheduleEditorScreen> {
   bool _showAll = false;
@@ -107,25 +273,6 @@ class _VaccineScheduleEditorScreenState
     );
     if (selectedDate == null || !context.mounted) return;
 
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.scheduleEditorSaveConfirmTitle),
-        content: Text(l10n.scheduleEditorSaveConfirmMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(l10n.profileCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(l10n.scheduleEditorSave),
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true || !context.mounted) return;
-
     setState(() => _saving = true);
     try {
       final db = ref.read(appDatabaseProvider);
@@ -172,16 +319,49 @@ class _VaccineScheduleEditorScreenState
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.scheduleEditorRestoreTitle),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        titlePadding: const EdgeInsets.fromLTRB(32, 32, 32, 0),
+        contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 0),
+        actionsPadding: const EdgeInsets.fromLTRB(32, 28, 32, 28),
+        title: Text(
+          l10n.scheduleEditorRestoreTitle,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
         content: Text(l10n.scheduleEditorRestoreMessage),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(l10n.profileCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(l10n.scheduleEditorRestoreConfirm),
+          Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FilledButton(
+                  autofocus: true,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF0F52BA),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                  ),
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
+                  child: Text(l10n.profileCancel),
+                ),
+                const SizedBox(width: 12),
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF0F52BA),
+                    side: const BorderSide(color: Color(0xFF0F52BA)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                  ),
+                  onPressed: () => Navigator.of(dialogContext).pop(true),
+                  child: Text(l10n.scheduleEditorRestoreConfirm),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -213,8 +393,25 @@ class _VaccineScheduleEditorScreenState
     return Scaffold(
       backgroundColor: const Color(0xFFF5F9FC),
       appBar: AppBar(
-        title: Text(l10n.scheduleEditorTitle),
-        backgroundColor: const Color(0xFFFFF8E6),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
+          tooltip: l10n.childBackTooltip,
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          state.when(
+            data: (details) =>
+                l10n.scheduleEditorTitleForChild(details.child.name),
+            loading: () => l10n.scheduleEditorTitle,
+            error: (_, __) => l10n.scheduleEditorTitle,
+          ),
+          style: const TextStyle(
+            color: Color(0xFF0F172A),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -230,18 +427,11 @@ class _VaccineScheduleEditorScreenState
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(12),
-                child: SegmentedButton<bool>(
-                  segments: [
-                    ButtonSegment(
-                        value: false,
-                        label: Text(l10n.vaccineHistoryFilterAgeAppropriate)),
-                    ButtonSegment(
-                        value: true, label: Text(l10n.vaccineHistoryFilterAll)),
-                  ],
-                  selected: {_showAll},
-                  onSelectionChanged: (value) =>
-                      setState(() => _showAll = value.first),
+                padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+                child: _ScheduleFilterToggleCard(
+                  showAll: _showAll,
+                  onToggle: (showAll) => setState(() => _showAll = showAll),
+                  localizations: l10n,
                 ),
               ),
               Expanded(
@@ -252,27 +442,14 @@ class _VaccineScheduleEditorScreenState
                         itemCount: dues.length,
                         itemBuilder: (_, index) {
                           final due = dues[index];
-                          return Card(
-                            color: const Color(0xFFFFF8E6),
-                            child: ListTile(
-                              leading: const Icon(Icons.calendar_month,
-                                  color: Color(0xFF9A5B00)),
-                              title: Text(
-                                  '${due.vaccineCode} (${l10n.scheduleEditorDose} ${due.doseNumber})'),
-                              subtitle: Text(DateFormat(
-                                      'd MMM y',
-                                      Localizations.localeOf(context)
-                                          .languageCode)
-                                  .format(due.dueDate)),
-                              trailing: IconButton(
-                                icon: const Icon(Icons.edit_calendar,
-                                    color: Color(0xFF9A5B00)),
-                                onPressed: _saving
-                                    ? null
-                                    : () =>
-                                        _editDue(context, details.child, due),
-                              ),
-                            ),
+                          return _ScheduleDueRow(
+                            vaccineCode: due.vaccineCode,
+                            doseNumber: due.doseNumber,
+                            dueDate: due.dueDate,
+                            localizations: l10n,
+                            onEdit: _saving
+                                ? null
+                                : () => _editDue(context, details.child, due),
                           );
                         },
                       ),
@@ -284,7 +461,16 @@ class _VaccineScheduleEditorScreenState
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(12),
-          child: OutlinedButton.icon(
+          child: FilledButton.icon(
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFF0F52BA),
+              foregroundColor: Colors.white,
+              minimumSize: const Size.fromHeight(56),
+              textStyle: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             onPressed: _saving ? null : _restoreDefault,
             icon: const Icon(Icons.restore),
             label: Text(l10n.scheduleEditorRestore),

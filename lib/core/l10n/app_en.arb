@@ -241,6 +241,14 @@
   "healthcareProfessionalConfirm": "Yes",
   "healthcareProfessionalDecline": "No",
   "scheduleEditorTitle": "Edit vaccine schedule",
+  "scheduleEditorTitleForChild": "Edit {childName}'s vaccine schedule",
+  "@scheduleEditorTitleForChild": {
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
   "scheduleEditorEmpty": "No outstanding vaccines are scheduled.",
   "scheduleEditorEdit": "Edit scheduled vaccine",
   "scheduleEditorVaccine": "Vaccine",
