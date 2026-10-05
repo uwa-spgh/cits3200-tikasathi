@@ -323,6 +323,7 @@ class _StatusGroupCard extends StatelessWidget {
     final String groupHeader = switch (group.group) {
       HomeVaccinationGroup.awaitingSetup =>
         localizations.homeSectionAwaitingSetup,
+      HomeVaccinationGroup.overdue => localizations.homeSectionOverdue,
       HomeVaccinationGroup.dueToday => localizations.homeSectionDueToday,
       HomeVaccinationGroup.dueSoon => localizations.homeSectionDueSoon,
       HomeVaccinationGroup.upToDate => localizations.homeSectionUpToDate,
@@ -614,12 +615,19 @@ class _GroupStyle {
           borderColor: Color(0xFFCBD5E1),
           icon: Icons.pending_actions_rounded,
         );
+      case HomeVaccinationGroup.overdue:
+        return const _GroupStyle(
+          headerColor: Color(0xFFCD2E2E),
+          bodyColor: Colors.white,
+          borderColor: Color(0xFFCD2E2E),
+          icon: Icons.warning_amber_rounded,
+        );
       case HomeVaccinationGroup.dueToday:
         return const _GroupStyle(
-          headerColor: Color(0xFFC9292B),
+          headerColor: Color(0xFFE08A00),
           bodyColor: Colors.white,
-          borderColor: Color(0xFFC9292B),
-          icon: Icons.warning_rounded,
+          borderColor: Color(0xFFE08A00),
+          icon: Icons.notification_important_rounded,
         );
       case HomeVaccinationGroup.dueSoon:
         return const _GroupStyle(

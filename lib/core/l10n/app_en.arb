@@ -236,6 +236,55 @@
   "editCaregiverAction": "Edit caregiver details",
   "editChildAction": "Edit child details",
   "deleteChildAction": "Delete child",
+  "editVaccineScheduleAction": "Edit child's vaccination schedule (HEALTHCARE PROFESSIONAL ONLY)",
+  "healthcareProfessionalQuestion": "Are you a healthcare professional?",
+  "healthcareProfessionalConfirm": "Yes",
+  "healthcareProfessionalDecline": "No",
+  "scheduleEditorTitle": "Edit vaccine schedule",
+  "scheduleEditorTitleForChild": "Edit {childName}'s vaccine schedule",
+  "@scheduleEditorTitleForChild": {
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "scheduleEditorEmpty": "No outstanding vaccines are scheduled.",
+  "scheduleEditorEdit": "Edit scheduled vaccine",
+  "scheduleEditorVaccine": "Vaccine",
+  "scheduleEditorDose": "Dose number",
+  "scheduleEditorDueDate": "Scheduled date",
+  "scheduleEditorSave": "Save schedule changes",
+  "scheduleEditorSaveConfirmTitle": "Save schedule changes?",
+  "scheduleEditorSaveConfirmMessage": "Save these healthcare professional changes to the child's vaccine schedule?",
+  "scheduleEditorRestore": "Restore default vaccine schedule",
+  "scheduleEditorRestoreTitle": "Restore default vaccine schedule?",
+  "scheduleEditorRestoreMessage": "This will remove all healthcare professional changes and restore the standard vaccination schedule for this child. Vaccination history will not be changed.",
+  "scheduleEditorRestoreConfirm": "Restore",
+  "scheduleEditorInvalidDose": "That vaccine and dose combination is not valid.",
+  "scheduleEditorDuplicateDose": "That vaccine and dose is already scheduled for this child.",
+  "scheduleEditorAdministeredDose": "That vaccine and dose has already been administered.",
+  "scheduleEditorSaveSuccess": "Vaccine schedule updated.",
+  "scheduleEditorSaveError": "Could not update the vaccine schedule.",
+  "scheduleEditorRemove": "Remove from schedule",
+  "scheduleEditorRemoveConfirm": "Remove",
+  "scheduleEditorDueDateChange": "Change scheduled date?",
+  "scheduleEditorRemoveTitle": "Remove vaccine from schedule?",
+  "scheduleEditorRemoveMessage": "Are you sure you want to remove {vaccineCode} dose {doseNumber} from this child's vaccine schedule? This will not affect vaccination history.",
+  "@scheduleEditorRemoveMessage": {
+    "placeholders": {
+      "vaccineCode": {},
+      "doseNumber": {}
+    }
+  },
+  "scheduleEditorRemoveSuccess": "{vaccineCode} dose {doseNumber} removed from {childName}'s schedule.",
+  "@scheduleEditorRemoveSuccess": {
+    "placeholders": {
+      "vaccineCode": {},
+      "doseNumber": {},
+      "childName": {}
+    }
+  },
   "editCaregiverTitle": "Edit caregiver details",
   "editChildTitle": "Edit child details",
   "editChildTitleWithName": "Edit {childName}'s details",
@@ -489,8 +538,10 @@
     }
   },
   "homeSectionDueToday": "Due today",
+  "homeSectionOverdue": "Overdue",
   "homeSectionDueSoon": "Due soon",
   "homeSectionUpToDate": "Up to date",
+  "homeScrollInstruction": "Scroll down to see all children.",
   "homeEmptyStateTitle": "No children added yet.",
   "homeEmptyStateSubtitle": "Add your first child to see upcoming vaccines here.",
   "learnTitle": "Learn",
@@ -581,6 +632,38 @@
   "vaccineScheduleDueHeader": "Date due",
   "vaccineScheduleReturn": "Return",
   "vaccineScheduleEmpty": "There are no upcoming vaccines.",
+  "vaccineScheduleDueGroupSingular": "{vaccines} is due on {date}",
+  "vaccineScheduleDueGroupPlural": "{vaccines} are due on {date}",
+  "@vaccineScheduleDueGroupSingular": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "vaccines": {
+        "type": "String"
+      }
+    }
+  },
+  "@vaccineScheduleDueGroupPlural": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "vaccines": {
+        "type": "String"
+      }
+    }
+  },
+  "@vaccineScheduleDueGroup": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "vaccines": {
+        "type": "String"
+      }
+    }
+  },
   "vaccineScheduleToday": "Today",
   "vaccineScheduleInDays": "{count, plural, one {In # day} other {In # days}}",
   "vaccineScheduleInMonths": "{count, plural, one {In # month} other {In # months}}",
@@ -667,5 +750,17 @@
         "type": "String"
       }
     }
-  }
+  },
+  "backupSectionTitle": "Backup",
+  "backupExportAction": "Export backup",
+  "backupImportAction": "Import backup",
+  "backupPrivacyNote": "Keep this file somewhere safe. It contains your child's health information.",
+  "backupReplaceTitle": "Replace data on this phone?",
+  "backupReplaceMessage": "This will replace all data on this phone. Continue?",
+  "backupReplaceConfirm": "Continue",
+  "backupExportSuccess": "Backup file ready to save.",
+  "backupImportSuccess": "Backup imported.",
+  "backupExportError": "Could not export the backup.",
+  "backupImportError": "Could not import the backup.",
+  "backupInvalidFile": "This file is not a TikaSathi backup this app can read."
 }

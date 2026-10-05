@@ -271,6 +271,108 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteChildAction => 'Delete child';
 
   @override
+  String get editVaccineScheduleAction =>
+      'Edit child\'s vaccination schedule (HEALTHCARE PROFESSIONAL ONLY)';
+
+  @override
+  String get healthcareProfessionalQuestion =>
+      'Are you a healthcare professional?';
+
+  @override
+  String get healthcareProfessionalConfirm => 'Yes';
+
+  @override
+  String get healthcareProfessionalDecline => 'No';
+
+  @override
+  String get scheduleEditorTitle => 'Edit vaccine schedule';
+
+  @override
+  String scheduleEditorTitleForChild(String childName) {
+    return 'Edit $childName\'s vaccine schedule';
+  }
+
+  @override
+  String get scheduleEditorEmpty => 'No outstanding vaccines are scheduled.';
+
+  @override
+  String get scheduleEditorEdit => 'Edit scheduled vaccine';
+
+  @override
+  String get scheduleEditorVaccine => 'Vaccine';
+
+  @override
+  String get scheduleEditorDose => 'Dose number';
+
+  @override
+  String get scheduleEditorDueDate => 'Scheduled date';
+
+  @override
+  String get scheduleEditorSave => 'Save schedule changes';
+
+  @override
+  String get scheduleEditorSaveConfirmTitle => 'Save schedule changes?';
+
+  @override
+  String get scheduleEditorSaveConfirmMessage =>
+      'Save these healthcare professional changes to the child\'s vaccine schedule?';
+
+  @override
+  String get scheduleEditorRestore => 'Restore default vaccine schedule';
+
+  @override
+  String get scheduleEditorRestoreTitle => 'Restore default vaccine schedule?';
+
+  @override
+  String get scheduleEditorRestoreMessage =>
+      'This will remove all healthcare professional changes and restore the standard vaccination schedule for this child. Vaccination history will not be changed.';
+
+  @override
+  String get scheduleEditorRestoreConfirm => 'Restore';
+
+  @override
+  String get scheduleEditorInvalidDose =>
+      'That vaccine and dose combination is not valid.';
+
+  @override
+  String get scheduleEditorDuplicateDose =>
+      'That vaccine and dose is already scheduled for this child.';
+
+  @override
+  String get scheduleEditorAdministeredDose =>
+      'That vaccine and dose has already been administered.';
+
+  @override
+  String get scheduleEditorSaveSuccess => 'Vaccine schedule updated.';
+
+  @override
+  String get scheduleEditorSaveError =>
+      'Could not update the vaccine schedule.';
+
+  @override
+  String get scheduleEditorRemove => 'Remove from schedule';
+
+  @override
+  String get scheduleEditorRemoveConfirm => 'Remove';
+
+  @override
+  String get scheduleEditorDueDateChange => 'Change scheduled date?';
+
+  @override
+  String get scheduleEditorRemoveTitle => 'Remove vaccine from schedule?';
+
+  @override
+  String scheduleEditorRemoveMessage(Object vaccineCode, Object doseNumber) {
+    return 'Are you sure you want to remove $vaccineCode dose $doseNumber from this child\'s vaccine schedule? This will not affect vaccination history.';
+  }
+
+  @override
+  String scheduleEditorRemoveSuccess(
+      Object vaccineCode, Object doseNumber, Object childName) {
+    return '$vaccineCode dose $doseNumber removed from $childName\'s schedule.';
+  }
+
+  @override
   String get editCaregiverTitle => 'Edit caregiver details';
 
   @override
@@ -622,10 +724,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeSectionDueToday => 'Due today';
 
   @override
+  String get homeSectionOverdue => 'Overdue';
+
+  @override
   String get homeSectionDueSoon => 'Due soon';
 
   @override
   String get homeSectionUpToDate => 'Up to date';
+
+  @override
+  String get homeScrollInstruction => 'Scroll down to see all children.';
 
   @override
   String get homeEmptyStateTitle => 'No children added yet.';
@@ -799,6 +907,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vaccineScheduleEmpty => 'There are no upcoming vaccines.';
 
   @override
+  String vaccineScheduleDueGroupSingular(String date, String vaccines) {
+    return '$vaccines is due on $date';
+  }
+
+  @override
+  String vaccineScheduleDueGroupPlural(String date, String vaccines) {
+    return '$vaccines are due on $date';
+  }
+
+  @override
   String get vaccineScheduleToday => 'Today';
 
   @override
@@ -893,4 +1011,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String reminderOverdue(String vaccineName) {
     return '$vaccineName is overdue. Contact your nearest health facility for catch-up vaccination.';
   }
+
+  @override
+  String get backupSectionTitle => 'Backup';
+
+  @override
+  String get backupExportAction => 'Export backup';
+
+  @override
+  String get backupImportAction => 'Import backup';
+
+  @override
+  String get backupPrivacyNote =>
+      'Keep this file somewhere safe. It contains your child\'s health information.';
+
+  @override
+  String get backupReplaceTitle => 'Replace data on this phone?';
+
+  @override
+  String get backupReplaceMessage =>
+      'This will replace all data on this phone. Continue?';
+
+  @override
+  String get backupReplaceConfirm => 'Continue';
+
+  @override
+  String get backupExportSuccess => 'Backup file ready to save.';
+
+  @override
+  String get backupImportSuccess => 'Backup imported.';
+
+  @override
+  String get backupExportError => 'Could not export the backup.';
+
+  @override
+  String get backupImportError => 'Could not import the backup.';
+
+  @override
+  String get backupInvalidFile =>
+      'This file is not a TikaSathi backup this app can read.';
 }

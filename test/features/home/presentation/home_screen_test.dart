@@ -133,6 +133,189 @@ void main() {
       expect(find.text('तपाईंको बच्चाहरू'), findsOneWidget);
     });
 
+    testWidgets('uses the Child page Due Today visual convention',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(),
+            ),
+            healthFacilitatorProvider.overrideWith(
+              (ref) => Stream.value(null),
+            ),
+          ],
+          child: MaterialApp(
+            locale: const Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(body: HomeScreen(groups: buildHomeGroups())),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final Container card = tester.widget<Container>(
+        find.byKey(const Key('home-group-dueToday')),
+      );
+      final BoxDecoration decoration = card.decoration! as BoxDecoration;
+      expect(decoration.color, Colors.white);
+      expect((decoration.border! as Border).top.color, const Color(0xFFE08A00));
+      expect(find.byIcon(Icons.notification_important_rounded), findsOneWidget);
+      expect(find.text('Due today'), findsOneWidget);
+    });
+
+    testWidgets('uses the Child page Overdue visual convention',
+        (WidgetTester tester) async {
+      final List<HomeStatusGroup> groups = <HomeStatusGroup>[
+        HomeStatusGroup(
+          group: HomeVaccinationGroup.overdue,
+          children: <HomeChildSummary>[
+            buildChild(
+              name: 'Aisha',
+              dateOfBirth: DateTime(2026, 1, 1),
+              nextVaccineCode: 'BCG',
+              canRecordDose: true,
+            ),
+          ],
+        ),
+      ];
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(),
+            ),
+            healthFacilitatorProvider.overrideWith(
+              (ref) => Stream.value(null),
+            ),
+          ],
+          child: MaterialApp(
+            locale: const Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(body: HomeScreen(groups: groups)),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final Container card = tester.widget<Container>(
+        find.byKey(const Key('home-group-overdue')),
+      );
+      final BoxDecoration decoration = card.decoration! as BoxDecoration;
+      expect(decoration.color, Colors.white);
+      expect((decoration.border! as Border).top.color, const Color(0xFFCD2E2E));
+      expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
+      expect(find.text('Overdue'), findsOneWidget);
+    });
+
+    testWidgets('renders overdue and due today as separate ordered cards',
+        (WidgetTester tester) async {
+      final List<HomeStatusGroup> groups = <HomeStatusGroup>[
+        HomeStatusGroup(
+          group: HomeVaccinationGroup.overdue,
+          children: <HomeChildSummary>[
+            buildChild(
+              name: 'Overdue child',
+              dateOfBirth: DateTime(2026, 1, 1),
+              nextVaccineCode: 'BCG',
+              canRecordDose: true,
+            ),
+          ],
+        ),
+        HomeStatusGroup(
+          group: HomeVaccinationGroup.dueToday,
+          children: <HomeChildSummary>[
+            buildChild(
+              name: 'Due today child',
+              dateOfBirth: DateTime(2026, 2, 1),
+              nextVaccineCode: 'BOPV',
+              canRecordDose: true,
+            ),
+          ],
+        ),
+      ];
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(),
+            ),
+            healthFacilitatorProvider.overrideWith(
+              (ref) => Stream.value(null),
+            ),
+          ],
+          child: MaterialApp(
+            locale: const Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(body: HomeScreen(groups: groups)),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final Finder overdueCard = find.byKey(const Key('home-group-overdue'));
+      final Finder dueTodayCard = find.byKey(const Key('home-group-dueToday'));
+
+      expect(overdueCard, findsOneWidget);
+      expect(dueTodayCard, findsOneWidget);
+      expect(
+        find.descendant(
+          of: overdueCard,
+          matching: find.text('Overdue child'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: overdueCard,
+          matching: find.text('Due today child'),
+        ),
+        findsNothing,
+      );
+      expect(
+        find.descendant(
+          of: dueTodayCard,
+          matching: find.text('Due today child'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: dueTodayCard,
+          matching: find.text('Overdue child'),
+        ),
+        findsNothing,
+      );
+      expect(
+        tester.getTopLeft(overdueCard).dy,
+        lessThan(tester.getTopLeft(dueTodayCard).dy),
+      );
+      expect(find.text('Overdue'), findsOneWidget);
+      expect(find.text('Due today'), findsOneWidget);
+
+      final BoxDecoration overdueDecoration =
+          (tester.widget<Container>(overdueCard).decoration! as BoxDecoration);
+      final BoxDecoration dueTodayDecoration =
+          (tester.widget<Container>(dueTodayCard).decoration! as BoxDecoration);
+      expect(overdueDecoration.color, Colors.white);
+      expect(
+        (overdueDecoration.border! as Border).top.color,
+        const Color(0xFFCD2E2E),
+      );
+      expect(dueTodayDecoration.color, Colors.white);
+      expect(
+        (dueTodayDecoration.border! as Border).top.color,
+        const Color(0xFFE08A00),
+      );
+      expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.notification_important_rounded), findsOneWidget);
+    });
+
     testWidgets(
         'onboarding child screen keeps the onboarding header and action',
         (WidgetTester tester) async {

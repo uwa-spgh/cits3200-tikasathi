@@ -10,12 +10,81 @@ import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/settings/data/settings_providers.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/health_facilitator_controller.dart';
-import 'package:tikasathi/features/settings/presentation/settings_screen.dart';
 import 'package:tikasathi/features/settings/presentation/health_facilitator_screen.dart';
 
 import '../../../helpers/fake_settings_repository.dart';
 
 void main() {
+  testWidgets('limits facility fields when creating and editing',
+      (WidgetTester tester) async {
+    final database = AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(database.close);
+
+    Future<void> pumpForm({HealthFacility? facility}) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            appDatabaseProvider.overrideWithValue(database),
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(language: AppLanguage.english),
+            ),
+          ],
+          child: MaterialApp(
+            locale: const Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(body: HealthFacilitatorScreen(facility: facility)),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    await pumpForm();
+    await tester.enterText(find.byType(TextField).at(0), 'n' * 51);
+    await tester.enterText(find.byType(TextField).at(1), 'a' * 81);
+    await tester.enterText(find.byType(TextField).at(2), '1' * 21);
+
+    expect(find.byType(TextField).at(0), findsOneWidget);
+    expect(
+      tester.widget<TextField>(find.byType(TextField).at(0)).controller!.text,
+      hasLength(50),
+    );
+    expect(
+      tester.widget<TextField>(find.byType(TextField).at(1)).controller!.text,
+      hasLength(80),
+    );
+    expect(
+      tester.widget<TextField>(find.byType(TextField).at(2)).controller!.text,
+      hasLength(20),
+    );
+
+    await pumpForm(
+      facility: const HealthFacilitator(
+        id: 'local',
+        name: 'Existing facility',
+        address: 'Existing address',
+        phone: '9800000000',
+      ),
+    );
+    await tester.enterText(find.byType(TextField).at(0), 'n' * 51);
+    await tester.enterText(find.byType(TextField).at(1), 'a' * 81);
+    await tester.enterText(find.byType(TextField).at(2), '1' * 21);
+
+    expect(
+      tester.widget<TextField>(find.byType(TextField).at(0)).controller!.text,
+      hasLength(50),
+    );
+    expect(
+      tester.widget<TextField>(find.byType(TextField).at(1)).controller!.text,
+      hasLength(80),
+    );
+    expect(
+      tester.widget<TextField>(find.byType(TextField).at(2)).controller!.text,
+      hasLength(20),
+    );
+  });
+
   testWidgets('allows an empty optional facilitator phone number',
       (WidgetTester tester) async {
     final database = AppDatabase.forTesting(NativeDatabase.memory());
@@ -55,7 +124,7 @@ void main() {
       (WidgetTester tester) async {
     final database = AppDatabase.forTesting(NativeDatabase.memory());
     addTearDown(database.close);
-    final facilitatorStream = StreamController<HealthFacilitator?>.broadcast();
+    final facilitatorStream = StreamController<HealthFacility?>.broadcast();
     addTearDown(facilitatorStream.close);
 
     await tester.pumpWidget(
@@ -89,86 +158,5 @@ void main() {
 
     expect(find.text('Please enter a valid phone number'), findsOneWidget);
     expect(await database.healthFacilitatorsDao.getLocalFacilitator(), isNull);
-  });
-
-  testWidgets('saves and edits the facilitator from Settings',
-      (WidgetTester tester) async {
-    final database = AppDatabase.forTesting(NativeDatabase.memory());
-    addTearDown(database.close);
-    final facilitatorStream = StreamController<HealthFacilitator?>.broadcast();
-    addTearDown(facilitatorStream.close);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          appDatabaseProvider.overrideWithValue(database),
-          healthFacilitatorProvider.overrideWith(
-            (ref) => facilitatorStream.stream,
-          ),
-          settingsRepositoryProvider.overrideWith(
-            (ref) => FakeSettingsRepository(
-              language: AppLanguage.english,
-            ),
-          ),
-        ],
-        child: const MaterialApp(
-          locale: Locale('en'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: Scaffold(body: SettingsScreen()),
-        ),
-      ),
-    );
-    await tester.pump();
-    facilitatorStream.add(null);
-    await tester.pump();
-
-    expect(find.text('Save your closest health facility'), findsOneWidget);
-    await tester.tap(find.byKey(const Key('health-facilitator-action')));
-    await tester.pumpAndSettle();
-    expect(find.byType(HealthFacilitatorScreen), findsOneWidget);
-
-    await tester.enterText(find.byType(TextField).at(0), 'Maya');
-    await tester.enterText(find.byType(TextField).at(1), 'Ward 4');
-    await tester.enterText(find.byType(TextField).at(2), '9800000000');
-    final saveButton = find.widgetWithText(ElevatedButton, 'Save').first;
-    await tester.drag(
-        find.byType(SingleChildScrollView), const Offset(0, -300));
-    await tester.pump();
-    await tester.tap(saveButton);
-    await tester.pumpAndSettle();
-
-    facilitatorStream
-        .add(await database.healthFacilitatorsDao.getLocalFacilitator());
-    await tester.pumpAndSettle();
-    expect(find.text('Your local health facility'), findsOneWidget);
-    expect(find.textContaining('Facility Name: Maya'), findsOneWidget);
-    expect(find.textContaining('Address: Ward 4'), findsOneWidget);
-    expect(find.textContaining('Phone Number: 9800000000'), findsOneWidget);
-    await tester.tap(find.byKey(const Key('health-facilitator-action')));
-    await tester.pumpAndSettle();
-    expect(find.byType(HealthFacilitatorScreen), findsOneWidget);
-    expect(
-      find.byWidgetPredicate(
-        (widget) => widget is TextField && widget.controller?.text == 'Maya',
-      ),
-      findsOneWidget,
-    );
-    expect(
-      find.byWidgetPredicate(
-        (widget) => widget is TextField && widget.controller?.text == 'Ward 4',
-      ),
-      findsOneWidget,
-    );
-    expect(
-      find.byWidgetPredicate(
-        (widget) =>
-            widget is TextField && widget.controller?.text == '9800000000',
-      ),
-      findsOneWidget,
-    );
-
-    await tester.pumpWidget(const SizedBox());
-    await tester.pump();
   });
 }

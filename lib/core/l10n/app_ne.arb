@@ -233,6 +233,55 @@
   "editCaregiverAction": "हेरचाहकर्ताको विवरण सम्पादन गर्नुहोस्",
   "editChildAction": "बच्चाको विवरण सम्पादन गर्नुहोस्",
   "deleteChildAction": "बच्चा मेटाउनुहोस्",
+  "editVaccineScheduleAction": "बच्चाको खोप तालिका सम्पादन गर्नुहोस् (स्वास्थ्यकर्मीका लागि मात्र)",
+  "healthcareProfessionalQuestion": "के तपाईं स्वास्थ्यकर्मी हुनुहुन्छ?",
+  "healthcareProfessionalConfirm": "हो",
+  "healthcareProfessionalDecline": "होइन",
+  "scheduleEditorTitle": "खोप तालिका सम्पादन गर्नुहोस्",
+  "scheduleEditorTitleForChild": "{childName} को खोप तालिका सम्पादन गर्नुहोस्",
+  "@scheduleEditorTitleForChild": {
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "scheduleEditorEmpty": "कुनै बाँकी खोप तालिका छैन।",
+  "scheduleEditorEdit": "निर्धारित खोप सम्पादन गर्नुहोस्",
+  "scheduleEditorVaccine": "खोप",
+  "scheduleEditorDose": "खोप मात्रा",
+  "scheduleEditorDueDate": "निर्धारित मिति",
+  "scheduleEditorSave": "तालिका परिवर्तनहरू बचत गर्नुहोस्",
+  "scheduleEditorSaveConfirmTitle": "तालिका परिवर्तनहरू बचत गर्ने?",
+  "scheduleEditorSaveConfirmMessage": "बच्चाको खोप तालिकामा स्वास्थ्यकर्मीका परिवर्तनहरू बचत गर्ने?",
+  "scheduleEditorRestore": "पूर्वनिर्धारित खोप तालिका पुनर्स्थापना गर्नुहोस्",
+  "scheduleEditorRestoreTitle": "पूर्वनिर्धारित खोप तालिका पुनर्स्थापना गर्ने?",
+  "scheduleEditorRestoreMessage": "यसले स्वास्थ्यकर्मीका सबै परिवर्तन हटाएर बच्चाको मानक खोप तालिका पुनर्स्थापना गर्नेछ। खोप इतिहास परिवर्तन हुनेछैन।",
+  "scheduleEditorRestoreConfirm": "पुनर्स्थापना गर्नुहोस्",
+  "scheduleEditorInvalidDose": "यो खोप र मात्रा संयोजन मान्य छैन।",
+  "scheduleEditorDuplicateDose": "यो खोप र मात्रा बच्चाका लागि पहिले नै निर्धारित छ।",
+  "scheduleEditorAdministeredDose": "यो खोप र मात्रा पहिले नै लगाइसकिएको छ।",
+  "scheduleEditorSaveSuccess": "खोप तालिका अद्यावधिक भयो।",
+  "scheduleEditorSaveError": "खोप तालिका अद्यावधिक गर्न सकिएन।",
+  "scheduleEditorRemove": "तालिकाबाट हटाउनुहोस्",
+  "scheduleEditorRemoveConfirm": "हटाउनुहोस्",
+  "scheduleEditorDueDateChange": "खोपको तालिका मिति परिवर्तन गर्ने?",
+  "scheduleEditorRemoveTitle": "खोपलाई तालिकाबाट हटाउने?",
+  "scheduleEditorRemoveMessage": "{vaccineCode} मात्रा {doseNumber} लाई बच्चाको खोप तालिकाबाट हटाउने? यसले खोप इतिहासमा असर गर्दैन।",
+  "@scheduleEditorRemoveMessage": {
+    "placeholders": {
+      "vaccineCode": {},
+      "doseNumber": {}
+    }
+  },
+  "scheduleEditorRemoveSuccess": "{childName} को तालिकाबाट {vaccineCode} मात्रा {doseNumber} हटाइयो।",
+  "@scheduleEditorRemoveSuccess": {
+    "placeholders": {
+      "vaccineCode": {},
+      "doseNumber": {},
+      "childName": {}
+    }
+  },
   "editCaregiverTitle": "हेरचाहकर्ताको विवरण सम्पादन गर्नुहोस्",
   "editChildTitle": "बच्चाको विवरण सम्पादन गर्नुहोस्",
   "editChildTitleWithName": "{childName} को विवरण सम्पादन गर्नुहोस्",
@@ -375,8 +424,10 @@
     }
   },
   "homeSectionDueToday": "आज दिइने",
+  "homeSectionOverdue": "ढिलो भएको",
   "homeSectionDueSoon": "चाँडै दिइने",
   "homeSectionUpToDate": "पूरा भएको",
+  "homeScrollInstruction": "सबै बालबालिका हेर्न तल स्क्रोल गर्नुहोस्।",
   "homeEmptyStateTitle": "अहिलेसम्म कुनै बच्चा थपिएको छैन।",
   "homeEmptyStateSubtitle": "यहाँ आगामी खोपहरू हेर्न आफ्नो पहिलो बच्चा थप्नुहोस्।",
   "learnTitle": "सिक्नुहोस्",
@@ -443,6 +494,38 @@
   "vaccineScheduleDueHeader": "मिति",
   "vaccineScheduleReturn": "फिर्ता",
   "vaccineScheduleEmpty": "आगामी खोपहरू छैनन्।",
+  "vaccineScheduleDueGroupSingular": "{date} मा {vaccines} लगाउनुपर्नेछ",
+  "vaccineScheduleDueGroupPlural": "{date} मा {vaccines} लगाउनुपर्नेछ",
+  "@vaccineScheduleDueGroupSingular": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "vaccines": {
+        "type": "String"
+      }
+    }
+  },
+  "@vaccineScheduleDueGroupPlural": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "vaccines": {
+        "type": "String"
+      }
+    }
+  },
+  "@vaccineScheduleDueGroup": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "vaccines": {
+        "type": "String"
+      }
+    }
+  },
   "vaccineScheduleToday": "आज",
   "vaccineScheduleInDays": "{count} दिनमा",
   "vaccineScheduleInMonths": "{count} महिनामा",
@@ -461,5 +544,17 @@
   "reminderLeadToday": "आज तपाईंको बच्चाको खोप लगाउने दिन हो।",
   "reminderMissedYesterday": "{vaccineName} {date} मा लगाउनुपर्ने थियो, तर अहिलेसम्म रेकर्ड भएको छैन। हरेक मात्रा समयमै पूरा गर्दा बच्चा सुरक्षित रहन्छ। कृपया नजिकैको स्वास्थ्य चौकीमा जानुहोस्।",
   "reminderMissedWeek": "{vaccineName} एक हप्तादेखि छुटेको छ। बच्चा सुरक्षित रहोस् भन्नाका लागि क्याच-अप खोपबारे नजिकैको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।",
-  "reminderOverdue": "{vaccineName} को म्याद नाघिसक्यो। क्याच-अप खोपका लागि नजिकैको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।"
+  "reminderOverdue": "{vaccineName} को म्याद नाघिसक्यो। क्याच-अप खोपका लागि नजिकैको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।",
+  "backupSectionTitle": "ब्याकअप",
+  "backupExportAction": "ब्याकअप निकाल्नुहोस्",
+  "backupImportAction": "ब्याकअप ल्याउनुहोस्",
+  "backupPrivacyNote": "यो फाइल सुरक्षित ठाउँमा राख्नुहोस्। यसमा तपाईंको बच्चाको स्वास्थ्य जानकारी छ।",
+  "backupReplaceTitle": "यस फोनको डाटा बदल्ने?",
+  "backupReplaceMessage": "यसले यस फोनको सबै डाटा बदल्नेछ। जारी राख्ने?",
+  "backupReplaceConfirm": "जारी राख्नुहोस्",
+  "backupExportSuccess": "ब्याकअप फाइल बचत गर्न तयार छ।",
+  "backupImportSuccess": "ब्याकअप ल्याइयो।",
+  "backupExportError": "ब्याकअप निकाल्न सकिएन।",
+  "backupImportError": "ब्याकअप ल्याउन सकिएन।",
+  "backupInvalidFile": "यो फाइल यो एपले पढ्न सक्ने टिकासथी ब्याकअप होइन।"
 }

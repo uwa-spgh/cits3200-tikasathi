@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
+import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
 import 'package:tikasathi/features/vaccine_records/presentation/missed_vaccines_dialog.dart';
 import 'package:tikasathi/features/child/domain/date_of_birth_validation.dart';
@@ -235,6 +237,19 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
           tooltip: l10n.profileBack,
           onPressed: _saving ? null : () => Navigator.of(context).pop(),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: ReadAloudButton(
+              tooltip: l10n.childReadAloudTooltip,
+              unavailableMessage: l10n.childReadAloudUnavailable,
+              textGetter: () => ScreenSpeechHelper.childEditScreenText(
+                context: context,
+                localizations: l10n,
+              ),
+            ),
+          ),
+        ],
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -252,13 +267,21 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFF0F172A))),
                         const SizedBox(height: 32),
+                        Text(
+                          l10n.onboardingChildNameLabel,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF0F172A),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
                         TextField(
                           controller: _nameController,
                           textInputAction: TextInputAction.next,
                           decoration: _decoration(
-                            l10n.onboardingChildNameLabel,
                             l10n.onboardingChildNameHint,
-                          ).copyWith(labelText: null),
+                          ),
                         ),
                         const SizedBox(height: 24),
                         Text(l10n.onboardingChildDobLabel,
@@ -395,8 +418,7 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
     );
   }
 
-  InputDecoration _decoration(String label, String hint) => InputDecoration(
-        labelText: label,
+  InputDecoration _decoration(String hint) => InputDecoration(
         hintText: hint,
         filled: true,
         fillColor: Colors.white,

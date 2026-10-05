@@ -584,6 +584,181 @@ abstract class AppLocalizations {
   /// **'Delete child'**
   String get deleteChildAction;
 
+  /// No description provided for @editVaccineScheduleAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit child\'s vaccination schedule (HEALTHCARE PROFESSIONAL ONLY)'**
+  String get editVaccineScheduleAction;
+
+  /// No description provided for @healthcareProfessionalQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you a healthcare professional?'**
+  String get healthcareProfessionalQuestion;
+
+  /// No description provided for @healthcareProfessionalConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get healthcareProfessionalConfirm;
+
+  /// No description provided for @healthcareProfessionalDecline.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get healthcareProfessionalDecline;
+
+  /// No description provided for @scheduleEditorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit vaccine schedule'**
+  String get scheduleEditorTitle;
+
+  /// No description provided for @scheduleEditorTitleForChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {childName}\'s vaccine schedule'**
+  String scheduleEditorTitleForChild(String childName);
+
+  /// No description provided for @scheduleEditorEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No outstanding vaccines are scheduled.'**
+  String get scheduleEditorEmpty;
+
+  /// No description provided for @scheduleEditorEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit scheduled vaccine'**
+  String get scheduleEditorEdit;
+
+  /// No description provided for @scheduleEditorVaccine.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine'**
+  String get scheduleEditorVaccine;
+
+  /// No description provided for @scheduleEditorDose.
+  ///
+  /// In en, this message translates to:
+  /// **'Dose number'**
+  String get scheduleEditorDose;
+
+  /// No description provided for @scheduleEditorDueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled date'**
+  String get scheduleEditorDueDate;
+
+  /// No description provided for @scheduleEditorSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save schedule changes'**
+  String get scheduleEditorSave;
+
+  /// No description provided for @scheduleEditorSaveConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save schedule changes?'**
+  String get scheduleEditorSaveConfirmTitle;
+
+  /// No description provided for @scheduleEditorSaveConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Save these healthcare professional changes to the child\'s vaccine schedule?'**
+  String get scheduleEditorSaveConfirmMessage;
+
+  /// No description provided for @scheduleEditorRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore default vaccine schedule'**
+  String get scheduleEditorRestore;
+
+  /// No description provided for @scheduleEditorRestoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore default vaccine schedule?'**
+  String get scheduleEditorRestoreTitle;
+
+  /// No description provided for @scheduleEditorRestoreMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will remove all healthcare professional changes and restore the standard vaccination schedule for this child. Vaccination history will not be changed.'**
+  String get scheduleEditorRestoreMessage;
+
+  /// No description provided for @scheduleEditorRestoreConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get scheduleEditorRestoreConfirm;
+
+  /// No description provided for @scheduleEditorInvalidDose.
+  ///
+  /// In en, this message translates to:
+  /// **'That vaccine and dose combination is not valid.'**
+  String get scheduleEditorInvalidDose;
+
+  /// No description provided for @scheduleEditorDuplicateDose.
+  ///
+  /// In en, this message translates to:
+  /// **'That vaccine and dose is already scheduled for this child.'**
+  String get scheduleEditorDuplicateDose;
+
+  /// No description provided for @scheduleEditorAdministeredDose.
+  ///
+  /// In en, this message translates to:
+  /// **'That vaccine and dose has already been administered.'**
+  String get scheduleEditorAdministeredDose;
+
+  /// No description provided for @scheduleEditorSaveSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine schedule updated.'**
+  String get scheduleEditorSaveSuccess;
+
+  /// No description provided for @scheduleEditorSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update the vaccine schedule.'**
+  String get scheduleEditorSaveError;
+
+  /// No description provided for @scheduleEditorRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from schedule'**
+  String get scheduleEditorRemove;
+
+  /// No description provided for @scheduleEditorRemoveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get scheduleEditorRemoveConfirm;
+
+  /// No description provided for @scheduleEditorDueDateChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change scheduled date?'**
+  String get scheduleEditorDueDateChange;
+
+  /// No description provided for @scheduleEditorRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove vaccine from schedule?'**
+  String get scheduleEditorRemoveTitle;
+
+  /// No description provided for @scheduleEditorRemoveMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove {vaccineCode} dose {doseNumber} from this child\'s vaccine schedule? This will not affect vaccination history.'**
+  String scheduleEditorRemoveMessage(Object vaccineCode, Object doseNumber);
+
+  /// No description provided for @scheduleEditorRemoveSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccineCode} dose {doseNumber} removed from {childName}\'s schedule.'**
+  String scheduleEditorRemoveSuccess(
+      Object vaccineCode, Object doseNumber, Object childName);
+
   /// No description provided for @editCaregiverTitle.
   ///
   /// In en, this message translates to:
@@ -1118,6 +1293,12 @@ abstract class AppLocalizations {
   /// **'Due today'**
   String get homeSectionDueToday;
 
+  /// No description provided for @homeSectionOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get homeSectionOverdue;
+
   /// No description provided for @homeSectionDueSoon.
   ///
   /// In en, this message translates to:
@@ -1129,6 +1310,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Up to date'**
   String get homeSectionUpToDate;
+
+  /// No description provided for @homeScrollInstruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll down to see all children.'**
+  String get homeScrollInstruction;
 
   /// No description provided for @homeEmptyStateTitle.
   ///
@@ -1442,6 +1629,18 @@ abstract class AppLocalizations {
   /// **'There are no upcoming vaccines.'**
   String get vaccineScheduleEmpty;
 
+  /// No description provided for @vaccineScheduleDueGroupSingular.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} is due on {date}'**
+  String vaccineScheduleDueGroupSingular(String date, String vaccines);
+
+  /// No description provided for @vaccineScheduleDueGroupPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} are due on {date}'**
+  String vaccineScheduleDueGroupPlural(String date, String vaccines);
+
   /// No description provided for @vaccineScheduleToday.
   ///
   /// In en, this message translates to:
@@ -1555,6 +1754,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{vaccineName} is overdue. Contact your nearest health facility for catch-up vaccination.'**
   String reminderOverdue(String vaccineName);
+
+  /// No description provided for @backupSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get backupSectionTitle;
+
+  /// No description provided for @backupExportAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Export backup'**
+  String get backupExportAction;
+
+  /// No description provided for @backupImportAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Import backup'**
+  String get backupImportAction;
+
+  /// No description provided for @backupPrivacyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep this file somewhere safe. It contains your child\'s health information.'**
+  String get backupPrivacyNote;
+
+  /// No description provided for @backupReplaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace data on this phone?'**
+  String get backupReplaceTitle;
+
+  /// No description provided for @backupReplaceMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will replace all data on this phone. Continue?'**
+  String get backupReplaceMessage;
+
+  /// No description provided for @backupReplaceConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get backupReplaceConfirm;
+
+  /// No description provided for @backupExportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup file ready to save.'**
+  String get backupExportSuccess;
+
+  /// No description provided for @backupImportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup imported.'**
+  String get backupImportSuccess;
+
+  /// No description provided for @backupExportError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not export the backup.'**
+  String get backupExportError;
+
+  /// No description provided for @backupImportError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not import the backup.'**
+  String get backupImportError;
+
+  /// No description provided for @backupInvalidFile.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is not a TikaSathi backup this app can read.'**
+  String get backupInvalidFile;
 }
 
 class _AppLocalizationsDelegate

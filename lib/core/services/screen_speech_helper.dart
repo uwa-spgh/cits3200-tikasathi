@@ -81,6 +81,9 @@ class ScreenSpeechHelper {
               'दर्ता पूरा गर्न बाँकी बालबालिका: $names। खोप रेकर्ड सुरु गर्न दर्ता पूरा गर्नुहोस्। ',
             );
             break;
+          case HomeVaccinationGroup.overdue:
+            buffer.write('ढिलो भएका खोप भएका बालबालिका: $names। ');
+            break;
           case HomeVaccinationGroup.dueToday:
             buffer.write('आज खोप लगाउने मिति भएका बालबालिका: $names। ');
             break;
@@ -110,6 +113,9 @@ class ScreenSpeechHelper {
               'Setup pending for: $names. Please complete setup to track vaccines. ',
             );
             break;
+          case HomeVaccinationGroup.overdue:
+            buffer.write('Overdue vaccines for: $names. ');
+            break;
           case HomeVaccinationGroup.dueToday:
             buffer.write('Vaccines due today for: $names. ');
             break;
@@ -121,6 +127,13 @@ class ScreenSpeechHelper {
             break;
         }
       }
+    }
+
+    final ScrollPosition? position = Scrollable.maybeOf(context)?.position;
+    if (position != null &&
+        position.hasContentDimensions &&
+        position.pixels < position.maxScrollExtent) {
+      buffer.write(' ${localizations.homeScrollInstruction}');
     }
 
     return buffer.toString().trim();
@@ -248,7 +261,7 @@ class ScreenSpeechHelper {
           buffer.write('ठेगाना: ${facilityAddress.trim()}। ');
         }
         if (facilityPhone != null && facilityPhone.trim().isNotEmpty) {
-          buffer.write('फोन नम्बर: ${facilityPhone.trim()}। ');
+          buffer.write('फोन नम्बर: ${_spellPhoneNumber(facilityPhone)}। ');
         }
         buffer.write('तपाईं यी विवरणहरू परिवर्तन गर्न र सेभ गर्न सक्नुहुन्छ।');
       } else {
@@ -266,7 +279,7 @@ class ScreenSpeechHelper {
           buffer.write('Address: ${facilityAddress.trim()}. ');
         }
         if (facilityPhone != null && facilityPhone.trim().isNotEmpty) {
-          buffer.write('Phone number: ${facilityPhone.trim()}. ');
+          buffer.write('Phone number: ${_spellPhoneNumber(facilityPhone)}. ');
         }
         buffer.write('You can edit these details and tap save.');
       } else {
@@ -276,6 +289,10 @@ class ScreenSpeechHelper {
       }
     }
     return buffer.toString().trim();
+  }
+
+  static String _spellPhoneNumber(String phone) {
+    return phone.trim().split('').join(' ');
   }
 
   /// Builds a spoken summary for adding or registering a child.
@@ -320,6 +337,20 @@ class ScreenSpeechHelper {
           'Please enter your full name, phone number, and address. '
           'Then tap continue to add your child.';
     }
+  }
+
+  /// Builds a spoken summary for editing child details.
+  static String childEditScreenText({
+    required BuildContext context,
+    required AppLocalizations localizations,
+  }) {
+    final bool isNepali = Localizations.localeOf(context).languageCode == 'ne';
+    if (isNepali) {
+      return 'बच्चाको प्रोफाइल सम्पादन गर्नुहोस्। '
+          'कृपया बच्चाको नाम, जन्म मिति, वा लिङ्ग सम्पादन गर्नुहोस्, र सेभ थिच्नुहोस्।';
+    }
+    return 'Edit child profile. '
+        'Please update the child\'s name, date of birth, or sex, then tap save.';
   }
 
   /// Builds a spoken summary of Vaccine Records & History.
@@ -447,26 +478,64 @@ class ScreenSpeechHelper {
   static String vaccineScheduleScreenText({
     required BuildContext context,
     required AppLocalizations localizations,
+    List<VaccinationDue> dues = const <VaccinationDue>[],
+    List<VaccinationRecord> records = const <VaccinationRecord>[],
   }) {
     final bool isNepali = Localizations.localeOf(context).languageCode == 'ne';
-
-    if (isNepali) {
-      return 'नेपालको राष्ट्रिय बाल खोप तालिका। '
-          'जन्मँदा: बीसीजी, ओपिभी ०। '
-          '६ हप्तामा: पेन्टाभालेन्ट १, रोटाभाइरस १, पिसिभी १, ओपिभी १। '
-          '१० हप्तामा: पेन्टाभालेन्ट २, रोटाभाइरस २। '
-          '१४ हप्तामा: पेन्टाभालेन्ट ३, पिसिभी २, एफआइपिभी १। '
-          '९ महिनामा: दादुरा-रुबेला १, पिसिभी ३, एफआइपिभी २। '
-          '१५ महिनामा: दादुरा-रुबेला २, टाइफाइड खोप।';
-    } else {
-      return 'National Immunisation Schedule of Nepal. '
-          'At birth: BCG, OPV 0. '
-          'At 6 weeks: Pentavalent 1, Rotavirus 1, PCV 1, OPV 1. '
-          'At 10 weeks: Pentavalent 2, Rotavirus 2. '
-          'At 14 weeks: Pentavalent 3, PCV 2, fIPV 1. '
-          'At 9 months: Measles-Rubella 1, PCV 3, fIPV 2. '
-          'At 15 months: Measles-Rubella 2, Typhoid vaccine.';
+    if (dues.isEmpty && records.isEmpty) {
+      return isNepali
+          ? 'नेपालको राष्ट्रिय बाल खोप तालिका। बीसीजी, पेन्टाभालेन्ट, रोटाभाइरस, पिसिभी, एफआइपीभी, दादुरा-रुबेला र टाइफाइड खोपहरू।'
+          : 'National Immunisation Schedule of Nepal. BCG, Pentavalent, Rotavirus, PCV, fIPV, Measles-Rubella and Typhoid vaccines.';
     }
+    final locale = Localizations.localeOf(context).languageCode;
+    final groupedDues = <DateTime, List<String>>{};
+    for (final due in dues) {
+      final date = DateTime(
+        due.dueDate.year,
+        due.dueDate.month,
+        due.dueDate.day,
+      );
+      groupedDues.putIfAbsent(date, () => <String>[]).add(
+            '${due.vaccineCode} ${due.doseNumber}',
+          );
+    }
+    final dueText = groupedDues.entries.map(
+      (entry) {
+        final vaccines = _joinSpeechItems(entry.value, isNepali: isNepali);
+        final date = DateFormat('d MMMM y', locale).format(entry.key);
+        return entry.value.length == 1
+            ? localizations.vaccineScheduleDueGroupSingular(
+                date,
+                vaccines,
+              )
+            : localizations.vaccineScheduleDueGroupPlural(
+                date,
+                vaccines,
+              );
+      },
+    ).join(isNepali ? '। ' : '. ');
+    final recordText = records
+        .map((record) =>
+            '${record.vaccineCode} ${record.doseNumber}, ${DateFormat('d MMMM y', locale).format(record.administeredDate)}')
+        .join(isNepali ? '। ' : '. ');
+    if (isNepali) {
+      return 'खोप तालिका। '
+          '${records.isEmpty ? 'कुनै लगाइएको खोप छैन।' : 'लगाइएका खोपहरू: $recordText।'} '
+          '${dues.isEmpty ? 'कुनै बाँकी खोप छैन।' : 'बाँकी खोपहरू: $dueText।'}';
+    }
+    return 'Vaccination schedule. '
+        '${records.isEmpty ? 'No administered vaccines.' : 'Administered vaccines: $recordText. '}'
+        '${dues.isEmpty ? 'No outstanding vaccines.' : 'Outstanding vaccines: $dueText.'}';
+  }
+
+  static String _joinSpeechItems(
+    List<String> items, {
+    required bool isNepali,
+  }) {
+    if (items.length < 2) return items.join();
+    final conjunction = isNepali ? ' र ' : ' and ';
+    if (items.length == 2) return items.join(conjunction);
+    return '${items.sublist(0, items.length - 1).join(', ')}$conjunction${items.last}';
   }
 
   /// Builds a spoken summary of the Settings screen.
@@ -477,16 +546,23 @@ class ScreenSpeechHelper {
   }) {
     final bool isNepali = currentLanguage == AppLanguage.nepali;
 
+    final String backup = '${localizations.backupSectionTitle}. '
+        '${localizations.backupExportAction}. '
+        '${localizations.backupImportAction}. '
+        '${localizations.backupPrivacyNote}';
     if (isNepali) {
       return 'सेटिङहरू। भाषा छनोट: हाल नेपाली भाषा चयन गरिएको छ। '
-          'अभिभावकको विवरण हेर्न र सम्पादन गर्न सकिन्छ। '
-          'बालबालिकाको विवरण सम्पादन गर्न सकिन्छ। '
-          'नजिकैको स्वास्थ्य संस्थाको सम्पर्क विवरण उपलब्ध छ।';
+          'प्रोफाइलहरू व्यवस्थापन गर्नुहोस्: हेरचाहकर्ताको प्रोफाइल सम्पादन। '
+          'बालबालिकाको प्रोफाइल सम्पादन। बालबालिकाको प्रोफाइल मेटाउनुहोस्। '
+          'बच्चाको खोप तालिका सम्पादन गर्नुहोस्। यो स्वास्थ्यकर्मीका लागि मात्र हो। '
+          '$backup';
     } else {
       return 'Settings. Language options: English or Nepali. '
-          'Caregiver profile management. '
-          'Child profiles editing. '
-          'Local health facility contact information.';
+          'Manage profiles: Caregiver profile editing. '
+          'Child profiles editing. Delete child profile. '
+          "Edit child's vaccination schedule. "
+          'This is for healthcare professionals only. '
+          '$backup';
     }
   }
 

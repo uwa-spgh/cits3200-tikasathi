@@ -53,9 +53,31 @@ class _VaccineScheduleTable extends StatelessWidget {
     final localizations = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).languageCode;
 
-    bool isAfterNowDivider = false;
-    int duesIndex = 0;
-    int recordsIndex = 0;
+    final merged = _merge(dues, records);
+    int todayDividerIndex = merged.length;
+    for (int i = 0; i < merged.length; i++) {
+      final vaccine = merged[i];
+      if (vaccine.date.isAfter(now)) {
+        todayDividerIndex = i;
+        break;
+      }
+    }
+
+    final todayDivider = Padding(
+        padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+        child: Row(children: [
+          Text(
+              '${localizations.vaccineScheduleToday} · ${DateFormat('d MMM y', locale).format(now)}',
+              style: const TextStyle(
+                  fontSize: 13,
+                  color: Color(0xFF0F52BA),
+                  fontWeight: FontWeight.w500)),
+          Flexible(
+              child: Container(
+                  height: 2,
+                  color: const Color(0xFF0F52BA),
+                  margin: const EdgeInsets.fromLTRB(12, 0, 12, 0)))
+        ]));
 
     return Align(
       alignment: Alignment.topCenter,
@@ -88,6 +110,8 @@ class _VaccineScheduleTable extends StatelessWidget {
                         ScreenSpeechHelper.vaccineScheduleScreenText(
                       context: context,
                       localizations: localizations,
+                      dues: dues,
+                      records: records,
                     ),
                   ),
                 ],
@@ -101,88 +125,41 @@ class _VaccineScheduleTable extends StatelessWidget {
               Expanded(
                   child: ListView.builder(
                       itemBuilder: (context, index) {
-                        bool isDuesRow;
-                        if (duesIndex == dues.length) {
-                          isDuesRow = false;
-                        } else if (recordsIndex == records.length) {
-                          isDuesRow = true;
-                        } else {
-                          final due = dues[duesIndex];
-                          final record = records[recordsIndex];
-
-                          isDuesRow =
-                              due.dueDate.isBefore(record.administeredDate);
-                        }
+                        final data = merged[index];
                         final isFirst = index == 0;
                         final isLast =
                             index == dues.length + records.length - 1;
+                        final isPast = index < todayDividerIndex;
 
-                        Row vaccineRow;
-                        bool isPast;
-                        if (isDuesRow) {
-                          final due = dues[duesIndex];
-                          isPast = due.dueDate.isBefore(now);
-                          final statusColor = isPast
-                              ? const Color(0xFFF5B544)
-                              : const Color(0xFF94A3B8);
-                          final statusDarker = isPast
-                              ? const Color(0xFFF5B544)
-                              : const Color(0xFF475569);
+                        final statusColor = data.isDue
+                            ? isPast
+                                ? const Color(0xFFF5B544)
+                                : const Color(0xFF94A3B8)
+                            : const Color(0xFF166534);
+                        final statusDarker = data.isDue
+                            ? isPast
+                                ? const Color(0xFFF5B544)
+                                : const Color(0xFF475569)
+                            : const Color(0xFF166534);
 
-                          vaccineRow = makeVaccineRow(
-                              '${due.vaccineCode} (${localizations.dose} ${due.doseNumber})',
-                              DateFormat('d MMM y', locale).format(due.dueDate),
-                              isFirst,
-                              isLast,
-                              statusColor,
-                              statusDarker,
-                              false);
-                          duesIndex++;
-                        } else {
-                          final record = records[recordsIndex];
-                          isPast = true;
+                        final vaccineRow = makeVaccineRow(
+                            '${data.vaccineCode} (${localizations.dose} ${data.doseNumber})',
+                            DateFormat('d MMM y', locale).format(data.date),
+                            isFirst,
+                            isLast,
+                            statusColor,
+                            statusDarker,
+                            data.isDue);
 
-                          vaccineRow = makeVaccineRow(
-                              '${record.vaccineCode} (${localizations.dose} ${record.doseNumber})',
-                              DateFormat('d MMM y', locale)
-                                  .format(record.administeredDate),
-                              isFirst,
-                              isLast,
-                              const Color(0xFF166534),
-                              const Color(0xFF166534),
-                              true);
-                          recordsIndex++;
-                        }
-
-                        if (!isAfterNowDivider && (!isPast || isLast)) {
-                          final todayDivider = Padding(
-                              padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                              child: Row(children: [
-                                Text(
-                                    '${localizations.vaccineScheduleToday} · ${DateFormat('d MMM y', locale).format(now)}',
-                                    style: const TextStyle(
-                                        fontSize: 13,
-                                        color: Color(0xFF0F52BA),
-                                        fontWeight: FontWeight.w500)),
-                                Flexible(
-                                    child: Container(
-                                        height: 2,
-                                        color: const Color(0xFF0F52BA),
-                                        margin: const EdgeInsets.fromLTRB(
-                                            12, 0, 12, 0)))
-                              ]));
-
-                          if (!isPast) {
-                            isAfterNowDivider = true;
-                            return Column(children: [todayDivider, vaccineRow]);
-                          } else {
-                            return Column(children: [vaccineRow, todayDivider]);
-                          }
+                        if (index == todayDividerIndex) {
+                          return Column(children: [todayDivider, vaccineRow]);
+                        } else if (isLast && index < todayDividerIndex) {
+                          return Column(children: [vaccineRow, todayDivider]);
                         } else {
                           return vaccineRow;
                         }
                       },
-                      itemCount: dues.length + records.length)),
+                      itemCount: merged.length)),
           ],
         ),
       ),
@@ -191,7 +168,7 @@ class _VaccineScheduleTable extends StatelessWidget {
 }
 
 Row makeVaccineRow(String vaccine, String date, bool isFirst, bool isLast,
-    Color statusColor, Color statusDarker, bool isCompleted) {
+    Color statusColor, Color statusDarker, bool isDue) {
   return Row(children: [
     Flexible(
         child: Align(
@@ -208,7 +185,7 @@ Row makeVaccineRow(String vaccine, String date, bool isFirst, bool isLast,
               width: 2,
               height: 12,
               color: isFirst ? Colors.transparent : const Color(0xFF94A3B8)),
-          Icon(isCompleted ? Icons.check_box : Icons.check_box_outline_blank,
+          Icon(isDue ? Icons.check_box_outline_blank : Icons.check_box,
               color: statusColor),
           Container(
               width: 2,
@@ -224,6 +201,62 @@ Row makeVaccineRow(String vaccine, String date, bool isFirst, bool isLast,
               color: statusDarker,
             )))
   ]);
+}
+
+typedef _VaccineData = ({
+  bool isDue,
+  String vaccineCode,
+  int doseNumber,
+  DateTime date
+});
+
+List<_VaccineData> _merge(
+    List<VaccinationDue> dues, List<VaccinationRecord> records) {
+  int duesIndex = 0;
+  int recordsIndex = 0;
+  final result = <_VaccineData>[];
+  for (int i = 0; i < dues.length + records.length; i++) {
+    if (duesIndex == dues.length) {
+      final record = records[recordsIndex];
+      result.add((
+        isDue: false,
+        vaccineCode: record.vaccineCode,
+        doseNumber: record.doseNumber,
+        date: record.administeredDate
+      ));
+      recordsIndex++;
+    } else if (recordsIndex == records.length) {
+      final due = dues[duesIndex];
+      result.add((
+        isDue: true,
+        vaccineCode: due.vaccineCode,
+        doseNumber: due.doseNumber,
+        date: due.dueDate
+      ));
+      duesIndex++;
+    } else {
+      final due = dues[duesIndex];
+      final record = records[recordsIndex];
+      if (due.dueDate.isBefore(record.administeredDate)) {
+        result.add((
+          isDue: true,
+          vaccineCode: due.vaccineCode,
+          doseNumber: due.doseNumber,
+          date: due.dueDate
+        ));
+        duesIndex++;
+      } else {
+        result.add((
+          isDue: false,
+          vaccineCode: record.vaccineCode,
+          doseNumber: record.doseNumber,
+          date: record.administeredDate
+        ));
+        recordsIndex++;
+      }
+    }
+  }
+  return result;
 }
 
 String formatVaccineDueRelativeDate(

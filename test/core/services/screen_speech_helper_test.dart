@@ -148,6 +148,83 @@ void main() {
       expect(npPopulated, isNot(contains('टिकासार्थी बाल खोप ट्र्याकिङ')));
     });
 
+    testWidgets(
+        'adds a localized scroll instruction only when content overflows',
+        (WidgetTester tester) async {
+      final List<HomeStatusGroup> groups = <HomeStatusGroup>[
+        HomeStatusGroup(
+          group: HomeVaccinationGroup.upToDate,
+          children: <HomeChildSummary>[
+            HomeChildSummary(
+              name: 'Aarav',
+              dateOfBirth: DateTime(2025, 1, 1),
+              avatarEmoji: '👶',
+              canRecordDose: false,
+            ),
+          ],
+        ),
+      ];
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: ListView(
+            children: <Widget>[
+              Builder(
+                builder: (BuildContext context) => Container(
+                  key: const Key('overflow-context'),
+                  height: 50,
+                ),
+              ),
+              const SizedBox(height: 1000),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final BuildContext overflowContext =
+          tester.element(find.byKey(const Key('overflow-context')));
+      final AppLocalizations overflowLocalizations =
+          AppLocalizations.of(overflowContext)!;
+      final String overflowText = ScreenSpeechHelper.homeScreenText(
+        context: overflowContext,
+        localizations: overflowLocalizations,
+        groups: groups,
+      );
+
+      expect(overflowText, endsWith('Scroll down to see all children.'));
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) => Container(
+              key: const Key('fitting-context'),
+              height: 50,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final BuildContext fittingContext =
+          tester.element(find.byKey(const Key('fitting-context')));
+      final AppLocalizations fittingLocalizations =
+          AppLocalizations.of(fittingContext)!;
+      final String fittingText = ScreenSpeechHelper.homeScreenText(
+        context: fittingContext,
+        localizations: fittingLocalizations,
+        groups: groups,
+      );
+
+      expect(fittingText, isNot(contains('Scroll down to see all children.')));
+    });
+
     testWidgets('childProfileScreenText builds natural narrative',
         (WidgetTester tester) async {
       late String enText;
@@ -281,6 +358,67 @@ void main() {
       expect(npText, contains('पेन्टाभालेन्ट'));
     });
 
+    testWidgets('vaccineScheduleScreenText groups outstanding vaccines by date',
+        (WidgetTester tester) async {
+      late String groupedText;
+      final dues = <VaccinationDue>[
+        VaccinationDue(
+          id: 'd1',
+          childId: 'c1',
+          vaccineCode: 'PENTA',
+          doseNumber: 1,
+          dueDate: DateTime(2026, 10, 10),
+        ),
+        VaccinationDue(
+          id: 'd2',
+          childId: 'c1',
+          vaccineCode: 'PCV',
+          doseNumber: 1,
+          dueDate: DateTime(2026, 10, 10),
+        ),
+        VaccinationDue(
+          id: 'd3',
+          childId: 'c1',
+          vaccineCode: 'MMR',
+          doseNumber: 1,
+          dueDate: DateTime(2026, 11, 20),
+        ),
+      ];
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) {
+              groupedText = ScreenSpeechHelper.vaccineScheduleScreenText(
+                context: context,
+                localizations: AppLocalizations.of(context)!,
+                dues: dues,
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(
+        groupedText,
+        contains(
+          'PENTA 1 and PCV 1 are due on 10 October 2026.',
+        ),
+      );
+      expect(
+        groupedText,
+        contains('MMR 1 is due on 20 November 2026.'),
+      );
+      expect(
+        groupedText.split('10 October 2026').length - 1,
+        1,
+      );
+    });
+
     testWidgets('settingsScreenText formats instructions',
         (WidgetTester tester) async {
       late String enSettings;
@@ -306,6 +444,22 @@ void main() {
       );
 
       expect(enSettings, contains('Settings'));
+      expect(
+        enSettings,
+        'Settings. Language options: English or Nepali. '
+        'Manage profiles: Caregiver profile editing. '
+        'Child profiles editing. Delete child profile. '
+        "Edit child's vaccination schedule. "
+        'This is for healthcare professionals only. '
+        'Backup. Export backup. Import backup. '
+        "Keep this file somewhere safe. It contains your child's health information.",
+      );
+      expect(enSettings, contains('Export backup'));
+      expect(
+        enSettings,
+        contains(
+            "Keep this file somewhere safe. It contains your child's health information."),
+      );
 
       await tester.pumpWidget(
         MaterialApp(
@@ -320,6 +474,15 @@ void main() {
                 localizations: l10n,
                 currentLanguage: AppLanguage.nepali,
               );
+              expect(
+                npSettings,
+                'सेटिङहरू। भाषा छनोट: हाल नेपाली भाषा चयन गरिएको छ। '
+                'प्रोफाइलहरू व्यवस्थापन गर्नुहोस्: हेरचाहकर्ताको प्रोफाइल सम्पादन। '
+                'बालबालिकाको प्रोफाइल सम्पादन। बालबालिकाको प्रोफाइल मेटाउनुहोस्। '
+                'बच्चाको खोप तालिका सम्पादन गर्नुहोस्। यो स्वास्थ्यकर्मीका लागि मात्र हो। '
+                '${l10n.backupSectionTitle}. ${l10n.backupExportAction}. '
+                '${l10n.backupImportAction}. ${l10n.backupPrivacyNote}',
+              );
               return const SizedBox();
             },
           ),
@@ -327,6 +490,8 @@ void main() {
       );
 
       expect(npSettings, contains('सेटिङहरू'));
+      expect(npSettings, contains('ब्याकअप निकाल्नुहोस्'));
+      expect(npSettings, contains('तपाईंको बच्चाको स्वास्थ्य जानकारी'));
     });
 
     testWidgets(
@@ -611,7 +776,7 @@ void main() {
       expect(enPopulated, contains('Local health facility details'));
       expect(enPopulated, contains('Name: Kanti Children Hospital'));
       expect(enPopulated, contains('Address: Kathmandu'));
-      expect(enPopulated, contains('Phone number: 9841234567'));
+      expect(enPopulated, contains('Phone number: 9 8 4 1 2 3 4 5 6 7'));
       expect(enPopulated, contains('You can edit these details and tap save'));
 
       expect(enEmpty, contains('Local health facility details'));
@@ -644,7 +809,7 @@ void main() {
       expect(npPopulated, contains('स्थानीय स्वास्थ्य संस्थाको विवरण'));
       expect(npPopulated, contains('नाम: कान्ति बाल अस्पताल'));
       expect(npPopulated, contains('ठेगाना: काठमाडौँ'));
-      expect(npPopulated, contains('फोन नम्बर: 9841234567'));
+      expect(npPopulated, contains('फोन नम्बर: 9 8 4 1 2 3 4 5 6 7'));
     });
 
     testWidgets(
@@ -654,7 +819,9 @@ void main() {
       late String npAddChild;
       late String enCaregiver;
       late String enCaregiverEdit;
+      late String enChildEdit;
       late String npCaregiver;
+      late String npChildEdit;
 
       await tester.pumpWidget(
         MaterialApp(
@@ -679,6 +846,10 @@ void main() {
                 localizations: l10n,
                 isEditing: true,
               );
+              enChildEdit = ScreenSpeechHelper.childEditScreenText(
+                context: context,
+                localizations: l10n,
+              );
               return const SizedBox();
             },
           ),
@@ -693,6 +864,11 @@ void main() {
       expect(enCaregiver, contains('Caregiver information'));
       expect(enCaregiver, contains('full name, phone number, and address'));
       expect(enCaregiverEdit, contains('Edit caregiver profile'));
+      expect(
+        enChildEdit,
+        'Edit child profile. Please update the child\'s name, date of birth, '
+        'or sex, then tap save.',
+      );
 
       await tester.pumpWidget(
         MaterialApp(
@@ -712,6 +888,10 @@ void main() {
                 localizations: l10n,
                 isEditing: false,
               );
+              npChildEdit = ScreenSpeechHelper.childEditScreenText(
+                context: context,
+                localizations: l10n,
+              );
               return const SizedBox();
             },
           ),
@@ -723,6 +903,11 @@ void main() {
       expect(npAddChild, contains('बच्चा सेभ गर्नुहोस्'));
       expect(npCaregiver, contains('अभिभावकको विवरण'));
       expect(npCaregiver, contains('पूरा नाम, फोन नम्बर, र ठेगाना'));
+      expect(
+        npChildEdit,
+        'बच्चाको प्रोफाइल सम्पादन गर्नुहोस्। '
+        'कृपया बच्चाको नाम, जन्म मिति, वा लिङ्ग सम्पादन गर्नुहोस्, र सेभ थिच्नुहोस्।',
+      );
     });
   });
 }

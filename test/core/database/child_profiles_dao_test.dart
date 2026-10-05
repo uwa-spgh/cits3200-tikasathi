@@ -214,6 +214,11 @@ void main() {
           administeredDate: DateTime(2023, 4, 16),
         ),
       );
+      await database.manualVaccinationScheduleOverridesDao.removeDose(
+        childId: 'child-1',
+        vaccineCode: 'PENTA',
+        doseNumber: 2,
+      );
       await vaccinationRecordsDao.insertVaccinationRecord(
         VaccinationRecordsCompanion.insert(
           id: 'record-2',
@@ -249,6 +254,11 @@ void main() {
             .watchVaccinationRecordsForChild('child-2')
             .first,
         hasLength(1),
+      );
+      expect(
+        await database.manualVaccinationScheduleOverridesDao
+            .forChild('child-1'),
+        isEmpty,
       );
     });
 
