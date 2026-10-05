@@ -110,6 +110,8 @@ class _VaccineScheduleTable extends StatelessWidget {
                         ScreenSpeechHelper.vaccineScheduleScreenText(
                       context: context,
                       localizations: localizations,
+                      dues: dues,
+                      records: records,
                     ),
                   ),
                 ],

@@ -447,26 +447,64 @@ class ScreenSpeechHelper {
   static String vaccineScheduleScreenText({
     required BuildContext context,
     required AppLocalizations localizations,
+    List<VaccinationDue> dues = const <VaccinationDue>[],
+    List<VaccinationRecord> records = const <VaccinationRecord>[],
   }) {
     final bool isNepali = Localizations.localeOf(context).languageCode == 'ne';
-
-    if (isNepali) {
-      return 'नेपालको राष्ट्रिय बाल खोप तालिका। '
-          'जन्मँदा: बीसीजी, ओपिभी ०। '
-          '६ हप्तामा: पेन्टाभालेन्ट १, रोटाभाइरस १, पिसिभी १, ओपिभी १। '
-          '१० हप्तामा: पेन्टाभालेन्ट २, रोटाभाइरस २। '
-          '१४ हप्तामा: पेन्टाभालेन्ट ३, पिसिभी २, एफआइपिभी १। '
-          '९ महिनामा: दादुरा-रुबेला १, पिसिभी ३, एफआइपिभी २। '
-          '१५ महिनामा: दादुरा-रुबेला २, टाइफाइड खोप।';
-    } else {
-      return 'National Immunisation Schedule of Nepal. '
-          'At birth: BCG, OPV 0. '
-          'At 6 weeks: Pentavalent 1, Rotavirus 1, PCV 1, OPV 1. '
-          'At 10 weeks: Pentavalent 2, Rotavirus 2. '
-          'At 14 weeks: Pentavalent 3, PCV 2, fIPV 1. '
-          'At 9 months: Measles-Rubella 1, PCV 3, fIPV 2. '
-          'At 15 months: Measles-Rubella 2, Typhoid vaccine.';
+    if (dues.isEmpty && records.isEmpty) {
+      return isNepali
+          ? 'नेपालको राष्ट्रिय बाल खोप तालिका। बीसीजी, पेन्टाभालेन्ट, रोटाभाइरस, पिसिभी, एफआइपीभी, दादुरा-रुबेला र टाइफाइड खोपहरू।'
+          : 'National Immunisation Schedule of Nepal. BCG, Pentavalent, Rotavirus, PCV, fIPV, Measles-Rubella and Typhoid vaccines.';
     }
+    final locale = Localizations.localeOf(context).languageCode;
+    final groupedDues = <DateTime, List<String>>{};
+    for (final due in dues) {
+      final date = DateTime(
+        due.dueDate.year,
+        due.dueDate.month,
+        due.dueDate.day,
+      );
+      groupedDues.putIfAbsent(date, () => <String>[]).add(
+            '${due.vaccineCode} ${due.doseNumber}',
+          );
+    }
+    final dueText = groupedDues.entries.map(
+      (entry) {
+        final vaccines = _joinSpeechItems(entry.value, isNepali: isNepali);
+        final date = DateFormat('d MMMM y', locale).format(entry.key);
+        return entry.value.length == 1
+            ? localizations.vaccineScheduleDueGroupSingular(
+                date,
+                vaccines,
+              )
+            : localizations.vaccineScheduleDueGroupPlural(
+                date,
+                vaccines,
+              );
+      },
+    ).join(isNepali ? '। ' : '. ');
+    final recordText = records
+        .map((record) =>
+            '${record.vaccineCode} ${record.doseNumber}, ${DateFormat('d MMMM y', locale).format(record.administeredDate)}')
+        .join(isNepali ? '। ' : '. ');
+    if (isNepali) {
+      return 'खोप तालिका। '
+          '${records.isEmpty ? 'कुनै लगाइएको खोप छैन।' : 'लगाइएका खोपहरू: $recordText।'} '
+          '${dues.isEmpty ? 'कुनै बाँकी खोप छैन।' : 'बाँकी खोपहरू: $dueText।'}';
+    }
+    return 'Vaccination schedule. '
+        '${records.isEmpty ? 'No administered vaccines.' : 'Administered vaccines: $recordText. '}'
+        '${dues.isEmpty ? 'No outstanding vaccines.' : 'Outstanding vaccines: $dueText.'}';
+  }
+
+  static String _joinSpeechItems(
+    List<String> items, {
+    required bool isNepali,
+  }) {
+    if (items.length < 2) return items.join();
+    final conjunction = isNepali ? ' र ' : ' and ';
+    if (items.length == 2) return items.join(conjunction);
+    return '${items.sublist(0, items.length - 1).join(', ')}$conjunction${items.last}';
   }
 
   /// Builds a spoken summary of the Settings screen.

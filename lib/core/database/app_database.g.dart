@@ -1694,6 +1694,377 @@ class HealthFacilitatorsCompanion extends UpdateCompanion<HealthFacilitator> {
   }
 }
 
+class $ManualVaccinationScheduleOverridesTable
+    extends ManualVaccinationScheduleOverrides
+    with
+        TableInfo<$ManualVaccinationScheduleOverridesTable,
+            ManualVaccinationScheduleOverride> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ManualVaccinationScheduleOverridesTable(this.attachedDatabase,
+      [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _childIdMeta =
+      const VerificationMeta('childId');
+  @override
+  late final GeneratedColumn<String> childId = GeneratedColumn<String>(
+      'child_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES child_profiles (id)'));
+  static const VerificationMeta _vaccineCodeMeta =
+      const VerificationMeta('vaccineCode');
+  @override
+  late final GeneratedColumn<String> vaccineCode = GeneratedColumn<String>(
+      'vaccine_code', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _doseNumberMeta =
+      const VerificationMeta('doseNumber');
+  @override
+  late final GeneratedColumn<int> doseNumber = GeneratedColumn<int>(
+      'dose_number', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _dueDateMeta =
+      const VerificationMeta('dueDate');
+  @override
+  late final GeneratedColumn<DateTime> dueDate = GeneratedColumn<DateTime>(
+      'due_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _isRemovedMeta =
+      const VerificationMeta('isRemoved');
+  @override
+  late final GeneratedColumn<bool> isRemoved = GeneratedColumn<bool>(
+      'is_removed', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_removed" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, childId, vaccineCode, doseNumber, dueDate, isRemoved];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'manual_vaccination_schedule_overrides';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<ManualVaccinationScheduleOverride> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('child_id')) {
+      context.handle(_childIdMeta,
+          childId.isAcceptableOrUnknown(data['child_id']!, _childIdMeta));
+    } else if (isInserting) {
+      context.missing(_childIdMeta);
+    }
+    if (data.containsKey('vaccine_code')) {
+      context.handle(
+          _vaccineCodeMeta,
+          vaccineCode.isAcceptableOrUnknown(
+              data['vaccine_code']!, _vaccineCodeMeta));
+    } else if (isInserting) {
+      context.missing(_vaccineCodeMeta);
+    }
+    if (data.containsKey('dose_number')) {
+      context.handle(
+          _doseNumberMeta,
+          doseNumber.isAcceptableOrUnknown(
+              data['dose_number']!, _doseNumberMeta));
+    } else if (isInserting) {
+      context.missing(_doseNumberMeta);
+    }
+    if (data.containsKey('due_date')) {
+      context.handle(_dueDateMeta,
+          dueDate.isAcceptableOrUnknown(data['due_date']!, _dueDateMeta));
+    }
+    if (data.containsKey('is_removed')) {
+      context.handle(_isRemovedMeta,
+          isRemoved.isAcceptableOrUnknown(data['is_removed']!, _isRemovedMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+        {childId, vaccineCode, doseNumber},
+      ];
+  @override
+  ManualVaccinationScheduleOverride map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ManualVaccinationScheduleOverride(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      childId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}child_id'])!,
+      vaccineCode: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}vaccine_code'])!,
+      doseNumber: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}dose_number'])!,
+      dueDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}due_date']),
+      isRemoved: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_removed'])!,
+    );
+  }
+
+  @override
+  $ManualVaccinationScheduleOverridesTable createAlias(String alias) {
+    return $ManualVaccinationScheduleOverridesTable(attachedDatabase, alias);
+  }
+}
+
+class ManualVaccinationScheduleOverride extends DataClass
+    implements Insertable<ManualVaccinationScheduleOverride> {
+  final String id;
+  final String childId;
+  final String vaccineCode;
+  final int doseNumber;
+  final DateTime? dueDate;
+  final bool isRemoved;
+  const ManualVaccinationScheduleOverride(
+      {required this.id,
+      required this.childId,
+      required this.vaccineCode,
+      required this.doseNumber,
+      this.dueDate,
+      required this.isRemoved});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['child_id'] = Variable<String>(childId);
+    map['vaccine_code'] = Variable<String>(vaccineCode);
+    map['dose_number'] = Variable<int>(doseNumber);
+    if (!nullToAbsent || dueDate != null) {
+      map['due_date'] = Variable<DateTime>(dueDate);
+    }
+    map['is_removed'] = Variable<bool>(isRemoved);
+    return map;
+  }
+
+  ManualVaccinationScheduleOverridesCompanion toCompanion(bool nullToAbsent) {
+    return ManualVaccinationScheduleOverridesCompanion(
+      id: Value(id),
+      childId: Value(childId),
+      vaccineCode: Value(vaccineCode),
+      doseNumber: Value(doseNumber),
+      dueDate: dueDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dueDate),
+      isRemoved: Value(isRemoved),
+    );
+  }
+
+  factory ManualVaccinationScheduleOverride.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ManualVaccinationScheduleOverride(
+      id: serializer.fromJson<String>(json['id']),
+      childId: serializer.fromJson<String>(json['childId']),
+      vaccineCode: serializer.fromJson<String>(json['vaccineCode']),
+      doseNumber: serializer.fromJson<int>(json['doseNumber']),
+      dueDate: serializer.fromJson<DateTime?>(json['dueDate']),
+      isRemoved: serializer.fromJson<bool>(json['isRemoved']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'childId': serializer.toJson<String>(childId),
+      'vaccineCode': serializer.toJson<String>(vaccineCode),
+      'doseNumber': serializer.toJson<int>(doseNumber),
+      'dueDate': serializer.toJson<DateTime?>(dueDate),
+      'isRemoved': serializer.toJson<bool>(isRemoved),
+    };
+  }
+
+  ManualVaccinationScheduleOverride copyWith(
+          {String? id,
+          String? childId,
+          String? vaccineCode,
+          int? doseNumber,
+          Value<DateTime?> dueDate = const Value.absent(),
+          bool? isRemoved}) =>
+      ManualVaccinationScheduleOverride(
+        id: id ?? this.id,
+        childId: childId ?? this.childId,
+        vaccineCode: vaccineCode ?? this.vaccineCode,
+        doseNumber: doseNumber ?? this.doseNumber,
+        dueDate: dueDate.present ? dueDate.value : this.dueDate,
+        isRemoved: isRemoved ?? this.isRemoved,
+      );
+  ManualVaccinationScheduleOverride copyWithCompanion(
+      ManualVaccinationScheduleOverridesCompanion data) {
+    return ManualVaccinationScheduleOverride(
+      id: data.id.present ? data.id.value : this.id,
+      childId: data.childId.present ? data.childId.value : this.childId,
+      vaccineCode:
+          data.vaccineCode.present ? data.vaccineCode.value : this.vaccineCode,
+      doseNumber:
+          data.doseNumber.present ? data.doseNumber.value : this.doseNumber,
+      dueDate: data.dueDate.present ? data.dueDate.value : this.dueDate,
+      isRemoved: data.isRemoved.present ? data.isRemoved.value : this.isRemoved,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ManualVaccinationScheduleOverride(')
+          ..write('id: $id, ')
+          ..write('childId: $childId, ')
+          ..write('vaccineCode: $vaccineCode, ')
+          ..write('doseNumber: $doseNumber, ')
+          ..write('dueDate: $dueDate, ')
+          ..write('isRemoved: $isRemoved')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, childId, vaccineCode, doseNumber, dueDate, isRemoved);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ManualVaccinationScheduleOverride &&
+          other.id == this.id &&
+          other.childId == this.childId &&
+          other.vaccineCode == this.vaccineCode &&
+          other.doseNumber == this.doseNumber &&
+          other.dueDate == this.dueDate &&
+          other.isRemoved == this.isRemoved);
+}
+
+class ManualVaccinationScheduleOverridesCompanion
+    extends UpdateCompanion<ManualVaccinationScheduleOverride> {
+  final Value<String> id;
+  final Value<String> childId;
+  final Value<String> vaccineCode;
+  final Value<int> doseNumber;
+  final Value<DateTime?> dueDate;
+  final Value<bool> isRemoved;
+  final Value<int> rowid;
+  const ManualVaccinationScheduleOverridesCompanion({
+    this.id = const Value.absent(),
+    this.childId = const Value.absent(),
+    this.vaccineCode = const Value.absent(),
+    this.doseNumber = const Value.absent(),
+    this.dueDate = const Value.absent(),
+    this.isRemoved = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ManualVaccinationScheduleOverridesCompanion.insert({
+    required String id,
+    required String childId,
+    required String vaccineCode,
+    required int doseNumber,
+    this.dueDate = const Value.absent(),
+    this.isRemoved = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        childId = Value(childId),
+        vaccineCode = Value(vaccineCode),
+        doseNumber = Value(doseNumber);
+  static Insertable<ManualVaccinationScheduleOverride> custom({
+    Expression<String>? id,
+    Expression<String>? childId,
+    Expression<String>? vaccineCode,
+    Expression<int>? doseNumber,
+    Expression<DateTime>? dueDate,
+    Expression<bool>? isRemoved,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (childId != null) 'child_id': childId,
+      if (vaccineCode != null) 'vaccine_code': vaccineCode,
+      if (doseNumber != null) 'dose_number': doseNumber,
+      if (dueDate != null) 'due_date': dueDate,
+      if (isRemoved != null) 'is_removed': isRemoved,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ManualVaccinationScheduleOverridesCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? childId,
+      Value<String>? vaccineCode,
+      Value<int>? doseNumber,
+      Value<DateTime?>? dueDate,
+      Value<bool>? isRemoved,
+      Value<int>? rowid}) {
+    return ManualVaccinationScheduleOverridesCompanion(
+      id: id ?? this.id,
+      childId: childId ?? this.childId,
+      vaccineCode: vaccineCode ?? this.vaccineCode,
+      doseNumber: doseNumber ?? this.doseNumber,
+      dueDate: dueDate ?? this.dueDate,
+      isRemoved: isRemoved ?? this.isRemoved,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (childId.present) {
+      map['child_id'] = Variable<String>(childId.value);
+    }
+    if (vaccineCode.present) {
+      map['vaccine_code'] = Variable<String>(vaccineCode.value);
+    }
+    if (doseNumber.present) {
+      map['dose_number'] = Variable<int>(doseNumber.value);
+    }
+    if (dueDate.present) {
+      map['due_date'] = Variable<DateTime>(dueDate.value);
+    }
+    if (isRemoved.present) {
+      map['is_removed'] = Variable<bool>(isRemoved.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ManualVaccinationScheduleOverridesCompanion(')
+          ..write('id: $id, ')
+          ..write('childId: $childId, ')
+          ..write('vaccineCode: $vaccineCode, ')
+          ..write('doseNumber: $doseNumber, ')
+          ..write('dueDate: $dueDate, ')
+          ..write('isRemoved: $isRemoved, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -1705,6 +2076,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $RemindersTable reminders = $RemindersTable(this);
   late final $HealthFacilitatorsTable healthFacilitators =
       $HealthFacilitatorsTable(this);
+  late final $ManualVaccinationScheduleOverridesTable
+      manualVaccinationScheduleOverrides =
+      $ManualVaccinationScheduleOverridesTable(this);
   late final ChildProfilesDao childProfilesDao =
       ChildProfilesDao(this as AppDatabase);
   late final VaccinationRecordsDao vaccinationRecordsDao =
@@ -1715,6 +2089,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final HealthFacilitatorsDao healthFacilitatorsDao =
       HealthFacilitatorsDao(this as AppDatabase);
   late final BackupDao backupDao = BackupDao(this as AppDatabase);
+  late final ManualVaccinationScheduleOverridesDao
+      manualVaccinationScheduleOverridesDao =
+      ManualVaccinationScheduleOverridesDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1724,7 +2101,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         vaccinationRecords,
         vaccinationDues,
         reminders,
-        healthFacilitators
+        healthFacilitators,
+        manualVaccinationScheduleOverrides
       ];
 }
 
@@ -1797,6 +2175,25 @@ final class $$ChildProfilesTableReferences
         .filter((f) => f.childId.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_remindersRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$ManualVaccinationScheduleOverridesTable,
+          List<ManualVaccinationScheduleOverride>>
+      _manualVaccinationScheduleOverridesRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.manualVaccinationScheduleOverrides,
+              aliasName: $_aliasNameGenerator(db.childProfiles.id,
+                  db.manualVaccinationScheduleOverrides.childId));
+
+  $$ManualVaccinationScheduleOverridesTableProcessedTableManager
+      get manualVaccinationScheduleOverridesRefs {
+    final manager = $$ManualVaccinationScheduleOverridesTableTableManager(
+            $_db, $_db.manualVaccinationScheduleOverrides)
+        .filter((f) => f.childId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult
+        .readTableOrNull(_manualVaccinationScheduleOverridesRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -1887,6 +2284,30 @@ class $$ChildProfilesTableFilterComposer
               $removeJoinBuilderFromRootComposer:
                   $removeJoinBuilderFromRootComposer,
             ));
+    return f(composer);
+  }
+
+  Expression<bool> manualVaccinationScheduleOverridesRefs(
+      Expression<bool> Function(
+              $$ManualVaccinationScheduleOverridesTableFilterComposer f)
+          f) {
+    final $$ManualVaccinationScheduleOverridesTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.manualVaccinationScheduleOverrides,
+            getReferencedColumn: (t) => t.childId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$ManualVaccinationScheduleOverridesTableFilterComposer(
+                  $db: $db,
+                  $table: $db.manualVaccinationScheduleOverrides,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return f(composer);
   }
 }
@@ -2004,6 +2425,30 @@ class $$ChildProfilesTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> manualVaccinationScheduleOverridesRefs<T extends Object>(
+      Expression<T> Function(
+              $$ManualVaccinationScheduleOverridesTableAnnotationComposer a)
+          f) {
+    final $$ManualVaccinationScheduleOverridesTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.manualVaccinationScheduleOverrides,
+            getReferencedColumn: (t) => t.childId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$ManualVaccinationScheduleOverridesTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.manualVaccinationScheduleOverrides,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$ChildProfilesTableTableManager extends RootTableManager<
@@ -2020,7 +2465,8 @@ class $$ChildProfilesTableTableManager extends RootTableManager<
     PrefetchHooks Function(
         {bool vaccinationRecordsRefs,
         bool vaccinationDuesRefs,
-        bool remindersRefs})> {
+        bool remindersRefs,
+        bool manualVaccinationScheduleOverridesRefs})> {
   $$ChildProfilesTableTableManager(_$AppDatabase db, $ChildProfilesTable table)
       : super(TableManagerState(
           db: db,
@@ -2072,13 +2518,16 @@ class $$ChildProfilesTableTableManager extends RootTableManager<
           prefetchHooksCallback: (
               {vaccinationRecordsRefs = false,
               vaccinationDuesRefs = false,
-              remindersRefs = false}) {
+              remindersRefs = false,
+              manualVaccinationScheduleOverridesRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (vaccinationRecordsRefs) db.vaccinationRecords,
                 if (vaccinationDuesRefs) db.vaccinationDues,
-                if (remindersRefs) db.reminders
+                if (remindersRefs) db.reminders,
+                if (manualVaccinationScheduleOverridesRefs)
+                  db.manualVaccinationScheduleOverrides
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
@@ -2120,6 +2569,19 @@ class $$ChildProfilesTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.childId == item.id),
+                        typedResults: items),
+                  if (manualVaccinationScheduleOverridesRefs)
+                    await $_getPrefetchedData<ChildProfile, $ChildProfilesTable,
+                            ManualVaccinationScheduleOverride>(
+                        currentTable: table,
+                        referencedTable: $$ChildProfilesTableReferences
+                            ._manualVaccinationScheduleOverridesRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$ChildProfilesTableReferences(db, table, p0)
+                                .manualVaccinationScheduleOverridesRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.childId == item.id),
                         typedResults: items)
                 ];
               },
@@ -2142,7 +2604,8 @@ typedef $$ChildProfilesTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function(
         {bool vaccinationRecordsRefs,
         bool vaccinationDuesRefs,
-        bool remindersRefs})>;
+        bool remindersRefs,
+        bool manualVaccinationScheduleOverridesRefs})>;
 typedef $$VaccinationRecordsTableCreateCompanionBuilder
     = VaccinationRecordsCompanion Function({
   required String id,
@@ -3332,6 +3795,316 @@ typedef $$HealthFacilitatorsTableProcessedTableManager = ProcessedTableManager<
     ),
     HealthFacilitator,
     PrefetchHooks Function()>;
+typedef $$ManualVaccinationScheduleOverridesTableCreateCompanionBuilder
+    = ManualVaccinationScheduleOverridesCompanion Function({
+  required String id,
+  required String childId,
+  required String vaccineCode,
+  required int doseNumber,
+  Value<DateTime?> dueDate,
+  Value<bool> isRemoved,
+  Value<int> rowid,
+});
+typedef $$ManualVaccinationScheduleOverridesTableUpdateCompanionBuilder
+    = ManualVaccinationScheduleOverridesCompanion Function({
+  Value<String> id,
+  Value<String> childId,
+  Value<String> vaccineCode,
+  Value<int> doseNumber,
+  Value<DateTime?> dueDate,
+  Value<bool> isRemoved,
+  Value<int> rowid,
+});
+
+final class $$ManualVaccinationScheduleOverridesTableReferences
+    extends BaseReferences<
+        _$AppDatabase,
+        $ManualVaccinationScheduleOverridesTable,
+        ManualVaccinationScheduleOverride> {
+  $$ManualVaccinationScheduleOverridesTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $ChildProfilesTable _childIdTable(_$AppDatabase db) =>
+      db.childProfiles.createAlias($_aliasNameGenerator(
+          db.manualVaccinationScheduleOverrides.childId, db.childProfiles.id));
+
+  $$ChildProfilesTableProcessedTableManager get childId {
+    final $_column = $_itemColumn<String>('child_id')!;
+
+    final manager = $$ChildProfilesTableTableManager($_db, $_db.childProfiles)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_childIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$ManualVaccinationScheduleOverridesTableFilterComposer
+    extends Composer<_$AppDatabase, $ManualVaccinationScheduleOverridesTable> {
+  $$ManualVaccinationScheduleOverridesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get vaccineCode => $composableBuilder(
+      column: $table.vaccineCode, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get doseNumber => $composableBuilder(
+      column: $table.doseNumber, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get dueDate => $composableBuilder(
+      column: $table.dueDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isRemoved => $composableBuilder(
+      column: $table.isRemoved, builder: (column) => ColumnFilters(column));
+
+  $$ChildProfilesTableFilterComposer get childId {
+    final $$ChildProfilesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.childId,
+        referencedTable: $db.childProfiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ChildProfilesTableFilterComposer(
+              $db: $db,
+              $table: $db.childProfiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ManualVaccinationScheduleOverridesTableOrderingComposer
+    extends Composer<_$AppDatabase, $ManualVaccinationScheduleOverridesTable> {
+  $$ManualVaccinationScheduleOverridesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get vaccineCode => $composableBuilder(
+      column: $table.vaccineCode, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get doseNumber => $composableBuilder(
+      column: $table.doseNumber, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get dueDate => $composableBuilder(
+      column: $table.dueDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isRemoved => $composableBuilder(
+      column: $table.isRemoved, builder: (column) => ColumnOrderings(column));
+
+  $$ChildProfilesTableOrderingComposer get childId {
+    final $$ChildProfilesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.childId,
+        referencedTable: $db.childProfiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ChildProfilesTableOrderingComposer(
+              $db: $db,
+              $table: $db.childProfiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ManualVaccinationScheduleOverridesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ManualVaccinationScheduleOverridesTable> {
+  $$ManualVaccinationScheduleOverridesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get vaccineCode => $composableBuilder(
+      column: $table.vaccineCode, builder: (column) => column);
+
+  GeneratedColumn<int> get doseNumber => $composableBuilder(
+      column: $table.doseNumber, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get dueDate =>
+      $composableBuilder(column: $table.dueDate, builder: (column) => column);
+
+  GeneratedColumn<bool> get isRemoved =>
+      $composableBuilder(column: $table.isRemoved, builder: (column) => column);
+
+  $$ChildProfilesTableAnnotationComposer get childId {
+    final $$ChildProfilesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.childId,
+        referencedTable: $db.childProfiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ChildProfilesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.childProfiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ManualVaccinationScheduleOverridesTableTableManager
+    extends RootTableManager<
+        _$AppDatabase,
+        $ManualVaccinationScheduleOverridesTable,
+        ManualVaccinationScheduleOverride,
+        $$ManualVaccinationScheduleOverridesTableFilterComposer,
+        $$ManualVaccinationScheduleOverridesTableOrderingComposer,
+        $$ManualVaccinationScheduleOverridesTableAnnotationComposer,
+        $$ManualVaccinationScheduleOverridesTableCreateCompanionBuilder,
+        $$ManualVaccinationScheduleOverridesTableUpdateCompanionBuilder,
+        (
+          ManualVaccinationScheduleOverride,
+          $$ManualVaccinationScheduleOverridesTableReferences
+        ),
+        ManualVaccinationScheduleOverride,
+        PrefetchHooks Function({bool childId})> {
+  $$ManualVaccinationScheduleOverridesTableTableManager(
+      _$AppDatabase db, $ManualVaccinationScheduleOverridesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ManualVaccinationScheduleOverridesTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ManualVaccinationScheduleOverridesTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ManualVaccinationScheduleOverridesTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> childId = const Value.absent(),
+            Value<String> vaccineCode = const Value.absent(),
+            Value<int> doseNumber = const Value.absent(),
+            Value<DateTime?> dueDate = const Value.absent(),
+            Value<bool> isRemoved = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              ManualVaccinationScheduleOverridesCompanion(
+            id: id,
+            childId: childId,
+            vaccineCode: vaccineCode,
+            doseNumber: doseNumber,
+            dueDate: dueDate,
+            isRemoved: isRemoved,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String childId,
+            required String vaccineCode,
+            required int doseNumber,
+            Value<DateTime?> dueDate = const Value.absent(),
+            Value<bool> isRemoved = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              ManualVaccinationScheduleOverridesCompanion.insert(
+            id: id,
+            childId: childId,
+            vaccineCode: vaccineCode,
+            doseNumber: doseNumber,
+            dueDate: dueDate,
+            isRemoved: isRemoved,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$ManualVaccinationScheduleOverridesTableReferences(
+                        db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({childId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (childId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.childId,
+                    referencedTable:
+                        $$ManualVaccinationScheduleOverridesTableReferences
+                            ._childIdTable(db),
+                    referencedColumn:
+                        $$ManualVaccinationScheduleOverridesTableReferences
+                            ._childIdTable(db)
+                            .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$ManualVaccinationScheduleOverridesTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $ManualVaccinationScheduleOverridesTable,
+        ManualVaccinationScheduleOverride,
+        $$ManualVaccinationScheduleOverridesTableFilterComposer,
+        $$ManualVaccinationScheduleOverridesTableOrderingComposer,
+        $$ManualVaccinationScheduleOverridesTableAnnotationComposer,
+        $$ManualVaccinationScheduleOverridesTableCreateCompanionBuilder,
+        $$ManualVaccinationScheduleOverridesTableUpdateCompanionBuilder,
+        (
+          ManualVaccinationScheduleOverride,
+          $$ManualVaccinationScheduleOverridesTableReferences
+        ),
+        ManualVaccinationScheduleOverride,
+        PrefetchHooks Function({bool childId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -3346,6 +4119,10 @@ class $AppDatabaseManager {
       $$RemindersTableTableManager(_db, _db.reminders);
   $$HealthFacilitatorsTableTableManager get healthFacilitators =>
       $$HealthFacilitatorsTableTableManager(_db, _db.healthFacilitators);
+  $$ManualVaccinationScheduleOverridesTableTableManager
+      get manualVaccinationScheduleOverrides =>
+          $$ManualVaccinationScheduleOverridesTableTableManager(
+              _db, _db.manualVaccinationScheduleOverrides);
 }
 
 mixin _$ChildProfilesDaoMixin on DatabaseAccessor<AppDatabase> {
@@ -3354,6 +4131,9 @@ mixin _$ChildProfilesDaoMixin on DatabaseAccessor<AppDatabase> {
   $VaccinationRecordsTable get vaccinationRecords =>
       attachedDatabase.vaccinationRecords;
   $RemindersTable get reminders => attachedDatabase.reminders;
+  $ManualVaccinationScheduleOverridesTable
+      get manualVaccinationScheduleOverrides =>
+          attachedDatabase.manualVaccinationScheduleOverrides;
 }
 mixin _$VaccinationRecordsDaoMixin on DatabaseAccessor<AppDatabase> {
   $ChildProfilesTable get childProfiles => attachedDatabase.childProfiles;
@@ -3383,7 +4163,20 @@ mixin _$BackupDaoMixin on DatabaseAccessor<AppDatabase> {
   $VaccinationRecordsTable get vaccinationRecords =>
       attachedDatabase.vaccinationRecords;
   $VaccinationDuesTable get vaccinationDues => attachedDatabase.vaccinationDues;
+  $ManualVaccinationScheduleOverridesTable
+      get manualVaccinationScheduleOverrides =>
+          attachedDatabase.manualVaccinationScheduleOverrides;
   $RemindersTable get reminders => attachedDatabase.reminders;
   $HealthFacilitatorsTable get healthFacilitators =>
       attachedDatabase.healthFacilitators;
+}
+mixin _$ManualVaccinationScheduleOverridesDaoMixin
+    on DatabaseAccessor<AppDatabase> {
+  $ChildProfilesTable get childProfiles => attachedDatabase.childProfiles;
+  $ManualVaccinationScheduleOverridesTable
+      get manualVaccinationScheduleOverrides =>
+          attachedDatabase.manualVaccinationScheduleOverrides;
+  $VaccinationDuesTable get vaccinationDues => attachedDatabase.vaccinationDues;
+  $VaccinationRecordsTable get vaccinationRecords =>
+      attachedDatabase.vaccinationRecords;
 }

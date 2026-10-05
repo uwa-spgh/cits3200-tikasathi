@@ -868,6 +868,17 @@ Future<BackupRows> _seed(AppDatabase database) async {
       facilityName: const Value('Ward clinic'),
     ),
   );
+  await database.manualVaccinationScheduleOverridesDao.removeDose(
+    childId: 'child-1',
+    vaccineCode: 'PENTA',
+    doseNumber: 2,
+  );
+  await database.manualVaccinationScheduleOverridesDao.saveDateOverride(
+    childId: 'child-1',
+    vaccineCode: 'BCG',
+    doseNumber: 1,
+    dueDate: DateTime(2023, 5, 20),
+  );
   await database.vaccinationDuesDao.insertVaccinationDue(
     VaccinationDuesCompanion.insert(
       id: 'due-1',
@@ -934,10 +945,23 @@ void _expectRows(BackupRows actual, BackupRows expected) {
   final List<HealthFacilitator> expectedFacilitators =
       List<HealthFacilitator>.of(expected.healthFacilitators)
         ..sort((HealthFacilitator a, HealthFacilitator b) => byId(a.id, b.id));
+  final List<ManualVaccinationScheduleOverride> overrides =
+      List<ManualVaccinationScheduleOverride>.of(
+    actual.manualScheduleOverrides,
+  )..sort((ManualVaccinationScheduleOverride a,
+              ManualVaccinationScheduleOverride b) =>
+          byId(a.id, b.id));
+  final List<ManualVaccinationScheduleOverride> expectedOverrides =
+      List<ManualVaccinationScheduleOverride>.of(
+    expected.manualScheduleOverrides,
+  )..sort((ManualVaccinationScheduleOverride a,
+              ManualVaccinationScheduleOverride b) =>
+          byId(a.id, b.id));
 
   expect(children, expectedChildren);
   expect(records, expectedRecords);
   expect(dues, expectedDues);
+  expect(overrides, expectedOverrides);
   expect(reminders, expectedReminders);
   expect(facilitators, expectedFacilitators);
 }
