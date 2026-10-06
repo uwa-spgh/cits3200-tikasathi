@@ -998,6 +998,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reminderLeadToday => 'Today is your child\'s vaccination day.';
 
   @override
+  String reminderFacility(String facility) {
+    return 'Your saved health facility: $facility.';
+  }
+
+  @override
   String reminderMissedYesterday(String vaccineName, String date) {
     return '$vaccineName was due on $date and has not been recorded yet. Completing every dose on time keeps your child protected. Please visit your nearest health post.';
   }
