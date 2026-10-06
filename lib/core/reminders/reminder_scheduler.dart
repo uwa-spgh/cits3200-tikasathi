@@ -91,6 +91,12 @@ class ReminderScheduler {
   /// months leaves a long trail of reminders, and raising all of them would
   /// bury the caregiver under notifications for one missed dose. The rest are
   /// still settled so they never reappear.
+  ///
+  /// Reminders the device already showed are settled without being raised
+  /// again: one that was queued with the device and has since left its queue
+  /// was shown, because the device only drops a reminder once it fires. One
+  /// still in the queue was never shown, for instance after a force-stop
+  /// cancelled the alarm.
   Future<void> catchUpMissed({DateTime? asOf}) async {
     final DateTime now = asOf ?? DateTime.now();
     final List<Reminder> missed =
@@ -99,8 +105,16 @@ class ReminderScheduler {
       return;
     }
 
+    final Set<int> stillQueued =
+        await _notifications.registeredNotificationIds();
+    final Iterable<Reminder> unseen = missed.where(
+      (Reminder reminder) =>
+          reminder.registeredAt == null ||
+          stillQueued.contains(reminder.notificationId),
+    );
+
     final Map<String, Reminder> latestPerChild = <String, Reminder>{};
-    for (final Reminder reminder in missed) {
+    for (final Reminder reminder in unseen) {
       final Reminder? held = latestPerChild[reminder.childId];
       if (held == null || reminder.scheduledFor.isAfter(held.scheduledFor)) {
         latestPerChild[reminder.childId] = reminder;
@@ -149,10 +163,14 @@ class ReminderScheduler {
             .where((int id) => id < NotificationService.oneOffIdFloor)
             .toSet();
 
-    for (final int notificationId
-        in registered.difference(wanted.keys.toSet())) {
+    final List<int> cancelled =
+        registered.difference(wanted.keys.toSet()).toList();
+    for (final int notificationId in cancelled) {
       await _notifications.cancelReminder(notificationId);
     }
+    // Taken off the queue before the device could show them, so the catch-up
+    // must still treat them as unseen.
+    await _database.remindersDao.clearRemindersRegistered(cancelled);
 
     // Every wanted reminder is registered again rather than assumed present.
     // The plugin's pending list is its own bookkeeping, and Android drops the
@@ -171,6 +189,11 @@ class ReminderScheduler {
         body: message.body,
       );
     }
+
+    await _database.remindersDao.markRemindersRegistered(
+      wanted.keys.toList(),
+      registeredAt: now,
+    );
   }
 }
 
