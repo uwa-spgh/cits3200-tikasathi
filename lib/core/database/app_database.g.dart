@@ -1063,9 +1063,23 @@ class $RemindersTable extends Reminders
   late final GeneratedColumn<DateTime> deliveredAt = GeneratedColumn<DateTime>(
       'delivered_at', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _registeredAtMeta =
+      const VerificationMeta('registeredAt');
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, childId, dueId, kind, scheduledFor, notificationId, deliveredAt];
+  late final GeneratedColumn<DateTime> registeredAt = GeneratedColumn<DateTime>(
+      'registered_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        childId,
+        dueId,
+        kind,
+        scheduledFor,
+        notificationId,
+        deliveredAt,
+        registeredAt
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1115,6 +1129,12 @@ class $RemindersTable extends Reminders
           deliveredAt.isAcceptableOrUnknown(
               data['delivered_at']!, _deliveredAtMeta));
     }
+    if (data.containsKey('registered_at')) {
+      context.handle(
+          _registeredAtMeta,
+          registeredAt.isAcceptableOrUnknown(
+              data['registered_at']!, _registeredAtMeta));
+    }
     return context;
   }
 
@@ -1143,6 +1163,8 @@ class $RemindersTable extends Reminders
           .read(DriftSqlType.int, data['${effectivePrefix}notification_id'])!,
       deliveredAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}delivered_at']),
+      registeredAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}registered_at']),
     );
   }
 
@@ -1168,8 +1190,17 @@ class Reminder extends DataClass implements Insertable<Reminder> {
   /// system. Unique so a reminder can be cancelled without ambiguity.
   final int notificationId;
 
-  /// When the reminder was handed to the device. Null while still pending.
+  /// When the reminder was settled: raised to the caregiver, or retired so it
+  /// never is. Null while still pending.
   final DateTime? deliveredAt;
+
+  /// When the reminder was last queued with the device's notification system.
+  /// Null when the device is not holding it.
+  ///
+  /// The device drops a reminder from its queue once it has shown it, so a
+  /// reminder that was queued and has since left the queue has already been
+  /// seen, and the catch-up on launch must not raise it a second time.
+  final DateTime? registeredAt;
   const Reminder(
       {required this.id,
       required this.childId,
@@ -1177,7 +1208,8 @@ class Reminder extends DataClass implements Insertable<Reminder> {
       required this.kind,
       required this.scheduledFor,
       required this.notificationId,
-      this.deliveredAt});
+      this.deliveredAt,
+      this.registeredAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1193,6 +1225,9 @@ class Reminder extends DataClass implements Insertable<Reminder> {
     if (!nullToAbsent || deliveredAt != null) {
       map['delivered_at'] = Variable<DateTime>(deliveredAt);
     }
+    if (!nullToAbsent || registeredAt != null) {
+      map['registered_at'] = Variable<DateTime>(registeredAt);
+    }
     return map;
   }
 
@@ -1207,6 +1242,9 @@ class Reminder extends DataClass implements Insertable<Reminder> {
       deliveredAt: deliveredAt == null && nullToAbsent
           ? const Value.absent()
           : Value(deliveredAt),
+      registeredAt: registeredAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(registeredAt),
     );
   }
 
@@ -1222,6 +1260,7 @@ class Reminder extends DataClass implements Insertable<Reminder> {
       scheduledFor: serializer.fromJson<DateTime>(json['scheduledFor']),
       notificationId: serializer.fromJson<int>(json['notificationId']),
       deliveredAt: serializer.fromJson<DateTime?>(json['deliveredAt']),
+      registeredAt: serializer.fromJson<DateTime?>(json['registeredAt']),
     );
   }
   @override
@@ -1236,6 +1275,7 @@ class Reminder extends DataClass implements Insertable<Reminder> {
       'scheduledFor': serializer.toJson<DateTime>(scheduledFor),
       'notificationId': serializer.toJson<int>(notificationId),
       'deliveredAt': serializer.toJson<DateTime?>(deliveredAt),
+      'registeredAt': serializer.toJson<DateTime?>(registeredAt),
     };
   }
 
@@ -1246,7 +1286,8 @@ class Reminder extends DataClass implements Insertable<Reminder> {
           ReminderKind? kind,
           DateTime? scheduledFor,
           int? notificationId,
-          Value<DateTime?> deliveredAt = const Value.absent()}) =>
+          Value<DateTime?> deliveredAt = const Value.absent(),
+          Value<DateTime?> registeredAt = const Value.absent()}) =>
       Reminder(
         id: id ?? this.id,
         childId: childId ?? this.childId,
@@ -1255,6 +1296,8 @@ class Reminder extends DataClass implements Insertable<Reminder> {
         scheduledFor: scheduledFor ?? this.scheduledFor,
         notificationId: notificationId ?? this.notificationId,
         deliveredAt: deliveredAt.present ? deliveredAt.value : this.deliveredAt,
+        registeredAt:
+            registeredAt.present ? registeredAt.value : this.registeredAt,
       );
   Reminder copyWithCompanion(RemindersCompanion data) {
     return Reminder(
@@ -1270,6 +1313,9 @@ class Reminder extends DataClass implements Insertable<Reminder> {
           : this.notificationId,
       deliveredAt:
           data.deliveredAt.present ? data.deliveredAt.value : this.deliveredAt,
+      registeredAt: data.registeredAt.present
+          ? data.registeredAt.value
+          : this.registeredAt,
     );
   }
 
@@ -1282,14 +1328,15 @@ class Reminder extends DataClass implements Insertable<Reminder> {
           ..write('kind: $kind, ')
           ..write('scheduledFor: $scheduledFor, ')
           ..write('notificationId: $notificationId, ')
-          ..write('deliveredAt: $deliveredAt')
+          ..write('deliveredAt: $deliveredAt, ')
+          ..write('registeredAt: $registeredAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, childId, dueId, kind, scheduledFor, notificationId, deliveredAt);
+  int get hashCode => Object.hash(id, childId, dueId, kind, scheduledFor,
+      notificationId, deliveredAt, registeredAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1300,7 +1347,8 @@ class Reminder extends DataClass implements Insertable<Reminder> {
           other.kind == this.kind &&
           other.scheduledFor == this.scheduledFor &&
           other.notificationId == this.notificationId &&
-          other.deliveredAt == this.deliveredAt);
+          other.deliveredAt == this.deliveredAt &&
+          other.registeredAt == this.registeredAt);
 }
 
 class RemindersCompanion extends UpdateCompanion<Reminder> {
@@ -1311,6 +1359,7 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
   final Value<DateTime> scheduledFor;
   final Value<int> notificationId;
   final Value<DateTime?> deliveredAt;
+  final Value<DateTime?> registeredAt;
   final Value<int> rowid;
   const RemindersCompanion({
     this.id = const Value.absent(),
@@ -1320,6 +1369,7 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
     this.scheduledFor = const Value.absent(),
     this.notificationId = const Value.absent(),
     this.deliveredAt = const Value.absent(),
+    this.registeredAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   RemindersCompanion.insert({
@@ -1330,6 +1380,7 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
     required DateTime scheduledFor,
     required int notificationId,
     this.deliveredAt = const Value.absent(),
+    this.registeredAt = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         childId = Value(childId),
@@ -1345,6 +1396,7 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
     Expression<DateTime>? scheduledFor,
     Expression<int>? notificationId,
     Expression<DateTime>? deliveredAt,
+    Expression<DateTime>? registeredAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1355,6 +1407,7 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
       if (scheduledFor != null) 'scheduled_for': scheduledFor,
       if (notificationId != null) 'notification_id': notificationId,
       if (deliveredAt != null) 'delivered_at': deliveredAt,
+      if (registeredAt != null) 'registered_at': registeredAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1367,6 +1420,7 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
       Value<DateTime>? scheduledFor,
       Value<int>? notificationId,
       Value<DateTime?>? deliveredAt,
+      Value<DateTime?>? registeredAt,
       Value<int>? rowid}) {
     return RemindersCompanion(
       id: id ?? this.id,
@@ -1376,6 +1430,7 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
       scheduledFor: scheduledFor ?? this.scheduledFor,
       notificationId: notificationId ?? this.notificationId,
       deliveredAt: deliveredAt ?? this.deliveredAt,
+      registeredAt: registeredAt ?? this.registeredAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1405,6 +1460,9 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
     if (deliveredAt.present) {
       map['delivered_at'] = Variable<DateTime>(deliveredAt.value);
     }
+    if (registeredAt.present) {
+      map['registered_at'] = Variable<DateTime>(registeredAt.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1421,6 +1479,7 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
           ..write('scheduledFor: $scheduledFor, ')
           ..write('notificationId: $notificationId, ')
           ..write('deliveredAt: $deliveredAt, ')
+          ..write('registeredAt: $registeredAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3259,6 +3318,7 @@ typedef $$RemindersTableCreateCompanionBuilder = RemindersCompanion Function({
   required DateTime scheduledFor,
   required int notificationId,
   Value<DateTime?> deliveredAt,
+  Value<DateTime?> registeredAt,
   Value<int> rowid,
 });
 typedef $$RemindersTableUpdateCompanionBuilder = RemindersCompanion Function({
@@ -3269,6 +3329,7 @@ typedef $$RemindersTableUpdateCompanionBuilder = RemindersCompanion Function({
   Value<DateTime> scheduledFor,
   Value<int> notificationId,
   Value<DateTime?> deliveredAt,
+  Value<DateTime?> registeredAt,
   Value<int> rowid,
 });
 
@@ -3334,6 +3395,9 @@ class $$RemindersTableFilterComposer
 
   ColumnFilters<DateTime> get deliveredAt => $composableBuilder(
       column: $table.deliveredAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get registeredAt => $composableBuilder(
+      column: $table.registeredAt, builder: (column) => ColumnFilters(column));
 
   $$ChildProfilesTableFilterComposer get childId {
     final $$ChildProfilesTableFilterComposer composer = $composerBuilder(
@@ -3402,6 +3466,10 @@ class $$RemindersTableOrderingComposer
   ColumnOrderings<DateTime> get deliveredAt => $composableBuilder(
       column: $table.deliveredAt, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<DateTime> get registeredAt => $composableBuilder(
+      column: $table.registeredAt,
+      builder: (column) => ColumnOrderings(column));
+
   $$ChildProfilesTableOrderingComposer get childId {
     final $$ChildProfilesTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -3466,6 +3534,9 @@ class $$RemindersTableAnnotationComposer
 
   GeneratedColumn<DateTime> get deliveredAt => $composableBuilder(
       column: $table.deliveredAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get registeredAt => $composableBuilder(
+      column: $table.registeredAt, builder: (column) => column);
 
   $$ChildProfilesTableAnnotationComposer get childId {
     final $$ChildProfilesTableAnnotationComposer composer = $composerBuilder(
@@ -3538,6 +3609,7 @@ class $$RemindersTableTableManager extends RootTableManager<
             Value<DateTime> scheduledFor = const Value.absent(),
             Value<int> notificationId = const Value.absent(),
             Value<DateTime?> deliveredAt = const Value.absent(),
+            Value<DateTime?> registeredAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               RemindersCompanion(
@@ -3548,6 +3620,7 @@ class $$RemindersTableTableManager extends RootTableManager<
             scheduledFor: scheduledFor,
             notificationId: notificationId,
             deliveredAt: deliveredAt,
+            registeredAt: registeredAt,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -3558,6 +3631,7 @@ class $$RemindersTableTableManager extends RootTableManager<
             required DateTime scheduledFor,
             required int notificationId,
             Value<DateTime?> deliveredAt = const Value.absent(),
+            Value<DateTime?> registeredAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               RemindersCompanion.insert(
@@ -3568,6 +3642,7 @@ class $$RemindersTableTableManager extends RootTableManager<
             scheduledFor: scheduledFor,
             notificationId: notificationId,
             deliveredAt: deliveredAt,
+            registeredAt: registeredAt,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
