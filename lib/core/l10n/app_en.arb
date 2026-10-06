@@ -746,7 +746,8 @@
   "backupSectionTitle": "Backup",
   "backupExportAction": "Export backup",
   "backupImportAction": "Import backup",
-  "backupPrivacyNote": "Keep this file somewhere safe. It contains your child's health information.",
+  "backupPrivacyNote": "Keep this file somewhere safe and only share it with people you trust. It contains your child's health information.",
+  "backupPhoneChangeNote": "Your records do not move to a new phone by themselves. Before changing phones, export a backup.",
   "backupReplaceTitle": "Replace data on this phone?",
   "backupReplaceMessage": "This will replace all data on this phone. Continue?",
   "backupReplaceConfirm": "Continue",
@@ -754,5 +755,9 @@
   "backupImportSuccess": "Backup imported.",
   "backupExportError": "Could not export the backup.",
   "backupImportError": "Could not import the backup.",
-  "backupInvalidFile": "This file is not a TikaSathi backup this app can read."
+  "backupInvalidFile": "This file is not a TikaSathi backup this app can read.",
+  "databaseLockedTitle": "Your saved data cannot be opened",
+  "databaseLockedMessage": "This phone no longer has the key that protects the data in TikaSathi, so the data cannot be read. This can happen after the phone's security is reset. If you have a backup file, you can import it after starting fresh.",
+  "databaseLockedAction": "Start fresh",
+  "databaseLockedError": "Could not start fresh. Please try again."
 }

@@ -455,10 +455,11 @@ void main() {
         "Keep this file somewhere safe. It contains your child's health information.",
       );
       expect(enSettings, contains('Export backup'));
+      expect(enSettings, contains('Before changing phones'));
       expect(
         enSettings,
         contains(
-            "Keep this file somewhere safe. It contains your child's health information."),
+            "Keep this file somewhere safe and only share it with people you trust. It contains your child's health information."),
       );
 
       await tester.pumpWidget(

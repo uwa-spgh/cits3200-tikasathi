@@ -549,6 +549,7 @@ class ScreenSpeechHelper {
     final String backup = '${localizations.backupSectionTitle}. '
         '${localizations.backupExportAction}. '
         '${localizations.backupImportAction}. '
+        '${localizations.backupPhoneChangeNote} '
         '${localizations.backupPrivacyNote}';
     if (isNepali) {
       return 'सेटिङहरू। भाषा छनोट: हाल नेपाली भाषा चयन गरिएको छ। '

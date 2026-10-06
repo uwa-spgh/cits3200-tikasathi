@@ -1016,7 +1016,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupPrivacyNote =>
-      'Keep this file somewhere safe. It contains your child\'s health information.';
+      'Keep this file somewhere safe and only share it with people you trust. It contains your child\'s health information.';
+
+  @override
+  String get backupPhoneChangeNote =>
+      'Your records do not move to a new phone by themselves. Before changing phones, export a backup.';
 
   @override
   String get backupReplaceTitle => 'Replace data on this phone?';
@@ -1043,4 +1047,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get backupInvalidFile =>
       'This file is not a TikaSathi backup this app can read.';
+
+  @override
+  String get databaseLockedTitle => 'Your saved data cannot be opened';
+
+  @override
+  String get databaseLockedMessage =>
+      'This phone no longer has the key that protects the data in TikaSathi, so the data cannot be read. This can happen after the phone\'s security is reset. If you have a backup file, you can import it after starting fresh.';
+
+  @override
+  String get databaseLockedAction => 'Start fresh';
+
+  @override
+  String get databaseLockedError => 'Could not start fresh. Please try again.';
 }
