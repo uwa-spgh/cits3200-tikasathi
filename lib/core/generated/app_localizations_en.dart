@@ -746,84 +746,83 @@ class AppLocalizationsEn extends AppLocalizations {
   String get learnTitle => 'Learn';
 
   @override
-  String get learnTopic1Title => 'Topic 1';
+  String get learnMythLabel => 'Myth:';
 
   @override
-  String get learnTopic1Summary => 'A short summary of topic 1.';
+  String get learnFactLabel => 'Fact:';
+
+  @override
+  String get learnTopic1Title => 'Why are vaccines important?';
 
   @override
   String get learnTopic1Body =>
-      'This is placeholder content for topic 1. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 1 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 1 and answer common questions.\n\nThis paragraph will say where to get more help with topic 1, such as the local health facility or a health worker.';
+      '**Vaccines keep your child safe.**\n• Some diseases can make a child very sick.\n• Some diseases can make a child weak for life.\n• Some diseases can kill a child.\n• Vaccines stop these diseases before they start.\n\n**Vaccines protect other children too.**\n• When many children are vaccinated, the disease cannot spread.\n• This keeps your family, your neighbours and your village safe.\n\n**Vaccines are free.**\n• Vaccines are free at the health post and immunisation clinics.\n\n**Your child needs all the doses.**\n• One dose is not enough for many vaccines.\n• Each dose helps your child\'s body become stronger.\n• Follow the dates in the app.';
 
   @override
-  String get learnTopic2Title => 'Topic 2';
-
-  @override
-  String get learnTopic2Summary => 'A short summary of topic 2.';
+  String get learnTopic2Title => 'When should your child get vaccines?';
 
   @override
   String get learnTopic2Body =>
-      'This is placeholder content for topic 2. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 2 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 2 and answer common questions.\n\nThis paragraph will say where to get more help with topic 2, such as the local health facility or a health worker.';
+      '• Your child needs different vaccines at different ages.\n• Some vaccines are given soon after birth.\n• Other vaccines are given when your child is 6, 10 and 14 weeks old.\n• More vaccines are given at 9, 12 and 15 months.\n• The app will remind you when your child is due for a vaccine.\n• Follow the vaccination schedule to keep your child protected.';
 
   @override
-  String get learnTopic3Title => 'Topic 3';
-
-  @override
-  String get learnTopic3Summary => 'A short summary of topic 3.';
+  String get learnTopic3Title => 'What if your child misses a vaccine?';
 
   @override
   String get learnTopic3Body =>
-      'This is placeholder content for topic 3. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 3 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 3 and answer common questions.\n\nThis paragraph will say where to get more help with topic 3, such as the local health facility or a health worker.';
+      '• Do not worry if your child misses a vaccine.\n• Take your child to the nearest health facility.\n• Show the health worker your child\'s vaccination card.\n• Tell the health worker which vaccines your child has already received.\n• The health worker can tell you which vaccine your child needs next.\n• Do not stop vaccination because your child missed a dose.';
 
   @override
-  String get learnTopic4Title => 'Topic 4';
-
-  @override
-  String get learnTopic4Summary => 'A short summary of topic 4.';
+  String get learnTopic4Title => 'Are vaccines safe?';
 
   @override
   String get learnTopic4Body =>
-      'This is placeholder content for topic 4. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 4 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 4 and answer common questions.\n\nThis paragraph will say where to get more help with topic 4, such as the local health facility or a health worker.';
+      '• Vaccines are given to protect your child from serious diseases.\n• Most children have only mild effects after vaccination.\n• Your child may have a mild fever.\n• Your child may have some pain or swelling where the injection was given.\n• Your child may be a little fussy or irritable for a short time.\n• These effects are usually temporary.';
 
   @override
-  String get learnTopic5Title => 'Topic 5';
-
-  @override
-  String get learnTopic5Summary => 'A short summary of topic 5.';
+  String get learnTopic5Title => 'What can happen after vaccination?';
 
   @override
   String get learnTopic5Body =>
-      'This is placeholder content for topic 5. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 5 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 5 and answer common questions.\n\nThis paragraph will say where to get more help with topic 5, such as the local health facility or a health worker.';
+      '**After the vaccine: what is normal**\nSome children have small problems after a vaccine. This is normal. It means the vaccine is working.\n• A little fever\n• Pain or swelling where the needle went in\n• Crying more than usual\n• Sleeping more than usual\n\n**What you can do**\n• Breastfeed your baby more often.\n• Keep your baby in light clothes. Do not wrap your baby too tightly.\n• Give your baby extra fluids if your baby is older than 6 months.\n• Do not rub or press the swollen place.\n• Ask the health worker before you give any medicine.\n\nThese problems go away in 1 to 2 days.\n\n**When to go to the health facility quickly**\nTake your child to the health facility right away if your child:\n• has a very high fever\n• has fits or shakes\n• cannot breastfeed or drink\n• has trouble breathing\n• will not stop crying for a long time\n• has swelling that is getting bigger\n• looks very weak or is hard to wake';
 
   @override
-  String get learnTopic6Title => 'Topic 6';
-
-  @override
-  String get learnTopic6Summary => 'A short summary of topic 6.';
+  String get learnTopic6Title => 'Vaccine myths and facts';
 
   @override
   String get learnTopic6Body =>
-      'This is placeholder content for topic 6. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 6 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 6 and answer common questions.\n\nThis paragraph will say where to get more help with topic 6, such as the local health facility or a health worker.';
+      '**Myth:** Vaccines make children sick.\n**Fact:** Vaccines are safe. They teach the body to fight disease. A small fever after the vaccine is normal and passes quickly.\n\n**Myth:** My child is healthy, so my child does not need vaccines.\n**Fact:** Vaccines work best before a child gets sick. Healthy children can catch these diseases too.\n\n**Myth:** If my child misses a vaccine, my child cannot get it anymore.\n**Fact:** Your child can still get it. Go to the health post as soon as you can.\n\n**Myth:** Breastfed babies do not need vaccines.\n**Fact:** Breast milk is very good for your baby. But it cannot stop these diseases. Your baby still needs vaccines.\n\n**Myth:** Diseases like polio and measles are gone, so vaccines are not needed.\n**Fact:** These diseases can still come back if children are not vaccinated.';
 
   @override
-  String get learnTopic7Title => 'Topic 7';
-
-  @override
-  String get learnTopic7Summary => 'A short summary of topic 7.';
+  String get learnTopic7Title => 'Keep your child\'s vaccination card safe';
 
   @override
   String get learnTopic7Body =>
-      'This is placeholder content for topic 7. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 7 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 7 and answer common questions.\n\nThis paragraph will say where to get more help with topic 7, such as the local health facility or a health worker.';
+      '• Keep your child\'s vaccination card in a safe place.\n• Take the card whenever you visit a health facility.\n• Ask the health worker to update the card after each vaccination.\n• Use the app to keep track of your child\'s vaccines.\n• Do not lose the vaccination card.';
 
   @override
-  String get learnTopic8Title => 'Topic 8';
-
-  @override
-  String get learnTopic8Summary => 'A short summary of topic 8.';
+  String get learnTopic8Title => 'Where can your child get vaccines?';
 
   @override
   String get learnTopic8Body =>
-      'This is placeholder content for topic 8. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 8 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 8 and answer common questions.\n\nThis paragraph will say where to get more help with topic 8, such as the local health facility or a health worker.';
+      '• Your child can receive vaccines at vaccination services and health facilities.\n• You may visit your nearest health facility.\n• If you are not sure where to go, ask a health worker.';
+
+  @override
+  String get learnTopic9Title => 'Remember';
+
+  @override
+  String get learnTopic9Body =>
+      '• Vaccines help protect your child from serious diseases.\n• Give your child vaccines on time.\n• Keep your child\'s vaccination card safe.\n• Follow the vaccination schedule.\n• If your child misses a vaccine, visit a health facility.\n• If you have questions, ask a healthcare worker.';
+
+  @override
+  String get learnTopic10Title => 'What each vaccine protects against';
+
+  @override
+  String get learnTopic10Body => '';
+
+  @override
+  String get learnTopic10Table =>
+      'Vaccine | Protects your child from\nBCG | Tuberculosis\nPentavalent | Five diseases, including diphtheria, whooping cough, tetanus, hepatitis B, Haemophilus influenzae type b (Hib) infection.\nPolio drops and polio injection | Polio\nRotavirus | Diarrhoea\nPCV | Pneumonia and brain fever\nMR | Measles and rubella\nJE | Japanese encephalitis (brain fever)\nTCV | Typhoid fever\nHPV (girls, at school in Grade 6) | Cancer of the womb mouth (cervical cancer) when older';
 
   @override
   String get childStatusSetupIncomplete => 'Awaiting setup completion';
