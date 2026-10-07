@@ -21,8 +21,17 @@ class Reminders extends Table {
   /// system. Unique so a reminder can be cancelled without ambiguity.
   IntColumn get notificationId => integer()();
 
-  /// When the reminder was handed to the device. Null while still pending.
+  /// When the reminder was settled: raised to the caregiver, or retired so it
+  /// never is. Null while still pending.
   DateTimeColumn get deliveredAt => dateTime().nullable()();
+
+  /// When the reminder was last queued with the device's notification system.
+  /// Null when the device is not holding it.
+  ///
+  /// The device drops a reminder from its queue once it has shown it, so a
+  /// reminder that was queued and has since left the queue has already been
+  /// seen, and the catch-up on launch must not raise it a second time.
+  DateTimeColumn get registeredAt => dateTime().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

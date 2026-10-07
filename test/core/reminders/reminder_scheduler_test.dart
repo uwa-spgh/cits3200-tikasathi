@@ -158,6 +158,45 @@ void main() {
       verifyNever(() => notifications.cancelReminder(any()));
     });
 
+    group('registration bookkeeping', () {
+      Future<Reminder> storedReminder() async {
+        return database.remindersDao.insertReminderAt(
+          dueId: 'due-1',
+          scheduledFor: now.add(const Duration(days: 1)),
+        );
+      }
+
+      Future<Reminder> reload(Reminder reminder) {
+        return (database.select(database.reminders)
+              ..where((row) => row.id.equals(reminder.id)))
+            .getSingle();
+      }
+
+      test('records the reminders it queues with the device', () async {
+        final Reminder stored = await storedReminder();
+        expect(stored.registeredAt, isNull);
+
+        await scheduler.sync(<Reminder>[stored]);
+
+        expect((await reload(stored)).registeredAt, isNotNull);
+      });
+
+      test('forgets a registration it takes off the queue', () async {
+        final Reminder stored = await storedReminder();
+        await database.remindersDao
+            .markRemindersRegistered(<int>[stored.notificationId]);
+        when(() => notifications.registeredNotificationIds())
+            .thenAnswer((_) async => <int>{stored.notificationId});
+
+        // Nothing is wanted any more, so the device's copy is cancelled.
+        await scheduler.sync(<Reminder>[]);
+
+        verify(() => notifications.cancelReminder(stored.notificationId))
+            .called(1);
+        expect((await reload(stored)).registeredAt, isNull);
+      });
+    });
+
     group('catchUpMissed', () {
       final DateTime pastDue = DateTime(2024, 6, 20);
       final DateTime wellBefore = DateTime(2024, 1, 1);
@@ -246,6 +285,71 @@ void main() {
             body: any(named: 'body'),
           ),
         ).called(2);
+      });
+
+      Future<void> markAllRegistered() async {
+        final List<Reminder> pending =
+            await database.remindersDao.getPendingReminders();
+        await database.remindersDao.markRemindersRegistered(
+          pending.map((Reminder reminder) => reminder.notificationId).toList(),
+        );
+      }
+
+      // The device drops a reminder from its queue once it shows it, so a
+      // queued reminder that has left the queue was already seen.
+      test('does not raise again what the device already showed', () async {
+        await seedMissedReminders('missed-1');
+        await markAllRegistered();
+        when(() => notifications.registeredNotificationIds())
+            .thenAnswer((_) async => <int>{});
+
+        await scheduler.catchUpMissed();
+
+        verifyNever(
+          () => notifications.showNotificationNow(
+            notificationId: any(named: 'notificationId'),
+            title: any(named: 'title'),
+            body: any(named: 'body'),
+          ),
+        );
+        expect(await database.remindersDao.getPendingReminders(), isEmpty);
+      });
+
+      // A force-stop cancels the alarm but leaves the plugin's queue intact.
+      test('raises a queued reminder the device never got to show', () async {
+        await seedMissedReminders('missed-1');
+        await markAllRegistered();
+        final List<Reminder> pending =
+            await database.remindersDao.getPendingReminders();
+        when(() => notifications.registeredNotificationIds()).thenAnswer(
+          (_) async => pending
+              .map((Reminder reminder) => reminder.notificationId)
+              .toSet(),
+        );
+
+        await scheduler.catchUpMissed();
+
+        verify(
+          () => notifications.showNotificationNow(
+            notificationId: any(named: 'notificationId'),
+            title: any(named: 'title'),
+            body: any(named: 'body'),
+          ),
+        ).called(1);
+      });
+
+      test('raises reminders the device was never given', () async {
+        await seedMissedReminders('missed-1');
+
+        await scheduler.catchUpMissed();
+
+        verify(
+          () => notifications.showNotificationNow(
+            notificationId: any(named: 'notificationId'),
+            title: any(named: 'title'),
+            body: any(named: 'body'),
+          ),
+        ).called(1);
       });
 
       test('does nothing when no reminder was missed', () async {

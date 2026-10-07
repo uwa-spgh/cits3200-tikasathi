@@ -154,6 +154,60 @@ void main() {
       );
     });
 
+    group('registration with the device', () {
+      Future<List<Reminder>> scheduled() async {
+        await insertChildWithDue();
+        return remindersDao.scheduleRemindersForDue('due-1', from: wellBefore);
+      }
+
+      test('records which reminders the device holds', () async {
+        final List<Reminder> rows = await scheduled();
+
+        await remindersDao.markRemindersRegistered(
+          <int>[rows.first.notificationId],
+          registeredAt: DateTime(2024, 6, 1),
+        );
+
+        final List<Reminder> all = await remindersDao.getPendingReminders();
+        expect(
+          all.firstWhere((r) => r.id == rows.first.id).registeredAt,
+          DateTime(2024, 6, 1),
+        );
+        expect(
+          all.where((r) => r.id != rows.first.id).map((r) => r.registeredAt),
+          everyElement(isNull),
+        );
+      });
+
+      // The scheduler wakes on every write to the table, so a second pass that
+      // rewrote marked rows would wake it forever.
+      test('writes nothing for reminders already marked', () async {
+        final List<Reminder> rows = await scheduled();
+        final List<int> ids = rows.map((r) => r.notificationId).toList();
+
+        expect(await remindersDao.markRemindersRegistered(ids), rows.length);
+        expect(await remindersDao.markRemindersRegistered(ids), 0);
+      });
+
+      test('forgets registrations taken off the device', () async {
+        final List<Reminder> rows = await scheduled();
+        final List<int> ids = rows.map((r) => r.notificationId).toList();
+        await remindersDao.markRemindersRegistered(ids);
+
+        expect(await remindersDao.clearRemindersRegistered(ids), rows.length);
+        expect(
+          (await remindersDao.getPendingReminders()).map((r) => r.registeredAt),
+          everyElement(isNull),
+        );
+        expect(await remindersDao.clearRemindersRegistered(ids), 0);
+      });
+
+      test('ignores an empty list', () async {
+        expect(await remindersDao.markRemindersRegistered(<int>[]), 0);
+        expect(await remindersDao.clearRemindersRegistered(<int>[]), 0);
+      });
+    });
+
     test('gives every reminder a distinct notification id', () async {
       await insertChildWithDue();
       await insertChildWithDue(

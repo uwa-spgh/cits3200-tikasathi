@@ -183,6 +183,45 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
     );
   }
 
+  /// Records that the reminders under [notificationIds] are now queued with
+  /// the device.
+  ///
+  /// Only rows not already marked are written. The scheduler re-registers on
+  /// every change to this table, so writing rows that are already marked would
+  /// wake it again with nothing new to do.
+  Future<int> markRemindersRegistered(
+    List<int> notificationIds, {
+    DateTime? registeredAt,
+  }) {
+    if (notificationIds.isEmpty) {
+      return Future<int>.value(0);
+    }
+    return (update(reminders)
+          ..where(
+            (row) =>
+                row.notificationId.isIn(notificationIds) &
+                row.registeredAt.isNull(),
+          ))
+        .write(
+      RemindersCompanion(registeredAt: Value(registeredAt ?? DateTime.now())),
+    );
+  }
+
+  /// Records that the device no longer holds the reminders under
+  /// [notificationIds], because they were taken off its queue.
+  Future<int> clearRemindersRegistered(List<int> notificationIds) {
+    if (notificationIds.isEmpty) {
+      return Future<int>.value(0);
+    }
+    return (update(reminders)
+          ..where(
+            (row) =>
+                row.notificationId.isIn(notificationIds) &
+                row.registeredAt.isNotNull(),
+          ))
+        .write(const RemindersCompanion(registeredAt: Value(null)));
+  }
+
   Future<int> markReminderDelivered(String id, {DateTime? deliveredAt}) {
     return (update(reminders)..where((row) => row.id.equals(id))).write(
       RemindersCompanion(
