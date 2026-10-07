@@ -37,9 +37,14 @@ String reminderVaccineName(
 /// leaves open, so caregivers with several children can tell reminders apart.
 /// The two follow-up bodies and every title are ours; see `app_en.arb`.
 ///
-/// TODO(facility locator): the brief wants the nearest immunisation service or
-/// outreach session in the advance reminder. The app has no such data yet —
-/// only the one facility a caregiver saves by hand — so it is not included.
+/// [facility] is the caregiver's saved health facility, already formatted by
+/// [describeFacility]. The brief asks the reminders before a due date to say
+/// where to go "if available", so it is added to those three and left out when
+/// nothing is saved.
+///
+/// TODO(facility locator): the brief means the nearest immunisation service or
+/// outreach session. The app has no such data, only the facility the caregiver
+/// saves by hand, so that is what reminders name for now.
 ReminderMessage buildReminderMessage({
   required AppLocalizations localizations,
   required String languageCode,
@@ -48,6 +53,7 @@ ReminderMessage buildReminderMessage({
   required int doseNumber,
   required DateTime dueDate,
   required ReminderKind kind,
+  String? facility,
 }) {
   final String vaccineName = reminderVaccineName(
     localizations,
@@ -55,14 +61,25 @@ ReminderMessage buildReminderMessage({
     doseNumber,
   );
   final String date = DateFormat('d MMMM y', languageCode).format(dueDate);
+  final String due = localizations.reminderUpcoming(vaccineName, date);
+  final String where =
+      facility == null ? '' : ' ${localizations.reminderFacility(facility)}';
 
+  // The brief's 3-touch approach: the day before reinforces that tomorrow is
+  // the day, and the day itself opens with its own quoted phrase. Both lead
+  // into the client's fixed sentence rather than rewording it.
   return switch (kind) {
-    ReminderKind.advance ||
-    ReminderKind.preparation ||
-    ReminderKind.sameDay =>
-      (
+    ReminderKind.advance => (
         title: localizations.reminderTitleUpcoming(childName),
-        body: localizations.reminderUpcoming(vaccineName, date),
+        body: '$due$where',
+      ),
+    ReminderKind.preparation => (
+        title: localizations.reminderTitleUpcoming(childName),
+        body: '${localizations.reminderLeadTomorrow} $due$where',
+      ),
+    ReminderKind.sameDay => (
+        title: localizations.reminderTitleUpcoming(childName),
+        body: '${localizations.reminderLeadToday} $due$where',
       ),
     ReminderKind.followUpDay => (
         title: localizations.reminderTitleMissed(childName),
@@ -77,4 +94,16 @@ ReminderMessage buildReminderMessage({
         body: localizations.reminderOverdue(vaccineName),
       ),
   };
+}
+
+/// The saved facility as one line, e.g. `Bhaktapur Health Post, Ward 4, 98...`.
+///
+/// Returns null when nothing usable is saved, so callers can leave the
+/// sentence out rather than print an empty one.
+String? describeFacility({String? name, String? address, String? phone}) {
+  final List<String> parts = <String>[
+    for (final String? part in <String?>[name, address, phone])
+      if (part != null && part.trim().isNotEmpty) part.trim(),
+  ];
+  return parts.isEmpty ? null : parts.join(', ');
 }

@@ -128,6 +128,37 @@ void main() {
       verifyNever(() => notifications.cancelReminder(any()));
     });
 
+    test('names the saved health facility in the reminder', () async {
+      await database.healthFacilitatorsDao.saveLocalFacilitator(
+        name: 'Bhaktapur Health Post',
+        address: 'Ward 4',
+        phone: '9812345678',
+      );
+
+      await scheduler.sync([
+        reminder(
+          notificationId: 7,
+          scheduledFor: now.add(const Duration(days: 1)),
+        ),
+      ]);
+
+      final String body = verify(
+        () => notifications.scheduleReminder(
+          notificationId: 7,
+          when: any(named: 'when'),
+          title: any(named: 'title'),
+          body: captureAny(named: 'body'),
+        ),
+      ).captured.single as String;
+      expect(
+        body,
+        endsWith(
+          'Your saved health facility: '
+          'Bhaktapur Health Post, Ward 4, 9812345678.',
+        ),
+      );
+    });
+
     test('cancels registrations that are no longer wanted', () async {
       when(() => notifications.registeredNotificationIds())
           .thenAnswer((_) async => <int>{7, 8});

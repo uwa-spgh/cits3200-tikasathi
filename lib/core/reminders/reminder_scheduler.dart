@@ -59,6 +59,8 @@ class ReminderScheduler {
     if (child == null || due == null) {
       return null;
     }
+    final HealthFacilitator? facility =
+        await _database.healthFacilitatorsDao.getLocalFacilitator();
 
     return buildReminderMessage(
       localizations: localizations,
@@ -68,6 +70,11 @@ class ReminderScheduler {
       doseNumber: due.doseNumber,
       dueDate: due.dueDate,
       kind: reminder.kind,
+      facility: describeFacility(
+        name: facility?.name,
+        address: facility?.address,
+        phone: facility?.phone,
+      ),
     );
   }
 

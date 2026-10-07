@@ -988,6 +988,17 @@ class AppLocalizationsNe extends AppLocalizations {
   }
 
   @override
+  String get reminderLeadTomorrow => 'भोलि खोप लगाउने तोकिएको दिन हो।';
+
+  @override
+  String get reminderLeadToday => 'आज तपाईंको बच्चाको खोप लगाउने दिन हो।';
+
+  @override
+  String reminderFacility(String facility) {
+    return 'तपाईंले सेभ गर्नुभएको स्वास्थ्य संस्था: $facility।';
+  }
+
+  @override
   String reminderMissedYesterday(String vaccineName, String date) {
     return '$vaccineName $date मा लगाउनुपर्ने थियो, तर अहिलेसम्म रेकर्ड भएको छैन। हरेक मात्रा समयमै पूरा गर्दा बच्चा सुरक्षित रहन्छ। कृपया नजिकैको स्वास्थ्य चौकीमा जानुहोस्।';
   }

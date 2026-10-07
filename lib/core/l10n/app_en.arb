@@ -727,6 +727,23 @@
       }
     }
   },
+  "reminderLeadTomorrow": "Tomorrow is the scheduled vaccination day.",
+  "@reminderLeadTomorrow": {
+    "description": "Opens the day-before reminder, ahead of the client's exact push sentence (reminderUpcoming). The brief (section 5, 3-touch approach) asks this reminder to reinforce that tomorrow is the scheduled vaccination day; this is that phrase. Combining it with the push sentence is our reading of the brief and needs client sign-off."
+  },
+  "reminderLeadToday": "Today is your child's vaccination day.",
+  "@reminderLeadToday": {
+    "description": "Opens the same-day reminder, ahead of the client's exact push sentence. The brief quotes this phrase directly for the final reminder. Combining it with the push sentence is our reading of the brief and needs client sign-off."
+  },
+  "reminderFacility": "Your saved health facility: {facility}.",
+  "@reminderFacility": {
+    "description": "DRAFT, NOT CLIENT-SUPPLIED. Added after the week-before, day-before and same-day reminders when the caregiver has saved a health facility. The brief asks these reminders for the location, where to attend, and facility details 'if available'; the only facility data the app holds is the one the caregiver saves on the home page. Kept as a separate sentence so the client's fixed wording is untouched.",
+    "placeholders": {
+      "facility": {
+        "type": "String"
+      }
+    }
+  },
   "reminderMissedYesterday": "{vaccineName} was due on {date} and has not been recorded yet. Completing every dose on time keeps your child protected. Please visit your nearest health post.",
   "@reminderMissedYesterday": {
     "description": "DRAFT, NEEDS CLIENT SIGN-OFF. Sent one day after a missed dose. The brief gives no exact wording here, only that it must carry the missed vaccine name, why finishing the schedule matters, and catch-up guidance where it applies.",
