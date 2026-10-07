@@ -452,14 +452,8 @@ void main() {
         "Edit child's vaccination schedule. "
         'This is for healthcare professionals only. '
         'Backup. Export backup. Import backup. '
-        "Keep this file somewhere safe. It contains your child's health information.",
-      );
-      expect(enSettings, contains('Export backup'));
-      expect(enSettings, contains('Before changing phones'));
-      expect(
-        enSettings,
-        contains(
-            "Keep this file somewhere safe and only share it with people you trust. It contains your child's health information."),
+        'Your records do not move to a new phone by themselves. Before changing phones, export a backup. '
+        "Keep this file somewhere safe and only share it with people you trust. It contains your child's health information.",
       );
 
       await tester.pumpWidget(
@@ -482,7 +476,8 @@ void main() {
                 'बालबालिकाको प्रोफाइल सम्पादन। बालबालिकाको प्रोफाइल मेटाउनुहोस्। '
                 'बच्चाको खोप तालिका सम्पादन गर्नुहोस्। यो स्वास्थ्यकर्मीका लागि मात्र हो। '
                 '${l10n.backupSectionTitle}. ${l10n.backupExportAction}. '
-                '${l10n.backupImportAction}. ${l10n.backupPrivacyNote}',
+                '${l10n.backupImportAction}. ${l10n.backupPhoneChangeNote} '
+                '${l10n.backupPrivacyNote}',
               );
               return const SizedBox();
             },
