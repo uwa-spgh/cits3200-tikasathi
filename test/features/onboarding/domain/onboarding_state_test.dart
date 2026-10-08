@@ -170,6 +170,53 @@ void main() {
     expect(await database.childProfilesDao.getAllChildProfiles(), hasLength(1));
   });
 
+  test('preserves vaccine selections and reuses the provisional child',
+      () async {
+    final AppDatabase database =
+        AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(database.close);
+    final ProviderContainer container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(database),
+        secureStorageServiceProvider.overrideWithValue(secureStorage),
+        settingsRepositoryProvider.overrideWith(
+          (ref) => FakeSettingsRepository(language: AppLanguage.english),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final OnboardingController controller =
+        container.read(onboardingControllerProvider.notifier);
+    final DateTime initialDob = DateTime(2020, 1, 2);
+    controller.updateChildInfo(
+      name: 'Nima',
+      dob: initialDob,
+      sex: 'female',
+    );
+    controller.updateVaccineDose(
+      key: 'BCG-1',
+      administeredDate: DateTime(2020, 1, 3),
+    );
+
+    final String? childId = await controller.finishSetup();
+    controller.updateChildInfo(
+      name: 'Nima Updated',
+      dob: initialDob,
+      sex: 'male',
+    );
+    expect(await controller.finishSetup(), childId);
+
+    final children = await database.childProfilesDao.getAllChildProfiles();
+    expect(children, hasLength(1));
+    expect(children.single.name, 'Nima Updated');
+    expect(children.single.sex, 'male');
+    expect(
+      container.read(onboardingControllerProvider).selectedVaccineDoses,
+      <String, DateTime>{'BCG-1': DateTime(2020, 1, 3)},
+    );
+  });
+
   test('retry after a post-insert failure reuses the child profile', () async {
     final AppDatabase database =
         AppDatabase.forTesting(NativeDatabase.memory());
@@ -198,50 +245,5 @@ void main() {
 
     expect(childId, isNotNull);
     expect(await database.childProfilesDao.getAllChildProfiles(), hasLength(1));
-  });
-
-  test('cancelling vaccine setup deletes the provisional child only', () async {
-    final AppDatabase database =
-        AppDatabase.forTesting(NativeDatabase.memory());
-    addTearDown(database.close);
-    final ProviderContainer container = ProviderContainer(
-      overrides: <Override>[
-        appDatabaseProvider.overrideWithValue(database),
-        secureStorageServiceProvider.overrideWithValue(secureStorage),
-        settingsRepositoryProvider.overrideWith(
-          (ref) => FakeSettingsRepository(language: AppLanguage.english),
-        ),
-      ],
-    );
-    addTearDown(container.dispose);
-
-    final OnboardingController controller =
-        container.read(onboardingControllerProvider.notifier);
-    controller.updateCaregiverInfo(
-      name: 'Mina',
-      phone: '9841234567',
-      address: 'Kathmandu',
-    );
-    controller.updateChildInfo(
-      name: 'Nima',
-      dob: DateTime(2020),
-      sex: 'Boy',
-    );
-
-    final String? childId = await controller.finishSetup();
-    expect(childId, isNotNull);
-    expect(await database.childProfilesDao.getAllChildProfiles(), hasLength(1));
-
-    await controller.cancelInitialOnboardingVaccineSetup();
-
-    expect(await database.childProfilesDao.getAllChildProfiles(), isEmpty);
-    verify(() => secureStorage.writeOnboardingCompleted(false)).called(1);
-    final state = container.read(onboardingControllerProvider);
-    expect(state.caregiverName, 'Mina');
-    expect(state.caregiverPhone, '9841234567');
-    expect(state.caregiverAddress, 'Kathmandu');
-    expect(state.childName, 'Nima');
-    expect(state.childDob, DateTime(2020));
-    expect(state.childSex, 'Boy');
   });
 }

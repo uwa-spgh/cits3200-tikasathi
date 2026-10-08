@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
+import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/settings/data/settings_providers.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/vaccine_records/presentation/vaccine_records_screen.dart';
@@ -12,6 +13,82 @@ import '../../../helpers/fake_settings_repository.dart';
 
 void main() {
   group('VaccineRecordsScreen', () {
+    testWidgets('preserves onboarding vaccine selections across recreation',
+        (WidgetTester tester) async {
+      const childId = 'onboarding-draft-child';
+      final now = DateTime.now();
+      final dob = now.subtract(const Duration(days: 105));
+      final container = ProviderContainer(
+        overrides: [
+          settingsRepositoryProvider.overrideWith(
+            (ref) => FakeSettingsRepository(language: AppLanguage.english),
+          ),
+          childProfileProvider(childId).overrideWith(
+            (ref) => Future.value(
+              ChildProfileDetails(
+                child: ChildProfile(
+                  id: childId,
+                  name: 'Maya',
+                  dateOfBirth: dob,
+                  sex: 'female',
+                  isSetupComplete: false,
+                ),
+                dueVaccines: const <VaccinationDue>[],
+                records: const <VaccinationRecord>[],
+                now: now,
+              ),
+            ),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            locale: Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: VaccineRecordsScreen(
+              childId: childId,
+              isOnboardingFlow: true,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final firstCheckbox = find.byType(Checkbox).first;
+      expect(tester.widget<Checkbox>(firstCheckbox).value, isFalse);
+      await tester.tap(firstCheckbox);
+      await tester.pump();
+
+      final draft =
+          container.read(onboardingControllerProvider).selectedVaccineDoses;
+      expect(draft, hasLength(1));
+      expect(draft.values.single, isNotNull);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            locale: Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: VaccineRecordsScreen(
+              childId: childId,
+              isOnboardingFlow: true,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+          tester.widget<Checkbox>(find.byType(Checkbox).first).value, isTrue);
+    });
+
     testWidgets('shows all recorded vaccinations', (WidgetTester tester) async {
       const childId = 'child-1';
       tester.view.physicalSize = const Size(800, 2500);

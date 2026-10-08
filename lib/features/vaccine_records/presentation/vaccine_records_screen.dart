@@ -70,6 +70,12 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
         _checkedDoses.remove(key);
       }
     });
+    if (widget.isOnboardingFlow) {
+      ref.read(onboardingControllerProvider.notifier).updateVaccineDose(
+            key: '$vaccineCode-$doseNumber',
+            administeredDate: isChecked ? defaultDate : null,
+          );
+    }
   }
 
   Future<void> _selectDate(
@@ -98,6 +104,12 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
       setState(() {
         _checkedDoses[key] = picked;
       });
+      if (widget.isOnboardingFlow) {
+        ref.read(onboardingControllerProvider.notifier).updateVaccineDose(
+              key: key,
+              administeredDate: picked,
+            );
+      }
     }
   }
 
@@ -193,41 +205,10 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
     }
   }
 
-  Future<void> _cancelInitialOnboardingVaccineSetup() async {
-    if (_isSaving) {
-      return;
-    }
-
-    setState(() => _isSaving = true);
-    final AppLocalizations localizations = AppLocalizations.of(context)!;
-
-    try {
-      await ref
-          .read(onboardingControllerProvider.notifier)
-          .cancelInitialOnboardingVaccineSetup();
-      if (mounted) {
-        Navigator.pop(context);
-      }
-    } catch (error) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              localizations.onboardingErrorSaveSetup(error.toString()),
-            ),
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isSaving = false);
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
+    final onboardingState = ref.watch(onboardingControllerProvider);
     final AsyncValue<ChildProfileDetails> childState =
         ref.watch(childProfileProvider(widget.childId));
 
@@ -239,9 +220,7 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
           tooltip: localizations.childBackTooltip,
-          onPressed: widget.isOnboardingFlow
-              ? _cancelInitialOnboardingVaccineSetup
-              : () => Navigator.pop(context),
+          onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           localizations.childVaccineRecordsAndHistory,
@@ -324,6 +303,11 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
               for (final VaccinationRecord record in details.records) {
                 _checkedDoses['${record.vaccineCode}-${record.doseNumber}'] =
                     record.administeredDate;
+              }
+              if (widget.isOnboardingFlow) {
+                _checkedDoses
+                  ..clear()
+                  ..addAll(onboardingState.selectedVaccineDoses);
               }
               _initialized = true;
             }

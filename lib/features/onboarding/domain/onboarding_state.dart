@@ -20,6 +20,7 @@ class OnboardingStateData with _$OnboardingStateData {
     @Default('') String childName,
     DateTime? childDob,
     @Default('Girl') String childSex,
+    @Default(<String, DateTime>{}) Map<String, DateTime> selectedVaccineDoses,
     @Default(false) bool isSaving,
     String? error,
   }) = _OnboardingStateData;
@@ -44,11 +45,6 @@ class OnboardingController extends _$OnboardingController {
     required String phone,
     required String address,
   }) {
-    if (state.caregiverName != name ||
-        state.caregiverPhone != phone ||
-        state.caregiverAddress != address) {
-      _createdChildId = null;
-    }
     state = state.copyWith(
       caregiverName: name,
       caregiverPhone: phone,
@@ -61,15 +57,25 @@ class OnboardingController extends _$OnboardingController {
     required DateTime dob,
     required String sex,
   }) {
-    if (state.childName != name ||
-        state.childDob != dob ||
-        state.childSex != sex) {
-      _createdChildId = null;
-    }
     state = state.copyWith(
       childName: name,
       childDob: dob,
       childSex: sex,
+    );
+  }
+
+  void updateVaccineDose({
+    required String key,
+    required DateTime? administeredDate,
+  }) {
+    final selections = Map<String, DateTime>.from(state.selectedVaccineDoses);
+    if (administeredDate == null) {
+      selections.remove(key);
+    } else {
+      selections[key] = administeredDate;
+    }
+    state = state.copyWith(
+      selectedVaccineDoses: Map<String, DateTime>.unmodifiable(selections),
     );
   }
 
@@ -94,19 +100,6 @@ class OnboardingController extends _$OnboardingController {
       },
     );
     return operation;
-  }
-
-  Future<void> cancelInitialOnboardingVaccineSetup() async {
-    final String? childId = _createdChildId;
-    if (childId != null) {
-      final db = ref.read(appDatabaseProvider);
-      await db.childProfilesDao.deleteChildProfile(childId);
-    }
-
-    await ref
-        .read(secureStorageServiceProvider)
-        .writeOnboardingCompleted(false);
-    _createdChildId = null;
   }
 
   Future<String?> _finishSetup() async {
@@ -141,6 +134,13 @@ class OnboardingController extends _$OnboardingController {
               dateOfBirth: childDob,
               sex: state.childSex,
             ),
+          );
+        } else {
+          await db.childProfilesDao.updateChildProfile(
+            id: childId,
+            name: state.childName,
+            dateOfBirth: childDob,
+            sex: state.childSex,
           );
         }
         await db.vaccinationDuesDao.recalculateDuesForChild(childId);

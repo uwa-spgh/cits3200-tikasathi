@@ -18,6 +18,7 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
+  bool _draftInitialized = false;
 
   @override
   void dispose() {
@@ -70,7 +71,13 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
-    ref.watch(onboardingControllerProvider);
+    final state = ref.watch(onboardingControllerProvider);
+    if (!_draftInitialized) {
+      _nameController.text = state.caregiverName;
+      _phoneController.text = state.caregiverPhone;
+      _addressController.text = state.caregiverAddress;
+      _draftInitialized = true;
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F9FC),
@@ -165,6 +172,7 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
                 label: localizations.onboardingCaregiverNameLabel,
                 hint: localizations.onboardingCaregiverNameHint,
                 controller: _nameController,
+                onChanged: (value) => _updateDraft(),
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 24),
@@ -172,6 +180,7 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
                 label: localizations.onboardingCaregiverPhoneLabel,
                 hint: localizations.onboardingCaregiverPhoneHint,
                 controller: _phoneController,
+                onChanged: (value) => _updateDraft(),
                 keyboardType: TextInputType.phone,
                 textInputAction: TextInputAction.next,
               ),
@@ -180,6 +189,7 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
                 label: localizations.onboardingCaregiverAddressLabel,
                 hint: localizations.onboardingCaregiverAddressHint,
                 controller: _addressController,
+                onChanged: (value) => _updateDraft(),
                 textInputAction: TextInputAction.done,
               ),
               const SizedBox(height: 48),
@@ -220,6 +230,7 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
     required String label,
     required String hint,
     required TextEditingController controller,
+    required ValueChanged<String> onChanged,
     TextInputType keyboardType = TextInputType.text,
     TextInputAction textInputAction = TextInputAction.next,
   }) {
@@ -237,6 +248,7 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
         const SizedBox(height: 8),
         TextField(
           controller: controller,
+          onChanged: onChanged,
           keyboardType: keyboardType,
           textInputAction: textInputAction,
           decoration: InputDecoration(
@@ -260,5 +272,13 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
         ),
       ],
     );
+  }
+
+  void _updateDraft() {
+    ref.read(onboardingControllerProvider.notifier).updateCaregiverInfo(
+          name: _nameController.text.trim(),
+          phone: _phoneController.text.trim(),
+          address: _addressController.text.trim(),
+        );
   }
 }
