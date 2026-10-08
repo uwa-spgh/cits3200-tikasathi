@@ -96,6 +96,19 @@ class OnboardingController extends _$OnboardingController {
     return operation;
   }
 
+  Future<void> cancelInitialOnboardingVaccineSetup() async {
+    final String? childId = _createdChildId;
+    if (childId != null) {
+      final db = ref.read(appDatabaseProvider);
+      await db.childProfilesDao.deleteChildProfile(childId);
+    }
+
+    await ref
+        .read(secureStorageServiceProvider)
+        .writeOnboardingCompleted(false);
+    _createdChildId = null;
+  }
+
   Future<String?> _finishSetup() async {
     state = state.copyWith(isSaving: true, error: null);
     try {

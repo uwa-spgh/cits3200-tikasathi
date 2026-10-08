@@ -13,6 +13,7 @@ import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
+import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/vaccine_records/presentation/missed_vaccines_dialog.dart';
 
 /// Unified screen combining Vaccine Records and Vaccine History.
@@ -192,6 +193,38 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
     }
   }
 
+  Future<void> _cancelInitialOnboardingVaccineSetup() async {
+    if (_isSaving) {
+      return;
+    }
+
+    setState(() => _isSaving = true);
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+
+    try {
+      await ref
+          .read(onboardingControllerProvider.notifier)
+          .cancelInitialOnboardingVaccineSetup();
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              localizations.onboardingErrorSaveSetup(error.toString()),
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isSaving = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
@@ -203,13 +236,13 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: widget.isOnboardingFlow
-            ? null
-            : IconButton(
-                icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
-                tooltip: localizations.childBackTooltip,
-                onPressed: () => Navigator.pop(context),
-              ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
+          tooltip: localizations.childBackTooltip,
+          onPressed: widget.isOnboardingFlow
+              ? _cancelInitialOnboardingVaccineSetup
+              : () => Navigator.pop(context),
+        ),
         title: Text(
           localizations.childVaccineRecordsAndHistory,
           style: const TextStyle(

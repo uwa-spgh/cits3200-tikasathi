@@ -53,6 +53,8 @@ void main() {
       ),
     ).thenAnswer((_) async {});
     when(secureStorage.setOnboardingCompleted).thenAnswer((_) async {});
+    when(() => secureStorage.writeOnboardingCompleted(any()))
+        .thenAnswer((_) async {});
   });
 
   ProviderContainer containerWith(SettingsRepository repository) {
@@ -196,5 +198,50 @@ void main() {
 
     expect(childId, isNotNull);
     expect(await database.childProfilesDao.getAllChildProfiles(), hasLength(1));
+  });
+
+  test('cancelling vaccine setup deletes the provisional child only', () async {
+    final AppDatabase database =
+        AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(database.close);
+    final ProviderContainer container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(database),
+        secureStorageServiceProvider.overrideWithValue(secureStorage),
+        settingsRepositoryProvider.overrideWith(
+          (ref) => FakeSettingsRepository(language: AppLanguage.english),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final OnboardingController controller =
+        container.read(onboardingControllerProvider.notifier);
+    controller.updateCaregiverInfo(
+      name: 'Mina',
+      phone: '9841234567',
+      address: 'Kathmandu',
+    );
+    controller.updateChildInfo(
+      name: 'Nima',
+      dob: DateTime(2020),
+      sex: 'Boy',
+    );
+
+    final String? childId = await controller.finishSetup();
+    expect(childId, isNotNull);
+    expect(await database.childProfilesDao.getAllChildProfiles(), hasLength(1));
+
+    await controller.cancelInitialOnboardingVaccineSetup();
+
+    expect(await database.childProfilesDao.getAllChildProfiles(), isEmpty);
+    verify(() => secureStorage.writeOnboardingCompleted(false)).called(1);
+    final state = container.read(onboardingControllerProvider);
+    expect(state.caregiverName, 'Mina');
+    expect(state.caregiverPhone, '9841234567');
+    expect(state.caregiverAddress, 'Kathmandu');
+    expect(state.childName, 'Nima');
+    expect(state.childDob, DateTime(2020));
+    expect(state.childSex, 'Boy');
   });
 }
