@@ -8,11 +8,43 @@ import 'package:tikasathi/features/settings/presentation/settings_screen.dart';
 import '../domain/app_navigation_controller.dart';
 import 'app_bottom_navigation_bar.dart';
 
-class AppShellScreen extends ConsumerWidget {
+class AppShellScreen extends ConsumerStatefulWidget {
   const AppShellScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AppShellScreen> createState() => _AppShellScreenState();
+}
+
+class _AppShellScreenState extends ConsumerState<AppShellScreen> {
+  final Map<AppSection, ScrollController> _scrollControllers =
+      <AppSection, ScrollController>{
+    for (final AppSection section in AppSection.values)
+      section: ScrollController(),
+  };
+
+  @override
+  void dispose() {
+    for (final ScrollController controller in _scrollControllers.values) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  void _selectSection(AppSection section) {
+    final AppSection selectedSection =
+        ref.read(appNavigationControllerProvider);
+    if (selectedSection == section) {
+      final ScrollController controller = _scrollControllers[section]!;
+      if (controller.hasClients) {
+        controller.jumpTo(0);
+      }
+    } else {
+      ref.read(appNavigationControllerProvider.notifier).selectSection(section);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final AppSection selectedSection =
         ref.watch(appNavigationControllerProvider);
 
@@ -21,10 +53,16 @@ class AppShellScreen extends ConsumerWidget {
       body: SafeArea(
         child: IndexedStack(
           index: selectedSection.index,
-          children: const <Widget>[
-            HomeScreen(),
-            LearnScreen(),
-            SettingsScreen(),
+          children: <Widget>[
+            for (final AppSection section in AppSection.values)
+              PrimaryScrollController(
+                controller: _scrollControllers[section]!,
+                child: switch (section) {
+                  AppSection.home => const HomeScreen(),
+                  AppSection.learn => const LearnScreen(),
+                  AppSection.settings => const SettingsScreen(),
+                },
+              ),
           ],
         ),
       ),
@@ -32,9 +70,7 @@ class AppShellScreen extends ConsumerWidget {
         selectedSection: selectedSection,
         onDestinationSelected: (AppSection section) {
           ref.read(ttsControllerProvider.notifier).stop();
-          ref
-              .read(appNavigationControllerProvider.notifier)
-              .selectSection(section);
+          _selectSection(section);
         },
       ),
     );

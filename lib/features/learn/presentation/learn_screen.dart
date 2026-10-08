@@ -31,6 +31,7 @@ class LearnScreen extends ConsumerWidget {
   Widget _buildContent(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
     return SingleChildScrollView(
+      primary: true,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

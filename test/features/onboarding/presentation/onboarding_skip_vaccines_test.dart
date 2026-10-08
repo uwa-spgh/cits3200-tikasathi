@@ -2,9 +2,11 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/onboarding/presentation/caregiver_screen.dart';
@@ -14,6 +16,8 @@ import 'package:tikasathi/features/settings/domain/health_facility_controller.da
 import 'package:tikasathi/features/vaccine_records/presentation/vaccine_records_screen.dart';
 
 import '../../../helpers/fake_settings_repository.dart';
+
+class _MockSecureStorageService extends Mock implements SecureStorageService {}
 
 void main() {
   group('Onboarding Skip Vaccines Flow', () {
@@ -28,6 +32,8 @@ void main() {
 
       final db = AppDatabase.forTesting(NativeDatabase.memory());
       addTearDown(db.close);
+      final secureStorage = _MockSecureStorageService();
+      when(secureStorage.setOnboardingCompleted).thenAnswer((_) async {});
 
       final now = DateTime.now();
       // 2-week-old child
@@ -48,6 +54,7 @@ void main() {
         ProviderScope(
           overrides: [
             appDatabaseProvider.overrideWithValue(db),
+            secureStorageServiceProvider.overrideWithValue(secureStorage),
             settingsRepositoryProvider.overrideWith(
               (ref) => FakeSettingsRepository(language: AppLanguage.english),
             ),
@@ -115,6 +122,7 @@ void main() {
       final updatedChild =
           await db.childProfilesDao.getChildProfileById(childId);
       expect(updatedChild?.isSetupComplete, isFalse);
+      verify(secureStorage.setOnboardingCompleted).called(1);
     });
   });
 }
