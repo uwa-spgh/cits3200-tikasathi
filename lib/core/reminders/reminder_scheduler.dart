@@ -139,6 +139,7 @@ class ReminderScheduler {
         notificationId: missedNotificationId(index),
         title: message.title,
         body: message.body,
+        childId: childIds[index],
       );
     }
 
@@ -194,6 +195,7 @@ class ReminderScheduler {
         when: reminder.scheduledFor,
         title: message.title,
         body: message.body,
+        childId: reminder.childId,
       );
     }
 

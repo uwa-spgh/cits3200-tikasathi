@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:timezone/data/latest_all.dart' as tz_data;
@@ -37,10 +39,26 @@ class NotificationService {
 
   final FlutterLocalNotificationsPlugin _plugin;
 
+  final StreamController<String> _openedChildIds =
+      StreamController<String>.broadcast();
+
+  /// The child a reminder was about, each time the caregiver taps one while
+  /// the app is running or in the background.
+  ///
+  /// A tap that starts the app from closed arrives through
+  /// [childIdThatLaunchedApp] instead.
+  Stream<String> get openedChildIds => _openedChildIds.stream;
+
   Future<void> initialize() async {
     tz_data.initializeTimeZones();
 
     await _plugin.initialize(
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        final String? childId = response.payload;
+        if (childId != null && childId.isNotEmpty) {
+          _openedChildIds.add(childId);
+        }
+      },
       const InitializationSettings(
         android: AndroidInitializationSettings('@mipmap/ic_launcher'),
         // Asked for separately in [requestPermission] so the prompt is a
@@ -61,11 +79,15 @@ class NotificationService {
   ///
   /// Inexact so no exact-alarm permission is needed: a vaccination reminder
   /// does not have to land on the minute.
+  ///
+  /// [childId] is carried with the notification so tapping it can open that
+  /// child's page.
   Future<void> scheduleReminder({
     required int notificationId,
     required DateTime when,
     required String title,
     required String body,
+    String? childId,
   }) {
     return _plugin.zonedSchedule(
       notificationId,
@@ -76,7 +98,20 @@ class NotificationService {
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      payload: childId,
     );
+  }
+
+  /// The child whose reminder was tapped to start the app from closed, or
+  /// null when the app was opened some other way.
+  Future<String?> childIdThatLaunchedApp() async {
+    final NotificationAppLaunchDetails? details =
+        await _plugin.getNotificationAppLaunchDetails();
+    if (details == null || !details.didNotificationLaunchApp) {
+      return null;
+    }
+    final String? childId = details.notificationResponse?.payload;
+    return childId == null || childId.isEmpty ? null : childId;
   }
 
   Future<void> cancelReminder(int notificationId) {
@@ -133,13 +168,23 @@ class NotificationService {
     );
   }
 
-  /// Raises a notification straight away, to check the device lets them through.
+  /// Raises a notification straight away.
+  ///
+  /// [childId] is carried with the notification so tapping it can open that
+  /// child's page.
   Future<void> showNotificationNow({
     required int notificationId,
     required String title,
     required String body,
+    String? childId,
   }) {
-    return _plugin.show(notificationId, title, body, _reminderDetails(body));
+    return _plugin.show(
+      notificationId,
+      title,
+      body,
+      _reminderDetails(body),
+      payload: childId,
+    );
   }
 
   /// The notification ids the device currently holds a schedule for.
