@@ -7,9 +7,11 @@ import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/reminders/reminder_message.dart';
+import 'package:tikasathi/core/reminders/reminder_schedule.dart';
 import 'package:tikasathi/core/services/notification_service.dart';
 import 'package:tikasathi/features/settings/data/settings_providers.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
+import 'package:tikasathi/features/settings/domain/language_controller.dart';
 import 'package:tikasathi/features/settings/domain/settings_repository.dart';
 
 part 'reminder_scheduler.g.dart';
@@ -37,6 +39,7 @@ class ReminderScheduler {
   final SettingsRepository _settings;
 
   StreamSubscription<void>? _subscription;
+  StreamSubscription<void>? _facilitySubscription;
 
   /// The wording for [reminder], in the caregiver's chosen language.
   ///
@@ -78,26 +81,49 @@ class ReminderScheduler {
     );
   }
 
-  /// Registers reminders now, and again whenever the table changes.
+  /// Registers reminders now, and again whenever the table changes or the
+  /// saved health facility does.
   void start() {
     _subscription ??= _database.remindersDao
         .watchPendingReminders(limit: registrationLimit)
         .asyncMap(sync)
-        .listen(
-      null,
-      onError: (Object error) {
-        debugPrint('reminder scheduling failed: $error');
-      },
+        .listen(null, onError: _reportFailure);
+
+    // The first value is the facility as it stands, which the reminders
+    // stream above has already registered with, so only changes matter.
+    _facilitySubscription ??= _database.healthFacilitatorsDao
+        .watchLocalFacilitator()
+        .skip(1)
+        .asyncMap((_) => refresh())
+        .listen(null, onError: _reportFailure);
+  }
+
+  /// Registers the queued window again with up-to-date wording.
+  ///
+  /// The device keeps the text a reminder was registered with. Changing the
+  /// language or the saved facility writes nothing to the reminders table, so
+  /// without this the old wording would stay until the app next opened.
+  Future<void> refresh() async {
+    await sync(
+      await _database.remindersDao.getPendingReminders(
+        limit: registrationLimit,
+      ),
     );
+  }
+
+  void _reportFailure(Object error) {
+    debugPrint('reminder scheduling failed: $error');
   }
 
   /// Raises reminders whose time passed without the device delivering them.
   ///
   /// Covers the app being closed, the phone being off, or the clock jumping
-  /// forward. Only the most recent per child is raised: a dose overdue for
-  /// months leaves a long trail of reminders, and raising all of them would
-  /// bury the caregiver under notifications for one missed dose. The rest are
-  /// still settled so they never reappear.
+  /// forward. Only one per child is raised: a dose overdue for months leaves
+  /// a long trail of reminders, and raising all of them would bury the
+  /// caregiver under notifications for one missed dose. The one raised is the
+  /// most urgent (see [_outranks]), so an overdue dose is never hidden behind
+  /// a routine reminder for another. The rest are still settled so they never
+  /// reappear.
   ///
   /// Reminders the device already showed are settled without being raised
   /// again: one that was queued with the device and has since left its queue
@@ -120,18 +146,18 @@ class ReminderScheduler {
           stillQueued.contains(reminder.notificationId),
     );
 
-    final Map<String, Reminder> latestPerChild = <String, Reminder>{};
+    final Map<String, Reminder> chosenPerChild = <String, Reminder>{};
     for (final Reminder reminder in unseen) {
-      final Reminder? held = latestPerChild[reminder.childId];
-      if (held == null || reminder.scheduledFor.isAfter(held.scheduledFor)) {
-        latestPerChild[reminder.childId] = reminder;
+      final Reminder? held = chosenPerChild[reminder.childId];
+      if (held == null || _outranks(reminder, held)) {
+        chosenPerChild[reminder.childId] = reminder;
       }
     }
 
-    final List<String> childIds = latestPerChild.keys.toList()..sort();
+    final List<String> childIds = chosenPerChild.keys.toList()..sort();
     for (int index = 0; index < childIds.length; index++) {
       final ReminderMessage? message =
-          await _messageFor(latestPerChild[childIds[index]]!);
+          await _messageFor(chosenPerChild[childIds[index]]!);
       if (message == null) {
         continue;
       }
@@ -149,9 +175,36 @@ class ReminderScheduler {
     );
   }
 
+  /// Whether [candidate] is the better single reminder to raise for a child.
+  ///
+  /// The more urgent kind wins, and between equally urgent ones the later.
+  /// Recency alone let a routine "due next week" reminder for one dose hide an
+  /// overdue warning for another when both fell on the same morning.
+  static bool _outranks(Reminder candidate, Reminder held) {
+    final int byUrgency =
+        _urgency(candidate.kind).compareTo(_urgency(held.kind));
+    if (byUrgency != 0) {
+      return byUrgency > 0;
+    }
+    return candidate.scheduledFor.isAfter(held.scheduledFor);
+  }
+
+  static int _urgency(ReminderKind kind) {
+    return switch (kind) {
+      ReminderKind.advance => 0,
+      ReminderKind.preparation => 1,
+      ReminderKind.sameDay => 2,
+      ReminderKind.followUpDay => 3,
+      ReminderKind.followUpWeek => 4,
+      ReminderKind.overdueRecurring => 5,
+    };
+  }
+
   Future<void> stop() async {
     await _subscription?.cancel();
+    await _facilitySubscription?.cancel();
     _subscription = null;
+    _facilitySubscription = null;
   }
 
   /// Makes the device's schedule match [pending].
@@ -208,9 +261,24 @@ class ReminderScheduler {
 
 @Riverpod(keepAlive: true)
 ReminderScheduler reminderScheduler(ReminderSchedulerRef ref) {
-  return ReminderScheduler(
+  final ReminderScheduler scheduler = ReminderScheduler(
     ref.watch(appDatabaseProvider),
     ref.watch(notificationServiceProvider),
     ref.watch(settingsRepositoryProvider),
   );
+
+  // The language is saved before the controller announces it, so by the time
+  // this runs the new language is what the reminders will be built in.
+  ref.listen<AsyncValue<AppLanguage>>(languageControllerProvider, (
+    AsyncValue<AppLanguage>? previous,
+    AsyncValue<AppLanguage> next,
+  ) {
+    final AppLanguage? before = previous?.valueOrNull;
+    final AppLanguage? after = next.valueOrNull;
+    if (before != null && after != null && before != after) {
+      scheduler.refresh().catchError(scheduler._reportFailure);
+    }
+  });
+
+  return scheduler;
 }
