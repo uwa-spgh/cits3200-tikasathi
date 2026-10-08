@@ -4,6 +4,7 @@
   "@appTitle": {
     "description": "The title of the application"
   },
+  "appBarBack": "फर्कनुहोस्",
   "childPageTitle": "बच्चा पृष्ठ",
   "@childPageTitle": {
     "description": "Title shown at the top of the child profile screen"
