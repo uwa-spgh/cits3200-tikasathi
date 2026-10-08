@@ -461,6 +461,129 @@ void main() {
         ).called(1);
       });
 
+      group('choosing which reminder to raise', () {
+        // The morning a dose became overdue was also the week-before reminder
+        // for the next doses; the routine one used to win and hide the warning.
+        final DateTime sameMorning = DateTime(2026, 11, 5, 9);
+
+        Future<void> seedTwoDues() async {
+          await database.childProfilesDao.insertChildProfile(
+            ChildProfilesCompanion.insert(
+              id: 'tie-child',
+              name: 'Aarav',
+              dateOfBirth: DateTime(2026, 9, 3),
+              sex: 'male',
+            ),
+          );
+          await database.vaccinationDuesDao.insertVaccinationDue(
+            VaccinationDuesCompanion.insert(
+              id: 'penta-1',
+              childId: 'tie-child',
+              vaccineCode: 'PENTA',
+              doseNumber: 1,
+              dueDate: DateTime(2026, 10, 15),
+            ),
+          );
+          await database.vaccinationDuesDao.insertVaccinationDue(
+            VaccinationDuesCompanion.insert(
+              id: 'bopv-2',
+              childId: 'tie-child',
+              vaccineCode: 'BOPV',
+              doseNumber: 2,
+              dueDate: DateTime(2026, 11, 12),
+            ),
+          );
+        }
+
+        Future<String> raisedBody() async {
+          return verify(
+            () => notifications.showNotificationNow(
+              notificationId: any(named: 'notificationId'),
+              title: any(named: 'title'),
+              body: captureAny(named: 'body'),
+            ),
+          ).captured.single as String;
+        }
+
+        test('an overdue dose beats a routine reminder the same morning',
+            () async {
+          await seedTwoDues();
+          await database.remindersDao.insertReminderAt(
+            dueId: 'bopv-2',
+            scheduledFor: sameMorning,
+            kind: ReminderKind.advance,
+          );
+          await database.remindersDao.insertReminderAt(
+            dueId: 'penta-1',
+            scheduledFor: sameMorning,
+            kind: ReminderKind.overdueRecurring,
+          );
+
+          await scheduler.catchUpMissed(asOf: DateTime(2026, 11, 6, 19));
+
+          expect(await raisedBody(), startsWith('PENTA (Dose 1) is overdue.'));
+        });
+
+        test('an overdue dose beats a later routine reminder', () async {
+          await seedTwoDues();
+          await database.remindersDao.insertReminderAt(
+            dueId: 'penta-1',
+            scheduledFor: sameMorning,
+            kind: ReminderKind.overdueRecurring,
+          );
+          await database.remindersDao.insertReminderAt(
+            dueId: 'bopv-2',
+            scheduledFor: DateTime(2026, 11, 11, 9),
+            kind: ReminderKind.preparation,
+          );
+
+          await scheduler.catchUpMissed(asOf: DateTime(2026, 11, 11, 19));
+
+          expect(await raisedBody(), startsWith('PENTA (Dose 1) is overdue.'));
+        });
+
+        test('between equally urgent reminders the later wins', () async {
+          await seedTwoDues();
+          await database.remindersDao.insertReminderAt(
+            dueId: 'penta-1',
+            scheduledFor: DateTime(2026, 10, 14, 9),
+            kind: ReminderKind.preparation,
+          );
+          await database.remindersDao.insertReminderAt(
+            dueId: 'bopv-2',
+            scheduledFor: DateTime(2026, 11, 11, 9),
+            kind: ReminderKind.preparation,
+          );
+
+          await scheduler.catchUpMissed(asOf: DateTime(2026, 11, 11, 19));
+
+          expect(await raisedBody(), contains('BOPV (Dose 2)'));
+        });
+
+        test('still settles every missed reminder, not just the one raised',
+            () async {
+          await seedTwoDues();
+          await database.remindersDao.insertReminderAt(
+            dueId: 'bopv-2',
+            scheduledFor: sameMorning,
+            kind: ReminderKind.advance,
+          );
+          await database.remindersDao.insertReminderAt(
+            dueId: 'penta-1',
+            scheduledFor: sameMorning,
+            kind: ReminderKind.overdueRecurring,
+          );
+
+          await scheduler.catchUpMissed(asOf: DateTime(2026, 11, 6, 19));
+
+          expect(
+            await database.remindersDao
+                .getPendingRemindersDueBy(DateTime(2026, 11, 6, 19)),
+            isEmpty,
+          );
+        });
+      });
+
       test('does nothing when no reminder was missed', () async {
         await scheduler.catchUpMissed();
 
