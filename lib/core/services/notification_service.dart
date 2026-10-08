@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:timezone/data/latest_all.dart' as tz_data;
@@ -106,7 +107,7 @@ class NotificationService {
   /// null when the app was opened some other way.
   Future<String?> childIdThatLaunchedApp() async {
     final NotificationAppLaunchDetails? details =
-        await _plugin.getNotificationAppLaunchDetails();
+        defaultTargetPlatform != TargetPlatform.linux ? await _plugin.getNotificationAppLaunchDetails() : null;
     if (details == null || !details.didNotificationLaunchApp) {
       return null;
     }
