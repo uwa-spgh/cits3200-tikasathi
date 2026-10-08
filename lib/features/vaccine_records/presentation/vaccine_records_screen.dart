@@ -354,7 +354,7 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
                   child: Stack(
                     children: <Widget>[
                       ListView(
-                        padding: const EdgeInsets.fromLTRB(16, 70, 16, 24),
+                        padding: const EdgeInsets.fromLTRB(16, 110, 16, 24),
                         children: <Widget>[
                           if (widget.isOnboardingFlow) ...<Widget>[
                             _OnboardingStepsHeader(
