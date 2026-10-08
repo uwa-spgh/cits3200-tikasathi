@@ -1,11 +1,15 @@
 import 'package:drift/native.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:tikasathi/core/database/app_database.dart';
+import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/reminders/reminder_scheduler.dart';
 import 'package:tikasathi/core/reminders/reminder_schedule.dart';
 import 'package:tikasathi/core/services/notification_service.dart';
+import 'package:tikasathi/features/settings/data/settings_providers.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
+import 'package:tikasathi/features/settings/domain/language_controller.dart';
 import 'package:tikasathi/features/settings/domain/settings_repository.dart';
 
 class _MockNotificationService extends Mock implements NotificationService {}
@@ -225,6 +229,80 @@ void main() {
         verify(() => notifications.cancelReminder(stored.notificationId))
             .called(1);
         expect((await reload(stored)).registeredAt, isNull);
+      });
+    });
+
+    group('refreshing wording', () {
+      Future<Reminder> queuedReminder() {
+        return database.remindersDao.insertReminderAt(
+          dueId: 'due-1',
+          scheduledFor: now.add(const Duration(days: 1)),
+        );
+      }
+
+      Future<String> lastScheduledBody(int notificationId) async {
+        return verify(
+          () => notifications.scheduleReminder(
+            notificationId: notificationId,
+            when: any(named: 'when'),
+            title: any(named: 'title'),
+            body: captureAny(named: 'body'),
+          ),
+        ).captured.last as String;
+      }
+
+      // The device keeps the text a reminder was queued with, so a new
+      // language only reaches it if the reminder is registered again.
+      test('re-registers queued reminders in the current language', () async {
+        final Reminder queued = await queuedReminder();
+
+        await scheduler.refresh();
+        expect(await lastScheduledBody(queued.notificationId),
+            contains('vaccination day'));
+
+        settings.language = AppLanguage.nepali;
+        await scheduler.refresh();
+        expect(
+            await lastScheduledBody(queued.notificationId), contains('खुराक'));
+      });
+
+      test('re-registers when the saved facility changes', () async {
+        final Reminder queued = await queuedReminder();
+        scheduler.start();
+        await pumpEventQueue();
+
+        await database.healthFacilitatorsDao.saveLocalFacilitator(
+          name: 'Bhaktapur Health Post',
+          address: 'Ward 4',
+          phone: '9812345678',
+        );
+        await pumpEventQueue();
+        await scheduler.stop();
+
+        expect(await lastScheduledBody(queued.notificationId),
+            contains('Bhaktapur Health Post'));
+      });
+
+      test('re-registers when the caregiver switches language', () async {
+        final Reminder queued = await queuedReminder();
+        final ProviderContainer container = ProviderContainer(
+          overrides: [
+            appDatabaseProvider.overrideWithValue(database),
+            notificationServiceProvider.overrideWithValue(notifications),
+            settingsRepositoryProvider.overrideWithValue(settings),
+          ],
+        );
+        addTearDown(container.dispose);
+        container.read(reminderSchedulerProvider);
+        await container.read(languageControllerProvider.future);
+
+        await container
+            .read(languageControllerProvider.notifier)
+            .setLanguage(AppLanguage.nepali);
+        await pumpEventQueue();
+
+        expect(
+            await lastScheduledBody(queued.notificationId), contains('खुराक'));
       });
     });
 
