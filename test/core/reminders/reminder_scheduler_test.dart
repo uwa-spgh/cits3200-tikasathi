@@ -69,6 +69,7 @@ void main() {
           when: any(named: 'when'),
           title: any(named: 'title'),
           body: any(named: 'body'),
+          childId: any(named: 'childId'),
         ),
       ).thenAnswer((_) async {});
     });
@@ -98,6 +99,7 @@ void main() {
           when: soon,
           title: any(named: 'title'),
           body: any(named: 'body'),
+          childId: any(named: 'childId'),
         ),
       ).called(1);
     });
@@ -123,6 +125,7 @@ void main() {
           when: any(named: 'when'),
           title: any(named: 'title'),
           body: any(named: 'body'),
+          childId: any(named: 'childId'),
         ),
       ).called(1);
       verifyNever(() => notifications.cancelReminder(any()));
@@ -148,6 +151,7 @@ void main() {
           when: any(named: 'when'),
           title: any(named: 'title'),
           body: captureAny(named: 'body'),
+          childId: any(named: 'childId'),
         ),
       ).captured.single as String;
       expect(
@@ -157,6 +161,25 @@ void main() {
           'Bhaktapur Health Post, Ward 4, 9812345678.',
         ),
       );
+    });
+
+    test("carries each reminder's child so a tap can open it", () async {
+      await scheduler.sync([
+        reminder(
+          notificationId: 7,
+          scheduledFor: now.add(const Duration(days: 1)),
+        ),
+      ]);
+
+      verify(
+        () => notifications.scheduleReminder(
+          notificationId: 7,
+          when: any(named: 'when'),
+          title: any(named: 'title'),
+          body: any(named: 'body'),
+          childId: 'child-1',
+        ),
+      ).called(1);
     });
 
     test('cancels registrations that are no longer wanted', () async {
@@ -238,6 +261,7 @@ void main() {
             notificationId: any(named: 'notificationId'),
             title: any(named: 'title'),
             body: any(named: 'body'),
+            childId: any(named: 'childId'),
           ),
         ).thenAnswer((_) async {});
       });
@@ -277,6 +301,7 @@ void main() {
             notificationId: any(named: 'notificationId'),
             title: any(named: 'title'),
             body: any(named: 'body'),
+            childId: any(named: 'childId'),
           ),
         ).called(1);
         expect(await database.remindersDao.getPendingReminders(), isEmpty);
@@ -295,6 +320,7 @@ void main() {
             notificationId: ReminderScheduler.missedNotificationId(0),
             title: any(named: 'title'),
             body: any(named: 'body'),
+            childId: any(named: 'childId'),
           ),
         ).called(1);
         expect(
@@ -314,6 +340,7 @@ void main() {
             notificationId: any(named: 'notificationId'),
             title: any(named: 'title'),
             body: any(named: 'body'),
+            childId: any(named: 'childId'),
           ),
         ).called(2);
       });
@@ -341,6 +368,7 @@ void main() {
             notificationId: any(named: 'notificationId'),
             title: any(named: 'title'),
             body: any(named: 'body'),
+            childId: any(named: 'childId'),
           ),
         );
         expect(await database.remindersDao.getPendingReminders(), isEmpty);
@@ -365,6 +393,7 @@ void main() {
             notificationId: any(named: 'notificationId'),
             title: any(named: 'title'),
             body: any(named: 'body'),
+            childId: any(named: 'childId'),
           ),
         ).called(1);
       });
@@ -379,6 +408,22 @@ void main() {
             notificationId: any(named: 'notificationId'),
             title: any(named: 'title'),
             body: any(named: 'body'),
+            childId: any(named: 'childId'),
+          ),
+        ).called(1);
+      });
+
+      test('carries the child with a caught-up reminder', () async {
+        await seedMissedReminders('missed-1');
+
+        await scheduler.catchUpMissed();
+
+        verify(
+          () => notifications.showNotificationNow(
+            notificationId: any(named: 'notificationId'),
+            title: any(named: 'title'),
+            body: any(named: 'body'),
+            childId: 'missed-1',
           ),
         ).called(1);
       });
@@ -391,6 +436,7 @@ void main() {
             notificationId: any(named: 'notificationId'),
             title: any(named: 'title'),
             body: any(named: 'body'),
+            childId: any(named: 'childId'),
           ),
         );
       });
@@ -427,6 +473,7 @@ void main() {
           when: any(named: 'when'),
           title: any(named: 'title'),
           body: any(named: 'body'),
+          childId: any(named: 'childId'),
         ),
       );
     });

@@ -629,6 +629,7 @@ void main() {
           when: any(named: 'when'),
           title: any(named: 'title'),
           body: any(named: 'body'),
+          childId: any(named: 'childId'),
         ),
       ).thenAnswer((_) async {});
       when(
@@ -636,6 +637,7 @@ void main() {
           notificationId: any(named: 'notificationId'),
           title: any(named: 'title'),
           body: any(named: 'body'),
+          childId: any(named: 'childId'),
         ),
       ).thenAnswer((_) async {});
       final ReminderScheduler scheduler =
@@ -692,6 +694,7 @@ void main() {
           when: any(named: 'when'),
           title: any(named: 'title'),
           body: any(named: 'body'),
+          childId: any(named: 'childId'),
         ),
       ).called(1);
     });
@@ -707,6 +710,7 @@ void main() {
           when: any(named: 'when'),
           title: any(named: 'title'),
           body: any(named: 'body'),
+          childId: any(named: 'childId'),
         ),
       ).thenAnswer((_) async {});
       when(
@@ -714,6 +718,7 @@ void main() {
           notificationId: any(named: 'notificationId'),
           title: any(named: 'title'),
           body: any(named: 'body'),
+          childId: any(named: 'childId'),
         ),
       ).thenAnswer((_) async {});
       final ReminderScheduler scheduler =
@@ -772,6 +777,7 @@ void main() {
           when: any(named: 'when'),
           title: any(named: 'title'),
           body: any(named: 'body'),
+          childId: any(named: 'childId'),
         ),
       ).called(ReminderScheduler.registrationLimit);
     });

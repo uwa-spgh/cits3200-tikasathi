@@ -29,7 +29,11 @@ void main() {
     setUp(() async {
       plugin = _MockPlugin();
       service = NotificationService(plugin);
-      when(() => plugin.initialize(any())).thenAnswer((_) async => true);
+      when(() => plugin.initialize(
+            any(),
+            onDidReceiveNotificationResponse:
+                any(named: 'onDidReceiveNotificationResponse'),
+          )).thenAnswer((_) async => true);
       when(
         () => plugin.zonedSchedule(
           any(),
@@ -40,13 +44,18 @@ void main() {
           uiLocalNotificationDateInterpretation:
               any(named: 'uiLocalNotificationDateInterpretation'),
           androidScheduleMode: any(named: 'androidScheduleMode'),
+          payload: any(named: 'payload'),
         ),
       ).thenAnswer((_) async {});
       await service.initialize();
     });
 
     test('initializes the plugin once', () {
-      verify(() => plugin.initialize(any())).called(1);
+      verify(() => plugin.initialize(
+            any(),
+            onDidReceiveNotificationResponse:
+                any(named: 'onDidReceiveNotificationResponse'),
+          )).called(1);
     });
 
     test('loads the timezone database', () {
@@ -76,6 +85,7 @@ void main() {
           uiLocalNotificationDateInterpretation:
               any(named: 'uiLocalNotificationDateInterpretation'),
           androidScheduleMode: any(named: 'androidScheduleMode'),
+          payload: any(named: 'payload'),
         ),
       ).captured.single as tz.TZDateTime;
 
@@ -106,6 +116,7 @@ void main() {
           uiLocalNotificationDateInterpretation:
               any(named: 'uiLocalNotificationDateInterpretation'),
           androidScheduleMode: any(named: 'androidScheduleMode'),
+          payload: any(named: 'payload'),
         ),
       ).captured.single as NotificationDetails;
 
@@ -134,11 +145,96 @@ void main() {
           uiLocalNotificationDateInterpretation:
               any(named: 'uiLocalNotificationDateInterpretation'),
           androidScheduleMode: any(named: 'androidScheduleMode'),
+          payload: any(named: 'payload'),
         ),
       ).captured.single as tz.TZDateTime;
 
       expect(scheduled.millisecondsSinceEpoch, when.millisecondsSinceEpoch);
       expect(scheduled.location.name, 'UTC');
+    });
+
+    group('opening the right child', () {
+      DidReceiveNotificationResponseCallback tapHandler() {
+        return verify(
+          () => plugin.initialize(
+            any(),
+            onDidReceiveNotificationResponse: captureAny(
+              named: 'onDidReceiveNotificationResponse',
+            ),
+          ),
+        ).captured.single as DidReceiveNotificationResponseCallback;
+      }
+
+      NotificationResponse tap(String? payload) {
+        return NotificationResponse(
+          notificationResponseType:
+              NotificationResponseType.selectedNotification,
+          payload: payload,
+        );
+      }
+
+      test('reports the child of a tapped reminder', () async {
+        final Future<String> opened = service.openedChildIds.first;
+
+        tapHandler()(tap('child-1'));
+
+        expect(await opened, 'child-1');
+      });
+
+      test('ignores a tap on a notification about no child', () async {
+        final List<String> opened = <String>[];
+        service.openedChildIds.listen(opened.add);
+
+        final DidReceiveNotificationResponseCallback handler = tapHandler();
+        handler(tap(null));
+        handler(tap(''));
+        await pumpEventQueue();
+
+        expect(opened, isEmpty);
+      });
+
+      test('carries the child with a scheduled reminder', () async {
+        await service.scheduleReminder(
+          notificationId: 5,
+          when: DateTime(2026, 10, 4, 9),
+          title: 'title',
+          body: 'body',
+          childId: 'child-1',
+        );
+
+        verify(
+          () => plugin.zonedSchedule(
+            5,
+            any(),
+            any(),
+            any(),
+            any(),
+            uiLocalNotificationDateInterpretation:
+                any(named: 'uiLocalNotificationDateInterpretation'),
+            androidScheduleMode: any(named: 'androidScheduleMode'),
+            payload: 'child-1',
+          ),
+        ).called(1);
+      });
+
+      test('names the child whose reminder started the app', () async {
+        when(() => plugin.getNotificationAppLaunchDetails()).thenAnswer(
+          (_) async => NotificationAppLaunchDetails(
+            true,
+            notificationResponse: tap('child-1'),
+          ),
+        );
+
+        expect(await service.childIdThatLaunchedApp(), 'child-1');
+      });
+
+      test('names no child when the app was opened normally', () async {
+        when(() => plugin.getNotificationAppLaunchDetails()).thenAnswer(
+          (_) async => const NotificationAppLaunchDetails(false),
+        );
+
+        expect(await service.childIdThatLaunchedApp(), isNull);
+      });
     });
   });
 }
