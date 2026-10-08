@@ -44,15 +44,16 @@ class AppTheme {
 
 /// A centralised basic scaffold structure for TikaSathi.
 /// 
-/// Consists of a scaffold with a max width of 560 logical pixels, alongside an app bar with a back button, title, and text to speech button.
+/// Consists of a scaffold with a max width of 560 logical pixels, alongside an app bar with a back button, title, and read aloud button.
 /// A bottom navigation bar can also be added.
 class BasicScaffold extends StatelessWidget {
-  const BasicScaffold({required this.title, required this.body, this.bottomNavBar, this.textGetter, super.key});
+  const BasicScaffold({required this.title, required this.body, this.bottomNavBar, this.textGetter, this.haveReadAloud = true, super.key});
 
   final String title;
   final Widget body;
   final Widget? bottomNavBar;
   final String Function()? textGetter;
+  final bool haveReadAloud;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +81,7 @@ class BasicScaffold extends StatelessWidget {
                 color: AppTheme.appBarTitle
               )
             ),
-            actions: [
+            actions: haveReadAloud ? [
               Padding(
                 padding: const EdgeInsets.only(right: 16),
                 child: ReadAloudButton(
@@ -89,7 +90,7 @@ class BasicScaffold extends StatelessWidget {
                   textGetter: textGetter
                 )
               )
-            ],
+            ] : [],
           ),
           body: body,
           bottomNavigationBar: bottomNavBar,
