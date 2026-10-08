@@ -11,6 +11,16 @@ import 'package:tikasathi/core/services/secure_storage_service.dart';
 
 void main() {
   group('canOpenDatabase', () {
+    setUp(() {
+      final previousMultipleDatabaseWarningSetting =
+          driftRuntimeOptions.dontWarnAboutMultipleDatabases;
+      driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+      addTearDown(() {
+        driftRuntimeOptions.dontWarnAboutMultipleDatabases =
+            previousMultipleDatabaseWarningSetting;
+      });
+    });
+
     test('is false when the key is lost', () async {
       final AppDatabase database = AppDatabase.forTesting(
         LazyDatabase(() => throw const DatabaseKeyLostException()),

@@ -23,6 +23,8 @@ mixin _$OnboardingStateData {
   String get childName => throw _privateConstructorUsedError;
   DateTime? get childDob => throw _privateConstructorUsedError;
   String get childSex => throw _privateConstructorUsedError;
+  Map<String, DateTime> get selectedVaccineDoses =>
+      throw _privateConstructorUsedError;
   bool get isSaving => throw _privateConstructorUsedError;
   String? get error => throw _privateConstructorUsedError;
 
@@ -47,6 +49,7 @@ abstract class $OnboardingStateDataCopyWith<$Res> {
       String childName,
       DateTime? childDob,
       String childSex,
+      Map<String, DateTime> selectedVaccineDoses,
       bool isSaving,
       String? error});
 }
@@ -73,6 +76,7 @@ class _$OnboardingStateDataCopyWithImpl<$Res, $Val extends OnboardingStateData>
     Object? childName = null,
     Object? childDob = freezed,
     Object? childSex = null,
+    Object? selectedVaccineDoses = null,
     Object? isSaving = null,
     Object? error = freezed,
   }) {
@@ -105,6 +109,10 @@ class _$OnboardingStateDataCopyWithImpl<$Res, $Val extends OnboardingStateData>
           ? _value.childSex
           : childSex // ignore: cast_nullable_to_non_nullable
               as String,
+      selectedVaccineDoses: null == selectedVaccineDoses
+          ? _value.selectedVaccineDoses
+          : selectedVaccineDoses // ignore: cast_nullable_to_non_nullable
+              as Map<String, DateTime>,
       isSaving: null == isSaving
           ? _value.isSaving
           : isSaving // ignore: cast_nullable_to_non_nullable
@@ -133,6 +141,7 @@ abstract class _$$OnboardingStateDataImplCopyWith<$Res>
       String childName,
       DateTime? childDob,
       String childSex,
+      Map<String, DateTime> selectedVaccineDoses,
       bool isSaving,
       String? error});
 }
@@ -157,6 +166,7 @@ class __$$OnboardingStateDataImplCopyWithImpl<$Res>
     Object? childName = null,
     Object? childDob = freezed,
     Object? childSex = null,
+    Object? selectedVaccineDoses = null,
     Object? isSaving = null,
     Object? error = freezed,
   }) {
@@ -189,6 +199,10 @@ class __$$OnboardingStateDataImplCopyWithImpl<$Res>
           ? _value.childSex
           : childSex // ignore: cast_nullable_to_non_nullable
               as String,
+      selectedVaccineDoses: null == selectedVaccineDoses
+          ? _value._selectedVaccineDoses
+          : selectedVaccineDoses // ignore: cast_nullable_to_non_nullable
+              as Map<String, DateTime>,
       isSaving: null == isSaving
           ? _value.isSaving
           : isSaving // ignore: cast_nullable_to_non_nullable
@@ -212,8 +226,11 @@ class _$OnboardingStateDataImpl implements _OnboardingStateData {
       this.childName = '',
       this.childDob,
       this.childSex = 'Girl',
+      final Map<String, DateTime> selectedVaccineDoses =
+          const <String, DateTime>{},
       this.isSaving = false,
-      this.error});
+      this.error})
+      : _selectedVaccineDoses = selectedVaccineDoses;
 
   @override
   @JsonKey()
@@ -235,6 +252,16 @@ class _$OnboardingStateDataImpl implements _OnboardingStateData {
   @override
   @JsonKey()
   final String childSex;
+  final Map<String, DateTime> _selectedVaccineDoses;
+  @override
+  @JsonKey()
+  Map<String, DateTime> get selectedVaccineDoses {
+    if (_selectedVaccineDoses is EqualUnmodifiableMapView)
+      return _selectedVaccineDoses;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_selectedVaccineDoses);
+  }
+
   @override
   @JsonKey()
   final bool isSaving;
@@ -243,7 +270,7 @@ class _$OnboardingStateDataImpl implements _OnboardingStateData {
 
   @override
   String toString() {
-    return 'OnboardingStateData(selectedLanguage: $selectedLanguage, caregiverName: $caregiverName, caregiverPhone: $caregiverPhone, caregiverAddress: $caregiverAddress, childName: $childName, childDob: $childDob, childSex: $childSex, isSaving: $isSaving, error: $error)';
+    return 'OnboardingStateData(selectedLanguage: $selectedLanguage, caregiverName: $caregiverName, caregiverPhone: $caregiverPhone, caregiverAddress: $caregiverAddress, childName: $childName, childDob: $childDob, childSex: $childSex, selectedVaccineDoses: $selectedVaccineDoses, isSaving: $isSaving, error: $error)';
   }
 
   @override
@@ -265,6 +292,8 @@ class _$OnboardingStateDataImpl implements _OnboardingStateData {
                 other.childDob == childDob) &&
             (identical(other.childSex, childSex) ||
                 other.childSex == childSex) &&
+            const DeepCollectionEquality()
+                .equals(other._selectedVaccineDoses, _selectedVaccineDoses) &&
             (identical(other.isSaving, isSaving) ||
                 other.isSaving == isSaving) &&
             (identical(other.error, error) || other.error == error));
@@ -280,6 +309,7 @@ class _$OnboardingStateDataImpl implements _OnboardingStateData {
       childName,
       childDob,
       childSex,
+      const DeepCollectionEquality().hash(_selectedVaccineDoses),
       isSaving,
       error);
 
@@ -302,6 +332,7 @@ abstract class _OnboardingStateData implements OnboardingStateData {
       final String childName,
       final DateTime? childDob,
       final String childSex,
+      final Map<String, DateTime> selectedVaccineDoses,
       final bool isSaving,
       final String? error}) = _$OnboardingStateDataImpl;
 
@@ -319,6 +350,8 @@ abstract class _OnboardingStateData implements OnboardingStateData {
   DateTime? get childDob;
   @override
   String get childSex;
+  @override
+  Map<String, DateTime> get selectedVaccineDoses;
   @override
   bool get isSaving;
   @override

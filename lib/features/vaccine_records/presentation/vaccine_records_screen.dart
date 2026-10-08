@@ -11,8 +11,10 @@ import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
+import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
+import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/vaccine_records/presentation/missed_vaccines_dialog.dart';
 
 /// Unified screen combining Vaccine Records and Vaccine History.
@@ -69,6 +71,12 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
         _checkedDoses.remove(key);
       }
     });
+    if (widget.isOnboardingFlow) {
+      ref.read(onboardingControllerProvider.notifier).updateVaccineDose(
+            key: '$vaccineCode-$doseNumber',
+            administeredDate: isChecked ? defaultDate : null,
+          );
+    }
   }
 
   Future<void> _selectDate(
@@ -97,6 +105,12 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
       setState(() {
         _checkedDoses[key] = picked;
       });
+      if (widget.isOnboardingFlow) {
+        ref.read(onboardingControllerProvider.notifier).updateVaccineDose(
+              key: key,
+              administeredDate: picked,
+            );
+      }
     }
   }
 
@@ -139,6 +153,10 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
         await db.childProfilesDao.setSetupComplete(widget.childId, true);
       }
       await db.vaccinationDuesDao.recalculateDuesForChild(widget.childId);
+
+      if (widget.isOnboardingFlow) {
+        await ref.read(secureStorageServiceProvider).setOnboardingCompleted();
+      }
 
       ref.invalidate(homeStatusGroupsProvider);
       ref.invalidate(childProfileProvider(widget.childId));
@@ -195,6 +213,7 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
+    final onboardingState = ref.watch(onboardingControllerProvider);
     final AsyncValue<ChildProfileDetails> childState =
         ref.watch(childProfileProvider(widget.childId));
 
@@ -203,13 +222,11 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: widget.isOnboardingFlow
-            ? null
-            : IconButton(
-                icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
-                tooltip: localizations.childBackTooltip,
-                onPressed: () => Navigator.pop(context),
-              ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
+          tooltip: localizations.childBackTooltip,
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Text(
           localizations.childVaccineRecordsAndHistory,
           style: const TextStyle(
@@ -292,6 +309,11 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
                 _checkedDoses['${record.vaccineCode}-${record.doseNumber}'] =
                     record.administeredDate;
               }
+              if (widget.isOnboardingFlow) {
+                _checkedDoses
+                  ..clear()
+                  ..addAll(onboardingState.selectedVaccineDoses);
+              }
               _initialized = true;
             }
 
@@ -337,7 +359,7 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
                   child: Stack(
                     children: <Widget>[
                       ListView(
-                        padding: const EdgeInsets.fromLTRB(16, 70, 16, 24),
+                        padding: const EdgeInsets.fromLTRB(16, 110, 16, 24),
                         children: <Widget>[
                           if (widget.isOnboardingFlow) ...<Widget>[
                             _OnboardingStepsHeader(

@@ -172,6 +172,7 @@ class SettingsScreen extends ConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: SingleChildScrollView(
+          primary: true,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
