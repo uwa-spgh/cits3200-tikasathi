@@ -270,6 +270,7 @@ void main() {
             when: any(named: 'when'),
             title: any(named: 'title'),
             body: captureAny(named: 'body'),
+            childId: any(named: 'childId'),
           ),
         ).captured.last as String;
       }
@@ -546,6 +547,7 @@ void main() {
               notificationId: any(named: 'notificationId'),
               title: any(named: 'title'),
               body: captureAny(named: 'body'),
+              childId: any(named: 'childId'),
             ),
           ).captured.single as String;
         }
