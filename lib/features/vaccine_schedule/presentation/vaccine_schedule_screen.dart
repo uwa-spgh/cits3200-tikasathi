@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
@@ -18,25 +19,68 @@ class VaccineScheduleScreen extends ConsumerWidget {
     final state = ref.watch(childProfileProvider(childId));
     final localizations = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F9FC),
-      body: SafeArea(
-        child: state.when(
-          data: (details) {
-            final start = details.orderedVaccineRecords.length - 5;
-            return _VaccineScheduleTable(
-              dues: details.orderedDueVaccines,
-              records:
-                  details.orderedVaccineRecords.sublist(start < 0 ? 0 : start),
-              now: details.now,
-            );
-          },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stackTrace) =>
-              Center(child: Text(localizations.childNotFound)),
+    return Container(
+      color: const Color(0xFFF5F9FC),
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 560),
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF5F9FC),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+                      onPressed: () => Navigator.of(context).maybePop(),
+                      icon: const Icon(Icons.arrow_back),
+                      tooltip: localizations.vaccineScheduleBack,
+                    ),
+          title: Text(
+                      localizations.vaccineScheduleTitle,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF11284F),
+                          )),
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: ReadAloudButton(
+                      tooltip: localizations.childReadAloudTooltip,
+                      unavailableMessage: localizations.childReadAloudUnavailable,
+                      textGetter: () {
+                        final details = state.asData?.value;
+                        if (details == null) {
+                          return ScreenSpeechHelper.extractVisibleText(context);
+                        }
+                        final start = details.orderedVaccineRecords.length - 5;
+
+                        return ScreenSpeechHelper.vaccineScheduleScreenText(
+                          context: context,
+                          localizations: localizations,
+                          dues: details.orderedDueVaccines,
+                          records: details.orderedVaccineRecords.sublist(start < 0 ? 0 : start),
+                        );
+                      }
+                    ),
+            )
+          ],
         ),
-      ),
-    );
+        body: SafeArea(
+          child: state.when(
+            data: (details) {
+              final start = details.orderedVaccineRecords.length - 5;
+              return _VaccineScheduleTable(
+                dues: details.orderedDueVaccines,
+                records:
+                    details.orderedVaccineRecords.sublist(start < 0 ? 0 : start),
+                now: details.now,
+              );
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stackTrace) =>
+                Center(child: Text(localizations.childNotFound)),
+          ),
+        ),
+    )));
   }
 }
 
@@ -79,44 +123,9 @@ class _VaccineScheduleTable extends StatelessWidget {
                   margin: const EdgeInsets.fromLTRB(12, 0, 12, 0)))
         ]));
 
-    return Align(
-      alignment: Alignment.topCenter,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 560),
-        child: Column(
+    return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 16, 12),
-              child: Row(
-                children: [
-                  IconButton(
-                    onPressed: () => Navigator.of(context).maybePop(),
-                    icon: const Icon(Icons.arrow_back),
-                    tooltip: localizations.vaccineScheduleBack,
-                  ),
-                  Expanded(
-                      child: Text(
-                    localizations.vaccineScheduleTitle,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xFF11284F),
-                        ),
-                  )),
-                  ReadAloudButton(
-                    tooltip: localizations.childReadAloudTooltip,
-                    unavailableMessage: localizations.childReadAloudUnavailable,
-                    textGetter: () =>
-                        ScreenSpeechHelper.vaccineScheduleScreenText(
-                      context: context,
-                      localizations: localizations,
-                      dues: dues,
-                      records: records,
-                    ),
-                  ),
-                ],
-              ),
-            ),
             if (dues.isEmpty && records.isEmpty)
               Expanded(
                 child: Center(child: Text(localizations.vaccineScheduleEmpty)),
@@ -160,10 +169,7 @@ class _VaccineScheduleTable extends StatelessWidget {
                         }
                       },
                       itemCount: merged.length)),
-          ],
-        ),
-      ),
-    );
+        ]);
   }
 }
 
