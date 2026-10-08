@@ -146,14 +146,14 @@ class OnboardingController extends _$OnboardingController {
         await db.vaccinationDuesDao.recalculateDuesForChild(childId);
       }
 
-      // 3. Save language and mark onboarding as completed.
+      // 3. Save language. Vaccine History marks onboarding complete after
+      // Finish or Skip for now.
       final bool languageSaved = await ref
           .read(languageControllerProvider.notifier)
           .setLanguage(state.selectedLanguage);
       if (!languageSaved) {
         throw StateError('Failed to save language preference');
       }
-      await secureStorage.setOnboardingCompleted();
 
       state = state.copyWith(isSaving: false);
       return _createdChildId ?? 'completed_without_child';

@@ -131,5 +131,6 @@ void main() {
       await (db.select(db.vaccinationRecords)).get(),
       isEmpty,
     );
+    verifyNever(secureStorage.setOnboardingCompleted);
   });
 }

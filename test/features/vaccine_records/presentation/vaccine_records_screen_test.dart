@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:drift/native.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:tikasathi/core/database/app_database.dart';
+import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/settings/data/settings_providers.dart';
@@ -11,8 +15,79 @@ import 'package:tikasathi/features/vaccine_records/presentation/vaccine_records_
 
 import '../../../helpers/fake_settings_repository.dart';
 
+class _MockSecureStorageService extends Mock implements SecureStorageService {}
+
 void main() {
   group('VaccineRecordsScreen', () {
+    testWidgets('Finish completes onboarding and persists the completion flag',
+        (WidgetTester tester) async {
+      const childId = 'onboarding-finish-child';
+      final now = DateTime.now();
+      final dob = now.subtract(const Duration(days: 105));
+      final database = AppDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(database.close);
+      await database.childProfilesDao.insertChildProfile(
+        ChildProfilesCompanion.insert(
+          id: childId,
+          name: 'Maya',
+          dateOfBirth: dob,
+          sex: 'female',
+        ),
+      );
+      await database.vaccinationDuesDao.insertDuesForChild(childId);
+
+      final secureStorage = _MockSecureStorageService();
+      when(secureStorage.setOnboardingCompleted).thenAnswer((_) async {});
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            appDatabaseProvider.overrideWithValue(database),
+            secureStorageServiceProvider.overrideWithValue(secureStorage),
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(language: AppLanguage.english),
+            ),
+            childProfileProvider(childId).overrideWith(
+              (ref) => Future.value(
+                ChildProfileDetails(
+                  child: ChildProfile(
+                    id: childId,
+                    name: 'Maya',
+                    dateOfBirth: dob,
+                    sex: 'female',
+                    isSetupComplete: false,
+                  ),
+                  dueVaccines: const <VaccinationDue>[],
+                  records: const <VaccinationRecord>[],
+                  now: now,
+                ),
+              ),
+            ),
+          ],
+          child: const MaterialApp(
+            locale: Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: VaccineRecordsScreen(
+              childId: childId,
+              isOnboardingFlow: true,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Finish'));
+      await tester.pumpAndSettle();
+
+      verify(secureStorage.setOnboardingCompleted).called(1);
+      expect(
+        (await database.childProfilesDao.getChildProfileById(childId))
+            ?.isSetupComplete,
+        isTrue,
+      );
+    });
+
     testWidgets('preserves onboarding vaccine selections across recreation',
         (WidgetTester tester) async {
       const childId = 'onboarding-draft-child';

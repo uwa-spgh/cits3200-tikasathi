@@ -81,7 +81,7 @@ void main() {
 
     expect(success, isNotNull);
     expect(repository.language, AppLanguage.nepali);
-    verify(secureStorage.setOnboardingCompleted).called(1);
+    verifyNever(secureStorage.setOnboardingCompleted);
   });
 
   test('finishSetup stops when language persistence fails', () async {

@@ -11,6 +11,7 @@ import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
+import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
@@ -152,6 +153,10 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
         await db.childProfilesDao.setSetupComplete(widget.childId, true);
       }
       await db.vaccinationDuesDao.recalculateDuesForChild(widget.childId);
+
+      if (widget.isOnboardingFlow) {
+        await ref.read(secureStorageServiceProvider).setOnboardingCompleted();
+      }
 
       ref.invalidate(homeStatusGroupsProvider);
       ref.invalidate(childProfileProvider(widget.childId));
