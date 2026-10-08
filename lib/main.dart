@@ -6,6 +6,7 @@ import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/database/database_recovery.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/reminders/open_child_from_reminder.dart';
 import 'package:tikasathi/core/reminders/reminder_scheduler.dart';
 import 'package:tikasathi/core/services/notification_service.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
@@ -75,10 +76,25 @@ class TikaSathiApp extends ConsumerStatefulWidget {
 class _TikaSathiAppState extends ConsumerState<TikaSathiApp> {
   bool? _hasCompletedOnboarding;
 
+  // Reminder taps arrive outside any widget, so opening a child's page needs a
+  // navigator the app can reach from here.
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  StreamSubscription<String>? _reminderTaps;
+
   @override
   void initState() {
     super.initState();
+    _reminderTaps = ref
+        .read(notificationServiceProvider)
+        .openedChildIds
+        .listen(_openChildFromReminder);
     _checkOnboarding();
+  }
+
+  @override
+  void dispose() {
+    _reminderTaps?.cancel();
+    super.dispose();
   }
 
   Future<void> _checkOnboarding() async {
@@ -90,6 +106,28 @@ class _TikaSathiAppState extends ConsumerState<TikaSathiApp> {
         _hasCompletedOnboarding = completed;
       });
     }
+
+    // A tap on a reminder may be what started the app. Wait for the home
+    // screen to be built, then open that child on top of it.
+    final String? launchedFor =
+        await ref.read(notificationServiceProvider).childIdThatLaunchedApp();
+    if (launchedFor != null && mounted) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _openChildFromReminder(launchedFor),
+      );
+    }
+  }
+
+  Future<void> _openChildFromReminder(String childId) async {
+    // Before onboarding there is no home screen to return to.
+    if (_hasCompletedOnboarding != true) {
+      return;
+    }
+    await openChildFromReminder(
+      navigator: _navigatorKey.currentState,
+      database: ref.read(appDatabaseProvider),
+      childId: childId,
+    );
   }
 
   @override
@@ -100,6 +138,7 @@ class _TikaSathiAppState extends ConsumerState<TikaSathiApp> {
         languageState.asData?.value.locale ?? AppLanguage.nepali.locale;
 
     return MaterialApp(
+      navigatorKey: _navigatorKey,
       title: 'TikaSathi',
       theme: AppTheme.light,
       locale: locale,
