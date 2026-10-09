@@ -219,6 +219,7 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
         ref.watch(childProfileProvider(widget.childId));
 
     String Function()? textGetter;
+    Widget? bottomActionBar;
     final body = childState.when(
       data: (ChildProfileDetails details) {        
         final ChildProfile child = details.child;
@@ -270,6 +271,16 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
           );
         };
 
+        bottomActionBar = _BottomActionBar(
+          isSaving: _isSaving,
+          isRegistration: _isRegistration,
+          localizations: localizations,
+          onSave: () => _save(true),
+          onSkipOrReturn: _isRegistration
+              ? () => _save(false)
+              : () => Navigator.pop(context),
+        );
+
         if (!_initialized) {
           for (final VaccinationRecord record in details.records) {
             _checkedDoses['${record.vaccineCode}-${record.doseNumber}'] =
@@ -319,99 +330,84 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
           }
         });
 
-        return Column(
+        return Stack(
           children: <Widget>[
-            Expanded(
-              child: Stack(
-                children: <Widget>[
-                  ListView(
-                    padding: const EdgeInsets.fromLTRB(16, 110, 16, 24),
-                    children: <Widget>[
-                      if (widget.isOnboardingFlow) ...<Widget>[
-                        _OnboardingStepsHeader(
-                            localizations: localizations),
-                        const SizedBox(height: 12),
-                      ],
-                      Text(
-                        localizations
-                            .retroactiveVaccineSubtitle(child.name),
+            ListView(
+              padding: const EdgeInsets.fromLTRB(16, 110, 16, 24),
+              children: <Widget>[
+                if (widget.isOnboardingFlow) ...<Widget>[
+                  _OnboardingStepsHeader(
+                      localizations: localizations),
+                  const SizedBox(height: 12),
+                ],
+                Text(
+                  localizations
+                      .retroactiveVaccineSubtitle(child.name),
+                  style: const TextStyle(
+                    fontSize: 15,
+                    color: Color(0xFF64748B),
+                  ),
+                ),
+                const SizedBox(height: 14),
+                if (items.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 40),
+                    child: Center(
+                      child: Text(
+                        localizations.vaccineRecordsEmpty,
                         style: const TextStyle(
-                          fontSize: 15,
+                          fontSize: 16,
                           color: Color(0xFF64748B),
                         ),
                       ),
-                      const SizedBox(height: 14),
-                      if (items.isEmpty)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 40),
-                          child: Center(
-                            child: Text(
-                              localizations.vaccineRecordsEmpty,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Color(0xFF64748B),
-                              ),
-                            ),
-                          ),
-                        )
-                      else
-                        ...items.map(
-                          (_DoseItemData item) => _VaccineDoseRow(
-                            item: item,
-                            localizations: localizations,
-                            onToggle: (bool isChecked) {
-                              _toggleDose(
-                                item.vaccineCode,
-                                item.doseNumber,
-                                isChecked,
-                                item.fallbackDate,
-                              );
-                            },
-                            onPickDate: () {
-                              _selectDate(
-                                context,
-                                item.keyName,
-                                item.administeredDate ?? item.fallbackDate,
-                                child.dateOfBirth,
-                              );
-                            },
-                          ),
-                        ),
-                    ],
-                  ),
-                  Positioned(
-                    top: 10,
-                    left: 16,
-                    right: 16,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        boxShadow: const <BoxShadow>[
-                          BoxShadow(
-                            color: Color(0x1F000000),
-                            blurRadius: 10,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: _FilterToggleCard(
-                        showAll: _showAll,
-                        onToggle: _toggleShowAll,
-                        localizations: localizations,
-                      ),
+                    ),
+                  )
+                else
+                  ...items.map(
+                    (_DoseItemData item) => _VaccineDoseRow(
+                      item: item,
+                      localizations: localizations,
+                      onToggle: (bool isChecked) {
+                        _toggleDose(
+                          item.vaccineCode,
+                          item.doseNumber,
+                          isChecked,
+                          item.fallbackDate,
+                        );
+                      },
+                      onPickDate: () {
+                        _selectDate(
+                          context,
+                          item.keyName,
+                          item.administeredDate ?? item.fallbackDate,
+                          child.dateOfBirth,
+                        );
+                      },
                     ),
                   ),
-                ],
-              ),
+              ],
             ),
-            _BottomActionBar(
-              isSaving: _isSaving,
-              isRegistration: _isRegistration,
-              localizations: localizations,
-              onSave: () => _save(true),
-              onSkipOrReturn: _isRegistration
-                  ? () => _save(false)
-                  : () => Navigator.pop(context),
+            Positioned(
+              top: 10,
+              left: 16,
+              right: 16,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: const <BoxShadow>[
+                    BoxShadow(
+                      color: Color(0x1F000000),
+                      blurRadius: 10,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: _FilterToggleCard(
+                  showAll: _showAll,
+                  onToggle: _toggleShowAll,
+                  localizations: localizations,
+                ),
+              ),
             ),
           ],
         );
@@ -425,7 +421,8 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
     return BasicScaffold(
       title: localizations.childVaccineRecordsAndHistory, 
       textGetter: textGetter,
-      body: body
+      body: body,
+      bottomNavBar: bottomActionBar,
     );
   }
 }
