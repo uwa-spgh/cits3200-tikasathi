@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
-import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
+import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/learn/domain/learn_topics.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
@@ -31,39 +31,17 @@ class LearnScreen extends ConsumerWidget {
 
   Widget _buildContent(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
-    return SingleChildScrollView(
-      primary: true,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l10n.learnTitle,
-                  key: const Key('learn-title'),
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF0F172A),
-                  ),
-                ),
-              ),
-              ReadAloudButton(
-                tooltip: l10n.childReadAloudTooltip,
-                unavailableMessage: l10n.childReadAloudUnavailable,
-                textGetter: () => ScreenSpeechHelper.learnScreenText(
+    return Scaffold(
+        appBar: BasicAppBar(
+            title: l10n.learnTitle,
+            isMainTitle: true,
+            textGetter: () => ScreenSpeechHelper.learnScreenText(
                   localizations: l10n,
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          const _TopicList(),
-        ],
-      ),
-    );
+            haveBackButton: false,
+            titleKey: const Key('learn-title')),
+        body: const SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(16, 8, 16, 20), child: _TopicList()));
   }
 }
 

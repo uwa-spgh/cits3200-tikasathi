@@ -12,6 +12,9 @@ class AppLocalizationsNe extends AppLocalizations {
   String get appTitle => 'टीकासाथी';
 
   @override
+  String get appBarBack => 'फर्कनुहोस्';
+
+  @override
   String get childPageTitle => 'बच्चा पृष्ठ';
 
   @override

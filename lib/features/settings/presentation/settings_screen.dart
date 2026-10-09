@@ -7,7 +7,7 @@ import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/services/notification_service.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
-import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
+import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
@@ -168,41 +168,24 @@ class SettingsScreen extends ConsumerWidget {
     required bool isNp,
   }) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-        child: SingleChildScrollView(
+
+    return Scaffold(
+        appBar: BasicAppBar(
+            title: localizations.settingsTitle,
+            isMainTitle: true,
+            textGetter: () => ScreenSpeechHelper.settingsScreenText(
+                  context: context,
+                  localizations: localizations,
+                  currentLanguage:
+                      isNp ? AppLanguage.nepali : AppLanguage.english,
+                ),
+            haveBackButton: false),
+        body: SingleChildScrollView(
           primary: true,
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Text(
-                      localizations.settingsTitle,
-                      style: const TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF0F172A),
-                      ),
-                    ),
-                  ),
-                  ReadAloudButton(
-                    tooltip: localizations.childReadAloudTooltip,
-                    unavailableMessage: localizations.childReadAloudUnavailable,
-                    textGetter: () => ScreenSpeechHelper.settingsScreenText(
-                      context: context,
-                      localizations: localizations,
-                      currentLanguage:
-                          isNp ? AppLanguage.nepali : AppLanguage.english,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 0),
               Text(
                 localizations.settingsLanguageTitle,
                 style: const TextStyle(
@@ -331,9 +314,7 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ],
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Future<void> _chooseChild(

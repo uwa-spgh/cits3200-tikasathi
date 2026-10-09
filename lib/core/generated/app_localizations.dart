@@ -104,6 +104,12 @@ abstract class AppLocalizations {
   /// **'TikaSathi'**
   String get appTitle;
 
+  /// No description provided for @appBarBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get appBarBack;
+
   /// Title shown at the top of the child profile screen
   ///
   /// In en, this message translates to:

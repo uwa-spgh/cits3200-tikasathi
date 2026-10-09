@@ -12,6 +12,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'TikaSathi';
 
   @override
+  String get appBarBack => 'Back';
+
+  @override
   String get childPageTitle => 'Child Page';
 
   @override
