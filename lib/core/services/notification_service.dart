@@ -107,7 +107,9 @@ class NotificationService {
   /// null when the app was opened some other way.
   Future<String?> childIdThatLaunchedApp() async {
     final NotificationAppLaunchDetails? details =
-        defaultTargetPlatform != TargetPlatform.linux ? await _plugin.getNotificationAppLaunchDetails() : null;
+        defaultTargetPlatform != TargetPlatform.linux
+            ? await _plugin.getNotificationAppLaunchDetails()
+            : null;
     if (details == null || !details.didNotificationLaunchApp) {
       return null;
     }

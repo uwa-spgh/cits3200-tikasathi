@@ -44,7 +44,8 @@ class AppTheme {
 
 /// A scaffold with a max width of 560 logical pixels.
 class ConstrainedScaffold extends StatelessWidget {
-  const ConstrainedScaffold({this.body, this.appBar, this.bottomNavBar, super.key});
+  const ConstrainedScaffold(
+      {this.body, this.appBar, this.bottomNavBar, super.key});
 
   final PreferredSizeWidget? appBar;
   final Widget? body;
@@ -53,38 +54,36 @@ class ConstrainedScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppTheme.background,
-      alignment: Alignment.topCenter,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 560),
-        child: SafeArea(child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: appBar,
-          body: body,
-          bottomNavigationBar: bottomNavBar,
-        ))
-      )
-    );
+        color: AppTheme.background,
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: SafeArea(
+                child: Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: appBar,
+              body: body,
+              bottomNavigationBar: bottomNavBar,
+            ))));
   }
 }
 
 /// A centralised basic app bar for TikaSathi.
-/// 
+///
 /// [title] is the title of the app bar.
 /// [textGetter] is passed to the [ReadAloudButton]; if it is null, the button will attempt to read all visible text instead.
 /// [isMainTitle] determines the font of the title, where true corresponds to a larger and bolder font. By default it is false.
 /// [haveBackButton] determines if the back button is on the app bar. By default it is true.
 /// [haveReadAloudButton] determines if the [ReadAloudButton] is on the app bar. By default it is true.
 class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const BasicAppBar({
-    this.title, 
-    this.textGetter, 
-    this.actions, 
-    this.isMainTitle = false, 
-    this.haveBackButton = true, 
-    this.haveReadAloudButton = true, 
-    super.key
-  });
+  const BasicAppBar(
+      {this.title,
+      this.textGetter,
+      this.actions,
+      this.isMainTitle = false,
+      this.haveBackButton = true,
+      this.haveReadAloudButton = true,
+      super.key});
 
   final String? title;
   final String Function()? textGetter;
@@ -97,36 +96,37 @@ class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final backButton = haveBackButton ? IconButton(
-      onPressed: () => Navigator.of(context).maybePop(),
-      icon: const Icon(Icons.arrow_back),
-      tooltip: l10n.appBarBack,
-    ) : null;
-    
-    final titleWidget = title != null ? Text(
-      title!,
-      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-        fontWeight: isMainTitle ? FontWeight.w800 : FontWeight.w700,
-        color: AppTheme.appBarTitle
-      )
-    ) : null;
+    final backButton = haveBackButton
+        ? IconButton(
+            onPressed: () => Navigator.of(context).maybePop(),
+            icon: const Icon(Icons.arrow_back),
+            tooltip: l10n.appBarBack,
+          )
+        : null;
+
+    final titleWidget = title != null
+        ? Text(title!,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: isMainTitle ? FontWeight.w800 : FontWeight.w700,
+                color: AppTheme.appBarTitle))
+        : null;
 
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: backButton,
       title: titleWidget,
-      actions: haveReadAloudButton ? [
-        ...?actions,
-        Padding(
-          padding: const EdgeInsets.only(right: 16),
-          child: ReadAloudButton(
-            tooltip: l10n.childReadAloudTooltip,
-            unavailableMessage: l10n.childReadAloudUnavailable,
-            textGetter: textGetter
-          )
-        )
-      ] : actions,
+      actions: haveReadAloudButton
+          ? [
+              ...?actions,
+              Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: ReadAloudButton(
+                      tooltip: l10n.childReadAloudTooltip,
+                      unavailableMessage: l10n.childReadAloudUnavailable,
+                      textGetter: textGetter))
+            ]
+          : actions,
     );
   }
 

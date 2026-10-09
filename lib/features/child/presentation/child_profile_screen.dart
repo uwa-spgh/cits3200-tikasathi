@@ -37,10 +37,10 @@ class ChildProfileScreen extends ConsumerWidget {
       data: (ChildProfileDetails details) {
         title = localizations.childPageTitleWithName(details.child.name);
         textGetter = () => ScreenSpeechHelper.childProfileScreenText(
-          context: context,
-          localizations: localizations,
-          details: details,
-        );
+              context: context,
+              localizations: localizations,
+              details: details,
+            );
         haveReadAloud = true;
         return _ChildContent(details: details);
       },

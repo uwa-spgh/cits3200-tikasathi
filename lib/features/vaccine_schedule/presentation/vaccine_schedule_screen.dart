@@ -23,7 +23,8 @@ class VaccineScheduleScreen extends ConsumerWidget {
       data: (details) {
         final start = details.orderedVaccineRecords.length - 5;
         final dues = details.orderedDueVaccines;
-        final records = details.orderedVaccineRecords.sublist(start < 0 ? 0 : start);
+        final records =
+            details.orderedVaccineRecords.sublist(start < 0 ? 0 : start);
 
         textGetter = () {
           final start = details.orderedVaccineRecords.length - 5;
@@ -32,7 +33,8 @@ class VaccineScheduleScreen extends ConsumerWidget {
             context: context,
             localizations: localizations,
             dues: details.orderedDueVaccines,
-            records: details.orderedVaccineRecords.sublist(start < 0 ? 0 : start),
+            records:
+                details.orderedVaccineRecords.sublist(start < 0 ? 0 : start),
           );
         };
 
@@ -48,12 +50,11 @@ class VaccineScheduleScreen extends ConsumerWidget {
     );
 
     return ConstrainedScaffold(
-      appBar: BasicAppBar(
-        title: localizations.vaccineScheduleTitle,
-        textGetter: textGetter,
-      ),
-      body: body
-    );
+        appBar: BasicAppBar(
+          title: localizations.vaccineScheduleTitle,
+          textGetter: textGetter,
+        ),
+        body: body);
   }
 }
 
@@ -96,53 +97,50 @@ class _VaccineScheduleTable extends StatelessWidget {
                   margin: const EdgeInsets.fromLTRB(12, 0, 12, 0)))
         ]));
 
-    return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (dues.isEmpty && records.isEmpty)
-              Expanded(
-                child: Center(child: Text(localizations.vaccineScheduleEmpty)),
-              )
-            else
-              Expanded(
-                  child: ListView.builder(
-                      itemBuilder: (context, index) {
-                        final data = merged[index];
-                        final isFirst = index == 0;
-                        final isLast =
-                            index == dues.length + records.length - 1;
-                        final isPast = index < todayDividerIndex;
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      if (dues.isEmpty && records.isEmpty)
+        Expanded(
+          child: Center(child: Text(localizations.vaccineScheduleEmpty)),
+        )
+      else
+        Expanded(
+            child: ListView.builder(
+                itemBuilder: (context, index) {
+                  final data = merged[index];
+                  final isFirst = index == 0;
+                  final isLast = index == dues.length + records.length - 1;
+                  final isPast = index < todayDividerIndex;
 
-                        final statusColor = data.isDue
-                            ? isPast
-                                ? const Color(0xFFF5B544)
-                                : const Color(0xFF94A3B8)
-                            : const Color(0xFF166534);
-                        final statusDarker = data.isDue
-                            ? isPast
-                                ? const Color(0xFFF5B544)
-                                : const Color(0xFF475569)
-                            : const Color(0xFF166534);
+                  final statusColor = data.isDue
+                      ? isPast
+                          ? const Color(0xFFF5B544)
+                          : const Color(0xFF94A3B8)
+                      : const Color(0xFF166534);
+                  final statusDarker = data.isDue
+                      ? isPast
+                          ? const Color(0xFFF5B544)
+                          : const Color(0xFF475569)
+                      : const Color(0xFF166534);
 
-                        final vaccineRow = makeVaccineRow(
-                            '${data.vaccineCode} (${localizations.dose} ${data.doseNumber})',
-                            DateFormat('d MMM y', locale).format(data.date),
-                            isFirst,
-                            isLast,
-                            statusColor,
-                            statusDarker,
-                            data.isDue);
+                  final vaccineRow = makeVaccineRow(
+                      '${data.vaccineCode} (${localizations.dose} ${data.doseNumber})',
+                      DateFormat('d MMM y', locale).format(data.date),
+                      isFirst,
+                      isLast,
+                      statusColor,
+                      statusDarker,
+                      data.isDue);
 
-                        if (index == todayDividerIndex) {
-                          return Column(children: [todayDivider, vaccineRow]);
-                        } else if (isLast && index < todayDividerIndex) {
-                          return Column(children: [vaccineRow, todayDivider]);
-                        } else {
-                          return vaccineRow;
-                        }
-                      },
-                      itemCount: merged.length)),
-        ]);
+                  if (index == todayDividerIndex) {
+                    return Column(children: [todayDivider, vaccineRow]);
+                  } else if (isLast && index < todayDividerIndex) {
+                    return Column(children: [vaccineRow, todayDivider]);
+                  } else {
+                    return vaccineRow;
+                  }
+                },
+                itemCount: merged.length)),
+    ]);
   }
 }
 

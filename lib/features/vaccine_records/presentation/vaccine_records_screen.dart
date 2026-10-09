@@ -220,7 +220,7 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
     String Function()? textGetter;
     Widget? bottomActionBar;
     final body = childState.when(
-      data: (ChildProfileDetails details) {        
+      data: (ChildProfileDetails details) {
         final ChildProfile child = details.child;
         final DateTime now = DateTime.now();
         final Duration age = now.difference(child.dateOfBirth);
@@ -229,8 +229,7 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
           final List<String> visibleNames = <String>[];
           final List<String> tickedNames = <String>[];
 
-          nipCatalogue
-              .forEach((String vaccineCode, List<DayDuration> ages) {
+          nipCatalogue.forEach((String vaccineCode, List<DayDuration> ages) {
             for (int i = 0; i < ages.length; i++) {
               final int doseNumber = i + 1;
               final DayDuration doseAge = ages[i];
@@ -244,9 +243,8 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
               }
 
               if (isPast || _showAll || isChecked) {
-                final String displayName = doseNumber > 1
-                    ? '$vaccineCode $doseNumber'
-                    : vaccineCode;
+                final String displayName =
+                    doseNumber > 1 ? '$vaccineCode $doseNumber' : vaccineCode;
                 if (!visibleNames.contains(displayName)) {
                   visibleNames.add(displayName);
                 }
@@ -335,13 +333,11 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
               padding: const EdgeInsets.fromLTRB(16, 110, 16, 24),
               children: <Widget>[
                 if (widget.isOnboardingFlow) ...<Widget>[
-                  _OnboardingStepsHeader(
-                      localizations: localizations),
+                  _OnboardingStepsHeader(localizations: localizations),
                   const SizedBox(height: 12),
                 ],
                 Text(
-                  localizations
-                      .retroactiveVaccineSubtitle(child.name),
+                  localizations.retroactiveVaccineSubtitle(child.name),
                   style: const TextStyle(
                     fontSize: 15,
                     color: Color(0xFF64748B),
@@ -418,13 +414,11 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
     );
 
     return ConstrainedScaffold(
-      appBar: BasicAppBar(
-        title: localizations.childVaccineRecordsAndHistory,
-        textGetter: textGetter
-      ),
-      body: body,
-      bottomNavBar: bottomActionBar
-    );
+        appBar: BasicAppBar(
+            title: localizations.childVaccineRecordsAndHistory,
+            textGetter: textGetter),
+        body: body,
+        bottomNavBar: bottomActionBar);
   }
 }
 

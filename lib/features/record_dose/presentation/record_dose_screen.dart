@@ -100,57 +100,56 @@ class _RecordDoseScreenState extends ConsumerState<RecordDoseScreen> {
 
     String Function()? textGetter;
     final body = recordDoseAsync.when(
-        // A failed save keeps its data, so the screen stays on the form
-        // with the ticks intact; the snackbar reports the failure. Only a
-        // failed initial load, which has no data, falls through to
-        // [_ErrorBody].
-        skipError: true,
-        data: (RecordDoseState recordDoseState) {
-          textGetter = () {
-            final List<String> ticked = recordDoseState.visibleDues
-                .where(
-                    (VaccinationDue d) => recordDoseState.selectedDueIds.contains(d.id))
-                .map((VaccinationDue d) => d.vaccineCode)
-                .toList();
-            final List<String> available = recordDoseState.visibleDues
-                .map((VaccinationDue d) => d.vaccineCode)
-                .toList();
+      // A failed save keeps its data, so the screen stays on the form
+      // with the ticks intact; the snackbar reports the failure. Only a
+      // failed initial load, which has no data, falls through to
+      // [_ErrorBody].
+      skipError: true,
+      data: (RecordDoseState recordDoseState) {
+        textGetter = () {
+          final List<String> ticked = recordDoseState.visibleDues
+              .where((VaccinationDue d) =>
+                  recordDoseState.selectedDueIds.contains(d.id))
+              .map((VaccinationDue d) => d.vaccineCode)
+              .toList();
+          final List<String> available = recordDoseState.visibleDues
+              .map((VaccinationDue d) => d.vaccineCode)
+              .toList();
 
-            return ScreenSpeechHelper.recordDoseScreenText(
-              context: context,
-              localizations: localizations,
-              childName: recordDoseState.child.name,
-              administeredDate: recordDoseState.administeredDate,
-              tickedVaccineNames: ticked,
-              availableVaccineNames: available,
-            );
-          };
-
-          return _RecordDoseBody(
-            recordDoseState: recordDoseState,
+          return ScreenSpeechHelper.recordDoseScreenText(
+            context: context,
             localizations: localizations,
-            isSaving: _isSaving,
-            onToggleDose: (String dueId) => ref
-                .read(recordDoseControllerProvider(widget.childId).notifier)
-                .toggleDose(dueId),
-            onToggleShowAll: (bool showAll) => ref
-                .read(recordDoseControllerProvider(widget.childId).notifier)
-                .setShowAllUpcoming(showAll),
-            onChangeDate: () => _pickDate(recordDoseState),
-            onSave: () => _save(recordDoseState),
+            childName: recordDoseState.child.name,
+            administeredDate: recordDoseState.administeredDate,
+            tickedVaccineNames: ticked,
+            availableVaccineNames: available,
           );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => _ErrorBody(localizations: localizations),
-      );
+        };
+
+        return _RecordDoseBody(
+          recordDoseState: recordDoseState,
+          localizations: localizations,
+          isSaving: _isSaving,
+          onToggleDose: (String dueId) => ref
+              .read(recordDoseControllerProvider(widget.childId).notifier)
+              .toggleDose(dueId),
+          onToggleShowAll: (bool showAll) => ref
+              .read(recordDoseControllerProvider(widget.childId).notifier)
+              .setShowAllUpcoming(showAll),
+          onChangeDate: () => _pickDate(recordDoseState),
+          onSave: () => _save(recordDoseState),
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (_, __) => _ErrorBody(localizations: localizations),
+    );
 
     return ConstrainedScaffold(
-      appBar: BasicAppBar(
-        title: localizations.recordDoseTitle,
-        textGetter: textGetter,
-      ),
-      body: body
-    );
+        appBar: BasicAppBar(
+          title: localizations.recordDoseTitle,
+          textGetter: textGetter,
+        ),
+        body: body);
   }
 }
 
