@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
@@ -610,27 +611,60 @@ void main() {
     testWidgets('vaccineScheduleScreenText groups outstanding vaccines by date',
         (WidgetTester tester) async {
       late String groupedText;
+      late String groupedNepaliText;
+      final DateTime now = DateTime.now();
+      final DateTime today = DateTime(now.year, now.month, now.day);
       final dues = <VaccinationDue>[
         VaccinationDue(
           id: 'd1',
           childId: 'c1',
           vaccineCode: 'PENTA',
           doseNumber: 1,
-          dueDate: DateTime(2026, 10, 10),
+          dueDate: today.subtract(const Duration(days: 1)),
         ),
         VaccinationDue(
           id: 'd2',
           childId: 'c1',
           vaccineCode: 'PCV',
           doseNumber: 1,
-          dueDate: DateTime(2026, 10, 10),
+          dueDate: today.subtract(const Duration(days: 1)),
         ),
         VaccinationDue(
           id: 'd3',
           childId: 'c1',
           vaccineCode: 'MMR',
           doseNumber: 1,
-          dueDate: DateTime(2026, 11, 20),
+          dueDate: today,
+        ),
+        VaccinationDue(
+          id: 'd4',
+          childId: 'c1',
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+          dueDate: today.add(const Duration(days: 1)),
+        ),
+        VaccinationDue(
+          id: 'd5',
+          childId: 'c1',
+          vaccineCode: 'OPV',
+          doseNumber: 1,
+          dueDate: today.add(const Duration(days: 1)),
+        ),
+      ];
+      final records = <VaccinationRecord>[
+        VaccinationRecord(
+          id: 'r1',
+          childId: 'c1',
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+          administeredDate: DateTime(2025, 1, 1),
+        ),
+        VaccinationRecord(
+          id: 'r2',
+          childId: 'c1',
+          vaccineCode: 'PENTA',
+          doseNumber: 1,
+          administeredDate: DateTime(2025, 1, 1),
         ),
       ];
 
@@ -645,6 +679,7 @@ void main() {
                 context: context,
                 localizations: AppLocalizations.of(context)!,
                 dues: dues,
+                records: records,
               );
               return const SizedBox();
             },
@@ -655,16 +690,102 @@ void main() {
       expect(
         groupedText,
         contains(
-          'PENTA 1 and PCV 1 are due on 10 October 2026.',
+          'PENTA 1 and PCV 1 are overdue since',
         ),
       );
       expect(
         groupedText,
-        contains('MMR 1 is due on 20 November 2026.'),
+        contains(
+          'Please visit your nearest health facility for advice on missed vaccines.',
+        ),
       );
       expect(
-        groupedText.split('10 October 2026').length - 1,
+        groupedText,
+        contains('MMR 1 is due today.'),
+      );
+      expect(groupedText, contains('BCG 1 and OPV 1 are due on'));
+      expect(groupedText, contains('Administered vaccines.'));
+      expect(groupedText, contains('Missed vaccines.'));
+      expect(groupedText, contains('Upcoming vaccines.'));
+      expect(groupedText, contains('BCG 1 and PENTA 1 were given on'));
+      expect(
+        groupedText.indexOf('Administered vaccines.'),
+        lessThan(groupedText.indexOf('Missed vaccines.')),
+      );
+      expect(
+        groupedText.indexOf('Missed vaccines.'),
+        lessThan(groupedText.indexOf('Upcoming vaccines.')),
+      );
+      expect(
+        groupedText.indexOf(
+          'Please visit your nearest health facility for advice on missed vaccines.',
+        ),
+        lessThan(groupedText.indexOf('Upcoming vaccines.')),
+      );
+      expect(
+        groupedText
+                .split(DateFormat('d MMMM y', 'en')
+                    .format(today.add(const Duration(days: 1))))
+                .length -
+            1,
         1,
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('ne'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) {
+              groupedNepaliText = ScreenSpeechHelper.vaccineScheduleScreenText(
+                context: context,
+                localizations: AppLocalizations.of(context)!,
+                dues: dues,
+                records: records,
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(groupedNepaliText, contains('लगाइएका खोपहरू।'));
+      expect(groupedNepaliText, contains('छुटेका खोपहरू।'));
+      expect(groupedNepaliText, contains('आगामी खोपहरू।'));
+      expect(groupedNepaliText, contains('PENTA 1 र PCV 1'));
+      expect(groupedNepaliText, contains('आज लगाउनुपर्नेछ'));
+      expect(
+        groupedNepaliText,
+        contains(
+            'छुटेका खोपबारे सल्लाह लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।'),
+      );
+
+      late String noMissedText;
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) {
+              noMissedText = ScreenSpeechHelper.vaccineScheduleScreenText(
+                context: context,
+                localizations: AppLocalizations.of(context)!,
+                dues: dues.where((VaccinationDue due) {
+                  return !due.dueDate.isBefore(today);
+                }).toList(),
+                records: records,
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+      expect(noMissedText, isNot(contains('Missed vaccines.')));
+      expect(
+        noMissedText,
+        isNot(contains('Please visit your nearest health facility')),
       );
     });
 
@@ -827,7 +948,6 @@ void main() {
       late String enHistoryAgeAppropriate;
       late String enHistoryAll;
       late String npOnboarding;
-
       final List<VaccinationRecord> records = <VaccinationRecord>[
         VaccinationRecord(
           id: 'r1',

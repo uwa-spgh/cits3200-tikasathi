@@ -909,6 +909,60 @@ class AppLocalizationsNe extends AppLocalizations {
   String get vaccineRecordsEmpty => 'खोप लगाइएको कुनै रेकर्ड छैन।';
 
   @override
+  String get vaccineScheduleAdministeredCategory => 'लगाइएका खोपहरू।';
+
+  @override
+  String vaccineScheduleAdministeredGroupSingular(
+      Object date, Object vaccines) {
+    return '$vaccines $date मा लगाइएको थियो।';
+  }
+
+  @override
+  String vaccineScheduleAdministeredGroupPlural(Object date, Object vaccines) {
+    return '$vaccines $date मा लगाइएका थिए।';
+  }
+
+  @override
+  String get vaccineScheduleMissedCategory => 'छुटेका खोपहरू।';
+
+  @override
+  String vaccineScheduleMissedGroupSingular(Object date, Object vaccines) {
+    return '$vaccines $date देखि लगाउन बाँकी छन्।';
+  }
+
+  @override
+  String vaccineScheduleMissedGroupPlural(Object date, Object vaccines) {
+    return '$vaccines $date देखि लगाउन बाँकी छन्।';
+  }
+
+  @override
+  String get vaccineScheduleMissedAdvice =>
+      'छुटेका खोपबारे सल्लाह लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।';
+
+  @override
+  String get vaccineScheduleUpcomingCategory => 'आगामी खोपहरू।';
+
+  @override
+  String vaccineScheduleUpcomingTodaySingular(Object vaccines) {
+    return '$vaccines आज लगाउनुपर्नेछ।';
+  }
+
+  @override
+  String vaccineScheduleUpcomingTodayPlural(Object vaccines) {
+    return '$vaccines आज लगाउनुपर्नेछ।';
+  }
+
+  @override
+  String vaccineScheduleUpcomingGroupSingular(Object date, Object vaccines) {
+    return '$vaccines $date मा लगाउनुपर्नेछ।';
+  }
+
+  @override
+  String vaccineScheduleUpcomingGroupPlural(Object date, Object vaccines) {
+    return '$vaccines $date मा लगाउनुपर्नेछन्।';
+  }
+
+  @override
   String get dose => 'खुराक';
 
   @override

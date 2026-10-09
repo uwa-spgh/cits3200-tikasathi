@@ -1599,6 +1599,78 @@ abstract class AppLocalizations {
   /// **'There are no recorded vaccinations.'**
   String get vaccineRecordsEmpty;
 
+  /// No description provided for @vaccineScheduleAdministeredCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Administered vaccines.'**
+  String get vaccineScheduleAdministeredCategory;
+
+  /// No description provided for @vaccineScheduleAdministeredGroupSingular.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} was given on {date}.'**
+  String vaccineScheduleAdministeredGroupSingular(Object date, Object vaccines);
+
+  /// No description provided for @vaccineScheduleAdministeredGroupPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} were given on {date}.'**
+  String vaccineScheduleAdministeredGroupPlural(Object date, Object vaccines);
+
+  /// No description provided for @vaccineScheduleMissedCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed vaccines.'**
+  String get vaccineScheduleMissedCategory;
+
+  /// No description provided for @vaccineScheduleMissedGroupSingular.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} are overdue since {date}.'**
+  String vaccineScheduleMissedGroupSingular(Object date, Object vaccines);
+
+  /// No description provided for @vaccineScheduleMissedGroupPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} are overdue since {date}.'**
+  String vaccineScheduleMissedGroupPlural(Object date, Object vaccines);
+
+  /// No description provided for @vaccineScheduleMissedAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'Please visit your nearest health facility for advice on missed vaccines.'**
+  String get vaccineScheduleMissedAdvice;
+
+  /// No description provided for @vaccineScheduleUpcomingCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming vaccines.'**
+  String get vaccineScheduleUpcomingCategory;
+
+  /// No description provided for @vaccineScheduleUpcomingTodaySingular.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} is due today.'**
+  String vaccineScheduleUpcomingTodaySingular(Object vaccines);
+
+  /// No description provided for @vaccineScheduleUpcomingTodayPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} are due today.'**
+  String vaccineScheduleUpcomingTodayPlural(Object vaccines);
+
+  /// No description provided for @vaccineScheduleUpcomingGroupSingular.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} is due on {date}.'**
+  String vaccineScheduleUpcomingGroupSingular(Object date, Object vaccines);
+
+  /// No description provided for @vaccineScheduleUpcomingGroupPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} are due on {date}.'**
+  String vaccineScheduleUpcomingGroupPlural(Object date, Object vaccines);
+
   /// No description provided for @dose.
   ///
   /// In en, this message translates to:

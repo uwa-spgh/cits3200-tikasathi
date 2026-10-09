@@ -480,6 +480,83 @@ class ScreenSpeechHelper {
     return buffer.toString().trim();
   }
 
+  static DateTime _dateOnly(DateTime date) =>
+      DateTime(date.year, date.month, date.day);
+
+  static Map<DateTime, List<String>> _groupSpeechItems<T>(
+    List<T> items, {
+    required DateTime Function(T item) dateOf,
+    required String Function(T item) itemOf,
+  }) {
+    final Map<DateTime, List<String>> groups = <DateTime, List<String>>{};
+    for (final T item in items) {
+      final DateTime date = _dateOnly(dateOf(item));
+      groups.putIfAbsent(date, () => <String>[]).add(itemOf(item));
+    }
+    return groups;
+  }
+
+  static void _appendSpeechGroups(
+    StringBuffer buffer,
+    Map<DateTime, List<String>> groups, {
+    required bool isNepali,
+    required String locale,
+    required String category,
+    required String Function(String date, String vaccines) singular,
+    required String Function(String date, String vaccines) plural,
+  }) {
+    if (groups.isEmpty) return;
+    buffer.write('$category ');
+    final List<DateTime> dates = groups.keys.toList()..sort();
+    for (final DateTime date in dates) {
+      final String vaccines = _joinSpeechItems(
+        groups[date]!,
+        isNepali: isNepali,
+      );
+      final String dateText = DateFormat('d MMMM y', locale).format(date);
+      buffer.write(groups[date]!.length == 1
+          ? singular(dateText, vaccines)
+          : plural(dateText, vaccines));
+      buffer.write(' ');
+    }
+  }
+
+  static void _appendUpcomingSpeechGroups(
+    StringBuffer buffer,
+    Map<DateTime, List<String>> groups, {
+    required bool isNepali,
+    required String locale,
+    required AppLocalizations localizations,
+  }) {
+    if (groups.isEmpty) return;
+    buffer.write('${localizations.vaccineScheduleUpcomingCategory} ');
+    final List<DateTime> dates = groups.keys.toList()..sort();
+    final DateTime today = _dateOnly(DateTime.now());
+    for (final DateTime date in dates) {
+      final String vaccines = _joinSpeechItems(
+        groups[date]!,
+        isNepali: isNepali,
+      );
+      if (date == today) {
+        buffer.write(groups[date]!.length == 1
+            ? localizations.vaccineScheduleUpcomingTodaySingular(vaccines)
+            : localizations.vaccineScheduleUpcomingTodayPlural(vaccines));
+      } else {
+        final String dateText = DateFormat('d MMMM y', locale).format(date);
+        buffer.write(groups[date]!.length == 1
+            ? localizations.vaccineScheduleUpcomingGroupSingular(
+                dateText,
+                vaccines,
+              )
+            : localizations.vaccineScheduleUpcomingGroupPlural(
+                dateText,
+                vaccines,
+              ));
+      }
+      buffer.write(' ');
+    }
+  }
+
   /// Builds a spoken summary of the Vaccine Schedule screen.
   static String vaccineScheduleScreenText({
     required BuildContext context,
@@ -493,45 +570,60 @@ class ScreenSpeechHelper {
           ? 'नेपालको राष्ट्रिय बाल खोप तालिका। बीसीजी, पेन्टाभालेन्ट, रोटाभाइरस, पिसिभी, एफआइपीभी, दादुरा-रुबेला र टाइफाइड खोपहरू।'
           : 'National Immunisation Schedule of Nepal. BCG, Pentavalent, Rotavirus, PCV, fIPV, Measles-Rubella and Typhoid vaccines.';
     }
-    final locale = Localizations.localeOf(context).languageCode;
-    final groupedDues = <DateTime, List<String>>{};
-    for (final due in dues) {
-      final date = DateTime(
-        due.dueDate.year,
-        due.dueDate.month,
-        due.dueDate.day,
-      );
-      groupedDues.putIfAbsent(date, () => <String>[]).add(
-            '${due.vaccineCode} ${due.doseNumber}',
-          );
+    final String locale = Localizations.localeOf(context).languageCode;
+    final StringBuffer buffer = StringBuffer(
+      isNepali ? 'खोप तालिका। ' : 'Vaccination schedule. ',
+    );
+    _appendSpeechGroups(
+      buffer,
+      _groupSpeechItems<VaccinationRecord>(
+        records,
+        dateOf: (VaccinationRecord record) => record.administeredDate,
+        itemOf: (VaccinationRecord record) =>
+            '${record.vaccineCode} ${record.doseNumber}',
+      ),
+      isNepali: isNepali,
+      locale: locale,
+      category: localizations.vaccineScheduleAdministeredCategory,
+      singular: localizations.vaccineScheduleAdministeredGroupSingular,
+      plural: localizations.vaccineScheduleAdministeredGroupPlural,
+    );
+
+    final DateTime today = _dateOnly(DateTime.now());
+    final List<VaccinationDue> missed = dues
+        .where((VaccinationDue due) => _dateOnly(due.dueDate).isBefore(today))
+        .toList();
+    final List<VaccinationDue> upcoming = dues
+        .where((VaccinationDue due) => !_dateOnly(due.dueDate).isBefore(today))
+        .toList();
+    _appendSpeechGroups(
+      buffer,
+      _groupSpeechItems<VaccinationDue>(
+        missed,
+        dateOf: (VaccinationDue due) => due.dueDate,
+        itemOf: (VaccinationDue due) => '${due.vaccineCode} ${due.doseNumber}',
+      ),
+      isNepali: isNepali,
+      locale: locale,
+      category: localizations.vaccineScheduleMissedCategory,
+      singular: localizations.vaccineScheduleMissedGroupSingular,
+      plural: localizations.vaccineScheduleMissedGroupPlural,
+    );
+    if (missed.isNotEmpty) {
+      buffer.write('${localizations.vaccineScheduleMissedAdvice} ');
     }
-    final dueText = groupedDues.entries.map(
-      (entry) {
-        final vaccines = _joinSpeechItems(entry.value, isNepali: isNepali);
-        final date = DateFormat('d MMMM y', locale).format(entry.key);
-        return entry.value.length == 1
-            ? localizations.vaccineScheduleDueGroupSingular(
-                date,
-                vaccines,
-              )
-            : localizations.vaccineScheduleDueGroupPlural(
-                date,
-                vaccines,
-              );
-      },
-    ).join(isNepali ? '। ' : '. ');
-    final recordText = records
-        .map((record) =>
-            '${record.vaccineCode} ${record.doseNumber}, ${DateFormat('d MMMM y', locale).format(record.administeredDate)}')
-        .join(isNepali ? '। ' : '. ');
-    if (isNepali) {
-      return 'खोप तालिका। '
-          '${records.isEmpty ? 'कुनै लगाइएको खोप छैन।' : 'लगाइएका खोपहरू: $recordText।'} '
-          '${dues.isEmpty ? 'कुनै बाँकी खोप छैन।' : 'बाँकी खोपहरू: $dueText।'}';
-    }
-    return 'Vaccination schedule. '
-        '${records.isEmpty ? 'No administered vaccines.' : 'Administered vaccines: $recordText. '}'
-        '${dues.isEmpty ? 'No outstanding vaccines.' : 'Outstanding vaccines: $dueText.'}';
+    _appendUpcomingSpeechGroups(
+      buffer,
+      _groupSpeechItems<VaccinationDue>(
+        upcoming,
+        dateOf: (VaccinationDue due) => due.dueDate,
+        itemOf: (VaccinationDue due) => '${due.vaccineCode} ${due.doseNumber}',
+      ),
+      isNepali: isNepali,
+      locale: locale,
+      localizations: localizations,
+    );
+    return buffer.toString().trim();
   }
 
   static String _joinSpeechItems(
