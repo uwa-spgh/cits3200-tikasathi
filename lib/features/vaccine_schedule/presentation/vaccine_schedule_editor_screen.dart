@@ -159,40 +159,44 @@ class _ScheduleDueRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                      color: Color(0xFF334155),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: onEdit,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                        color: Color(0xFF334155),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    DateFormat(
-                      'd MMM y',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dueDate),
-                    style: const TextStyle(color: Color(0xFF64748B)),
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    Text(
+                      DateFormat(
+                        'd MMM y',
+                        Localizations.localeOf(context).languageCode,
+                      ).format(dueDate),
+                      style: const TextStyle(color: Color(0xFF64748B)),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            IconButton(
-              iconSize: 28,
-              color: const Color(0xFF0F52BA),
-              icon: const Icon(Icons.edit_calendar),
-              onPressed: onEdit,
-            ),
-          ],
+              IconButton(
+                iconSize: 28,
+                color: const Color(0xFF0F52BA),
+                icon: const Icon(Icons.edit_calendar),
+                onPressed: onEdit,
+              ),
+            ],
+          ),
         ),
       ),
     );
