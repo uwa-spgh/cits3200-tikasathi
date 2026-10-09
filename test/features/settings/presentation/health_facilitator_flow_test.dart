@@ -150,7 +150,7 @@ void main() {
 
     await tester.enterText(find.byType(TextField).at(0), 'Maya');
     await tester.enterText(find.byType(TextField).at(1), 'Ward 4');
-    await tester.enterText(find.byType(TextField).at(2), '98 000abc');
+    await tester.enterText(find.byType(TextField).at(2), '++');
     final saveButton = find.widgetWithText(ElevatedButton, 'Save');
     await tester.ensureVisible(saveButton);
     await tester.tap(saveButton);
