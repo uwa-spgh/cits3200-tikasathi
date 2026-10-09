@@ -41,7 +41,7 @@ class _HealthFacilityScreenState extends ConsumerState<HealthFacilityScreen> {
   }
 
   Future<void> _save() async {
-    final String phone = _phoneController.text.trim();
+    final String phone = normalizePhoneNumber(_phoneController.text);
     if (!isValidPhoneNumber(phone, allowEmpty: true)) {
       final localizations = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -157,6 +157,7 @@ class _HealthFacilityScreenState extends ConsumerState<HealthFacilityScreen> {
                 controller: _phoneController,
                 icon: Icons.phone_outlined,
                 keyboardType: TextInputType.phone,
+                inputFormatters: const [PhoneNumberInputFormatter()],
                 maxLength: 20,
                 textInputAction: TextInputAction.done,
               ),
@@ -201,6 +202,7 @@ class _HealthFacilityScreenState extends ConsumerState<HealthFacilityScreen> {
     required int maxLength,
     TextInputType keyboardType = TextInputType.text,
     TextInputAction textInputAction = TextInputAction.next,
+    List<TextInputFormatter>? inputFormatters,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,6 +221,7 @@ class _HealthFacilityScreenState extends ConsumerState<HealthFacilityScreen> {
           keyboardType: keyboardType,
           textInputAction: textInputAction,
           inputFormatters: <TextInputFormatter>[
+            ...?inputFormatters,
             LengthLimitingTextInputFormatter(maxLength),
           ],
           decoration: InputDecoration(

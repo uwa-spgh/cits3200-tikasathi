@@ -519,6 +519,10 @@ class AppLocalizationsNe extends AppLocalizations {
       'कृपया हेरचाहकर्ताको नाम प्रविष्ट गर्नुहोस्';
 
   @override
+  String get onboardingErrorInvalidCaregiverName =>
+      'कृपया हेरचाहकर्ताको मान्य नाम प्रविष्ट गर्नुहोस्।';
+
+  @override
   String get onboardingErrorEmptyCaregiverPhone =>
       'कृपया हेरचाहकर्ताको फोन नम्बर प्रविष्ट गर्नुहोस्';
 
@@ -563,6 +567,10 @@ class AppLocalizationsNe extends AppLocalizations {
 
   @override
   String get onboardingErrorEmptyName => 'कृपया बच्चाको नाम प्रविष्ट गर्नुहोस्';
+
+  @override
+  String get onboardingErrorInvalidName =>
+      'कृपया बच्चाको मान्य नाम प्रविष्ट गर्नुहोस्।';
 
   @override
   String get onboardingErrorInvalidDate =>

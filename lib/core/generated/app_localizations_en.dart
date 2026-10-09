@@ -514,6 +514,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Please enter caregiver\'s name';
 
   @override
+  String get onboardingErrorInvalidCaregiverName =>
+      'Please enter a valid caregiver\'s name.';
+
+  @override
   String get onboardingErrorEmptyCaregiverPhone =>
       'Please enter caregiver\'s phone number';
 
@@ -557,6 +561,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingErrorEmptyName => 'Please enter child\'s name';
+
+  @override
+  String get onboardingErrorInvalidName =>
+      'Please enter a valid child\'s name.';
 
   @override
   String get onboardingErrorInvalidDate => 'Please enter a valid Date of Birth';

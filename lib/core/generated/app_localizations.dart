@@ -1011,6 +1011,12 @@ abstract class AppLocalizations {
   /// **'Please enter caregiver\'s name'**
   String get onboardingErrorEmptyCaregiverName;
 
+  /// No description provided for @onboardingErrorInvalidCaregiverName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid caregiver\'s name.'**
+  String get onboardingErrorInvalidCaregiverName;
+
   /// No description provided for @onboardingErrorEmptyCaregiverPhone.
   ///
   /// In en, this message translates to:
@@ -1094,6 +1100,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please enter child\'s name'**
   String get onboardingErrorEmptyName;
+
+  /// No description provided for @onboardingErrorInvalidName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid child\'s name.'**
+  String get onboardingErrorInvalidName;
 
   /// No description provided for @onboardingErrorInvalidDate.
   ///
