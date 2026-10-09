@@ -83,7 +83,8 @@ class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
     final titleWidget = title != null
         ? Text(title!,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: isMainTitle ? FontWeight.w800 : FontWeight.w700,
+                fontSize: isMainTitle ? 28 : null,
+                fontWeight: isMainTitle ? FontWeight.bold : FontWeight.w700,
                 color: AppTheme.appBarTitle), key: titleKey)
         : null;
 
