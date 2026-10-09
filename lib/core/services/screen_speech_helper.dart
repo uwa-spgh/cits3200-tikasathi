@@ -9,6 +9,13 @@ import 'package:tikasathi/features/settings/domain/app_language.dart';
 /// Helper to generate natural, conversational spoken summaries for each screen
 /// tailored for low-literacy caregivers in both English and Nepali.
 class ScreenSpeechHelper {
+  /// Builds the short purpose-and-navigation summary for the Learn screen.
+  static String learnScreenText({
+    required AppLocalizations localizations,
+  }) {
+    return localizations.learnSpeechSummary;
+  }
+
   /// Extracts all visible text from [Text] and [RichText] widgets within
   /// the nearest [Scaffold] or the subtree of [context].
   static String extractVisibleText(BuildContext context) {

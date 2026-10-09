@@ -545,6 +545,7 @@
   "homeEmptyStateTitle": "No children added yet.",
   "homeEmptyStateSubtitle": "Add your first child to see upcoming vaccines here.",
   "learnTitle": "Learn",
+  "learnSpeechSummary": "Learn page. Here you can learn about vaccines. Click on a section to read more.",
   "learnMythLabel": "Myth:",
   "@learnMythLabel": {
     "description": "Label for a myth on the Learn page. Bold text in a Learn topic that exactly matches this label is shown in red."

@@ -746,6 +746,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get learnTitle => 'Learn';
 
   @override
+  String get learnSpeechSummary =>
+      'Learn page. Here you can learn about vaccines. Click on a section to read more.';
+
+  @override
   String get learnMythLabel => 'Myth:';
 
   @override

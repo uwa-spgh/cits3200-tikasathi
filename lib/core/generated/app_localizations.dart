@@ -1335,6 +1335,12 @@ abstract class AppLocalizations {
   /// **'Learn'**
   String get learnTitle;
 
+  /// No description provided for @learnSpeechSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn page. Here you can learn about vaccines. Click on a section to read more.'**
+  String get learnSpeechSummary;
+
   /// Label for a myth on the Learn page. Bold text in a Learn topic that exactly matches this label is shown in red.
   ///
   /// In en, this message translates to:
