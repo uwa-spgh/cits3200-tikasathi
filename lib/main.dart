@@ -77,9 +77,11 @@ class TikaSathiApp extends ConsumerStatefulWidget {
 
 class _TikaSathiAppState extends ConsumerState<TikaSathiApp> {
   bool? _hasCompletedOnboarding;
+  late final TtsController _ttsController =
+      ref.read(ttsControllerProvider.notifier);
   late final TtsNavigationObserver _ttsNavigationObserver =
       TtsNavigationObserver(
-    stopSpeech: () => ref.read(ttsControllerProvider.notifier).stop(),
+    stopSpeech: _ttsController.stop,
   );
 
   // Reminder taps arrive outside any widget, so opening a child's page needs a
@@ -99,7 +101,7 @@ class _TikaSathiAppState extends ConsumerState<TikaSathiApp> {
 
   @override
   void dispose() {
-    unawaited(ref.read(ttsControllerProvider.notifier).stop());
+    unawaited(_ttsController.stop());
     _reminderTaps?.cancel();
     super.dispose();
   }
