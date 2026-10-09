@@ -417,11 +417,13 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
       ),
     );
 
-    return BasicScaffold(
-      title: localizations.childVaccineRecordsAndHistory, 
-      textGetter: textGetter,
+    return ConstrainedScaffold(
+      appBar: BasicAppBar(
+        title: localizations.childVaccineRecordsAndHistory,
+        textGetter: textGetter
+      ),
       body: body,
-      bottomNavBar: bottomActionBar,
+      bottomNavBar: bottomActionBar
     );
   }
 }

@@ -32,6 +32,7 @@ class ChildProfileScreen extends ConsumerWidget {
 
     String title = "";
     String Function()? textGetter;
+    bool haveReadAloud = false;
     final StatelessWidget body = childProfileState.when(
       data: (ChildProfileDetails details) {
         title = localizations.childPageTitleWithName(details.child.name);
@@ -40,16 +41,19 @@ class ChildProfileScreen extends ConsumerWidget {
           localizations: localizations,
           details: details,
         );
+        haveReadAloud = true;
         return _ChildContent(details: details);
       },
       loading: () => _LoadingState(localizations: localizations),
       error: (_, __) => _ErrorState(localizations: localizations),
     );
 
-    return BasicScaffold(
-      title: title, 
-      textGetter: textGetter,
-      haveReadAloud: textGetter != null,
+    return ConstrainedScaffold(
+      appBar: BasicAppBar(
+        title: title,
+        textGetter: textGetter,
+        haveReadAloudButton: haveReadAloud,
+      ),
       body: body,
       bottomNavBar: AppBottomNavigationBar(
         selectedSection: selectedSection,
@@ -61,7 +65,7 @@ class ChildProfileScreen extends ConsumerWidget {
             Navigator.of(context).pop();
           }
         },
-      )
+      ),
     );
   }
 }

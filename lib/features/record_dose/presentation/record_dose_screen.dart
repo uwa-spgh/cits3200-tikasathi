@@ -144,9 +144,11 @@ class _RecordDoseScreenState extends ConsumerState<RecordDoseScreen> {
         error: (_, __) => _ErrorBody(localizations: localizations),
       );
 
-    return BasicScaffold(
-      title: localizations.recordDoseTitle, 
-      textGetter: textGetter,
+    return ConstrainedScaffold(
+      appBar: BasicAppBar(
+        title: localizations.recordDoseTitle,
+        textGetter: textGetter,
+      ),
       body: body
     );
   }

@@ -47,9 +47,11 @@ class VaccineScheduleScreen extends ConsumerWidget {
           Center(child: Text(localizations.childNotFound)),
     );
 
-    return BasicScaffold(
-      title: localizations.vaccineScheduleTitle, 
-      textGetter: textGetter,
+    return ConstrainedScaffold(
+      appBar: BasicAppBar(
+        title: localizations.vaccineScheduleTitle,
+        textGetter: textGetter,
+      ),
       body: body
     );
   }

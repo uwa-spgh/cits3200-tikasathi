@@ -42,23 +42,16 @@ class AppTheme {
   );
 }
 
-/// A centralised basic scaffold structure for TikaSathi.
-/// 
-/// Consists of a scaffold with a max width of 560 logical pixels, alongside an app bar with a back button, title, and read aloud button.
-/// A bottom navigation bar can also be added.
-class BasicScaffold extends StatelessWidget {
-  const BasicScaffold({required this.title, required this.body, this.bottomNavBar, this.textGetter, this.haveReadAloud = true, super.key});
+/// A scaffold with a max width of 560 logical pixels.
+class ConstrainedScaffold extends StatelessWidget {
+  const ConstrainedScaffold({this.body, this.appBar, this.bottomNavBar, super.key});
 
-  final String title;
-  final Widget body;
+  final PreferredSizeWidget? appBar;
+  final Widget? body;
   final Widget? bottomNavBar;
-  final String Function()? textGetter;
-  final bool haveReadAloud;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Container(
       color: AppTheme.background,
       alignment: Alignment.topCenter,
@@ -66,36 +59,77 @@ class BasicScaffold extends StatelessWidget {
         constraints: const BoxConstraints(maxWidth: 560),
         child: SafeArea(child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              onPressed: () => Navigator.of(context).maybePop(),
-              icon: const Icon(Icons.arrow_back),
-              tooltip: l10n.appBarBack,
-            ),
-            title: Text(
-              title,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: AppTheme.appBarTitle
-              )
-            ),
-            actions: haveReadAloud ? [
-              Padding(
-                padding: const EdgeInsets.only(right: 16),
-                child: ReadAloudButton(
-                  tooltip: l10n.childReadAloudTooltip,
-                  unavailableMessage: l10n.childReadAloudUnavailable,
-                  textGetter: textGetter
-                )
-              )
-            ] : [],
-          ),
+          appBar: appBar,
           body: body,
           bottomNavigationBar: bottomNavBar,
         ))
       )
     );
   }
+}
+
+/// A centralised basic app bar for TikaSathi.
+/// 
+/// [title] is the title of the app bar.
+/// [textGetter] is passed to the [ReadAloudButton]; if it is null, the button will attempt to read all visible text instead.
+/// [isMainTitle] determines the font of the title, where true corresponds to a larger and bolder font. By default it is false.
+/// [haveBackButton] determines if the back button is on the app bar. By default it is true.
+/// [haveReadAloudButton] determines if the [ReadAloudButton] is on the app bar. By default it is true.
+class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const BasicAppBar({
+    this.title, 
+    this.textGetter, 
+    this.actions, 
+    this.isMainTitle = false, 
+    this.haveBackButton = true, 
+    this.haveReadAloudButton = true, 
+    super.key
+  });
+
+  final String? title;
+  final String Function()? textGetter;
+  final List<Widget>? actions;
+  final bool isMainTitle;
+  final bool haveBackButton;
+  final bool haveReadAloudButton;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    final backButton = haveBackButton ? IconButton(
+      onPressed: () => Navigator.of(context).maybePop(),
+      icon: const Icon(Icons.arrow_back),
+      tooltip: l10n.appBarBack,
+    ) : null;
+    
+    final titleWidget = title != null ? Text(
+      title!,
+      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+        fontWeight: isMainTitle ? FontWeight.w800 : FontWeight.w700,
+        color: AppTheme.appBarTitle
+      )
+    ) : null;
+
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      leading: backButton,
+      title: titleWidget,
+      actions: haveReadAloudButton ? [
+        ...?actions,
+        Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: ReadAloudButton(
+            tooltip: l10n.childReadAloudTooltip,
+            unavailableMessage: l10n.childReadAloudUnavailable,
+            textGetter: textGetter
+          )
+        )
+      ] : actions,
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
