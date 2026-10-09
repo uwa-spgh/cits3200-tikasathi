@@ -58,13 +58,12 @@ class ConstrainedScaffold extends StatelessWidget {
         alignment: Alignment.topCenter,
         child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 560),
-            child: SafeArea(
-                child: Scaffold(
+            child: Scaffold(
               backgroundColor: Colors.transparent,
               appBar: appBar,
-              body: body,
+              body: body != null ? SafeArea(child: body!) : null,
               bottomNavigationBar: bottomNavBar,
-            ))));
+            )));
   }
 }
 
