@@ -170,18 +170,17 @@ class SettingsScreen extends ConsumerWidget {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: BasicAppBar(
-        title: localizations.settingsTitle,
-        isMainTitle: true,
-        textGetter: () => ScreenSpeechHelper.settingsScreenText(
-          context: context,
-          localizations: localizations,
-          currentLanguage:
-              isNp ? AppLanguage.nepali : AppLanguage.english,
-        ),
-        haveBackButton: false
-      ),
-      body: SingleChildScrollView(
+        appBar: BasicAppBar(
+            title: localizations.settingsTitle,
+            isMainTitle: true,
+            textGetter: () => ScreenSpeechHelper.settingsScreenText(
+                  context: context,
+                  localizations: localizations,
+                  currentLanguage:
+                      isNp ? AppLanguage.nepali : AppLanguage.english,
+                ),
+            haveBackButton: false),
+        body: SingleChildScrollView(
           primary: true,
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
           child: Column(
@@ -315,8 +314,7 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ],
           ),
-        )
-    );
+        ));
   }
 
   Future<void> _chooseChild(

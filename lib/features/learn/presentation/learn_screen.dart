@@ -32,17 +32,14 @@ class LearnScreen extends ConsumerWidget {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: BasicAppBar(
-        title: l10n.learnTitle,
-        isMainTitle: true,
-        textGetter: null,
-        haveBackButton: false,
-        titleKey: const Key('learn-title')
-      ),
-      body: const SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(16, 8, 16, 20),
-        child: _TopicList())
-    );
+        appBar: BasicAppBar(
+            title: l10n.learnTitle,
+            isMainTitle: true,
+            textGetter: null,
+            haveBackButton: false,
+            titleKey: const Key('learn-title')),
+        body: const SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(16, 8, 16, 20), child: _TopicList()));
   }
 }
 

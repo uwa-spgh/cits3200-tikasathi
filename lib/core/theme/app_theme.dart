@@ -85,7 +85,8 @@ class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontSize: isMainTitle ? 28 : null,
                 fontWeight: isMainTitle ? FontWeight.bold : FontWeight.w700,
-                color: AppTheme.appBarTitle), key: titleKey)
+                color: AppTheme.appBarTitle),
+            key: titleKey)
         : null;
 
     return AppBar(
@@ -97,7 +98,7 @@ class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
           ? [
               ...?actions,
               Padding(
-                  padding: const EdgeInsets.only(right: 16),
+                  padding: const EdgeInsets.only(right: 16, left: 16),
                   child: ReadAloudButton(
                       tooltip: l10n.childReadAloudTooltip,
                       unavailableMessage: l10n.childReadAloudUnavailable,

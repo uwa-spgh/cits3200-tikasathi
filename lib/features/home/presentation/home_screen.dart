@@ -135,117 +135,117 @@ class _HomeScreenContent extends StatelessWidget {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
 
     return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        final Widget addChildButton = OutlinedButton(
-          key: const Key('home-add-child-button'),
-          onPressed: onAddChildPressed ??
-              () => HomeScreen._openAddChildPage(context),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: const Color(0xFF0E64C5),
-            side: const BorderSide(color: Color(0xFF0E64C5)),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(22),
-            ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 10,
-            ),
-            minimumSize: const Size(0, 44),
-          ),
-          child: Text(
-            localizations.homeAddChildButton,
-            style: const TextStyle(fontWeight: FontWeight.w700),
-          ),
-        );
+        builder: (BuildContext context, BoxConstraints constraints) {
+      final bool compactHeader = constraints.maxWidth < 340;
 
-        return Scaffold(
-          appBar: BasicAppBar(
-            title: localizations.homeTitle,
-            isMainTitle: true,
-            actions: [addChildButton, const SizedBox(width: 10)],
-            textGetter: () => ScreenSpeechHelper.homeScreenText(
-              context: context,
-              localizations: localizations,
-              groups: groups,
-            ),
-            haveBackButton: false,
-            titleKey: const Key('home-title')
+      final Widget addChildButton = OutlinedButton(
+        key: const Key('home-add-child-button'),
+        onPressed:
+            onAddChildPressed ?? () => HomeScreen._openAddChildPage(context),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: const Color(0xFF0E64C5),
+          side: const BorderSide(color: Color(0xFF0E64C5)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(22),
           ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 10,
+          ),
+          minimumSize: const Size(0, 44),
+        ),
+        child: compactHeader
+            ? const Icon(Icons.add)
+            : Text(
+                localizations.homeAddChildButton,
+                style: const TextStyle(fontWeight: FontWeight.w700),
+              ),
+      );
+
+      return Scaffold(
+          appBar: BasicAppBar(
+              title: localizations.homeTitle,
+              isMainTitle: true,
+              actions: [addChildButton],
+              textGetter: () => ScreenSpeechHelper.homeScreenText(
+                    context: context,
+                    localizations: localizations,
+                    groups: groups,
+                  ),
+              haveBackButton: false,
+              titleKey: const Key('home-title')),
           body: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
-              children: <Widget>[
-                if (groups.isEmpty)
-                  _HomeEmptyState(
-                    onAddChildPressed: onAddChildPressed ??
-                        () => HomeScreen._openAddChildPage(context),
-                  )
-                else
-                  ...groups.map(
-                    (HomeStatusGroup group) => Padding(
-                      padding: const EdgeInsets.only(bottom: 22),
-                      child: _StatusGroupCard(
-                        group: group,
-                        onChildPressed: (HomeChildSummary child) {
-                          if (onChildPressed != null) {
-                            onChildPressed!(child);
-                            return;
-                          }
-                          if (child.childId.isEmpty) {
-                            HomeScreen._showPlaceholder(
-                              context,
-                              localizations.homeActionChildDetails,
-                            );
-                            return;
-                          }
-                          Navigator.of(context).push(
-                            MaterialPageRoute<void>(
-                              builder: (BuildContext childContext) =>
-                                  ChildProfileScreen(childId: child.childId),
-                            ),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+            children: <Widget>[
+              if (groups.isEmpty)
+                _HomeEmptyState(
+                  onAddChildPressed: onAddChildPressed ??
+                      () => HomeScreen._openAddChildPage(context),
+                )
+              else
+                ...groups.map(
+                  (HomeStatusGroup group) => Padding(
+                    padding: const EdgeInsets.only(bottom: 22),
+                    child: _StatusGroupCard(
+                      group: group,
+                      onChildPressed: (HomeChildSummary child) {
+                        if (onChildPressed != null) {
+                          onChildPressed!(child);
+                          return;
+                        }
+                        if (child.childId.isEmpty) {
+                          HomeScreen._showPlaceholder(
+                            context,
+                            localizations.homeActionChildDetails,
                           );
-                        },
-                        onRecordDosePressed: (HomeChildSummary child) {
-                          if (onRecordDosePressed != null) {
-                            onRecordDosePressed!(child);
-                            return;
-                          }
-                          Navigator.of(context).push(
-                            MaterialPageRoute<void>(
-                              builder: (BuildContext childContext) =>
-                                  RecordDoseScreen(childId: child.childId),
+                          return;
+                        }
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext childContext) =>
+                                ChildProfileScreen(childId: child.childId),
+                          ),
+                        );
+                      },
+                      onRecordDosePressed: (HomeChildSummary child) {
+                        if (onRecordDosePressed != null) {
+                          onRecordDosePressed!(child);
+                          return;
+                        }
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext childContext) =>
+                                RecordDoseScreen(childId: child.childId),
+                          ),
+                        );
+                      },
+                      onCompleteSetupPressed: (HomeChildSummary child) {
+                        if (onCompleteSetupPressed != null) {
+                          onCompleteSetupPressed!(child);
+                          return;
+                        }
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext childContext) =>
+                                RetroactiveVaccineScreen(
+                              childId: child.childId,
+                              isOnboardingFlow: false,
+                              isRegistrationFlow: true,
                             ),
-                          );
-                        },
-                        onCompleteSetupPressed: (HomeChildSummary child) {
-                          if (onCompleteSetupPressed != null) {
-                            onCompleteSetupPressed!(child);
-                            return;
-                          }
-                          Navigator.of(context).push(
-                            MaterialPageRoute<void>(
-                              builder: (BuildContext childContext) =>
-                                  RetroactiveVaccineScreen(
-                                childId: child.childId,
-                                isOnboardingFlow: false,
-                                isRegistrationFlow: true,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
                     ),
                   ),
-                const SizedBox(height: 22),
-                HealthFacilityCard(
-                  key: const Key('home-health-facilitator-card'),
-                  facility: facilitator,
                 ),
-              ],
-            )
-          
-        );
-      }
-    );
+              const SizedBox(height: 22),
+              HealthFacilityCard(
+                key: const Key('home-health-facilitator-card'),
+                facility: facilitator,
+              ),
+            ],
+          ));
+    });
   }
 }
 

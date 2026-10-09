@@ -414,7 +414,7 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
     );
 
     return Scaffold(
-      backgroundColor: AppTheme.background,
+        backgroundColor: AppTheme.background,
         appBar: BasicAppBar(
             title: localizations.childVaccineRecordsAndHistory,
             textGetter: textGetter),

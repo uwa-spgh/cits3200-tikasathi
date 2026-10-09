@@ -577,7 +577,7 @@ void main() {
       expect(find.byKey(const Key('home-title')), findsOneWidget);
       await tester.drag(
         find.byType(ListView).first,
-        const Offset(0, -600),
+        const Offset(0, -100),
       );
       await tester.pumpAndSettle();
 
