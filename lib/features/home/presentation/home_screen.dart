@@ -143,6 +143,7 @@ class _HomeScreenContent extends StatelessWidget {
         onPressed:
             onAddChildPressed ?? () => HomeScreen._openAddChildPage(context),
         style: OutlinedButton.styleFrom(
+          backgroundColor: Colors.white,
           foregroundColor: const Color(0xFF0E64C5),
           side: const BorderSide(color: Color(0xFF0E64C5)),
           shape: RoundedRectangleBorder(
