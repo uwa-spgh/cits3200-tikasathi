@@ -377,6 +377,9 @@ class ScreenSpeechHelper {
     required List<String> tickedVaccineNames,
     required List<VaccinationRecord> records,
     required List<VaccinationDue> dues,
+    List<String> recordedVaccineNames = const <String>[],
+    List<String> unrecordedVaccineNames = const <String>[],
+    bool isUpToDate = false,
   }) {
     final bool isNepali = Localizations.localeOf(context).languageCode == 'ne';
     final StringBuffer buffer = StringBuffer();
@@ -438,42 +441,59 @@ class ScreenSpeechHelper {
       return buffer.toString().trim();
     }
 
-    // Normal Vaccine History flow from Child Page
-    if (isNepali) {
-      buffer.write('$childNameको खोप इतिहास। ');
-      if (records.isNotEmpty) {
-        final String recList = records
-            .map((VaccinationRecord r) => r.vaccineCode)
-            .toSet()
-            .join(', ');
-        buffer.write('लागेका खोपहरू: $recList। ');
+    if (showAllVaccines) {
+      if (recordedVaccineNames.isEmpty) {
+        buffer.write(
+          '${localizations.vaccineHistoryFullShownNoRecorded(childName)} ',
+        );
       } else {
-        buffer.write('हालसम्म कुनै खोप रेकर्ड गरिएको छैन। ');
+        buffer.write('${localizations.vaccineHistoryFullShown(childName)} ');
+        buffer.write(
+          '${localizations.vaccineHistoryRecordedIncludeFull(
+            _joinSpeechItems(recordedVaccineNames, isNepali: isNepali),
+          )} ',
+        );
       }
-
-      // Only read upcoming vaccines if the user has explicitly selected all vaccines tab
-      if (showAllVaccines && dues.isNotEmpty) {
-        final String dueList =
-            dues.map((VaccinationDue d) => d.vaccineCode).toSet().join(', ');
-        buffer.write('आगामी खोपहरू: $dueList। ');
+      if (unrecordedVaccineNames.isNotEmpty) {
+        buffer.write('${localizations.vaccineHistoryOtherUnrecorded} ');
+        buffer.write(
+          '${localizations.vaccineHistoryLaterSchedule(childName)} ',
+        );
       }
+      buffer.write(localizations.vaccineHistoryEditAdvice);
     } else {
-      buffer.write('Vaccine history for $childName. ');
-      if (records.isNotEmpty) {
-        final String recList = records
-            .map((VaccinationRecord r) => r.vaccineCode)
-            .toSet()
-            .join(', ');
-        buffer.write('Completed vaccines: $recList. ');
+      if (isUpToDate) {
+        buffer.write('${localizations.vaccineHistoryUpToDate(childName)} ');
+        if (recordedVaccineNames.isNotEmpty) {
+          buffer.write(
+            '${localizations.vaccineHistoryRecordedInclude(
+              _joinSpeechItems(recordedVaccineNames, isNepali: isNepali),
+            )} ',
+          );
+        }
+        buffer.write(localizations.vaccineHistoryUpToDateEditAdvice);
       } else {
-        buffer.write('No vaccines recorded yet. ');
-      }
-
-      // Only read upcoming vaccines if the user has explicitly selected all vaccines tab
-      if (showAllVaccines && dues.isNotEmpty) {
-        final String dueList =
-            dues.map((VaccinationDue d) => d.vaccineCode).toSet().join(', ');
-        buffer.write('Upcoming vaccines: $dueList. ');
+        if (recordedVaccineNames.isNotEmpty) {
+          buffer.write(
+            '${localizations.vaccineHistoryRecordedAgeAppropriate(
+              childName,
+              _joinSpeechItems(recordedVaccineNames, isNepali: isNepali),
+            )} ',
+          );
+        } else {
+          buffer.write(
+            '${localizations.vaccineHistoryNoRecordedAgeAppropriate(childName)} ',
+          );
+        }
+        if (unrecordedVaccineNames.isNotEmpty) {
+          buffer.write(
+            '${localizations.vaccineHistoryUnrecordedAgeAppropriate(
+              _joinSpeechItems(unrecordedVaccineNames, isNepali: isNepali),
+            )} ',
+          );
+        }
+        buffer.write('${localizations.vaccineHistoryMissedAdvice} ');
+        buffer.write(localizations.vaccineHistoryEditAdvice);
       }
     }
 

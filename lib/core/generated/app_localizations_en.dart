@@ -899,6 +899,68 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vaccineRecordsEmpty => 'There are no recorded vaccinations.';
 
   @override
+  String vaccineHistoryUpToDate(Object childName) {
+    return '$childName has received all age-appropriate vaccines.';
+  }
+
+  @override
+  String vaccineHistoryRecordedInclude(Object recordedVaccines) {
+    return 'These include $recordedVaccines.';
+  }
+
+  @override
+  String get vaccineHistoryUpToDateEditAdvice =>
+      'You can untick a vaccine if it was selected by mistake, or edit the vaccination date if the recorded date is incorrect.';
+
+  @override
+  String vaccineHistoryRecordedAgeAppropriate(
+      Object childName, Object recordedVaccines) {
+    return '$childName has these age-appropriate vaccines recorded as received: $recordedVaccines.';
+  }
+
+  @override
+  String vaccineHistoryNoRecordedAgeAppropriate(Object childName) {
+    return 'No age-appropriate vaccines have been recorded as received for $childName yet.';
+  }
+
+  @override
+  String vaccineHistoryUnrecordedAgeAppropriate(Object unrecordedVaccines) {
+    return 'These age-appropriate vaccines have not been recorded as received: $unrecordedVaccines.';
+  }
+
+  @override
+  String get vaccineHistoryMissedAdvice =>
+      'Please visit your nearest health facility for advice about vaccines your child may have missed.';
+
+  @override
+  String get vaccineHistoryEditAdvice =>
+      'You can tick vaccines that have already been given, untick vaccines selected by mistake, or edit the vaccination date of a vaccine that is already ticked.';
+
+  @override
+  String vaccineHistoryFullShown(Object childName) {
+    return '$childName\'s full vaccine history is shown.';
+  }
+
+  @override
+  String vaccineHistoryFullShownNoRecorded(Object childName) {
+    return '$childName\'s full vaccine history is shown. No vaccines have been recorded as received yet.';
+  }
+
+  @override
+  String vaccineHistoryRecordedIncludeFull(Object recordedVaccines) {
+    return 'Vaccines recorded as received include $recordedVaccines.';
+  }
+
+  @override
+  String get vaccineHistoryOtherUnrecorded =>
+      'Other vaccines have not been recorded as received.';
+
+  @override
+  String vaccineHistoryLaterSchedule(Object childName) {
+    return 'Some may be scheduled for later as $childName grows.';
+  }
+
+  @override
   String get vaccineScheduleAdministeredCategory => 'Administered vaccines.';
 
   @override

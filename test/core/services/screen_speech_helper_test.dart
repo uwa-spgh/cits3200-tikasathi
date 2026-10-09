@@ -948,6 +948,11 @@ void main() {
       late String enHistoryAgeAppropriate;
       late String enHistoryAll;
       late String npOnboarding;
+      late String enUpToDate;
+      late String enEmptyAgeAppropriate;
+      late String enFullEmpty;
+      late String enFullComplete;
+      late String npUpToDate;
       final List<VaccinationRecord> records = <VaccinationRecord>[
         VaccinationRecord(
           id: 'r1',
@@ -987,6 +992,9 @@ void main() {
                 tickedVaccineNames: const <String>['BCG'],
                 records: records,
                 dues: dues,
+                recordedVaccineNames: const <String>['BCG'],
+                unrecordedVaccineNames: const <String>['Penta dose 1'],
+                isUpToDate: false,
               );
               enOnboardingAll = ScreenSpeechHelper.vaccineRecordsScreenText(
                 context: context,
@@ -1003,6 +1011,9 @@ void main() {
                 tickedVaccineNames: const <String>['BCG'],
                 records: records,
                 dues: dues,
+                recordedVaccineNames: const <String>['BCG'],
+                unrecordedVaccineNames: const <String>['Penta dose 1'],
+                isUpToDate: false,
               );
               enHistoryAgeAppropriate =
                   ScreenSpeechHelper.vaccineRecordsScreenText(
@@ -1015,6 +1026,9 @@ void main() {
                 tickedVaccineNames: const <String>['BCG'],
                 records: records,
                 dues: dues,
+                recordedVaccineNames: const <String>['BCG'],
+                unrecordedVaccineNames: const <String>['Penta dose 1'],
+                isUpToDate: false,
               );
               enHistoryAll = ScreenSpeechHelper.vaccineRecordsScreenText(
                 context: context,
@@ -1026,6 +1040,62 @@ void main() {
                 tickedVaccineNames: const <String>['BCG'],
                 records: records,
                 dues: dues,
+                recordedVaccineNames: const <String>['BCG'],
+                unrecordedVaccineNames: const <String>['Penta dose 1'],
+                isUpToDate: false,
+              );
+              enUpToDate = ScreenSpeechHelper.vaccineRecordsScreenText(
+                context: context,
+                localizations: l10n,
+                childName: 'Maya',
+                isRegistrationFlow: false,
+                showAllVaccines: false,
+                visibleVaccineNames: const <String>[],
+                tickedVaccineNames: const <String>[],
+                records: records,
+                dues: const <VaccinationDue>[],
+                recordedVaccineNames: const <String>[
+                  'BCG',
+                  'Penta dose 1',
+                ],
+                isUpToDate: true,
+              );
+              enEmptyAgeAppropriate =
+                  ScreenSpeechHelper.vaccineRecordsScreenText(
+                context: context,
+                localizations: l10n,
+                childName: 'Maya',
+                isRegistrationFlow: false,
+                showAllVaccines: false,
+                visibleVaccineNames: const <String>[],
+                tickedVaccineNames: const <String>[],
+                records: const <VaccinationRecord>[],
+                dues: dues,
+                unrecordedVaccineNames: const <String>['BCG'],
+                isUpToDate: false,
+              );
+              enFullEmpty = ScreenSpeechHelper.vaccineRecordsScreenText(
+                context: context,
+                localizations: l10n,
+                childName: 'Maya',
+                isRegistrationFlow: false,
+                showAllVaccines: true,
+                visibleVaccineNames: const <String>[],
+                tickedVaccineNames: const <String>[],
+                records: const <VaccinationRecord>[],
+                dues: const <VaccinationDue>[],
+              );
+              enFullComplete = ScreenSpeechHelper.vaccineRecordsScreenText(
+                context: context,
+                localizations: l10n,
+                childName: 'Maya',
+                isRegistrationFlow: false,
+                showAllVaccines: true,
+                visibleVaccineNames: const <String>[],
+                tickedVaccineNames: const <String>[],
+                records: records,
+                dues: const <VaccinationDue>[],
+                recordedVaccineNames: const <String>['BCG'],
               );
               return const SizedBox();
             },
@@ -1059,17 +1129,64 @@ void main() {
       );
 
       // Child page history: age-appropriate selected -> does NOT read upcoming vaccines
-      expect(enHistoryAgeAppropriate, contains('Vaccine history for Maya'));
-      expect(enHistoryAgeAppropriate, contains('Completed vaccines: BCG'));
+      expect(
+        enHistoryAgeAppropriate,
+        contains(
+          'Maya has these age-appropriate vaccines recorded as received: BCG.',
+        ),
+      );
+      expect(
+        enHistoryAgeAppropriate,
+        contains(
+          'These age-appropriate vaccines have not been recorded as received: Penta dose 1.',
+        ),
+      );
       expect(
         enHistoryAgeAppropriate,
         isNot(contains('Upcoming vaccines')),
       );
 
       // Child page history: all vaccines selected -> reads upcoming vaccines
-      expect(enHistoryAll, contains('Vaccine history for Maya'));
-      expect(enHistoryAll, contains('Completed vaccines: BCG'));
-      expect(enHistoryAll, contains('Upcoming vaccines: Penta 1'));
+      expect(enHistoryAll, contains("Maya's full vaccine history is shown."));
+      expect(
+        enHistoryAll,
+        contains('Vaccines recorded as received include BCG.'),
+      );
+      expect(
+        enHistoryAll,
+        contains('Other vaccines have not been recorded as received.'),
+      );
+      expect(enHistoryAll, isNot(contains('Penta dose 1')));
+      expect(
+        enUpToDate,
+        "Maya has received all age-appropriate vaccines. "
+        "These include BCG and Penta dose 1. "
+        "You can untick a vaccine if it was selected by mistake, or edit the vaccination date if the recorded date is incorrect.",
+      );
+      expect(
+        enEmptyAgeAppropriate,
+        contains(
+          'No age-appropriate vaccines have been recorded as received for Maya yet.',
+        ),
+      );
+      expect(
+        enEmptyAgeAppropriate,
+        contains(
+            'These age-appropriate vaccines have not been recorded as received: BCG.'),
+      );
+      expect(enEmptyAgeAppropriate,
+          contains('Please visit your nearest health facility'));
+      expect(enEmptyAgeAppropriate, isNot(contains('2025')));
+      expect(
+        enFullEmpty,
+        "Maya's full vaccine history is shown. No vaccines have been recorded as received yet. "
+        "You can tick vaccines that have already been given, untick vaccines selected by mistake, or edit the vaccination date of a vaccine that is already ticked.",
+      );
+      expect(enFullComplete, contains("Maya's full vaccine history is shown."));
+      expect(enFullComplete,
+          contains('Vaccines recorded as received include BCG.'));
+      expect(enFullComplete, isNot(contains('Other vaccines')));
+      expect(enFullComplete, isNot(contains('Some may be scheduled')));
 
       // Nepali onboarding
       await tester.pumpWidget(
@@ -1091,6 +1208,19 @@ void main() {
                 records: records,
                 dues: dues,
               );
+              npUpToDate = ScreenSpeechHelper.vaccineRecordsScreenText(
+                context: context,
+                localizations: l10n,
+                childName: 'Maya',
+                isRegistrationFlow: false,
+                showAllVaccines: false,
+                visibleVaccineNames: const <String>[],
+                tickedVaccineNames: const <String>[],
+                records: records,
+                dues: const <VaccinationDue>[],
+                recordedVaccineNames: const <String>['BCG'],
+                isUpToDate: true,
+              );
               return const SizedBox();
             },
           ),
@@ -1102,6 +1232,8 @@ void main() {
       expect(npOnboarding,
           contains('उमेर अनुसारका खोपहरू देखाइएको छ: BCG, OPV 0'));
       expect(npOnboarding, contains('तपाईं यसलाई अहिले छोड्न पनि सक्नुहुन्छ'));
+      expect(npUpToDate, contains('उमेरअनुसारका सबै खोप लगाइएको छ'));
+      expect(npUpToDate, contains('यी खोपहरू समावेश छन्: BCG'));
     });
 
     testWidgets('healthFacilityScreenText formats populated and empty states',

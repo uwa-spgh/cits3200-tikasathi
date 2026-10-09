@@ -1599,6 +1599,85 @@ abstract class AppLocalizations {
   /// **'There are no recorded vaccinations.'**
   String get vaccineRecordsEmpty;
 
+  /// No description provided for @vaccineHistoryUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'{childName} has received all age-appropriate vaccines.'**
+  String vaccineHistoryUpToDate(Object childName);
+
+  /// No description provided for @vaccineHistoryRecordedInclude.
+  ///
+  /// In en, this message translates to:
+  /// **'These include {recordedVaccines}.'**
+  String vaccineHistoryRecordedInclude(Object recordedVaccines);
+
+  /// No description provided for @vaccineHistoryUpToDateEditAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'You can untick a vaccine if it was selected by mistake, or edit the vaccination date if the recorded date is incorrect.'**
+  String get vaccineHistoryUpToDateEditAdvice;
+
+  /// No description provided for @vaccineHistoryRecordedAgeAppropriate.
+  ///
+  /// In en, this message translates to:
+  /// **'{childName} has these age-appropriate vaccines recorded as received: {recordedVaccines}.'**
+  String vaccineHistoryRecordedAgeAppropriate(
+      Object childName, Object recordedVaccines);
+
+  /// No description provided for @vaccineHistoryNoRecordedAgeAppropriate.
+  ///
+  /// In en, this message translates to:
+  /// **'No age-appropriate vaccines have been recorded as received for {childName} yet.'**
+  String vaccineHistoryNoRecordedAgeAppropriate(Object childName);
+
+  /// No description provided for @vaccineHistoryUnrecordedAgeAppropriate.
+  ///
+  /// In en, this message translates to:
+  /// **'These age-appropriate vaccines have not been recorded as received: {unrecordedVaccines}.'**
+  String vaccineHistoryUnrecordedAgeAppropriate(Object unrecordedVaccines);
+
+  /// No description provided for @vaccineHistoryMissedAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'Please visit your nearest health facility for advice about vaccines your child may have missed.'**
+  String get vaccineHistoryMissedAdvice;
+
+  /// No description provided for @vaccineHistoryEditAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'You can tick vaccines that have already been given, untick vaccines selected by mistake, or edit the vaccination date of a vaccine that is already ticked.'**
+  String get vaccineHistoryEditAdvice;
+
+  /// No description provided for @vaccineHistoryFullShown.
+  ///
+  /// In en, this message translates to:
+  /// **'{childName}\'s full vaccine history is shown.'**
+  String vaccineHistoryFullShown(Object childName);
+
+  /// No description provided for @vaccineHistoryFullShownNoRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'{childName}\'s full vaccine history is shown. No vaccines have been recorded as received yet.'**
+  String vaccineHistoryFullShownNoRecorded(Object childName);
+
+  /// No description provided for @vaccineHistoryRecordedIncludeFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccines recorded as received include {recordedVaccines}.'**
+  String vaccineHistoryRecordedIncludeFull(Object recordedVaccines);
+
+  /// No description provided for @vaccineHistoryOtherUnrecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Other vaccines have not been recorded as received.'**
+  String get vaccineHistoryOtherUnrecorded;
+
+  /// No description provided for @vaccineHistoryLaterSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Some may be scheduled for later as {childName} grows.'**
+  String vaccineHistoryLaterSchedule(Object childName);
+
   /// No description provided for @vaccineScheduleAdministeredCategory.
   ///
   /// In en, this message translates to:

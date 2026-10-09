@@ -909,6 +909,68 @@ class AppLocalizationsNe extends AppLocalizations {
   String get vaccineRecordsEmpty => 'खोप लगाइएको कुनै रेकर्ड छैन।';
 
   @override
+  String vaccineHistoryUpToDate(Object childName) {
+    return '$childName का उमेरअनुसारका सबै खोप लगाइएको छ।';
+  }
+
+  @override
+  String vaccineHistoryRecordedInclude(Object recordedVaccines) {
+    return 'यी खोपहरू समावेश छन्: $recordedVaccines।';
+  }
+
+  @override
+  String get vaccineHistoryUpToDateEditAdvice =>
+      'गल्तीले चयन गरिएको खोप भएमा त्यसको चिन्ह हटाउन वा रेकर्ड गरिएको मिति गलत भएमा खोप लगाएको मिति सम्पादन गर्न सक्नुहुन्छ।';
+
+  @override
+  String vaccineHistoryRecordedAgeAppropriate(
+      Object childName, Object recordedVaccines) {
+    return '$childName का उमेरअनुसार लगाइएका खोपहरूको रेकर्ड: $recordedVaccines।';
+  }
+
+  @override
+  String vaccineHistoryNoRecordedAgeAppropriate(Object childName) {
+    return '$childName का उमेरअनुसार कुनै खोप लगाइएको रेकर्ड छैन।';
+  }
+
+  @override
+  String vaccineHistoryUnrecordedAgeAppropriate(Object unrecordedVaccines) {
+    return 'उमेरअनुसार लगाइएका तर रेकर्ड नभएका खोपहरू: $unrecordedVaccines।';
+  }
+
+  @override
+  String get vaccineHistoryMissedAdvice =>
+      'बच्चाले छुटाएका हुन सक्ने खोपबारे सल्लाह लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।';
+
+  @override
+  String get vaccineHistoryEditAdvice =>
+      'पहिले लगाइसकेका खोपमा चिन्ह लगाउन, गल्तीले चयन गरिएको खोपको चिन्ह हटाउन वा चिन्ह लगाइसकेको खोपको मिति सम्पादन गर्न सक्नुहुन्छ।';
+
+  @override
+  String vaccineHistoryFullShown(Object childName) {
+    return '$childName को सम्पूर्ण खोप इतिहास देखाइएको छ।';
+  }
+
+  @override
+  String vaccineHistoryFullShownNoRecorded(Object childName) {
+    return '$childName को सम्पूर्ण खोप इतिहास देखाइएको छ। अहिलेसम्म कुनै खोप लगाइएको रेकर्ड छैन।';
+  }
+
+  @override
+  String vaccineHistoryRecordedIncludeFull(Object recordedVaccines) {
+    return 'रेकर्डअनुसार लगाइएका खोपहरू: $recordedVaccines।';
+  }
+
+  @override
+  String get vaccineHistoryOtherUnrecorded =>
+      'अन्य खोपहरू लगाइएको भनेर रेकर्ड गरिएको छैन।';
+
+  @override
+  String vaccineHistoryLaterSchedule(Object childName) {
+    return '$childName ठूलो हुँदै जाँदा केही खोप पछि लगाउनुपर्ने हुन सक्छ।';
+  }
+
+  @override
   String get vaccineScheduleAdministeredCategory => 'लगाइएका खोपहरू।';
 
   @override

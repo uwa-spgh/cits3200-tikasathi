@@ -252,6 +252,9 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
 
                 final List<String> visibleNames = <String>[];
                 final List<String> tickedNames = <String>[];
+                final Map<String, String> ageAppropriateNames =
+                    <String, String>{};
+                final Map<String, String> allVaccineNames = <String, String>{};
 
                 nipCatalogue
                     .forEach((String vaccineCode, List<DayDuration> ages) {
@@ -265,6 +268,14 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
                     if (vaccineCode == "HPV" &&
                         childSexFromString(child.sex) != ChildSex.female) {
                       continue;
+                    }
+
+                    final String historyDisplayName = ages.length > 1
+                        ? '$vaccineCode dose $doseNumber'
+                        : vaccineCode;
+                    allVaccineNames[key] = historyDisplayName;
+                    if (isPast) {
+                      ageAppropriateNames[key] = historyDisplayName;
                     }
 
                     if (isPast || _showAll || isChecked) {
@@ -281,6 +292,25 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
                   }
                 });
 
+                final Set<String> recordedKeys = details.records
+                    .map((VaccinationRecord record) =>
+                        '${record.vaccineCode}-${record.doseNumber}')
+                    .toSet();
+                final List<String> recordedNames =
+                    (_showAll ? allVaccineNames : ageAppropriateNames)
+                        .entries
+                        .where((MapEntry<String, String> entry) =>
+                            recordedKeys.contains(entry.key))
+                        .map((MapEntry<String, String> entry) => entry.value)
+                        .toList();
+                final List<String> unrecordedNames =
+                    (_showAll ? allVaccineNames : ageAppropriateNames)
+                        .entries
+                        .where((MapEntry<String, String> entry) =>
+                            !recordedKeys.contains(entry.key))
+                        .map((MapEntry<String, String> entry) => entry.value)
+                        .toList();
+
                 return ScreenSpeechHelper.vaccineRecordsScreenText(
                   context: context,
                   localizations: localizations,
@@ -291,6 +321,9 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
                   tickedVaccineNames: tickedNames,
                   records: details.records,
                   dues: details.dueVaccines,
+                  recordedVaccineNames: recordedNames,
+                  unrecordedVaccineNames: unrecordedNames,
+                  isUpToDate: details.isUpToDate,
                 );
               },
             ),
