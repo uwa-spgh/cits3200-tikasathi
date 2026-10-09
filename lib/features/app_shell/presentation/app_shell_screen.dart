@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/services/tts_controller.dart';
+import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/home/presentation/home_screen.dart';
 import 'package:tikasathi/features/learn/presentation/learn_screen.dart';
 import 'package:tikasathi/features/settings/presentation/settings_screen.dart';
@@ -49,7 +50,7 @@ class _AppShellScreenState extends ConsumerState<AppShellScreen> {
         ref.watch(appNavigationControllerProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F9FC),
+      backgroundColor: AppTheme.background,
       body: SafeArea(
         child: IndexedStack(
           index: selectedSection.index,

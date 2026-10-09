@@ -57,6 +57,7 @@ class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
       this.isMainTitle = false,
       this.haveBackButton = true,
       this.haveReadAloudButton = true,
+      this.titleKey,
       super.key});
 
   final String? title;
@@ -65,6 +66,7 @@ class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isMainTitle;
   final bool haveBackButton;
   final bool haveReadAloudButton;
+  final Key? titleKey;
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +84,7 @@ class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
         ? Text(title!,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: isMainTitle ? FontWeight.w800 : FontWeight.w700,
-                color: AppTheme.appBarTitle))
+                color: AppTheme.appBarTitle), key: titleKey)
         : null;
 
     return AppBar(

@@ -8,7 +8,6 @@ import 'package:tikasathi/features/child/presentation/child_profile_screen.dart'
 import 'package:tikasathi/features/record_dose/presentation/record_dose_screen.dart';
 import 'package:tikasathi/features/onboarding/presentation/child_screen.dart';
 import 'package:tikasathi/features/onboarding/presentation/retroactive_vaccine_screen.dart';
-import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/health_facility_controller.dart';
@@ -137,96 +136,44 @@ class _HomeScreenContent extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        final double horizontalPadding = constraints.maxWidth >= 600 ? 24 : 16;
+        final Widget addChildButton = OutlinedButton(
+          key: const Key('home-add-child-button'),
+          onPressed: onAddChildPressed ??
+              () => HomeScreen._openAddChildPage(context),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: const Color(0xFF0E64C5),
+            side: const BorderSide(color: Color(0xFF0E64C5)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(22),
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 10,
+            ),
+            minimumSize: const Size(0, 44),
+          ),
+          child: Text(
+            localizations.homeAddChildButton,
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
+        );
 
-        return Align(
-          alignment: Alignment.topCenter,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 560),
-            child: ListView(
-              padding: EdgeInsets.fromLTRB(
-                horizontalPadding,
-                16,
-                horizontalPadding,
-                24,
-              ),
+        return Scaffold(
+          appBar: BasicAppBar(
+            title: localizations.homeTitle,
+            isMainTitle: true,
+            actions: [addChildButton, const SizedBox(width: 10)],
+            textGetter: () => ScreenSpeechHelper.homeScreenText(
+              context: context,
+              localizations: localizations,
+              groups: groups,
+            ),
+            haveBackButton: false,
+            titleKey: const Key('home-title')
+          ),
+          body: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
               children: <Widget>[
-                LayoutBuilder(
-                  builder:
-                      (BuildContext context, BoxConstraints headerConstraints) {
-                    final bool compactHeader = headerConstraints.maxWidth < 340;
-
-                    final Widget title = Text(
-                      localizations.homeTitle,
-                      key: const Key('home-title'),
-                      style:
-                          Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.w800,
-                                color: const Color(0xFF11284F),
-                              ),
-                    );
-
-                    final Widget addChildButton = OutlinedButton(
-                      key: const Key('home-add-child-button'),
-                      onPressed: onAddChildPressed ??
-                          () => HomeScreen._openAddChildPage(context),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF0E64C5),
-                        side: const BorderSide(color: Color(0xFF0E64C5)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(22),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 10,
-                        ),
-                        minimumSize: const Size(0, 44),
-                      ),
-                      child: Text(
-                        localizations.homeAddChildButton,
-                        style: const TextStyle(fontWeight: FontWeight.w700),
-                      ),
-                    );
-
-                    final Widget readAloudButton = ReadAloudButton(
-                      tooltip: localizations.childReadAloudTooltip,
-                      unavailableMessage:
-                          localizations.childReadAloudUnavailable,
-                      textGetter: () => ScreenSpeechHelper.homeScreenText(
-                        context: context,
-                        localizations: localizations,
-                        groups: groups,
-                      ),
-                    );
-
-                    if (compactHeader) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Expanded(child: title),
-                              readAloudButton,
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          addChildButton,
-                        ],
-                      );
-                    }
-
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Expanded(child: title),
-                        addChildButton,
-                        const SizedBox(width: 10),
-                        readAloudButton,
-                      ],
-                    );
-                  },
-                ),
-                const SizedBox(height: 18),
                 if (groups.isEmpty)
                   _HomeEmptyState(
                     onAddChildPressed: onAddChildPressed ??
@@ -294,10 +241,10 @@ class _HomeScreenContent extends StatelessWidget {
                   facility: facilitator,
                 ),
               ],
-            ),
-          ),
+            )
+          
         );
-      },
+      }
     );
   }
 }
