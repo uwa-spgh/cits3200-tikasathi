@@ -80,7 +80,7 @@ Every pull request to the `main` or `develop` branch will trigger a workflow tha
 - **100% Offline Speech Synthesis:** Interfaces natively with device engines (Android `TextToSpeech` and iOS `AVSpeechSynthesizer`), adhering strictly to offline-first principles with zero cloud dependencies.
 - **Cross-Language Resolution:** Seamlessly supports English and Nepali based on the active user app language. For Nepali, detects on-device `ne-NP` voices and gracefully falls back to phonetic Hindi (`hi-IN`), which shares identical Devanagari script and phonetics, guaranteeing voice playback on iOS and low-resource devices.
 - **Low-Literacy Conversational Narratives:** `ScreenSpeechHelper` provides friendly, actionable spoken instructions tailored to what is actively displayed on screen:
-  - *Child Profile Page:* Provides a concise, vaccine-focused narrative highlighting the child's immunisation status, next due vaccine and date, and completed doses (without reciting demographic metadata like age, date of birth, and sex).
+  - *Child Profile Page:* Provides a concise, vaccine-focused narrative highlighting the child's immunisation status and next due vaccine and date (without reciting demographic metadata like age, date of birth, and sex).
   - *Onboarding / New Child Registration:* Guides the caregiver to tick vaccines already received for their child under the age-appropriate or all-vaccines view, dynamically reading ticked items and reminding them that registration can be skipped for now.
   - *Add a New Child Page & Caregiver Screen:* One-tap speech guidance walking caregivers step-by-step through entering child and caregiver information.
   - *Health Facility Details Page:* Articulates saved or editable facility contact details (post/hospital name, address, phone number).
@@ -158,4 +158,3 @@ fvm flutter test
 ### Step 6: Git Workflow & Figma Integration
 * **Branching Strategy:** Review [CONTRIBUTING.md](file:///c:/Users/tobyf/Desktop/cits3200-tikasathi/CONTRIBUTING.md) for `feature/`, `fix/`, and `chore/` branch naming and Conventional Commit rules.
 * **Figma MCP Server:** If configured in your IDE, AI agents can extract design tokens directly from Figma links. Configure `@modelcontextprotocol/server-figma` in your `mcp_config.json` with your `FIGMA_ACCESS_TOKEN`.
-

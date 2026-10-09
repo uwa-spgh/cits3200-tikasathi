@@ -11,6 +11,8 @@ import 'package:tikasathi/core/reminders/reminder_scheduler.dart';
 import 'package:tikasathi/core/services/notification_service.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
+import 'package:tikasathi/core/services/tts_navigation_observer.dart';
+import 'package:tikasathi/core/services/tts_controller.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
 import 'package:tikasathi/features/onboarding/presentation/language_screen.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
@@ -75,6 +77,12 @@ class TikaSathiApp extends ConsumerStatefulWidget {
 
 class _TikaSathiAppState extends ConsumerState<TikaSathiApp> {
   bool? _hasCompletedOnboarding;
+  late final TtsController _ttsController =
+      ref.read(ttsControllerProvider.notifier);
+  late final TtsNavigationObserver _ttsNavigationObserver =
+      TtsNavigationObserver(
+    stopSpeech: _ttsController.stop,
+  );
 
   // Reminder taps arrive outside any widget, so opening a child's page needs a
   // navigator the app can reach from here.
@@ -93,6 +101,7 @@ class _TikaSathiAppState extends ConsumerState<TikaSathiApp> {
 
   @override
   void dispose() {
+    unawaited(_ttsController.stop());
     _reminderTaps?.cancel();
     super.dispose();
   }
@@ -139,6 +148,7 @@ class _TikaSathiAppState extends ConsumerState<TikaSathiApp> {
 
     return MaterialApp(
       navigatorKey: _navigatorKey,
+      navigatorObservers: <NavigatorObserver>[_ttsNavigationObserver],
       title: 'TikaSathi',
       theme: AppTheme.light,
       locale: locale,

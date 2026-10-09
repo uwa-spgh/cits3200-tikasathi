@@ -1341,6 +1341,12 @@ abstract class AppLocalizations {
   /// **'Learn'**
   String get learnTitle;
 
+  /// No description provided for @learnSpeechSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn page. Here you can learn about vaccines. Click on a section to read more.'**
+  String get learnSpeechSummary;
+
   /// Label for a myth on the Learn page. Bold text in a Learn topic that exactly matches this label is shown in red.
   ///
   /// In en, this message translates to:
@@ -1503,6 +1509,24 @@ abstract class AppLocalizations {
   /// **'Past vaccine history hasn\'t been set up yet. Complete setup to get an accurate schedule.'**
   String get childSetupIncompleteBanner;
 
+  /// Spoken message for a child whose vaccine history setup is incomplete
+  ///
+  /// In en, this message translates to:
+  /// **'{childName}\'s past vaccine history hasn\'t been set up yet. Please complete the setup to get an accurate vaccination schedule.'**
+  String childSetupIncompleteSpeech(String childName);
+
+  /// Spoken advice appended to an overdue child profile summary
+  ///
+  /// In en, this message translates to:
+  /// **'Please visit your nearest health facility for advice on missed vaccines.'**
+  String get childSpeechOverdueAdvice;
+
+  /// Spoken due-date phrase for a child profile vaccine summary
+  ///
+  /// In en, this message translates to:
+  /// **'due on {date}'**
+  String childSpeechVaccineDueOn(String date);
+
   /// No description provided for @childActionCompleteSetup.
   ///
   /// In en, this message translates to:
@@ -1586,6 +1610,157 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'There are no recorded vaccinations.'**
   String get vaccineRecordsEmpty;
+
+  /// No description provided for @vaccineHistoryUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'{childName} has received all age-appropriate vaccines.'**
+  String vaccineHistoryUpToDate(Object childName);
+
+  /// No description provided for @vaccineHistoryRecordedInclude.
+  ///
+  /// In en, this message translates to:
+  /// **'These include {recordedVaccines}.'**
+  String vaccineHistoryRecordedInclude(Object recordedVaccines);
+
+  /// No description provided for @vaccineHistoryUpToDateEditAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'You can untick a vaccine if it was selected by mistake, or edit the vaccination date if the recorded date is incorrect.'**
+  String get vaccineHistoryUpToDateEditAdvice;
+
+  /// No description provided for @vaccineHistoryRecordedAgeAppropriate.
+  ///
+  /// In en, this message translates to:
+  /// **'{childName} has these age-appropriate vaccines recorded as received: {recordedVaccines}.'**
+  String vaccineHistoryRecordedAgeAppropriate(
+      Object childName, Object recordedVaccines);
+
+  /// No description provided for @vaccineHistoryNoRecordedAgeAppropriate.
+  ///
+  /// In en, this message translates to:
+  /// **'No age-appropriate vaccines have been recorded as received for {childName} yet.'**
+  String vaccineHistoryNoRecordedAgeAppropriate(Object childName);
+
+  /// No description provided for @vaccineHistoryUnrecordedAgeAppropriate.
+  ///
+  /// In en, this message translates to:
+  /// **'These age-appropriate vaccines have not been recorded as received: {unrecordedVaccines}.'**
+  String vaccineHistoryUnrecordedAgeAppropriate(Object unrecordedVaccines);
+
+  /// No description provided for @vaccineHistoryMissedAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'Please visit your nearest health facility for advice about vaccines your child may have missed.'**
+  String get vaccineHistoryMissedAdvice;
+
+  /// No description provided for @vaccineHistoryEditAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'You can tick vaccines that have already been given, untick vaccines selected by mistake, or edit the vaccination date of a vaccine that is already ticked.'**
+  String get vaccineHistoryEditAdvice;
+
+  /// No description provided for @vaccineHistoryFullShown.
+  ///
+  /// In en, this message translates to:
+  /// **'{childName}\'s full vaccine history is shown.'**
+  String vaccineHistoryFullShown(Object childName);
+
+  /// No description provided for @vaccineHistoryFullShownNoRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'{childName}\'s full vaccine history is shown. No vaccines have been recorded as received yet.'**
+  String vaccineHistoryFullShownNoRecorded(Object childName);
+
+  /// No description provided for @vaccineHistoryRecordedIncludeFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccines recorded as received include {recordedVaccines}.'**
+  String vaccineHistoryRecordedIncludeFull(Object recordedVaccines);
+
+  /// No description provided for @vaccineHistoryOtherUnrecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Other vaccines have not been recorded as received.'**
+  String get vaccineHistoryOtherUnrecorded;
+
+  /// No description provided for @vaccineHistoryLaterSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Some may be scheduled for later as {childName} grows.'**
+  String vaccineHistoryLaterSchedule(Object childName);
+
+  /// No description provided for @vaccineScheduleAdministeredCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Administered vaccines.'**
+  String get vaccineScheduleAdministeredCategory;
+
+  /// No description provided for @vaccineScheduleAdministeredGroupSingular.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} was given on {date}.'**
+  String vaccineScheduleAdministeredGroupSingular(Object date, Object vaccines);
+
+  /// No description provided for @vaccineScheduleAdministeredGroupPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} were given on {date}.'**
+  String vaccineScheduleAdministeredGroupPlural(Object date, Object vaccines);
+
+  /// No description provided for @vaccineScheduleMissedCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed vaccines.'**
+  String get vaccineScheduleMissedCategory;
+
+  /// No description provided for @vaccineScheduleMissedGroupSingular.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} are overdue since {date}.'**
+  String vaccineScheduleMissedGroupSingular(Object date, Object vaccines);
+
+  /// No description provided for @vaccineScheduleMissedGroupPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} are overdue since {date}.'**
+  String vaccineScheduleMissedGroupPlural(Object date, Object vaccines);
+
+  /// No description provided for @vaccineScheduleMissedAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'Please visit your nearest health facility for advice on missed vaccines.'**
+  String get vaccineScheduleMissedAdvice;
+
+  /// No description provided for @vaccineScheduleUpcomingCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming vaccines.'**
+  String get vaccineScheduleUpcomingCategory;
+
+  /// No description provided for @vaccineScheduleUpcomingTodaySingular.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} is due today.'**
+  String vaccineScheduleUpcomingTodaySingular(Object vaccines);
+
+  /// No description provided for @vaccineScheduleUpcomingTodayPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} are due today.'**
+  String vaccineScheduleUpcomingTodayPlural(Object vaccines);
+
+  /// No description provided for @vaccineScheduleUpcomingGroupSingular.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} is due on {date}.'**
+  String vaccineScheduleUpcomingGroupSingular(Object date, Object vaccines);
+
+  /// No description provided for @vaccineScheduleUpcomingGroupPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} are due on {date}.'**
+  String vaccineScheduleUpcomingGroupPlural(Object date, Object vaccines);
 
   /// No description provided for @dose.
   ///

@@ -759,6 +759,10 @@ class AppLocalizationsNe extends AppLocalizations {
   String get learnTitle => 'सिक्नुहोस्';
 
   @override
+  String get learnSpeechSummary =>
+      'सिक्ने पृष्ठ। यहाँ तपाईं खोपबारे जान्न सक्नुहुन्छ। थप पढ्न कुनै खण्डमा थिच्नुहोस्।';
+
+  @override
   String get learnMythLabel => 'भ्रम:';
 
   @override
@@ -851,6 +855,20 @@ class AppLocalizationsNe extends AppLocalizations {
       'पहिले लगाइएका खोपहरूको विवरण भरिएको छैन। सही तालिका हेर्न सेटअप पूरा गर्नुहोस्।';
 
   @override
+  String childSetupIncompleteSpeech(String childName) {
+    return '$childNameको पहिले लगाइएका खोपहरूको इतिहास सेटअप गरिएको छैन। सही खोप तालिका प्राप्त गर्न कृपया सेटअप पूरा गर्नुहोस्।';
+  }
+
+  @override
+  String get childSpeechOverdueAdvice =>
+      'छुटेका खोपबारे सल्लाह लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।';
+
+  @override
+  String childSpeechVaccineDueOn(String date) {
+    return 'मिति: $date';
+  }
+
+  @override
   String get childActionCompleteSetup => 'सेटअप पूरा गर्नुहोस्';
 
   @override
@@ -896,6 +914,122 @@ class AppLocalizationsNe extends AppLocalizations {
 
   @override
   String get vaccineRecordsEmpty => 'खोप लगाइएको कुनै रेकर्ड छैन।';
+
+  @override
+  String vaccineHistoryUpToDate(Object childName) {
+    return '$childName का उमेरअनुसारका सबै खोप लगाइएको छ।';
+  }
+
+  @override
+  String vaccineHistoryRecordedInclude(Object recordedVaccines) {
+    return 'यी खोपहरू समावेश छन्: $recordedVaccines।';
+  }
+
+  @override
+  String get vaccineHistoryUpToDateEditAdvice =>
+      'गल्तीले चयन गरिएको खोप भएमा त्यसको चिन्ह हटाउन वा रेकर्ड गरिएको मिति गलत भएमा खोप लगाएको मिति सम्पादन गर्न सक्नुहुन्छ।';
+
+  @override
+  String vaccineHistoryRecordedAgeAppropriate(
+      Object childName, Object recordedVaccines) {
+    return '$childName का उमेरअनुसार लगाइएका खोपहरूको रेकर्ड: $recordedVaccines।';
+  }
+
+  @override
+  String vaccineHistoryNoRecordedAgeAppropriate(Object childName) {
+    return '$childName का उमेरअनुसार कुनै खोप लगाइएको रेकर्ड छैन।';
+  }
+
+  @override
+  String vaccineHistoryUnrecordedAgeAppropriate(Object unrecordedVaccines) {
+    return 'उमेरअनुसार लगाइएका तर रेकर्ड नभएका खोपहरू: $unrecordedVaccines।';
+  }
+
+  @override
+  String get vaccineHistoryMissedAdvice =>
+      'बच्चाले छुटाएका हुन सक्ने खोपबारे सल्लाह लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।';
+
+  @override
+  String get vaccineHistoryEditAdvice =>
+      'पहिले लगाइसकेका खोपमा चिन्ह लगाउन, गल्तीले चयन गरिएको खोपको चिन्ह हटाउन वा चिन्ह लगाइसकेको खोपको मिति सम्पादन गर्न सक्नुहुन्छ।';
+
+  @override
+  String vaccineHistoryFullShown(Object childName) {
+    return '$childName को सम्पूर्ण खोप इतिहास देखाइएको छ।';
+  }
+
+  @override
+  String vaccineHistoryFullShownNoRecorded(Object childName) {
+    return '$childName को सम्पूर्ण खोप इतिहास देखाइएको छ। अहिलेसम्म कुनै खोप लगाइएको रेकर्ड छैन।';
+  }
+
+  @override
+  String vaccineHistoryRecordedIncludeFull(Object recordedVaccines) {
+    return 'रेकर्डअनुसार लगाइएका खोपहरू: $recordedVaccines।';
+  }
+
+  @override
+  String get vaccineHistoryOtherUnrecorded =>
+      'अन्य खोपहरू लगाइएको भनेर रेकर्ड गरिएको छैन।';
+
+  @override
+  String vaccineHistoryLaterSchedule(Object childName) {
+    return '$childName ठूलो हुँदै जाँदा केही खोप पछि लगाउनुपर्ने हुन सक्छ।';
+  }
+
+  @override
+  String get vaccineScheduleAdministeredCategory => 'लगाइएका खोपहरू।';
+
+  @override
+  String vaccineScheduleAdministeredGroupSingular(
+      Object date, Object vaccines) {
+    return '$vaccines $date मा लगाइएको थियो।';
+  }
+
+  @override
+  String vaccineScheduleAdministeredGroupPlural(Object date, Object vaccines) {
+    return '$vaccines $date मा लगाइएका थिए।';
+  }
+
+  @override
+  String get vaccineScheduleMissedCategory => 'छुटेका खोपहरू।';
+
+  @override
+  String vaccineScheduleMissedGroupSingular(Object date, Object vaccines) {
+    return '$vaccines $date देखि लगाउन बाँकी छन्।';
+  }
+
+  @override
+  String vaccineScheduleMissedGroupPlural(Object date, Object vaccines) {
+    return '$vaccines $date देखि लगाउन बाँकी छन्।';
+  }
+
+  @override
+  String get vaccineScheduleMissedAdvice =>
+      'छुटेका खोपबारे सल्लाह लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।';
+
+  @override
+  String get vaccineScheduleUpcomingCategory => 'आगामी खोपहरू।';
+
+  @override
+  String vaccineScheduleUpcomingTodaySingular(Object vaccines) {
+    return '$vaccines आज लगाउनुपर्नेछ।';
+  }
+
+  @override
+  String vaccineScheduleUpcomingTodayPlural(Object vaccines) {
+    return '$vaccines आज लगाउनुपर्नेछ।';
+  }
+
+  @override
+  String vaccineScheduleUpcomingGroupSingular(Object date, Object vaccines) {
+    return '$vaccines $date मा लगाउनुपर्नेछ।';
+  }
+
+  @override
+  String vaccineScheduleUpcomingGroupPlural(Object date, Object vaccines) {
+    return '$vaccines $date मा लगाउनुपर्नेछन्।';
+  }
 
   @override
   String get dose => 'खुराक';

@@ -749,6 +749,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get learnTitle => 'Learn';
 
   @override
+  String get learnSpeechSummary =>
+      'Learn page. Here you can learn about vaccines. Click on a section to read more.';
+
+  @override
   String get learnMythLabel => 'Myth:';
 
   @override
@@ -841,6 +845,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Past vaccine history hasn\'t been set up yet. Complete setup to get an accurate schedule.';
 
   @override
+  String childSetupIncompleteSpeech(String childName) {
+    return '$childName\'s past vaccine history hasn\'t been set up yet. Please complete the setup to get an accurate vaccination schedule.';
+  }
+
+  @override
+  String get childSpeechOverdueAdvice =>
+      'Please visit your nearest health facility for advice on missed vaccines.';
+
+  @override
+  String childSpeechVaccineDueOn(String date) {
+    return 'due on $date';
+  }
+
+  @override
   String get childActionCompleteSetup => 'Complete setup';
 
   @override
@@ -886,6 +904,122 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get vaccineRecordsEmpty => 'There are no recorded vaccinations.';
+
+  @override
+  String vaccineHistoryUpToDate(Object childName) {
+    return '$childName has received all age-appropriate vaccines.';
+  }
+
+  @override
+  String vaccineHistoryRecordedInclude(Object recordedVaccines) {
+    return 'These include $recordedVaccines.';
+  }
+
+  @override
+  String get vaccineHistoryUpToDateEditAdvice =>
+      'You can untick a vaccine if it was selected by mistake, or edit the vaccination date if the recorded date is incorrect.';
+
+  @override
+  String vaccineHistoryRecordedAgeAppropriate(
+      Object childName, Object recordedVaccines) {
+    return '$childName has these age-appropriate vaccines recorded as received: $recordedVaccines.';
+  }
+
+  @override
+  String vaccineHistoryNoRecordedAgeAppropriate(Object childName) {
+    return 'No age-appropriate vaccines have been recorded as received for $childName yet.';
+  }
+
+  @override
+  String vaccineHistoryUnrecordedAgeAppropriate(Object unrecordedVaccines) {
+    return 'These age-appropriate vaccines have not been recorded as received: $unrecordedVaccines.';
+  }
+
+  @override
+  String get vaccineHistoryMissedAdvice =>
+      'Please visit your nearest health facility for advice about vaccines your child may have missed.';
+
+  @override
+  String get vaccineHistoryEditAdvice =>
+      'You can tick vaccines that have already been given, untick vaccines selected by mistake, or edit the vaccination date of a vaccine that is already ticked.';
+
+  @override
+  String vaccineHistoryFullShown(Object childName) {
+    return '$childName\'s full vaccine history is shown.';
+  }
+
+  @override
+  String vaccineHistoryFullShownNoRecorded(Object childName) {
+    return '$childName\'s full vaccine history is shown. No vaccines have been recorded as received yet.';
+  }
+
+  @override
+  String vaccineHistoryRecordedIncludeFull(Object recordedVaccines) {
+    return 'Vaccines recorded as received include $recordedVaccines.';
+  }
+
+  @override
+  String get vaccineHistoryOtherUnrecorded =>
+      'Other vaccines have not been recorded as received.';
+
+  @override
+  String vaccineHistoryLaterSchedule(Object childName) {
+    return 'Some may be scheduled for later as $childName grows.';
+  }
+
+  @override
+  String get vaccineScheduleAdministeredCategory => 'Administered vaccines.';
+
+  @override
+  String vaccineScheduleAdministeredGroupSingular(
+      Object date, Object vaccines) {
+    return '$vaccines was given on $date.';
+  }
+
+  @override
+  String vaccineScheduleAdministeredGroupPlural(Object date, Object vaccines) {
+    return '$vaccines were given on $date.';
+  }
+
+  @override
+  String get vaccineScheduleMissedCategory => 'Missed vaccines.';
+
+  @override
+  String vaccineScheduleMissedGroupSingular(Object date, Object vaccines) {
+    return '$vaccines are overdue since $date.';
+  }
+
+  @override
+  String vaccineScheduleMissedGroupPlural(Object date, Object vaccines) {
+    return '$vaccines are overdue since $date.';
+  }
+
+  @override
+  String get vaccineScheduleMissedAdvice =>
+      'Please visit your nearest health facility for advice on missed vaccines.';
+
+  @override
+  String get vaccineScheduleUpcomingCategory => 'Upcoming vaccines.';
+
+  @override
+  String vaccineScheduleUpcomingTodaySingular(Object vaccines) {
+    return '$vaccines is due today.';
+  }
+
+  @override
+  String vaccineScheduleUpcomingTodayPlural(Object vaccines) {
+    return '$vaccines are due today.';
+  }
+
+  @override
+  String vaccineScheduleUpcomingGroupSingular(Object date, Object vaccines) {
+    return '$vaccines is due on $date.';
+  }
+
+  @override
+  String vaccineScheduleUpcomingGroupPlural(Object date, Object vaccines) {
+    return '$vaccines are due on $date.';
+  }
 
   @override
   String get dose => 'Dose';

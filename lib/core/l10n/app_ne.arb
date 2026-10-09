@@ -432,6 +432,7 @@
   "homeEmptyStateTitle": "अहिलेसम्म कुनै बच्चा थपिएको छैन।",
   "homeEmptyStateSubtitle": "यहाँ आगामी खोपहरू हेर्न आफ्नो पहिलो बच्चा थप्नुहोस्।",
   "learnTitle": "सिक्नुहोस्",
+  "learnSpeechSummary": "सिक्ने पृष्ठ। यहाँ तपाईं खोपबारे जान्न सक्नुहुन्छ। थप पढ्न कुनै खण्डमा थिच्नुहोस्।",
   "learnMythLabel": "भ्रम:",
   "learnFactLabel": "तथ्य:",
   "learnTopic1Title": "खोप किन महत्त्वपूर्ण छ?",
@@ -459,6 +460,28 @@
   "homeSectionAwaitingSetup": "सेटअप पूरा हुन बाँकी",
   "homeActionCompleteSetup": "सेटअप पूरा गर्नुहोस्",
   "childSetupIncompleteBanner": "पहिले लगाइएका खोपहरूको विवरण भरिएको छैन। सही तालिका हेर्न सेटअप पूरा गर्नुहोस्।",
+  "childSetupIncompleteSpeech": "{childName}को पहिले लगाइएका खोपहरूको इतिहास सेटअप गरिएको छैन। सही खोप तालिका प्राप्त गर्न कृपया सेटअप पूरा गर्नुहोस्।",
+  "@childSetupIncompleteSpeech": {
+    "description": "Spoken message for a child whose vaccine history setup is incomplete",
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
+  "childSpeechOverdueAdvice": "छुटेका खोपबारे सल्लाह लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।",
+  "@childSpeechOverdueAdvice": {
+    "description": "Spoken advice appended to an overdue child profile summary"
+  },
+  "childSpeechVaccineDueOn": "मिति: {date}",
+  "@childSpeechVaccineDueOn": {
+    "description": "Spoken due-date phrase for a child profile vaccine summary",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "childActionCompleteSetup": "सेटअप पूरा गर्नुहोस्",
   "childUrgencySetupRequired": "सेटअप आवश्यक",
   "retroactiveVaccineTitle": "खोप इतिहास",
@@ -487,6 +510,31 @@
   "vaccineRecordsDateHeader": "प्रशासित मिति",
   "vaccineRecordsReturn": "फिर्ता",
   "vaccineRecordsEmpty": "खोप लगाइएको कुनै रेकर्ड छैन।",
+  "vaccineHistoryUpToDate": "{childName} का उमेरअनुसारका सबै खोप लगाइएको छ।",
+  "vaccineHistoryRecordedInclude": "यी खोपहरू समावेश छन्: {recordedVaccines}।",
+  "vaccineHistoryUpToDateEditAdvice": "गल्तीले चयन गरिएको खोप भएमा त्यसको चिन्ह हटाउन वा रेकर्ड गरिएको मिति गलत भएमा खोप लगाएको मिति सम्पादन गर्न सक्नुहुन्छ।",
+  "vaccineHistoryRecordedAgeAppropriate": "{childName} का उमेरअनुसार लगाइएका खोपहरूको रेकर्ड: {recordedVaccines}।",
+  "vaccineHistoryNoRecordedAgeAppropriate": "{childName} का उमेरअनुसार कुनै खोप लगाइएको रेकर्ड छैन।",
+  "vaccineHistoryUnrecordedAgeAppropriate": "उमेरअनुसार लगाइएका तर रेकर्ड नभएका खोपहरू: {unrecordedVaccines}।",
+  "vaccineHistoryMissedAdvice": "बच्चाले छुटाएका हुन सक्ने खोपबारे सल्लाह लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।",
+  "vaccineHistoryEditAdvice": "पहिले लगाइसकेका खोपमा चिन्ह लगाउन, गल्तीले चयन गरिएको खोपको चिन्ह हटाउन वा चिन्ह लगाइसकेको खोपको मिति सम्पादन गर्न सक्नुहुन्छ।",
+  "vaccineHistoryFullShown": "{childName} को सम्पूर्ण खोप इतिहास देखाइएको छ।",
+  "vaccineHistoryFullShownNoRecorded": "{childName} को सम्पूर्ण खोप इतिहास देखाइएको छ। अहिलेसम्म कुनै खोप लगाइएको रेकर्ड छैन।",
+  "vaccineHistoryRecordedIncludeFull": "रेकर्डअनुसार लगाइएका खोपहरू: {recordedVaccines}।",
+  "vaccineHistoryOtherUnrecorded": "अन्य खोपहरू लगाइएको भनेर रेकर्ड गरिएको छैन।",
+  "vaccineHistoryLaterSchedule": "{childName} ठूलो हुँदै जाँदा केही खोप पछि लगाउनुपर्ने हुन सक्छ।",
+  "vaccineScheduleAdministeredCategory": "लगाइएका खोपहरू।",
+  "vaccineScheduleAdministeredGroupSingular": "{vaccines} {date} मा लगाइएको थियो।",
+  "vaccineScheduleAdministeredGroupPlural": "{vaccines} {date} मा लगाइएका थिए।",
+  "vaccineScheduleMissedCategory": "छुटेका खोपहरू।",
+  "vaccineScheduleMissedGroupSingular": "{vaccines} {date} देखि लगाउन बाँकी छन्।",
+  "vaccineScheduleMissedGroupPlural": "{vaccines} {date} देखि लगाउन बाँकी छन्।",
+  "vaccineScheduleMissedAdvice": "छुटेका खोपबारे सल्लाह लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।",
+  "vaccineScheduleUpcomingCategory": "आगामी खोपहरू।",
+  "vaccineScheduleUpcomingTodaySingular": "{vaccines} आज लगाउनुपर्नेछ।",
+  "vaccineScheduleUpcomingTodayPlural": "{vaccines} आज लगाउनुपर्नेछ।",
+  "vaccineScheduleUpcomingGroupSingular": "{vaccines} {date} मा लगाउनुपर्नेछ।",
+  "vaccineScheduleUpcomingGroupPlural": "{vaccines} {date} मा लगाउनुपर्नेछन्।",
   "dose": "खुराक",
   "vaccineScheduleTitle": "खोप तालिका",
   "vaccineScheduleBack": "फिर्ता",

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/learn/domain/learn_topics.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
@@ -30,12 +31,13 @@ class LearnScreen extends ConsumerWidget {
 
   Widget _buildContent(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
-
     return Scaffold(
         appBar: BasicAppBar(
             title: l10n.learnTitle,
             isMainTitle: true,
-            textGetter: null,
+            textGetter: () => ScreenSpeechHelper.learnScreenText(
+                  localizations: l10n,
+                ),
             haveBackButton: false,
             titleKey: const Key('learn-title')),
         body: const SingleChildScrollView(

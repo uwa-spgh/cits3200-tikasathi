@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/learn/domain/learn_topics.dart';
 import 'package:tikasathi/features/learn/presentation/learn_screen.dart';
@@ -65,6 +66,50 @@ void main() {
         }
       }
       expect(find.byType(Table), findsNothing);
+    });
+
+    testWidgets('uses only the localized Learn page speech summary',
+        (WidgetTester tester) async {
+      late String englishSummary;
+      late String nepaliSummary;
+
+      await tester.pumpWidget(
+        _app(),
+      );
+      await tester.pumpAndSettle();
+      englishSummary = ScreenSpeechHelper.learnScreenText(
+        localizations: AppLocalizations.of(
+          tester.element(find.byKey(const Key('learn-title'))),
+        )!,
+      );
+
+      await tester.pumpWidget(_app(locale: const Locale('ne')));
+      await tester.pumpAndSettle();
+      nepaliSummary = ScreenSpeechHelper.learnScreenText(
+        localizations: AppLocalizations.of(
+          tester.element(find.byKey(const Key('learn-title'))),
+        )!,
+      );
+
+      expect(
+        englishSummary,
+        'Learn page. Here you can learn about vaccines. '
+        'Click on a section to read more.',
+      );
+      expect(
+        nepaliSummary,
+        'सिक्ने पृष्ठ। यहाँ तपाईं खोपबारे जान्न सक्नुहुन्छ। '
+        'थप पढ्न कुनै खण्डमा थिच्नुहोस्।',
+      );
+      for (final LearnTopic topic in learnTopics) {
+        expect(englishSummary, isNot(contains(topic.title(_en))));
+        for (final String paragraph in _shown(topic, _en)) {
+          if (paragraph.isNotEmpty) {
+            expect(englishSummary, isNot(contains(paragraph)));
+          }
+        }
+        expect(nepaliSummary, isNot(contains(topic.title(_ne))));
+      }
     });
 
     testWidgets('tapping a tab expands and collapses its content',
