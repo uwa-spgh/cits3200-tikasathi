@@ -25,6 +25,7 @@ class AppTheme {
       seedColor: _seedColor,
     ),
     useMaterial3: true,
+    scaffoldBackgroundColor: background,
     // Large touch targets for low-literacy / accessibility users
     materialTapTargetSize: MaterialTapTargetSize.padded,
     visualDensity: VisualDensity.standard,
