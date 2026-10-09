@@ -309,6 +309,74 @@ void main() {
       expect(npText, contains('लागेका खोपहरू: 1 मात्रा'));
     });
 
+    testWidgets('childProfileScreenText localizes incomplete setup speech',
+        (WidgetTester tester) async {
+      final ChildProfileDetails details = ChildProfileDetails(
+        child: ChildProfile(
+          id: 'incomplete',
+          name: 'Nima',
+          dateOfBirth: DateTime(2025, 5, 10),
+          sex: 'Male',
+          isSetupComplete: false,
+        ),
+        dueVaccines: const <VaccinationDue>[],
+        records: const <VaccinationRecord>[],
+        now: DateTime(2025, 6, 1),
+      );
+
+      late String enText;
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) {
+              enText = ScreenSpeechHelper.childProfileScreenText(
+                context: context,
+                localizations: AppLocalizations.of(context)!,
+                details: details,
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(
+        enText,
+        "Nima's past vaccine history hasn't been set up yet. "
+        'Please complete the setup to get an accurate vaccination schedule.',
+      );
+      expect(enText, isNot(contains('Setup is pending')));
+
+      late String npText;
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('ne'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) {
+              npText = ScreenSpeechHelper.childProfileScreenText(
+                context: context,
+                localizations: AppLocalizations.of(context)!,
+                details: details,
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(
+        npText,
+        'Nimaको पहिले लगाइएका खोपहरूको इतिहास सेटअप गरिएको छैन। '
+        'सही खोप तालिका प्राप्त गर्न कृपया सेटअप पूरा गर्नुहोस्।',
+      );
+      expect(npText, contains('Nima'));
+    });
+
     testWidgets(
         'vaccineScheduleScreenText includes core immunisation milestones',
         (WidgetTester tester) async {

@@ -1497,6 +1497,12 @@ abstract class AppLocalizations {
   /// **'Past vaccine history hasn\'t been set up yet. Complete setup to get an accurate schedule.'**
   String get childSetupIncompleteBanner;
 
+  /// Spoken message for a child whose vaccine history setup is incomplete
+  ///
+  /// In en, this message translates to:
+  /// **'{childName}\'s past vaccine history hasn\'t been set up yet. Please complete the setup to get an accurate vaccination schedule.'**
+  String childSetupIncompleteSpeech(String childName);
+
   /// No description provided for @childActionCompleteSetup.
   ///
   /// In en, this message translates to:

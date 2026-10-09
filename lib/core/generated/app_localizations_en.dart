@@ -838,6 +838,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Past vaccine history hasn\'t been set up yet. Complete setup to get an accurate schedule.';
 
   @override
+  String childSetupIncompleteSpeech(String childName) {
+    return '$childName\'s past vaccine history hasn\'t been set up yet. Please complete the setup to get an accurate vaccination schedule.';
+  }
+
+  @override
   String get childActionCompleteSetup => 'Complete setup';
 
   @override

@@ -151,11 +151,7 @@ class ScreenSpeechHelper {
     final StringBuffer buffer = StringBuffer();
 
     if (!details.isSetupComplete) {
-      if (isNepali) {
-        return '$childNameको दर्ता पूरा गर्न बाँकी छ। खोप तालिका हेर्न कृपया दर्ता पूरा गर्नुहोस्।';
-      } else {
-        return 'Setup is pending for $childName. Please complete registration to track vaccines.';
-      }
+      return localizations.childSetupIncompleteSpeech(childName);
     }
 
     final VaccinationDue? nextDue = details.nextDue;

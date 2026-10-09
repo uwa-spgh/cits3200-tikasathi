@@ -848,6 +848,11 @@ class AppLocalizationsNe extends AppLocalizations {
       'पहिले लगाइएका खोपहरूको विवरण भरिएको छैन। सही तालिका हेर्न सेटअप पूरा गर्नुहोस्।';
 
   @override
+  String childSetupIncompleteSpeech(String childName) {
+    return '$childNameको पहिले लगाइएका खोपहरूको इतिहास सेटअप गरिएको छैन। सही खोप तालिका प्राप्त गर्न कृपया सेटअप पूरा गर्नुहोस्।';
+  }
+
+  @override
   String get childActionCompleteSetup => 'सेटअप पूरा गर्नुहोस्';
 
   @override

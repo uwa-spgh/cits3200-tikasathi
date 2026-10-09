@@ -458,6 +458,15 @@
   "homeSectionAwaitingSetup": "सेटअप पूरा हुन बाँकी",
   "homeActionCompleteSetup": "सेटअप पूरा गर्नुहोस्",
   "childSetupIncompleteBanner": "पहिले लगाइएका खोपहरूको विवरण भरिएको छैन। सही तालिका हेर्न सेटअप पूरा गर्नुहोस्।",
+  "childSetupIncompleteSpeech": "{childName}को पहिले लगाइएका खोपहरूको इतिहास सेटअप गरिएको छैन। सही खोप तालिका प्राप्त गर्न कृपया सेटअप पूरा गर्नुहोस्।",
+  "@childSetupIncompleteSpeech": {
+    "description": "Spoken message for a child whose vaccine history setup is incomplete",
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
   "childActionCompleteSetup": "सेटअप पूरा गर्नुहोस्",
   "childUrgencySetupRequired": "सेटअप आवश्यक",
   "retroactiveVaccineTitle": "खोप इतिहास",

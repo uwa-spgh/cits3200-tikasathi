@@ -611,6 +611,15 @@
   "homeSectionAwaitingSetup": "Awaiting setup completion",
   "homeActionCompleteSetup": "Complete setup",
   "childSetupIncompleteBanner": "Past vaccine history hasn't been set up yet. Complete setup to get an accurate schedule.",
+  "childSetupIncompleteSpeech": "{childName}'s past vaccine history hasn't been set up yet. Please complete the setup to get an accurate vaccination schedule.",
+  "@childSetupIncompleteSpeech": {
+    "description": "Spoken message for a child whose vaccine history setup is incomplete",
+    "placeholders": {
+      "childName": {
+        "type": "String"
+      }
+    }
+  },
   "childActionCompleteSetup": "Complete setup",
   "childUrgencySetupRequired": "Setup required",
   "retroactiveVaccineTitle": "Vaccine History",
