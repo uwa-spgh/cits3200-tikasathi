@@ -5,11 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
-import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/record_dose/domain/record_dose_controller.dart';
 
-const Color _pageBackground = Color(0xFFF5F9FC);
 const Color _navy = Color(0xFF11284F);
 const Color _actionBlue = Color(0xFF0E64C5);
 const Color _slate = Color(0xFF475569);
@@ -100,38 +98,56 @@ class _RecordDoseScreenState extends ConsumerState<RecordDoseScreen> {
     final AsyncValue<RecordDoseState> recordDoseAsync =
         ref.watch(recordDoseControllerProvider(widget.childId));
 
-    return Scaffold(
-      backgroundColor: _pageBackground,
-      body: SafeArea(
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 560),
-            child: recordDoseAsync.when(
-              // A failed save keeps its data, so the screen stays on the form
-              // with the ticks intact; the snackbar reports the failure. Only a
-              // failed initial load, which has no data, falls through to
-              // [_ErrorBody].
-              skipError: true,
-              data: (RecordDoseState recordDoseState) => _RecordDoseBody(
-                recordDoseState: recordDoseState,
-                localizations: localizations,
-                isSaving: _isSaving,
-                onToggleDose: (String dueId) => ref
-                    .read(recordDoseControllerProvider(widget.childId).notifier)
-                    .toggleDose(dueId),
-                onToggleShowAll: (bool showAll) => ref
-                    .read(recordDoseControllerProvider(widget.childId).notifier)
-                    .setShowAllUpcoming(showAll),
-                onChangeDate: () => _pickDate(recordDoseState),
-                onSave: () => _save(recordDoseState),
-              ),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, __) => _ErrorBody(localizations: localizations),
-            ),
-          ),
-        ),
-      ),
+    String Function()? textGetter;
+    final body = recordDoseAsync.when(
+        // A failed save keeps its data, so the screen stays on the form
+        // with the ticks intact; the snackbar reports the failure. Only a
+        // failed initial load, which has no data, falls through to
+        // [_ErrorBody].
+        skipError: true,
+        data: (RecordDoseState recordDoseState) {
+          textGetter = () {
+            final List<String> ticked = recordDoseState.visibleDues
+                .where(
+                    (VaccinationDue d) => recordDoseState.selectedDueIds.contains(d.id))
+                .map((VaccinationDue d) => d.vaccineCode)
+                .toList();
+            final List<String> available = recordDoseState.visibleDues
+                .map((VaccinationDue d) => d.vaccineCode)
+                .toList();
+
+            return ScreenSpeechHelper.recordDoseScreenText(
+              context: context,
+              localizations: localizations,
+              childName: recordDoseState.child.name,
+              administeredDate: recordDoseState.administeredDate,
+              tickedVaccineNames: ticked,
+              availableVaccineNames: available,
+            );
+          };
+
+          return _RecordDoseBody(
+            recordDoseState: recordDoseState,
+            localizations: localizations,
+            isSaving: _isSaving,
+            onToggleDose: (String dueId) => ref
+                .read(recordDoseControllerProvider(widget.childId).notifier)
+                .toggleDose(dueId),
+            onToggleShowAll: (bool showAll) => ref
+                .read(recordDoseControllerProvider(widget.childId).notifier)
+                .setShowAllUpcoming(showAll),
+            onChangeDate: () => _pickDate(recordDoseState),
+            onSave: () => _save(recordDoseState),
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (_, __) => _ErrorBody(localizations: localizations),
+      );
+
+    return BasicScaffold(
+      title: localizations.recordDoseTitle, 
+      textGetter: textGetter,
+      body: body
     );
   }
 }
@@ -172,11 +188,6 @@ class _RecordDoseBody extends StatelessWidget {
                   recordDoseState.upcomingDues.isNotEmpty ? 76 : 24,
                 ),
                 children: <Widget>[
-                  _Header(
-                    localizations: localizations,
-                    recordDoseState: recordDoseState,
-                  ),
-                  const SizedBox(height: 14),
                   Text(
                     localizations
                         .recordDoseSubtitle(recordDoseState.child.name),
@@ -276,84 +287,15 @@ class _ErrorBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: _Header(localizations: localizations),
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Text(
+          localizations.recordDoseError,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
-        Expanded(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Text(
-                localizations.recordDoseError,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _Header extends StatelessWidget {
-  const _Header({
-    required this.localizations,
-    this.recordDoseState,
-  });
-
-  final AppLocalizations localizations;
-  final RecordDoseState? recordDoseState;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        IconButton(
-          onPressed: () => Navigator.of(context).maybePop(),
-          icon: const Icon(Icons.arrow_back),
-          tooltip: localizations.childBackTooltip,
-        ),
-        Expanded(
-          child: Text(
-            localizations.recordDoseTitle,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: _navy,
-                ),
-          ),
-        ),
-        ReadAloudButton(
-          tooltip: localizations.childReadAloudTooltip,
-          unavailableMessage: localizations.childReadAloudUnavailable,
-          textGetter: () {
-            final RecordDoseState? state = recordDoseState;
-            if (state == null) {
-              return ScreenSpeechHelper.extractVisibleText(context);
-            }
-            final List<String> ticked = state.visibleDues
-                .where(
-                    (VaccinationDue d) => state.selectedDueIds.contains(d.id))
-                .map((VaccinationDue d) => d.vaccineCode)
-                .toList();
-            final List<String> available = state.visibleDues
-                .map((VaccinationDue d) => d.vaccineCode)
-                .toList();
-
-            return ScreenSpeechHelper.recordDoseScreenText(
-              context: context,
-              localizations: localizations,
-              childName: state.child.name,
-              administeredDate: state.administeredDate,
-              tickedVaccineNames: ticked,
-              availableVaccineNames: available,
-            );
-          },
-        ),
-      ],
+      ),
     );
   }
 }

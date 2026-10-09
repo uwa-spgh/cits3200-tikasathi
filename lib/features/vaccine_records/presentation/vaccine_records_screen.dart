@@ -10,7 +10,6 @@ import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
-import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
