@@ -1503,6 +1503,18 @@ abstract class AppLocalizations {
   /// **'{childName}\'s past vaccine history hasn\'t been set up yet. Please complete the setup to get an accurate vaccination schedule.'**
   String childSetupIncompleteSpeech(String childName);
 
+  /// Spoken advice appended to an overdue child profile summary
+  ///
+  /// In en, this message translates to:
+  /// **'Please visit your nearest health facility for advice on missed vaccines.'**
+  String get childSpeechOverdueAdvice;
+
+  /// Spoken due-date phrase for a child profile vaccine summary
+  ///
+  /// In en, this message translates to:
+  /// **'due on {date}'**
+  String childSpeechVaccineDueOn(String date);
+
   /// No description provided for @childActionCompleteSetup.
   ///
   /// In en, this message translates to:

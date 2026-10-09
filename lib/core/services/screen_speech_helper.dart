@@ -155,19 +155,30 @@ class ScreenSpeechHelper {
     }
 
     final VaccinationDue? nextDue = details.nextDue;
+    final DateTime today =
+        DateTime(details.now.year, details.now.month, details.now.day);
     final String? nextDueDate = nextDue != null
         ? DateFormat('d MMMM y', locale).format(nextDue.dueDate)
         : null;
+    final bool nextDueIsOverdue = nextDue != null &&
+        DateTime(
+          nextDue.dueDate.year,
+          nextDue.dueDate.month,
+          nextDue.dueDate.day,
+        ).isBefore(today);
 
     if (isNepali) {
       if (details.hasOverdueDoses) {
         if (nextDue != null) {
           buffer.write(
-            '$childNameको खोप लगाउने मिति नाघिसकेको छ। अर्को खोप: ${nextDue.vaccineCode}, मिति: $nextDueDate। ',
+            '$childNameको खोप लगाउने मिति नाघिसकेको छ। अर्को खोप: '
+            '${nextDue.vaccineCode}, '
+            '${nextDueIsOverdue ? localizations.recordDoseOverdueLabel(nextDueDate!) : localizations.childSpeechVaccineDueOn(nextDueDate!)}। ',
           );
         } else {
           buffer.write('$childNameको खोप लगाउने मिति नाघिसकेको छ। ');
         }
+        buffer.write('${localizations.childSpeechOverdueAdvice} ');
       } else if (details.hasDosesDueToday) {
         if (nextDue != null) {
           buffer.write(
@@ -191,17 +202,18 @@ class ScreenSpeechHelper {
           buffer.write('$childNameका सबै खोपहरू पूर्ण भएका छन्। ');
         }
       }
-
-      buffer.write('लागेका खोपहरू: ${details.records.length} मात्रा।');
     } else {
       if (details.hasOverdueDoses) {
         if (nextDue != null) {
           buffer.write(
-            '$childName has overdue vaccines. Next vaccine: ${nextDue.vaccineCode}, due on $nextDueDate. ',
+            '$childName has overdue vaccines. Next vaccine: '
+            '${nextDue.vaccineCode}, '
+            '${nextDueIsOverdue ? localizations.recordDoseOverdueLabel(nextDueDate!) : localizations.childSpeechVaccineDueOn(nextDueDate!)}. ',
           );
         } else {
           buffer.write('$childName has overdue vaccines. ');
         }
+        buffer.write('${localizations.childSpeechOverdueAdvice} ');
       } else if (details.hasDosesDueToday) {
         if (nextDue != null) {
           buffer.write(
@@ -225,8 +237,6 @@ class ScreenSpeechHelper {
           buffer.write('All vaccinations are completed for $childName. ');
         }
       }
-
-      buffer.write('Completed vaccines: ${details.records.length} doses.');
     }
 
     return buffer.toString().trim();

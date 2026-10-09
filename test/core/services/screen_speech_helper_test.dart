@@ -282,7 +282,7 @@ void main() {
       expect(enText, isNot(contains('Born on:')));
       expect(enText, isNot(contains('Sex:')));
       expect(enText, contains('Next vaccine: Penta 1'));
-      expect(enText, contains('Completed vaccines: 1 doses'));
+      expect(enText, isNot(contains('Completed vaccines')));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -306,7 +306,188 @@ void main() {
       expect(npText, isNot(contains('जन्म मिति:')));
       expect(npText, isNot(contains('लिङ्ग:')));
       expect(npText, contains('अर्को खोप: Penta 1'));
-      expect(npText, contains('लागेका खोपहरू: 1 मात्रा'));
+      expect(npText, isNot(contains('लागेका खोपहरू')));
+    });
+
+    testWidgets(
+        'childProfileScreenText handles overdue, today, and future vaccines',
+        (WidgetTester tester) async {
+      final DateTime now = DateTime(2025, 6, 1);
+      final ChildProfile child = ChildProfile(
+        id: 'status-child',
+        name: 'Maya',
+        dateOfBirth: DateTime(2025, 5, 10),
+        sex: 'Female',
+        isSetupComplete: true,
+      );
+
+      ChildProfileDetails detailsFor(
+        List<VaccinationDue> dueVaccines,
+      ) {
+        return ChildProfileDetails(
+          child: child,
+          dueVaccines: dueVaccines,
+          records: const <VaccinationRecord>[],
+          now: now,
+        );
+      }
+
+      String buildText(
+        BuildContext context,
+        ChildProfileDetails details,
+      ) {
+        return ScreenSpeechHelper.childProfileScreenText(
+          context: context,
+          localizations: AppLocalizations.of(context)!,
+          details: details,
+        );
+      }
+
+      late String overdueEnglish;
+      late String todayEnglish;
+      late String futureEnglish;
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) {
+              overdueEnglish = buildText(
+                context,
+                detailsFor(<VaccinationDue>[
+                  VaccinationDue(
+                    id: 'overdue',
+                    childId: child.id,
+                    vaccineCode: 'BCG',
+                    doseNumber: 1,
+                    dueDate: DateTime(2025, 5, 20),
+                  ),
+                  VaccinationDue(
+                    id: 'future',
+                    childId: child.id,
+                    vaccineCode: 'Penta 1',
+                    doseNumber: 1,
+                    dueDate: DateTime(2025, 6, 21),
+                  ),
+                ]),
+              );
+              todayEnglish = buildText(
+                context,
+                detailsFor(<VaccinationDue>[
+                  VaccinationDue(
+                    id: 'today',
+                    childId: child.id,
+                    vaccineCode: 'BCG',
+                    doseNumber: 1,
+                    dueDate: now,
+                  ),
+                ]),
+              );
+              futureEnglish = buildText(
+                context,
+                detailsFor(<VaccinationDue>[
+                  VaccinationDue(
+                    id: 'future-only',
+                    childId: child.id,
+                    vaccineCode: 'Penta 1',
+                    doseNumber: 1,
+                    dueDate: DateTime(2025, 6, 21),
+                  ),
+                ]),
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(
+        overdueEnglish,
+        contains('Overdue since 20 May 2025'),
+      );
+      expect(
+        overdueEnglish,
+        contains(
+          'Please visit your nearest health facility for advice on missed vaccines.',
+        ),
+      );
+      expect(overdueEnglish, isNot(contains('Completed vaccines')));
+      expect(todayEnglish, contains('Vaccines are due today for Maya: BCG.'));
+      expect(todayEnglish, isNot(contains('Overdue since')));
+      expect(todayEnglish, isNot(contains('health facility')));
+      expect(
+        futureEnglish,
+        contains('due on 21 June 2025'),
+      );
+      expect(futureEnglish, isNot(contains('Overdue since')));
+      expect(futureEnglish, isNot(contains('health facility')));
+
+      late String overdueNepali;
+      late String todayNepali;
+      late String futureNepali;
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('ne'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (BuildContext context) {
+              overdueNepali = buildText(
+                context,
+                detailsFor(<VaccinationDue>[
+                  VaccinationDue(
+                    id: 'overdue-ne',
+                    childId: child.id,
+                    vaccineCode: 'BCG',
+                    doseNumber: 1,
+                    dueDate: DateTime(2025, 5, 20),
+                  ),
+                ]),
+              );
+              todayNepali = buildText(
+                context,
+                detailsFor(<VaccinationDue>[
+                  VaccinationDue(
+                    id: 'today-ne',
+                    childId: child.id,
+                    vaccineCode: 'BCG',
+                    doseNumber: 1,
+                    dueDate: now,
+                  ),
+                ]),
+              );
+              futureNepali = buildText(
+                context,
+                detailsFor(<VaccinationDue>[
+                  VaccinationDue(
+                    id: 'future-ne',
+                    childId: child.id,
+                    vaccineCode: 'Penta 1',
+                    doseNumber: 1,
+                    dueDate: DateTime(2025, 6, 21),
+                  ),
+                ]),
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(overdueNepali, contains('देखि ढिलो'));
+      expect(
+        overdueNepali,
+        contains(
+            'छुटेका खोपबारे सल्लाह लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।'),
+      );
+      expect(overdueNepali, isNot(contains('लागेका खोपहरू')));
+      expect(todayNepali, contains('आज Mayaको खोप लगाउने मिति हो: BCG।'));
+      expect(todayNepali, isNot(contains('देखि ढिलो')));
+      expect(todayNepali, isNot(contains('स्वास्थ्य संस्था')));
+      expect(futureNepali, contains('मिति: २१ जुन २०२५'));
+      expect(futureNepali, isNot(contains('देखि ढिलो')));
+      expect(futureNepali, isNot(contains('स्वास्थ्य संस्था')));
     });
 
     testWidgets('childProfileScreenText localizes incomplete setup speech',

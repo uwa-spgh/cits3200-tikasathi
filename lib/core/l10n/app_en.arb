@@ -620,6 +620,19 @@
       }
     }
   },
+  "childSpeechOverdueAdvice": "Please visit your nearest health facility for advice on missed vaccines.",
+  "@childSpeechOverdueAdvice": {
+    "description": "Spoken advice appended to an overdue child profile summary"
+  },
+  "childSpeechVaccineDueOn": "due on {date}",
+  "@childSpeechVaccineDueOn": {
+    "description": "Spoken due-date phrase for a child profile vaccine summary",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "childActionCompleteSetup": "Complete setup",
   "childUrgencySetupRequired": "Setup required",
   "retroactiveVaccineTitle": "Vaccine History",

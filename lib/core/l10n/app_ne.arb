@@ -467,6 +467,19 @@
       }
     }
   },
+  "childSpeechOverdueAdvice": "छुटेका खोपबारे सल्लाह लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।",
+  "@childSpeechOverdueAdvice": {
+    "description": "Spoken advice appended to an overdue child profile summary"
+  },
+  "childSpeechVaccineDueOn": "मिति: {date}",
+  "@childSpeechVaccineDueOn": {
+    "description": "Spoken due-date phrase for a child profile vaccine summary",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "childActionCompleteSetup": "सेटअप पूरा गर्नुहोस्",
   "childUrgencySetupRequired": "सेटअप आवश्यक",
   "retroactiveVaccineTitle": "खोप इतिहास",

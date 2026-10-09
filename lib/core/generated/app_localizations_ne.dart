@@ -853,6 +853,15 @@ class AppLocalizationsNe extends AppLocalizations {
   }
 
   @override
+  String get childSpeechOverdueAdvice =>
+      'छुटेका खोपबारे सल्लाह लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।';
+
+  @override
+  String childSpeechVaccineDueOn(String date) {
+    return 'मिति: $date';
+  }
+
+  @override
   String get childActionCompleteSetup => 'सेटअप पूरा गर्नुहोस्';
 
   @override
