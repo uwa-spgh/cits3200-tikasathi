@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
-import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/learn/domain/learn_topics.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
@@ -40,10 +39,9 @@ class LearnScreen extends ConsumerWidget {
         haveBackButton: false,
         titleKey: const Key('learn-title')
       ),
-      body: const SingleChildScrollView(child: Column(children: [
-        SizedBox(height: 16),
-        _TopicList(),
-      ]))
+      body: const SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(16, 8, 16, 20),
+        child: _TopicList())
     );
   }
 }
