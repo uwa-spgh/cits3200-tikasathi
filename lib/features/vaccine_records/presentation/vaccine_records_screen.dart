@@ -413,12 +413,13 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
       ),
     );
 
-    return ConstrainedScaffold(
+    return Scaffold(
+      backgroundColor: AppTheme.background,
         appBar: BasicAppBar(
             title: localizations.childVaccineRecordsAndHistory,
             textGetter: textGetter),
         body: body,
-        bottomNavBar: bottomActionBar);
+        bottomNavigationBar: bottomActionBar);
   }
 }
 

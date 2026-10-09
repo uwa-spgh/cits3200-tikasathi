@@ -49,7 +49,8 @@ class VaccineScheduleScreen extends ConsumerWidget {
           Center(child: Text(localizations.childNotFound)),
     );
 
-    return ConstrainedScaffold(
+    return Scaffold(
+        backgroundColor: AppTheme.background,
         appBar: BasicAppBar(
           title: localizations.vaccineScheduleTitle,
           textGetter: textGetter,

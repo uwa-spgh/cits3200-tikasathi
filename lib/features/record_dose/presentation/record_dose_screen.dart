@@ -99,6 +99,7 @@ class _RecordDoseScreenState extends ConsumerState<RecordDoseScreen> {
         ref.watch(recordDoseControllerProvider(widget.childId));
 
     String Function()? textGetter;
+    Widget? saveBar;
     final body = recordDoseAsync.when(
       // A failed save keeps its data, so the screen stays on the form
       // with the ticks intact; the snackbar reports the failure. Only a
@@ -126,6 +127,13 @@ class _RecordDoseScreenState extends ConsumerState<RecordDoseScreen> {
           );
         };
 
+        saveBar = _SaveBar(
+          recordDoseState: recordDoseState,
+          localizations: localizations,
+          isSaving: _isSaving,
+          onSave: () => _save(recordDoseState),
+        );
+
         return _RecordDoseBody(
           recordDoseState: recordDoseState,
           localizations: localizations,
@@ -144,12 +152,14 @@ class _RecordDoseScreenState extends ConsumerState<RecordDoseScreen> {
       error: (_, __) => _ErrorBody(localizations: localizations),
     );
 
-    return ConstrainedScaffold(
+    return Scaffold(
+        backgroundColor: AppTheme.background,
         appBar: BasicAppBar(
           title: localizations.recordDoseTitle,
           textGetter: textGetter,
         ),
-        body: body);
+        body: body,
+        bottomNavigationBar: saveBar);
   }
 }
 
@@ -266,12 +276,6 @@ class _RecordDoseBody extends StatelessWidget {
                 ),
             ],
           ),
-        ),
-        _SaveBar(
-          recordDoseState: recordDoseState,
-          localizations: localizations,
-          isSaving: isSaving,
-          onSave: onSave,
         ),
       ],
     );

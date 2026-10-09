@@ -48,14 +48,15 @@ class ChildProfileScreen extends ConsumerWidget {
       error: (_, __) => _ErrorState(localizations: localizations),
     );
 
-    return ConstrainedScaffold(
+    return Scaffold(
+      backgroundColor: AppTheme.background,
       appBar: BasicAppBar(
         title: title,
         textGetter: textGetter,
         haveReadAloudButton: haveReadAloud,
       ),
       body: body,
-      bottomNavBar: AppBottomNavigationBar(
+      bottomNavigationBar: AppBottomNavigationBar(
         selectedSection: selectedSection,
         onDestinationSelected: (AppSection section) {
           ref

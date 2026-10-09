@@ -42,31 +42,6 @@ class AppTheme {
   );
 }
 
-/// A scaffold with a max width of 560 logical pixels.
-class ConstrainedScaffold extends StatelessWidget {
-  const ConstrainedScaffold(
-      {this.body, this.appBar, this.bottomNavBar, super.key});
-
-  final PreferredSizeWidget? appBar;
-  final Widget? body;
-  final Widget? bottomNavBar;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        color: AppTheme.background,
-        alignment: Alignment.topCenter,
-        child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 560),
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              appBar: appBar,
-              body: body != null ? SafeArea(child: body!) : null,
-              bottomNavigationBar: bottomNavBar,
-            )));
-  }
-}
-
 /// A centralised basic app bar for TikaSathi.
 ///
 /// [title] is the title of the app bar.
