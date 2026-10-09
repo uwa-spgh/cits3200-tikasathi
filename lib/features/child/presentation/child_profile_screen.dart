@@ -7,7 +7,6 @@ import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/app_shell/domain/app_navigation_controller.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_bottom_navigation_bar.dart';
-import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_helpers.dart';
@@ -31,16 +30,32 @@ class ChildProfileScreen extends ConsumerWidget {
     final AsyncValue<ChildProfileDetails> childProfileState =
         ref.watch(childProfileProvider(childId));
 
+    String title = "";
+    String Function()? textGetter;
+    bool haveReadAloud = false;
+    final StatelessWidget body = childProfileState.when(
+      data: (ChildProfileDetails details) {
+        title = localizations.childPageTitleWithName(details.child.name);
+        textGetter = () => ScreenSpeechHelper.childProfileScreenText(
+              context: context,
+              localizations: localizations,
+              details: details,
+            );
+        haveReadAloud = true;
+        return _ChildContent(details: details);
+      },
+      loading: () => _LoadingState(localizations: localizations),
+      error: (_, __) => _ErrorState(localizations: localizations),
+    );
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F9FC),
-      body: SafeArea(
-        child: childProfileState.when(
-          data: (ChildProfileDetails details) =>
-              _ChildContent(details: details),
-          loading: () => _LoadingState(localizations: localizations),
-          error: (_, __) => _ErrorState(localizations: localizations),
-        ),
+      backgroundColor: AppTheme.background,
+      appBar: BasicAppBar(
+        title: title,
+        textGetter: textGetter,
+        haveReadAloudButton: haveReadAloud,
       ),
+      body: body,
       bottomNavigationBar: AppBottomNavigationBar(
         selectedSection: selectedSection,
         onDestinationSelected: (AppSection section) {
@@ -71,129 +86,95 @@ class _ChildContent extends StatelessWidget {
     final String bornDateLabel =
         DateFormat('d MMMM y', languageCode).format(details.child.dateOfBirth);
 
-    return Align(
-      alignment: Alignment.topCenter,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 560),
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                IconButton(
-                  onPressed: () => Navigator.of(context).maybePop(),
-                  icon: const Icon(Icons.arrow_back),
-                  tooltip: localizations.childBackTooltip,
-                ),
-                Expanded(
-                  child: Text(
-                    localizations.childPageTitleWithName(details.child.name),
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xFF11284F),
-                        ),
-                  ),
-                ),
-                ReadAloudButton(
-                  tooltip: localizations.childReadAloudTooltip,
-                  unavailableMessage: localizations.childReadAloudUnavailable,
-                  textGetter: () => ScreenSpeechHelper.childProfileScreenText(
-                    context: context,
-                    localizations: localizations,
-                    details: details,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 14),
-            _ChildHeaderCard(
-              name: details.child.name,
-              ageLabel: details.ageLabel(localizations),
-              sexLabel: childSexLabel(details.child.sex, localizations),
-              bornLabel: localizations.childBornOn(bornDateLabel),
-              avatarEmoji: details.avatarEmoji,
-            ),
-            const SizedBox(height: 20),
-            _VaccineStatusAndTimelineCard(
-              status: status,
-              nextDue: nextDue,
-              followingDue: followingDue,
-              localizations: localizations,
-              languageCode: languageCode,
-              onCompleteSetup: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (context) => RetroactiveVaccineScreen(
-                      childId: details.child.id,
-                      isOnboardingFlow: false,
-                      isRegistrationFlow: true,
-                    ),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 24),
-            _FeatureCard(
-              key: const Key('child-record-dose-card'),
-              icon: Icons.vaccines_rounded,
-              title: localizations.childActionRecordDose,
-              cardColor: const Color(0xFF0E64C5),
-              borderColor: const Color(0xFF0E64C5),
-              iconBackgroundColor: const Color(0xFF3B82D0),
-              iconColor: Colors.white,
-              titleColor: Colors.white,
-              chevronColor: Colors.white,
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (BuildContext context) =>
-                        RecordDoseScreen(childId: details.child.id),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 16),
-            _FeatureCard(
-              key: const Key('child-vaccine-schedule-card'),
-              icon: Icons.calendar_month_rounded,
-              title: localizations.childVaccineSchedule,
-              cardColor: const Color(0xFFFFF8E6),
-              borderColor: const Color(0xFFE08A00),
-              iconBackgroundColor: const Color(0xFFFFEFC2),
-              iconColor: const Color(0xFF9A5B00),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (BuildContext context) =>
-                        VaccineScheduleScreen(childId: details.child.id),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 16),
-            _FeatureCard(
-              key: const Key('child-vaccine-history-card'),
-              icon: Icons.assignment_rounded,
-              title: localizations.childVaccineRecordsAndHistory,
-              cardColor: const Color(0xFFF2FBEF),
-              borderColor: const Color(0xFFD2EEC6),
-              iconBackgroundColor: const Color(0xFFE0F5D6),
-              iconColor: const Color(0xFF2D7A2C),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (context) => RetroactiveVaccineScreen(
-                      childId: details.child.id,
-                      isOnboardingFlow: false,
-                      isRegistrationFlow: !details.isSetupComplete,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+      children: <Widget>[
+        _ChildHeaderCard(
+          name: details.child.name,
+          ageLabel: details.ageLabel(localizations),
+          sexLabel: childSexLabel(details.child.sex, localizations),
+          bornLabel: localizations.childBornOn(bornDateLabel),
+          avatarEmoji: details.avatarEmoji,
         ),
-      ),
+        const SizedBox(height: 20),
+        _VaccineStatusAndTimelineCard(
+          status: status,
+          nextDue: nextDue,
+          followingDue: followingDue,
+          localizations: localizations,
+          languageCode: languageCode,
+          onCompleteSetup: () {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (context) => RetroactiveVaccineScreen(
+                  childId: details.child.id,
+                  isOnboardingFlow: false,
+                  isRegistrationFlow: true,
+                ),
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 24),
+        _FeatureCard(
+          key: const Key('child-record-dose-card'),
+          icon: Icons.vaccines_rounded,
+          title: localizations.childActionRecordDose,
+          cardColor: const Color(0xFF0E64C5),
+          borderColor: const Color(0xFF0E64C5),
+          iconBackgroundColor: const Color(0xFF3B82D0),
+          iconColor: Colors.white,
+          titleColor: Colors.white,
+          chevronColor: Colors.white,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (BuildContext context) =>
+                    RecordDoseScreen(childId: details.child.id),
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 16),
+        _FeatureCard(
+          key: const Key('child-vaccine-schedule-card'),
+          icon: Icons.calendar_month_rounded,
+          title: localizations.childVaccineSchedule,
+          cardColor: const Color(0xFFFFF8E6),
+          borderColor: const Color(0xFFE08A00),
+          iconBackgroundColor: const Color(0xFFFFEFC2),
+          iconColor: const Color(0xFF9A5B00),
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (BuildContext context) =>
+                    VaccineScheduleScreen(childId: details.child.id),
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 16),
+        _FeatureCard(
+          key: const Key('child-vaccine-history-card'),
+          icon: Icons.assignment_rounded,
+          title: localizations.childVaccineRecordsAndHistory,
+          cardColor: const Color(0xFFF2FBEF),
+          borderColor: const Color(0xFFD2EEC6),
+          iconBackgroundColor: const Color(0xFFE0F5D6),
+          iconColor: const Color(0xFF2D7A2C),
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (context) => RetroactiveVaccineScreen(
+                  childId: details.child.id,
+                  isOnboardingFlow: false,
+                  isRegistrationFlow: !details.isSetupComplete,
+                ),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 

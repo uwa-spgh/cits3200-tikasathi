@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/features/home/domain/home_helpers.dart';
 import 'package:uuid/uuid.dart';
 
@@ -9,7 +10,6 @@ import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
-import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
@@ -217,246 +217,209 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
     final AsyncValue<ChildProfileDetails> childState =
         ref.watch(childProfileProvider(widget.childId));
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F9FC),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
-          tooltip: localizations.childBackTooltip,
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          localizations.childVaccineRecordsAndHistory,
-          style: const TextStyle(
-            color: Color(0xFF0F172A),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: ReadAloudButton(
-              tooltip: localizations.childReadAloudTooltip,
-              unavailableMessage: localizations.childReadAloudUnavailable,
-              textGetter: () {
-                final details = childState.asData?.value;
-                if (details == null) {
-                  return ScreenSpeechHelper.extractVisibleText(context);
+    String Function()? textGetter;
+    Widget? bottomActionBar;
+    final body = childState.when(
+      data: (ChildProfileDetails details) {
+        final ChildProfile child = details.child;
+        final DateTime now = DateTime.now();
+        final Duration age = now.difference(child.dateOfBirth);
+
+        textGetter = () {
+          final List<String> visibleNames = <String>[];
+          final List<String> tickedNames = <String>[];
+
+          nipCatalogue.forEach((String vaccineCode, List<DayDuration> ages) {
+            for (int i = 0; i < ages.length; i++) {
+              final int doseNumber = i + 1;
+              final DayDuration doseAge = ages[i];
+              final bool isPast = age >= doseAge.duration;
+              final String key = '$vaccineCode-$doseNumber';
+              final bool isChecked = _checkedDoses.containsKey(key);
+
+              if (vaccineCode == "HPV" &&
+                  childSexFromString(child.sex) != ChildSex.female) {
+                continue;
+              }
+
+              if (isPast || _showAll || isChecked) {
+                final String displayName =
+                    doseNumber > 1 ? '$vaccineCode $doseNumber' : vaccineCode;
+                if (!visibleNames.contains(displayName)) {
+                  visibleNames.add(displayName);
                 }
-
-                final child = details.child;
-                final now = DateTime.now();
-                final age = now.difference(child.dateOfBirth);
-
-                final List<String> visibleNames = <String>[];
-                final List<String> tickedNames = <String>[];
-
-                nipCatalogue
-                    .forEach((String vaccineCode, List<DayDuration> ages) {
-                  for (int i = 0; i < ages.length; i++) {
-                    final int doseNumber = i + 1;
-                    final DayDuration doseAge = ages[i];
-                    final bool isPast = age >= doseAge.duration;
-                    final String key = '$vaccineCode-$doseNumber';
-                    final bool isChecked = _checkedDoses.containsKey(key);
-
-                    if (vaccineCode == "HPV" &&
-                        childSexFromString(child.sex) != ChildSex.female) {
-                      continue;
-                    }
-
-                    if (isPast || _showAll || isChecked) {
-                      final String displayName = doseNumber > 1
-                          ? '$vaccineCode $doseNumber'
-                          : vaccineCode;
-                      if (!visibleNames.contains(displayName)) {
-                        visibleNames.add(displayName);
-                      }
-                      if (isChecked && !tickedNames.contains(displayName)) {
-                        tickedNames.add(displayName);
-                      }
-                    }
-                  }
-                });
-
-                return ScreenSpeechHelper.vaccineRecordsScreenText(
-                  context: context,
-                  localizations: localizations,
-                  childName: details.child.name,
-                  isRegistrationFlow: _isRegistration,
-                  showAllVaccines: _showAll,
-                  visibleVaccineNames: visibleNames,
-                  tickedVaccineNames: tickedNames,
-                  records: details.records,
-                  dues: details.dueVaccines,
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: childState.when(
-          data: (ChildProfileDetails details) {
-            final ChildProfile child = details.child;
-            final DateTime now = DateTime.now();
-            final Duration age = now.difference(child.dateOfBirth);
-
-            if (!_initialized) {
-              for (final VaccinationRecord record in details.records) {
-                _checkedDoses['${record.vaccineCode}-${record.doseNumber}'] =
-                    record.administeredDate;
+                if (isChecked && !tickedNames.contains(displayName)) {
+                  tickedNames.add(displayName);
+                }
               }
-              if (widget.isOnboardingFlow) {
-                _checkedDoses
-                  ..clear()
-                  ..addAll(onboardingState.selectedVaccineDoses);
-              }
-              _initialized = true;
+            }
+          });
+
+          return ScreenSpeechHelper.vaccineRecordsScreenText(
+            context: context,
+            localizations: localizations,
+            childName: details.child.name,
+            isRegistrationFlow: _isRegistration,
+            showAllVaccines: _showAll,
+            visibleVaccineNames: visibleNames,
+            tickedVaccineNames: tickedNames,
+            records: details.records,
+            dues: details.dueVaccines,
+          );
+        };
+
+        bottomActionBar = _BottomActionBar(
+          isSaving: _isSaving,
+          isRegistration: _isRegistration,
+          localizations: localizations,
+          onSave: () => _save(true),
+          onSkipOrReturn: _isRegistration
+              ? () => _save(false)
+              : () => Navigator.pop(context),
+        );
+
+        if (!_initialized) {
+          for (final VaccinationRecord record in details.records) {
+            _checkedDoses['${record.vaccineCode}-${record.doseNumber}'] =
+                record.administeredDate;
+          }
+          if (widget.isOnboardingFlow) {
+            _checkedDoses
+              ..clear()
+              ..addAll(onboardingState.selectedVaccineDoses);
+          }
+          _initialized = true;
+        }
+
+        final List<_DoseItemData> items = <_DoseItemData>[];
+
+        nipCatalogue.forEach((String vaccineCode, List<DayDuration> ages) {
+          for (int i = 0; i < ages.length; i++) {
+            final int doseNumber = i + 1;
+            final DayDuration doseAge = ages[i];
+            final bool isPast = age >= doseAge.duration;
+            final String key = '$vaccineCode-$doseNumber';
+            final bool isChecked = _checkedDoses.containsKey(key);
+
+            if (vaccineCode == "HPV" &&
+                childSexFromString(child.sex) != ChildSex.female) {
+              continue;
             }
 
-            final List<_DoseItemData> items = <_DoseItemData>[];
+            if (isPast || _showAll || isChecked) {
+              final DateTime defaultDate =
+                  child.dateOfBirth.add(doseAge.duration);
+              final DateTime cappedDate =
+                  defaultDate.isAfter(now) ? now : defaultDate;
 
-            nipCatalogue.forEach((String vaccineCode, List<DayDuration> ages) {
-              for (int i = 0; i < ages.length; i++) {
-                final int doseNumber = i + 1;
-                final DayDuration doseAge = ages[i];
-                final bool isPast = age >= doseAge.duration;
-                final String key = '$vaccineCode-$doseNumber';
-                final bool isChecked = _checkedDoses.containsKey(key);
+              items.add(
+                _DoseItemData(
+                  vaccineCode: vaccineCode,
+                  doseNumber: doseNumber,
+                  keyName: key,
+                  isChecked: isChecked,
+                  administeredDate: _checkedDoses[key],
+                  scheduledDate: defaultDate,
+                  fallbackDate: cappedDate,
+                ),
+              );
+            }
+          }
+        });
 
-                if (vaccineCode == "HPV" &&
-                    childSexFromString(child.sex) != ChildSex.female) {
-                  continue;
-                }
-
-                if (isPast || _showAll || isChecked) {
-                  final DateTime defaultDate =
-                      child.dateOfBirth.add(doseAge.duration);
-                  final DateTime cappedDate =
-                      defaultDate.isAfter(now) ? now : defaultDate;
-
-                  items.add(
-                    _DoseItemData(
-                      vaccineCode: vaccineCode,
-                      doseNumber: doseNumber,
-                      keyName: key,
-                      isChecked: isChecked,
-                      administeredDate: _checkedDoses[key],
-                      scheduledDate: defaultDate,
-                      fallbackDate: cappedDate,
-                    ),
-                  );
-                }
-              }
-            });
-
-            return Column(
+        return Stack(
+          children: <Widget>[
+            ListView(
+              padding: const EdgeInsets.fromLTRB(16, 110, 16, 24),
               children: <Widget>[
-                Expanded(
-                  child: Stack(
-                    children: <Widget>[
-                      ListView(
-                        padding: const EdgeInsets.fromLTRB(16, 110, 16, 24),
-                        children: <Widget>[
-                          if (widget.isOnboardingFlow) ...<Widget>[
-                            _OnboardingStepsHeader(
-                                localizations: localizations),
-                            const SizedBox(height: 12),
-                          ],
-                          Text(
-                            localizations
-                                .retroactiveVaccineSubtitle(child.name),
-                            style: const TextStyle(
-                              fontSize: 15,
-                              color: Color(0xFF64748B),
-                            ),
-                          ),
-                          const SizedBox(height: 14),
-                          if (items.isEmpty)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 40),
-                              child: Center(
-                                child: Text(
-                                  localizations.vaccineRecordsEmpty,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Color(0xFF64748B),
-                                  ),
-                                ),
-                              ),
-                            )
-                          else
-                            ...items.map(
-                              (_DoseItemData item) => _VaccineDoseRow(
-                                item: item,
-                                localizations: localizations,
-                                onToggle: (bool isChecked) {
-                                  _toggleDose(
-                                    item.vaccineCode,
-                                    item.doseNumber,
-                                    isChecked,
-                                    item.fallbackDate,
-                                  );
-                                },
-                                onPickDate: () {
-                                  _selectDate(
-                                    context,
-                                    item.keyName,
-                                    item.administeredDate ?? item.fallbackDate,
-                                    child.dateOfBirth,
-                                  );
-                                },
-                              ),
-                            ),
-                        ],
-                      ),
-                      Positioned(
-                        top: 10,
-                        left: 16,
-                        right: 16,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            boxShadow: const <BoxShadow>[
-                              BoxShadow(
-                                color: Color(0x1F000000),
-                                blurRadius: 10,
-                                offset: Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: _FilterToggleCard(
-                            showAll: _showAll,
-                            onToggle: _toggleShowAll,
-                            localizations: localizations,
-                          ),
-                        ),
-                      ),
-                    ],
+                if (widget.isOnboardingFlow) ...<Widget>[
+                  _OnboardingStepsHeader(localizations: localizations),
+                  const SizedBox(height: 12),
+                ],
+                Text(
+                  localizations.retroactiveVaccineSubtitle(child.name),
+                  style: const TextStyle(
+                    fontSize: 15,
+                    color: Color(0xFF64748B),
                   ),
                 ),
-                _BottomActionBar(
-                  isSaving: _isSaving,
-                  isRegistration: _isRegistration,
-                  localizations: localizations,
-                  onSave: () => _save(true),
-                  onSkipOrReturn: _isRegistration
-                      ? () => _save(false)
-                      : () => Navigator.pop(context),
-                ),
+                const SizedBox(height: 14),
+                if (items.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 40),
+                    child: Center(
+                      child: Text(
+                        localizations.vaccineRecordsEmpty,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF64748B),
+                        ),
+                      ),
+                    ),
+                  )
+                else
+                  ...items.map(
+                    (_DoseItemData item) => _VaccineDoseRow(
+                      item: item,
+                      localizations: localizations,
+                      onToggle: (bool isChecked) {
+                        _toggleDose(
+                          item.vaccineCode,
+                          item.doseNumber,
+                          isChecked,
+                          item.fallbackDate,
+                        );
+                      },
+                      onPickDate: () {
+                        _selectDate(
+                          context,
+                          item.keyName,
+                          item.administeredDate ?? item.fallbackDate,
+                          child.dateOfBirth,
+                        );
+                      },
+                    ),
+                  ),
               ],
-            );
-          },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (Object error, StackTrace stackTrace) => Center(
-            child: Text('Error: $error'),
-          ),
-        ),
+            ),
+            Positioned(
+              top: 10,
+              left: 16,
+              right: 16,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: const <BoxShadow>[
+                    BoxShadow(
+                      color: Color(0x1F000000),
+                      blurRadius: 10,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: _FilterToggleCard(
+                  showAll: _showAll,
+                  onToggle: _toggleShowAll,
+                  localizations: localizations,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (Object error, StackTrace stackTrace) => Center(
+        child: Text('Error: $error'),
       ),
     );
+
+    return Scaffold(
+        backgroundColor: AppTheme.background,
+        appBar: BasicAppBar(
+            title: localizations.childVaccineRecordsAndHistory,
+            textGetter: textGetter),
+        body: body,
+        bottomNavigationBar: bottomActionBar);
   }
 }
 

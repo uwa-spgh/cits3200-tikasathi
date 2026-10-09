@@ -1,6 +1,7 @@
 {
   "@@locale": "en",
   "appTitle": "TikaSathi",
+  "appBarBack": "Back",
   "@appTitle": {
     "description": "The title of the application"
   },
