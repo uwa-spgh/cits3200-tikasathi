@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/nip/vaccine_display.dart';
 import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
@@ -244,9 +245,10 @@ class _VaccineRecordsScreenState extends ConsumerState<VaccineRecordsScreen> {
                 continue;
               }
 
-              final String historyDisplayName = ages.length > 1
-                  ? '$vaccineCode dose $doseNumber'
-                  : vaccineCode;
+              final String historyDisplayName =
+                  vaccineHasSingleDose(vaccineCode)
+                      ? vaccineCode
+                      : '$vaccineCode dose $doseNumber';
               allVaccineNames[key] = historyDisplayName;
               if (isPast) {
                 ageAppropriateNames[key] = historyDisplayName;
@@ -590,8 +592,11 @@ class _VaccineDoseRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String label =
-        '${item.vaccineCode} (${localizations.dose} ${item.doseNumber})';
+    final String label = formatVaccineDisplayName(
+      localizations,
+      item.vaccineCode,
+      item.doseNumber,
+    );
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),

@@ -6,6 +6,7 @@ import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
+import 'package:tikasathi/core/nip/vaccine_display.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
 
@@ -146,7 +147,11 @@ class _ScheduleDueRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = '$vaccineCode (${localizations.dose} $doseNumber)';
+    final label = formatVaccineDisplayName(
+      localizations,
+      vaccineCode,
+      doseNumber,
+    );
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
@@ -234,15 +239,18 @@ class _VaccineScheduleEditorScreenState
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                '${l10n.scheduleEditorDose} ${due.doseNumber}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF475569),
+              if (!vaccineHasSingleDose(due.vaccineCode)) ...[
+                Text(
+                  '${l10n.scheduleEditorDose} ${due.doseNumber}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF475569),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
+                const SizedBox(height: 20),
+              ] else
+                const SizedBox(height: 16),
               Text(
                 l10n.scheduleEditorDueDateChange,
                 style: const TextStyle(

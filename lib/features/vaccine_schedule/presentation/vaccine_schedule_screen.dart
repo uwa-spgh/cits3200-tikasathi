@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/nip/vaccine_display.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
@@ -124,7 +125,11 @@ class _VaccineScheduleTable extends StatelessWidget {
                       : const Color(0xFF166534);
 
                   final vaccineRow = makeVaccineRow(
-                      '${data.vaccineCode} (${localizations.dose} ${data.doseNumber})',
+                      formatVaccineDisplayName(
+                        localizations,
+                        data.vaccineCode,
+                        data.doseNumber,
+                      ),
                       DateFormat('d MMM y', locale).format(data.date),
                       isFirst,
                       isLast,

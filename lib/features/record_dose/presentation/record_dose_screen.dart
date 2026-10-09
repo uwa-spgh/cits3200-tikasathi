@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/nip/vaccine_display.dart';
 import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/record_dose/domain/record_dose_controller.dart';
@@ -499,7 +500,11 @@ class _DueTile extends StatelessWidget {
     final String dueDateLabel = _formatShortDate(context, due.dueDate);
 
     return Semantics(
-      label: localizations.recordDoseDoseLabel(due.vaccineCode, due.doseNumber),
+      label: formatVaccineDisplayName(
+        localizations,
+        due.vaccineCode,
+        due.doseNumber,
+      ),
       selected: isSelected,
       button: true,
       child: Material(
@@ -549,12 +554,13 @@ class _DueTile extends StatelessWidget {
                         runSpacing: 6,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: <Widget>[
-                          _Pill(
-                            label: localizations
-                                .recordDoseDoseChip(due.doseNumber),
-                            background: _blueSurface,
-                            foreground: _actionBlue,
-                          ),
+                          if (!vaccineHasSingleDose(due.vaccineCode))
+                            _Pill(
+                              label: localizations
+                                  .recordDoseDoseChip(due.doseNumber),
+                              background: _blueSurface,
+                              foreground: _actionBlue,
+                            ),
                           _Pill(
                             label: isOverdue
                                 ? localizations

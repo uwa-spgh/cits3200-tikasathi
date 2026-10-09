@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/nip/vaccine_display.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_models.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
@@ -606,8 +607,11 @@ class ScreenSpeechHelper {
       _groupSpeechItems<VaccinationRecord>(
         records,
         dateOf: (VaccinationRecord record) => record.administeredDate,
-        itemOf: (VaccinationRecord record) =>
-            '${record.vaccineCode} ${record.doseNumber}',
+        itemOf: (VaccinationRecord record) => vaccineHasSingleDose(
+          record.vaccineCode,
+        )
+            ? record.vaccineCode
+            : '${record.vaccineCode} ${record.doseNumber}',
       ),
       isNepali: isNepali,
       locale: locale,
@@ -628,7 +632,9 @@ class ScreenSpeechHelper {
       _groupSpeechItems<VaccinationDue>(
         missed,
         dateOf: (VaccinationDue due) => due.dueDate,
-        itemOf: (VaccinationDue due) => '${due.vaccineCode} ${due.doseNumber}',
+        itemOf: (VaccinationDue due) => vaccineHasSingleDose(due.vaccineCode)
+            ? due.vaccineCode
+            : '${due.vaccineCode} ${due.doseNumber}',
       ),
       isNepali: isNepali,
       locale: locale,
@@ -644,7 +650,9 @@ class ScreenSpeechHelper {
       _groupSpeechItems<VaccinationDue>(
         upcoming,
         dateOf: (VaccinationDue due) => due.dueDate,
-        itemOf: (VaccinationDue due) => '${due.vaccineCode} ${due.doseNumber}',
+        itemOf: (VaccinationDue due) => vaccineHasSingleDose(due.vaccineCode)
+            ? due.vaccineCode
+            : '${due.vaccineCode} ${due.doseNumber}',
       ),
       isNepali: isNepali,
       locale: locale,

@@ -2,6 +2,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/nip/vaccine_display.dart';
 import 'package:tikasathi/core/reminders/reminder_schedule.dart';
 
 /// The wording of one reminder notification.
@@ -14,7 +15,7 @@ typedef ReminderMessage = ({String title, String body});
 /// loaded them yet. Calling it more than once is harmless.
 Future<void> ensureReminderDateFormatting() => initializeDateFormatting();
 
-/// The vaccine as the rest of the app names it, e.g. `BCG (Dose 1)`.
+/// The vaccine as the rest of the app names it, e.g. `PENTA (Dose 2)`.
 ///
 /// Dues carry a code and a dose number rather than a display name, and the
 /// vaccine records screen builds the label this same way.
@@ -23,7 +24,7 @@ String reminderVaccineName(
   String vaccineCode,
   int doseNumber,
 ) {
-  return '$vaccineCode (${localizations.dose} $doseNumber)';
+  return formatVaccineDisplayName(localizations, vaccineCode, doseNumber);
 }
 
 /// The text to show for a reminder of [kind].

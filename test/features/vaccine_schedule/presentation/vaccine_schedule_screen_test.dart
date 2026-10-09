@@ -74,7 +74,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Vaccine schedule'), findsOneWidget);
-    expect(find.text('BCG (Dose 1)'), findsOneWidget);
+    expect(find.text('BCG'), findsOneWidget);
+    expect(find.text('BCG (Dose 1)'), findsNothing);
     expect(find.text('PENTA (Dose 2)'), findsOneWidget);
     expect(find.text('MR (Dose 2)'), findsOneWidget);
     expect(find.text('Today · 14 Sep 2026'), findsOneWidget);
