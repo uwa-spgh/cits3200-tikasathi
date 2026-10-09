@@ -286,8 +286,8 @@ void main() {
 
         settings.language = AppLanguage.nepali;
         await scheduler.refresh();
-        expect(
-            await lastScheduledBody(queued.notificationId), contains('खुराक'));
+        expect(await lastScheduledBody(queued.notificationId),
+            isNot(contains('खुराक')));
       });
 
       test('re-registers when the saved facility changes', () async {
@@ -325,8 +325,8 @@ void main() {
             .setLanguage(AppLanguage.nepali);
         await pumpEventQueue();
 
-        expect(
-            await lastScheduledBody(queued.notificationId), contains('खुराक'));
+        expect(await lastScheduledBody(queued.notificationId),
+            isNot(contains('खुराक')));
       });
     });
 

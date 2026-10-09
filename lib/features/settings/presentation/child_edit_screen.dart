@@ -9,6 +9,7 @@ import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
 import 'package:tikasathi/features/vaccine_records/presentation/missed_vaccines_dialog.dart';
 import 'package:tikasathi/features/child/domain/date_of_birth_validation.dart';
+import 'package:tikasathi/core/validation/name_validation.dart';
 
 class ChildEditScreen extends ConsumerStatefulWidget {
   const ChildEditScreen({required this.childId, super.key});
@@ -64,13 +65,20 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
     final day = int.tryParse(_ddController.text);
     final month = int.tryParse(_mmController.text);
     final year = int.tryParse(_yyController.text);
+    final String name = _nameController.text.trim();
     if (_child == null ||
-        _nameController.text.trim().isEmpty ||
+        name.isEmpty ||
         day == null ||
         month == null ||
         year == null) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(l10n.profileInvalidChild)));
+      return;
+    }
+    if (!isValidPersonName(name)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.onboardingErrorInvalidName)),
+      );
       return;
     }
     final ChildDateOfBirthValidation dobValidation = validateChildDateOfBirth(
@@ -105,7 +113,7 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
       final db = ref.read(appDatabaseProvider);
       await db.childProfilesDao.updateChildProfile(
         id: widget.childId,
-        name: _nameController.text.trim(),
+        name: name,
         dateOfBirth: _dob!,
         sex: _sex,
       );
@@ -278,6 +286,7 @@ class _ChildEditScreenState extends ConsumerState<ChildEditScreen> {
                         const SizedBox(height: 12),
                         TextField(
                           controller: _nameController,
+                          inputFormatters: [PersonNameInputFormatter()],
                           textInputAction: TextInputAction.next,
                           decoration: _decoration(
                             l10n.onboardingChildNameHint,

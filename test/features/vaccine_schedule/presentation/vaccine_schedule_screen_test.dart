@@ -6,6 +6,7 @@ import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/settings/data/settings_providers.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
+import 'package:tikasathi/features/vaccine_schedule/presentation/vaccine_schedule_editor_screen.dart';
 import 'package:tikasathi/features/vaccine_schedule/presentation/vaccine_schedule_screen.dart';
 
 import '../../../helpers/fake_settings_repository.dart';
@@ -74,7 +75,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Vaccine schedule'), findsOneWidget);
-    expect(find.text('BCG (Dose 1)'), findsOneWidget);
+    expect(find.text('BCG'), findsOneWidget);
+    expect(find.text('BCG (Dose 1)'), findsNothing);
     expect(find.text('PENTA (Dose 2)'), findsOneWidget);
     expect(find.text('MR (Dose 2)'), findsOneWidget);
     expect(find.text('Today · 14 Sep 2026'), findsOneWidget);
@@ -121,4 +123,75 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('There are no upcoming vaccines.'), findsOneWidget);
   });
+
+  testWidgets('opens vaccine editing when the card body is tapped', (
+    WidgetTester tester,
+  ) async {
+    await _pumpEditor(tester);
+
+    await tester.tap(find.text('PENTA (Dose 2)'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Edit scheduled vaccine'), findsOneWidget);
+    expect(find.text('PENTA'), findsOneWidget);
+  });
+
+  testWidgets('opens vaccine editing when the edit icon is tapped', (
+    WidgetTester tester,
+  ) async {
+    await _pumpEditor(tester);
+
+    await tester.tap(find.byIcon(Icons.edit_calendar));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Edit scheduled vaccine'), findsOneWidget);
+    expect(find.text('PENTA'), findsOneWidget);
+  });
+}
+
+Future<void> _pumpEditor(WidgetTester tester) async {
+  const childId = 'editor-child';
+  final now = DateTime(2026, 9, 14);
+
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        settingsRepositoryProvider.overrideWith(
+          (ref) => FakeSettingsRepository(language: AppLanguage.english),
+        ),
+        childProfileProvider(childId).overrideWith(
+          (ref) => Future.value(
+            ChildProfileDetails(
+              child: ChildProfile(
+                id: childId,
+                name: 'Maya',
+                dateOfBirth: DateTime(2026, 1, 1),
+                sex: 'female',
+                isSetupComplete: true,
+              ),
+              dueVaccines: [
+                VaccinationDue(
+                  id: 'due-penta',
+                  childId: childId,
+                  vaccineCode: 'PENTA',
+                  doseNumber: 2,
+                  dueDate: now,
+                ),
+              ],
+              records: const [],
+              now: now,
+            ),
+          ),
+        ),
+      ],
+      child: const MaterialApp(
+        locale: Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: VaccineScheduleEditorScreen(childId: childId),
+      ),
+    ),
+  );
+
+  await tester.pumpAndSettle();
 }

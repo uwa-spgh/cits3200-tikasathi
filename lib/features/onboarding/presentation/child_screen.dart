@@ -6,6 +6,7 @@ import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
+import 'package:tikasathi/core/validation/name_validation.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/child/domain/date_of_birth_validation.dart';
@@ -47,9 +48,16 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
   Future<void> _onFinish() async {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
 
-    if (_nameController.text.trim().isEmpty) {
+    final String name = _nameController.text.trim();
+    if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(localizations.onboardingErrorEmptyName)),
+      );
+      return;
+    }
+    if (!isValidPersonName(name)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(localizations.onboardingErrorInvalidName)),
       );
       return;
     }
@@ -93,7 +101,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
         await db.childProfilesDao.insertChildProfile(
           ChildProfilesCompanion.insert(
             id: childId,
-            name: _nameController.text.trim(),
+            name: name,
             dateOfBirth: dob,
             sex: _selectedGender,
           ),
@@ -133,7 +141,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
     final controller = ref.read(onboardingControllerProvider.notifier);
 
     controller.updateChildInfo(
-      name: _nameController.text.trim(),
+      name: name,
       dob: dob,
       sex: _selectedGender,
     );
@@ -307,6 +315,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
                     const SizedBox(height: 12),
                     TextField(
                       controller: _nameController,
+                      inputFormatters: [PersonNameInputFormatter()],
                       onChanged: (_) => _updateDraftIfValid(),
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(

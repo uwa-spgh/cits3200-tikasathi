@@ -283,7 +283,8 @@ void main() {
       expect(find.text('Vaccine history'), findsOneWidget);
       expect(find.textContaining('Maya'), findsOneWidget);
       expect(find.text('Age-appropriate only'), findsOneWidget);
-      expect(find.text('BCG (Dose 1)'), findsOneWidget);
+      expect(find.text('BCG'), findsOneWidget);
+      expect(find.text('BCG (Dose 1)'), findsNothing);
       expect(find.text('PENTA (Dose 1)'), findsOneWidget);
       expect(find.text('PENTA (Dose 2)'), findsOneWidget);
       expect(find.text('PENTA (Dose 3)'), findsOneWidget);
@@ -346,7 +347,8 @@ void main() {
       expect(find.text('Vaccine history'), findsOneWidget);
       expect(find.textContaining('Nima'), findsOneWidget);
       expect(find.text('Age-appropriate only'), findsOneWidget);
-      expect(find.text('BCG (Dose 1)'), findsOneWidget);
+      expect(find.text('BCG'), findsOneWidget);
+      expect(find.text('BCG (Dose 1)'), findsNothing);
       expect(find.text('Save Changes'), findsOneWidget);
       expect(find.text('Return'), findsOneWidget);
     });

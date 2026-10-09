@@ -6,6 +6,7 @@ import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
+import 'package:tikasathi/core/nip/vaccine_display.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
 
@@ -146,7 +147,11 @@ class _ScheduleDueRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = '$vaccineCode (${localizations.dose} $doseNumber)';
+    final label = formatVaccineDisplayName(
+      localizations,
+      vaccineCode,
+      doseNumber,
+    );
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
@@ -154,40 +159,44 @@ class _ScheduleDueRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                      color: Color(0xFF334155),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: onEdit,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                        color: Color(0xFF334155),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    DateFormat(
-                      'd MMM y',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dueDate),
-                    style: const TextStyle(color: Color(0xFF64748B)),
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    Text(
+                      DateFormat(
+                        'd MMM y',
+                        Localizations.localeOf(context).languageCode,
+                      ).format(dueDate),
+                      style: const TextStyle(color: Color(0xFF64748B)),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            IconButton(
-              iconSize: 28,
-              color: const Color(0xFF0F52BA),
-              icon: const Icon(Icons.edit_calendar),
-              onPressed: onEdit,
-            ),
-          ],
+              IconButton(
+                iconSize: 28,
+                color: const Color(0xFF0F52BA),
+                icon: const Icon(Icons.edit_calendar),
+                onPressed: onEdit,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -234,15 +243,18 @@ class _VaccineScheduleEditorScreenState
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                '${l10n.scheduleEditorDose} ${due.doseNumber}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF475569),
+              if (!vaccineHasSingleDose(due.vaccineCode)) ...[
+                Text(
+                  '${l10n.scheduleEditorDose} ${due.doseNumber}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF475569),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
+                const SizedBox(height: 20),
+              ] else
+                const SizedBox(height: 16),
               Text(
                 l10n.scheduleEditorDueDateChange,
                 style: const TextStyle(

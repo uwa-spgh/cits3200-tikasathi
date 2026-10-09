@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
+import 'package:tikasathi/core/validation/name_validation.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/onboarding/presentation/child_screen.dart';
@@ -31,12 +33,19 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
   void _onContinue() {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
     final String name = _nameController.text.trim();
-    final String phone = _phoneController.text.trim();
+    final String phone = normalizePhoneNumber(_phoneController.text);
 
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(localizations.onboardingErrorEmptyCaregiverName)),
+      );
+      return;
+    }
+    if (!isValidPersonName(name)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(localizations.onboardingErrorInvalidCaregiverName)),
       );
       return;
     }
@@ -182,6 +191,7 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
                 controller: _phoneController,
                 onChanged: (value) => _updateDraft(),
                 keyboardType: TextInputType.phone,
+                inputFormatters: const [PhoneNumberInputFormatter()],
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 24),
@@ -233,6 +243,7 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
     required ValueChanged<String> onChanged,
     TextInputType keyboardType = TextInputType.text,
     TextInputAction textInputAction = TextInputAction.next,
+    List<TextInputFormatter>? inputFormatters,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -248,6 +259,10 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
         const SizedBox(height: 8),
         TextField(
           controller: controller,
+          inputFormatters: inputFormatters ??
+              (controller == _nameController
+                  ? [PersonNameInputFormatter()]
+                  : null),
           onChanged: onChanged,
           keyboardType: keyboardType,
           textInputAction: textInputAction,

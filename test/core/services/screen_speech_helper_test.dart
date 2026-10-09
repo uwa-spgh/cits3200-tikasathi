@@ -703,11 +703,11 @@ void main() {
         groupedText,
         contains('MMR 1 is due today.'),
       );
-      expect(groupedText, contains('BCG 1 and OPV 1 are due on'));
+      expect(groupedText, contains('BCG and OPV 1 are due on'));
       expect(groupedText, contains('Administered vaccines.'));
       expect(groupedText, contains('Missed vaccines.'));
       expect(groupedText, contains('Upcoming vaccines.'));
-      expect(groupedText, contains('BCG 1 and PENTA 1 were given on'));
+      expect(groupedText, contains('BCG and PENTA 1 were given on'));
       expect(
         groupedText.indexOf('Administered vaccines.'),
         lessThan(groupedText.indexOf('Missed vaccines.')),
