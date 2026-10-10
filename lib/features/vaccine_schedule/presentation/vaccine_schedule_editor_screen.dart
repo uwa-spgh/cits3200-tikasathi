@@ -5,9 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
-import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
 import 'package:tikasathi/core/nip/vaccine_display.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
+import 'package:tikasathi/features/home/domain/home_helpers.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
 
 enum _ScheduleEditAction { save }
@@ -611,11 +611,12 @@ class _VaccineScheduleEditorScreenState
         error: (error, stack) =>
             Center(child: Text(l10n.scheduleEditorSaveError)),
         data: (details) {
-          final age = DateTime.now().difference(details.child.dateOfBirth);
+          // Same window as Log vaccine: overdue, due today, or due soon.
+          final today = DateUtils.dateOnly(details.now);
           final dues = details.orderedDueVaccines.where((due) {
             if (_showAll) return true;
-            final doseAge = getDoseAge(due.vaccineCode, due.doseNumber);
-            return doseAge != null && age >= doseAge.duration;
+            return !DateUtils.dateOnly(due.dueDate).isAfter(today) ||
+                isDueSoon(due.dueDate, today);
           }).toList();
           return Column(
             children: [
