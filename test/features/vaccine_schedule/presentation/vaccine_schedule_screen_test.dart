@@ -147,11 +147,88 @@ void main() {
     expect(find.text('Edit scheduled vaccine'), findsOneWidget);
     expect(find.text('PENTA'), findsOneWidget);
   });
+
+  testWidgets(
+      'editor filter shows overdue, due today and due soon doses by default', (
+    WidgetTester tester,
+  ) async {
+    // Born 15 Jan 2026 and up to date: the 9-month doses are 5 days away.
+    final now = DateTime(2026, 10, 10, 9);
+    await _pumpEditor(
+      tester,
+      now: now,
+      dateOfBirth: DateTime(2026, 1, 15),
+      dues: [
+        _due('PCV', 2, now.subtract(const Duration(days: 12))),
+        _due('PENTA', 3, now),
+        _due('MR', 1, now.add(const Duration(days: 5))),
+        _due('FIPV', 2, now.add(const Duration(days: 14))),
+        _due('JE', 1, now.add(const Duration(days: 15))),
+      ],
+    );
+
+    expect(find.text('PCV (Dose 2)'), findsOneWidget);
+    expect(find.text('PENTA (Dose 3)'), findsOneWidget);
+    expect(find.text('MR (Dose 1)'), findsOneWidget);
+    expect(find.text('FIPV (Dose 2)'), findsOneWidget);
+    expect(find.text('JE'), findsNothing);
+    expect(find.text('No outstanding vaccines are scheduled.'), findsNothing);
+  });
+
+  testWidgets('editor filter uses the scheduled date, not the standard age', (
+    WidgetTester tester,
+  ) async {
+    // A catch-up PCV 3 due in 7 days, months before its standard 9-month age.
+    final now = DateTime(2026, 10, 10, 9);
+    await _pumpEditor(
+      tester,
+      now: now,
+      dateOfBirth: DateTime(2026, 7, 4),
+      dues: [_due('PCV', 3, now.add(const Duration(days: 7)))],
+    );
+
+    expect(find.text('PCV (Dose 3)'), findsOneWidget);
+  });
+
+  testWidgets('editor shows later doses only after Show all vaccines', (
+    WidgetTester tester,
+  ) async {
+    final now = DateTime(2026, 10, 10, 9);
+    await _pumpEditor(
+      tester,
+      now: now,
+      dateOfBirth: DateTime(2026, 1, 15),
+      dues: [_due('JE', 1, DateTime(2027, 1, 15))],
+    );
+
+    expect(find.text('JE'), findsNothing);
+    expect(find.text('No outstanding vaccines are scheduled.'), findsOneWidget);
+
+    await tester.tap(find.text('Show all vaccines'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('JE'), findsOneWidget);
+  });
 }
 
-Future<void> _pumpEditor(WidgetTester tester) async {
+VaccinationDue _due(String vaccineCode, int doseNumber, DateTime dueDate) {
+  return VaccinationDue(
+    id: 'due-$vaccineCode-$doseNumber',
+    childId: 'editor-child',
+    vaccineCode: vaccineCode,
+    doseNumber: doseNumber,
+    dueDate: dueDate,
+  );
+}
+
+Future<void> _pumpEditor(
+  WidgetTester tester, {
+  DateTime? now,
+  DateTime? dateOfBirth,
+  List<VaccinationDue>? dues,
+}) async {
   const childId = 'editor-child';
-  final now = DateTime(2026, 9, 14);
+  now ??= DateTime(2026, 9, 14);
 
   await tester.pumpWidget(
     ProviderScope(
@@ -165,21 +242,13 @@ Future<void> _pumpEditor(WidgetTester tester) async {
               child: ChildProfile(
                 id: childId,
                 name: 'Maya',
-                dateOfBirth: DateTime(2026, 1, 1),
+                dateOfBirth: dateOfBirth ?? DateTime(2026, 1, 1),
                 sex: 'female',
                 isSetupComplete: true,
               ),
-              dueVaccines: [
-                VaccinationDue(
-                  id: 'due-penta',
-                  childId: childId,
-                  vaccineCode: 'PENTA',
-                  doseNumber: 2,
-                  dueDate: now,
-                ),
-              ],
+              dueVaccines: dues ?? [_due('PENTA', 2, now!)],
               records: const [],
-              now: now,
+              now: now!,
             ),
           ),
         ),
