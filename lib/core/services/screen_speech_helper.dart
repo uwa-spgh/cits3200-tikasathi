@@ -5,16 +5,36 @@ import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/nip/vaccine_display.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_models.dart';
+import 'package:tikasathi/features/learn/domain/learn_topics.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
 
 /// Helper to generate natural, conversational spoken summaries for each screen
 /// tailored for low-literacy caregivers in both English and Nepali.
 class ScreenSpeechHelper {
-  /// Builds the short purpose-and-navigation summary for the Learn screen.
+  /// Builds the spoken text for the Learn screen: the short
+  /// purpose-and-navigation summary, or, when a topic is expanded, that
+  /// topic's title followed by its full content.
   static String learnScreenText({
     required AppLocalizations localizations,
+    LearnTopic? expandedTopic,
   }) {
-    return localizations.learnSpeechSummary;
+    if (expandedTopic == null) {
+      return localizations.learnSpeechSummary;
+    }
+    final List<String> parts = <String>[
+      expandedTopic.title(localizations),
+      for (final String paragraph in expandedTopic.paragraphs(localizations))
+        boldRuns(paragraph).map((TextRun run) => run.text).join(),
+      for (final List<String> row in expandedTopic.tableRows(localizations))
+        row.where((String cell) => cell.isNotEmpty).join(': '),
+    ];
+    final String stop = localizations.localeName == 'ne' ? '।' : '.';
+    return parts
+        .map((String part) => part.trim())
+        .where((String part) => part.isNotEmpty)
+        .map((String part) =>
+            RegExp(r'[.!?:।]$').hasMatch(part) ? part : '$part$stop')
+        .join(' ');
   }
 
   /// Extracts all visible text from [Text] and [RichText] widgets within
