@@ -1,0 +1,160 @@
+# TikaSathi
+An mHealth application for childhood immunisation reminders and information.
+
+Created as a final year UWA CITS3200 project in conjunction with The UWA School of [Population and Global Health](https://www.uwa.edu.au/schools/population-global-health).
+
+---
+
+# Project Specification
+
+This document outlines the detailed specifications, architecture, and technology stack for the Childhood Immunisation App for Nepal (Team 47, CITS3200). It serves as the single source of truth for the development team before any code is written.
+
+## 1. Project Overview
+The goal is to build an mHealth application for mothers and caregivers in low-resource, rural areas of Nepal. The app tracks children's immunisation schedules, provides timely reminders, and offers health education. 
+
+> [!IMPORTANT]
+> **Core Constraints**
+> - **Offline-First:** The app must function entirely offline. Connectivity is only used for opportunistic background syncing or live maps.
+> - **Hardware:** Must run smoothly on low-end, inexpensive Android and iOS devices with limited RAM and older OS versions.
+> - **Literacy & Accessibility:** Target users have varying literacy levels. The UI must heavily favour icons, large touch targets, and use simple language.
+> - **Privacy:** Sensitive health and location data must be encrypted locally using device-native security (PIN/Biometrics).
+
+## 2. Technology Stack
+Based on the project constraints and team requirements, the following tech stack will be used:
+
+* **UI & Framework:** **Flutter (Dart)**. Flutter is highly performant on low-end hardware, natively compiles to both iOS and Android, and allows for a single unified codebase.
+* **Flutter Version Management:** **FVM** pins the project to Flutter 3.44.9, so every developer and the CI pipeline use a compatible Flutter and Dart toolchain.
+* **State Management:** **Riverpod**. A compile-safe, scalable state management solution that will handle the app's complex reactive state (e.g., updating UI instantly when a vaccine is marked completed).
+* **Local Database:** **Drift**. A reactive, type-safe SQLite library for Flutter. It is perfect for local data storage and offline-first persistence.
+* **Notifications:** `flutter_local_notifications` to interface with the device's native calendar and notification APIs for the 3-touch reminder system (1 week before, 1 day before, day-of).
+* **Localization:** Flutter's built-in `flutter_localizations` combined with JSON or ARB files to support instant toggling between English (EN) and Nepali (NP).
+* **Text-to-Speech (TTS) & Accessibility:** `flutter_tts` providing 100% offline, on-device audio narration in both English (`en-US`) and Nepali (`ne-NP` with automated phonetic `hi-IN` Devanagari fallback for iOS and devices lacking a native Nepali voice).
+* **Security:** `flutter_secure_storage` and `local_auth` for encrypting data at rest and locking the app behind biometrics/PIN.
+
+## 3. CI/CD & Testing Strategy
+To maintain code quality across the 6-person team, all pull requests will be subjected to a strict CI/CD pipeline using **GitHub Actions**.
+
+### GitHub Actions Workflow
+Every pull request to the `main` or `develop` branch will trigger a workflow that runs:
+1. **Formatting & Linting:** `dart format --set-exit-if-changed .` and `flutter analyze` to ensure code style consistency.
+2. **Unit Tests:** `flutter test` to verify the logic of the age calculator, vaccine schedule generator, and missed-dose catch-up algorithm.
+3. **Widget Tests:** Automated UI tests to ensure critical flows (e.g., child registration, language toggling) render correctly without regressions.
+
+**Releases:** Any pushed tag starting with `v` (e.g., `v1.0.0`) will automatically trigger a build workflow that generates an Android APK and an iOS Archive and publishes them as a GitHub Release.
+
+> [!TIP]
+> **Project Acceptance Tests**
+> Your team will also perform manual Acceptance Testing on physical low-end devices to verify the app meets the criteria outlined in `Project Acceptance Tests.md`, such as:
+> - Ensuring language switching takes fewer than 5 actions.
+> - Verifying notifications arrive even when the app is force-closed.
+> - Confirming child profiles persist completely offline.
+
+## 4. Core Modules & Data Architecture
+
+### Child Profile Management
+- Store UUID, Name, DOB, Sex, and `isSetupComplete` status.
+- **Validation:** Enforces date of birth integrity by preventing future dates with localized alerts.
+- **Vaccine Status & Timeline:** Unified status card with accurate color-coded indicators (Green for Up to date / All completed, Amber for Due today / Due soon, Red for Overdue, Slate grey for Awaiting setup completion). When a child is awaiting setup completion (`isSetupComplete == false`), non-alarming neutral slate styling is displayed alongside a clear setup prompt banner with an inline "Complete setup" action.
+- **Home Dashboard Grouping:** Dedicated "Awaiting setup completion" section on the Home dashboard with a one-tap "Complete setup" button, ensuring newly registered children whose past records were skipped do not trigger premature or alarming overdue warnings.
+- **Vaccine History:** A unified screen that merges past vaccine history logging with record viewing. Features a floating age-appropriate filter toggle at the top of the screen, interactive checkboxes, date picker for administered doses, top-left back navigation, and a concise low-literacy advisory popup prompting caregivers to visit a health facility if missed vaccines are present after completing registration. Skipping setup cleanly sets the child into the awaiting setup state without alarming alert dialogs.
+- **Vaccine Schedule:** A dedicated screen displaying the full national immunisation schedule grouped by due dates with relative countdowns and back navigation.
+
+### Caregiver Profile Management
+- Store UUID, Name, Phone Number and Address.
+
+### Immunisation Engine
+- Automatically calculate age and generate the vaccine schedule (BCG, Pentavalent, Rotavirus, PCV, etc.) based on the Nepal NIP schedule.
+- **Statuses:** Upcoming (○), Completed (✓), Overdue (⚠).
+- **Catch-up Logic:** Rules for adjusting intervals if a dose is missed.
+- **Dose Logging:** Streamlined log vaccine flow displaying dates with years and a floating show more/fewer vaccines toggle.
+
+### Notification System
+- Native, offline-scheduled notifications based on exact clinical intervals. 
+- Automatically fallback to periodic (fortnightly) alerts for overdue vaccines to prevent reminder fatigue.
+
+### Health Information & Health Facility
+- Educational modules containing Myth/Fact sections (adapted from Nepal's Family Welfare Division).
+- A directory and contact details for the local **Health Facility** (स्वास्थ्य संस्था, formerly health facilitator), filterable, editable, and accessible offline.
+
+### Accessibility & Text-to-Speech (TTS)
+- **100% Offline Speech Synthesis:** Interfaces natively with device engines (Android `TextToSpeech` and iOS `AVSpeechSynthesizer`), adhering strictly to offline-first principles with zero cloud dependencies.
+- **Cross-Language Resolution:** Seamlessly supports English and Nepali based on the active user app language. For Nepali, detects on-device `ne-NP` voices and gracefully falls back to phonetic Hindi (`hi-IN`), which shares identical Devanagari script and phonetics, guaranteeing voice playback on iOS and low-resource devices.
+- **Low-Literacy Conversational Narratives:** `ScreenSpeechHelper` provides friendly, actionable spoken instructions tailored to what is actively displayed on screen:
+  - *Child Profile Page:* Provides a concise, vaccine-focused narrative highlighting the child's immunisation status and next due vaccine and date (without reciting demographic metadata like age, date of birth, and sex).
+  - *Onboarding / New Child Registration:* Guides the caregiver to tick vaccines already received for their child under the age-appropriate or all-vaccines view, dynamically reading ticked items and reminding them that registration can be skipped for now.
+  - *Add a New Child Page & Caregiver Screen:* One-tap speech guidance walking caregivers step-by-step through entering child and caregiver information.
+  - *Health Facility Details Page:* Articulates saved or editable facility contact details (post/hospital name, address, phone number).
+  - *Home Dashboard:* Conveys clear, actionable status cards for registered children (awaiting setup, due today, due soon, up-to-date) without redundant app title prefixes.
+  - *Record Dose Screen:* Articulates the 2 actual on-screen steps (checking the administered date and ticking received vaccines), announcing currently ticked vaccines or available options.
+  - *Child Vaccine History:* Narrates completed vaccines concisely and only includes upcoming doses when the user selects the "All vaccines" tab.
+- **One-Tap Interactive Control:** Top-of-screen `ReadAloudButton` toggles between idle and active playback, switching visually to a stop icon with localized tooltips and automatically cancelling audio when navigating or switching tabs.
+- **Fallback Screen Text Crawler:** Automatically extracts visible text elements from the active widget tree when a screen doesn't declare a custom narrative.
+
+## 5. Integrating Figma Designs
+
+Because the **Figma MCP Server** has been successfully configured in the workspace, AI agents can now connect directly to your Figma files!
+
+> [!NOTE]
+> **How to use Figma with AI Agents:**
+> You no longer need to export screens manually. Simply provide the AI agent with your **Figma File URL** or **Node ID**, and the agent will use the MCP server to directly extract the design tokens, layout hierarchy, and SVG assets required to build the UI in Flutter.
+
+## 6. AI Agent Guidelines & Custom Skills
+
+This repository is equipped with custom, community-proven AI steering skills located in the `.agents/skills/` directory. All AI assistants working on this codebase will automatically inherit and enforce these rules:
+
+- **proven_flutter_riverpod:** Mandates modern `@riverpod` codegen and strict immutable models using `freezed`.
+- **proven_drift_sqlite:** Enforces offline-first Data Access Objects (DAOs) and watching database streams natively with Riverpod.
+- **proven_flutter_testing:** Enforces `ProviderScope` wrapping for widget tests and mandates running CI checks locally before submitting code.
+
+## 7. Quick Start Guide for Developers
+
+Welcome to the team! Follow this step-by-step Quick Start guide to set up your local environment and begin feature development:
+
+### Step 1: Prerequisites & SDK Setup
+1. Install [FVM](https://fvm.app/documentation/getting-started/installation), the Flutter Version Manager.
+2. From the project root, install the Flutter version pinned in `.fvmrc`:
+   ```bash
+   fvm install
+   ```
+3. Verify the development environment:
+   ```bash
+   fvm flutter doctor
+   ```
+4. > [!WARNING]
+   > **Windows Users:**
+   > Flutter requires symlink support to build plugins. You **must** enable **Developer Mode** in Windows before fetching dependencies:
+   > 1. Open your terminal and run `start ms-settings:developers`
+   > 2. Toggle **Developer Mode** to **ON**.
+
+### Step 2: Fetch Dependencies
+Run the following command in the project root:
+```bash
+fvm flutter pub get
+```
+
+### Step 3: Start Code Generation (Watch Mode)
+We use `build_runner` for Riverpod state providers (`.g.dart`), Freezed models, and Drift SQLite databases.
+During active development, run build_runner in **watch mode** so generated files update automatically whenever you save a file:
+```bash
+fvm dart run build_runner watch --delete-conflicting-outputs
+```
+*(Alternatively, for a single manual build pass, run: `fvm dart run build_runner build --delete-conflicting-outputs`)*
+
+### Step 4: Explore the Reference Feature
+If you are new to Flutter or Riverpod, examine the `example_counter` feature before writing new code:
+* **UI Screen:** [counter_screen.dart](file:///c:/Users/tobyf/Desktop/cits3200-tikasathi/lib/features/example_counter/presentation/counter_screen.dart) — Shows `ConsumerWidget`, `ref.watch()` for UI rebuilds, and `ref.read()` for button actions.
+* **State Logic:** [counter_notifier.dart](file:///c:/Users/tobyf/Desktop/cits3200-tikasathi/lib/features/example_counter/domain/counter_notifier.dart) — Demonstrates modern `@riverpod` annotations.
+* **Tests:** [counter_notifier_test.dart](file:///c:/Users/tobyf/Desktop/cits3200-tikasathi/test/features/example_counter/domain/counter_notifier_test.dart) & [counter_screen_test.dart](file:///c:/Users/tobyf/Desktop/cits3200-tikasathi/test/features/example_counter/presentation/counter_screen_test.dart).
+* **Crash Course:** Read [DEVELOPER_GUIDE.md](file:///c:/Users/tobyf/Desktop/cits3200-tikasathi/DEVELOPER_GUIDE.md) for a 5-minute Flutter & Riverpod 101 summary.
+
+### Step 5: Verify Locally Before Committing
+Before opening a Pull Request, verify your changes locally using the same checks enforced by GitHub Actions:
+```bash
+fvm dart format .
+fvm flutter analyze
+fvm flutter test
+```
+
+### Step 6: Git Workflow & Figma Integration
+* **Branching Strategy:** Review [CONTRIBUTING.md](file:///c:/Users/tobyf/Desktop/cits3200-tikasathi/CONTRIBUTING.md) for `feature/`, `fix/`, and `chore/` branch naming and Conventional Commit rules.
+* **Figma MCP Server:** If configured in your IDE, AI agents can extract design tokens directly from Figma links. Configure `@modelcontextprotocol/server-figma` in your `mcp_config.json` with your `FIGMA_ACCESS_TOKEN`.

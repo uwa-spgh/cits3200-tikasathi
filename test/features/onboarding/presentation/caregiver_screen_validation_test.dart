@@ -53,7 +53,7 @@ void main() {
     await pumpScreen(tester);
 
     await tester.enterText(find.byType(TextField).at(0), 'Maya');
-    await tester.enterText(find.byType(TextField).at(1), '98 000abc');
+    await tester.enterText(find.byType(TextField).at(1), '++');
     final continueButton = find.text('Continue');
     await tester.ensureVisible(continueButton);
     await tester.tap(continueButton);

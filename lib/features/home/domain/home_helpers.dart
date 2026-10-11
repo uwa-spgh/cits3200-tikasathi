@@ -57,6 +57,14 @@ String formatAge(DateTime dateOfBirth, AppLocalizations localizations) {
   return localizations.ageInYears(years);
 }
 
+bool isDueSoon(DateTime dueDate, DateTime today) {
+  final DateTime dueDateOnly =
+      DateTime(dueDate.year, dueDate.month, dueDate.day);
+  final DateTime todayOnly = DateTime(today.year, today.month, today.day);
+  final int difference = dueDateOnly.difference(todayOnly).inDays;
+  return difference > 0 && difference <= 14;
+}
+
 String getChildAvatar({
   required ChildSex sex,
   required DateTime dateOfBirth,

@@ -95,6 +95,83 @@ void main() {
       expect(state.isOverdue(state.actionableDues.last), isFalse);
     });
 
+    test('shows due soon doses initially when none are actionable', () async {
+      await insertDue(
+        'due-soon',
+        'BOPV',
+        1,
+        today.add(const Duration(days: 7)),
+      );
+      await insertDue(
+        'due-later',
+        'MR',
+        1,
+        today.add(const Duration(days: 15)),
+      );
+
+      final RecordDoseState state = await readState();
+
+      expect(state.dueSoonDues.map((VaccinationDue due) => due.id),
+          <String>['due-soon']);
+      expect(
+        state.visibleDues.map((VaccinationDue due) => due.id),
+        <String>['due-soon'],
+      );
+    });
+
+    test('prioritises actionable doses over due soon doses', () async {
+      await insertDue(
+        'due-today',
+        'PENTA',
+        1,
+        today,
+      );
+      await insertDue(
+        'due-soon',
+        'BOPV',
+        1,
+        today.add(const Duration(days: 7)),
+      );
+
+      final RecordDoseState state = await readState();
+
+      expect(
+        state.visibleDues.map((VaccinationDue due) => due.id),
+        <String>['due-today'],
+      );
+    });
+
+    test('does not show doses beyond the due soon window initially', () async {
+      await insertDue(
+        'due-later',
+        'MR',
+        1,
+        today.add(const Duration(days: 15)),
+      );
+
+      final RecordDoseState state = await readState();
+
+      expect(state.dueSoonDues, isEmpty);
+      expect(state.visibleDues, isEmpty);
+    });
+
+    test('includes a dose exactly 14 days away as due soon', () async {
+      await insertDue(
+        'due-soon-boundary',
+        'BOPV',
+        1,
+        today.add(const Duration(days: 14)),
+      );
+
+      final RecordDoseState state = await readState();
+
+      expect(
+        state.dueSoonDues.map((VaccinationDue due) => due.id),
+        <String>['due-soon-boundary'],
+      );
+      expect(state.visibleDues, state.dueSoonDues);
+    });
+
     test('shows the whole schedule once upcoming doses are revealed', () async {
       await insertDue('due-today', 'BOPV', 1, today);
       await insertDue(

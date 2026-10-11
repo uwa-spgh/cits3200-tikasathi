@@ -113,6 +113,60 @@ void main() {
       expect(find.text('सिक्नुहोस्'), findsWidgets);
     });
 
+    testWidgets('reselecting the current settings tab scrolls to the top',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            appDatabaseProvider.overrideWith((ref) {
+              final db = AppDatabase.forTesting(NativeDatabase.memory());
+              ref.onDispose(db.close);
+              return db;
+            }),
+            settingsRepositoryProvider.overrideWith(
+              (ref) => FakeSettingsRepository(),
+            ),
+            healthFacilitatorProvider.overrideWith((ref) => Stream.value(null)),
+          ],
+          child: const MaterialApp(
+            locale: Locale('ne'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: AppShellScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(Icons.settings_outlined));
+      await tester.pumpAndSettle();
+
+      final RenderBox navigationBar =
+          tester.renderObject(find.byType(BottomNavigationBar));
+      final Offset settingsTab = navigationBar.localToGlobal(
+        Offset(
+          navigationBar.size.width * 5 / 6,
+          navigationBar.size.height - 20,
+        ),
+      );
+
+      final scrollable = find.byType(Scrollable).hitTestable().first;
+      await tester.drag(scrollable, const Offset(0, -500));
+      await tester.pumpAndSettle();
+      expect(
+        tester.state<ScrollableState>(scrollable).position.pixels,
+        greaterThan(0),
+      );
+
+      await tester.tapAt(settingsTab);
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(
+        tester.state<ScrollableState>(scrollable).position.pixels,
+        0,
+      );
+    });
+
     testWidgets('shows read-aloud action feedback when pressed',
         (WidgetTester tester) async {
       await tester.pumpWidget(

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 11 and older. See data_extraction_rules.xml for why these are left out. -->
+<full-backup-content>
+    <exclude domain="root" path="app_flutter/tikasathi.sqlite" />
+    <exclude domain="root" path="app_flutter/tikasathi.sqlite-journal" />
+    <exclude domain="root" path="app_flutter/tikasathi.sqlite-wal" />
+    <exclude domain="root" path="app_flutter/tikasathi.sqlite-shm" />
+    <exclude domain="sharedpref" path="FlutterSecureStorage.xml" />
+</full-backup-content>

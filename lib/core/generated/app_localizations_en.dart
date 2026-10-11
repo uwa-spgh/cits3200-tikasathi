@@ -12,6 +12,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'TikaSathi';
 
   @override
+  String get appBarBack => 'Back';
+
+  @override
   String get childPageTitle => 'Child Page';
 
   @override
@@ -271,6 +274,108 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteChildAction => 'Delete child';
 
   @override
+  String get editVaccineScheduleAction =>
+      'Edit child\'s vaccination schedule (HEALTHCARE PROFESSIONAL ONLY)';
+
+  @override
+  String get healthcareProfessionalQuestion =>
+      'Are you a healthcare professional?';
+
+  @override
+  String get healthcareProfessionalConfirm => 'Yes';
+
+  @override
+  String get healthcareProfessionalDecline => 'No';
+
+  @override
+  String get scheduleEditorTitle => 'Edit vaccine schedule';
+
+  @override
+  String scheduleEditorTitleForChild(String childName) {
+    return 'Edit $childName\'s vaccine schedule';
+  }
+
+  @override
+  String get scheduleEditorEmpty => 'No outstanding vaccines are scheduled.';
+
+  @override
+  String get scheduleEditorEdit => 'Edit scheduled vaccine';
+
+  @override
+  String get scheduleEditorVaccine => 'Vaccine';
+
+  @override
+  String get scheduleEditorDose => 'Dose number';
+
+  @override
+  String get scheduleEditorDueDate => 'Scheduled date';
+
+  @override
+  String get scheduleEditorSave => 'Save schedule changes';
+
+  @override
+  String get scheduleEditorSaveConfirmTitle => 'Save schedule changes?';
+
+  @override
+  String get scheduleEditorSaveConfirmMessage =>
+      'Save these healthcare professional changes to the child\'s vaccine schedule?';
+
+  @override
+  String get scheduleEditorRestore => 'Restore default vaccine schedule';
+
+  @override
+  String get scheduleEditorRestoreTitle => 'Restore default vaccine schedule?';
+
+  @override
+  String get scheduleEditorRestoreMessage =>
+      'This will remove all healthcare professional changes and restore the standard vaccination schedule for this child. Vaccination history will not be changed.';
+
+  @override
+  String get scheduleEditorRestoreConfirm => 'Restore';
+
+  @override
+  String get scheduleEditorInvalidDose =>
+      'That vaccine and dose combination is not valid.';
+
+  @override
+  String get scheduleEditorDuplicateDose =>
+      'That vaccine and dose is already scheduled for this child.';
+
+  @override
+  String get scheduleEditorAdministeredDose =>
+      'That vaccine and dose has already been administered.';
+
+  @override
+  String get scheduleEditorSaveSuccess => 'Vaccine schedule updated.';
+
+  @override
+  String get scheduleEditorSaveError =>
+      'Could not update the vaccine schedule.';
+
+  @override
+  String get scheduleEditorRemove => 'Remove from schedule';
+
+  @override
+  String get scheduleEditorRemoveConfirm => 'Remove';
+
+  @override
+  String get scheduleEditorDueDateChange => 'Change scheduled date?';
+
+  @override
+  String get scheduleEditorRemoveTitle => 'Remove vaccine from schedule?';
+
+  @override
+  String scheduleEditorRemoveMessage(Object vaccineCode, Object doseNumber) {
+    return 'Are you sure you want to remove $vaccineCode dose $doseNumber from this child\'s vaccine schedule? This will not affect vaccination history.';
+  }
+
+  @override
+  String scheduleEditorRemoveSuccess(
+      Object vaccineCode, Object doseNumber, Object childName) {
+    return '$vaccineCode dose $doseNumber removed from $childName\'s schedule.';
+  }
+
+  @override
   String get editCaregiverTitle => 'Edit caregiver details';
 
   @override
@@ -409,6 +514,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Please enter caregiver\'s name';
 
   @override
+  String get onboardingErrorInvalidCaregiverName =>
+      'Please enter a valid caregiver\'s name.';
+
+  @override
   String get onboardingErrorEmptyCaregiverPhone =>
       'Please enter caregiver\'s phone number';
 
@@ -452,6 +561,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingErrorEmptyName => 'Please enter child\'s name';
+
+  @override
+  String get onboardingErrorInvalidName =>
+      'Please enter a valid child\'s name.';
 
   @override
   String get onboardingErrorInvalidDate => 'Please enter a valid Date of Birth';
@@ -622,10 +735,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeSectionDueToday => 'Due today';
 
   @override
+  String get homeSectionOverdue => 'Overdue';
+
+  @override
   String get homeSectionDueSoon => 'Due soon';
 
   @override
   String get homeSectionUpToDate => 'Up to date';
+
+  @override
+  String get homeScrollInstruction => 'Scroll down to see all children.';
 
   @override
   String get homeEmptyStateTitle => 'No children added yet.';
@@ -638,84 +757,87 @@ class AppLocalizationsEn extends AppLocalizations {
   String get learnTitle => 'Learn';
 
   @override
-  String get learnTopic1Title => 'Topic 1';
+  String get learnSpeechSummary =>
+      'Learn page. Here you can learn about vaccines. Click on a section to read more.';
 
   @override
-  String get learnTopic1Summary => 'A short summary of topic 1.';
+  String get learnMythLabel => 'Myth:';
+
+  @override
+  String get learnFactLabel => 'Fact:';
+
+  @override
+  String get learnTopic1Title => 'Why are vaccines important?';
 
   @override
   String get learnTopic1Body =>
-      'This is placeholder content for topic 1. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 1 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 1 and answer common questions.\n\nThis paragraph will say where to get more help with topic 1, such as the local health facility or a health worker.';
+      '**Vaccines keep your child safe.**\n• Some diseases can make a child very sick.\n• Some diseases can make a child weak for life.\n• Some diseases can kill a child.\n• Vaccines stop these diseases before they start.\n\n**Vaccines protect other children too.**\n• When many children are vaccinated, the disease cannot spread.\n• This keeps your family, your neighbours and your village safe.\n\n**Vaccines are free.**\n• Vaccines are free at the health post and immunisation clinics.\n\n**Your child needs all the doses.**\n• One dose is not enough for many vaccines.\n• Each dose helps your child\'s body become stronger.\n• Follow the dates in the app.';
 
   @override
-  String get learnTopic2Title => 'Topic 2';
-
-  @override
-  String get learnTopic2Summary => 'A short summary of topic 2.';
+  String get learnTopic2Title => 'When should your child get vaccines?';
 
   @override
   String get learnTopic2Body =>
-      'This is placeholder content for topic 2. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 2 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 2 and answer common questions.\n\nThis paragraph will say where to get more help with topic 2, such as the local health facility or a health worker.';
+      '• Your child needs different vaccines at different ages.\n• Some vaccines are given soon after birth.\n• Other vaccines are given when your child is 6, 10 and 14 weeks old.\n• More vaccines are given at 9, 12 and 15 months.\n• The app will remind you when your child is due for a vaccine.\n• Follow the vaccination schedule to keep your child protected.';
 
   @override
-  String get learnTopic3Title => 'Topic 3';
-
-  @override
-  String get learnTopic3Summary => 'A short summary of topic 3.';
+  String get learnTopic3Title => 'What if your child misses a vaccine?';
 
   @override
   String get learnTopic3Body =>
-      'This is placeholder content for topic 3. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 3 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 3 and answer common questions.\n\nThis paragraph will say where to get more help with topic 3, such as the local health facility or a health worker.';
+      '• Do not worry if your child misses a vaccine.\n• Take your child to the nearest health facility.\n• Show the health worker your child\'s vaccination card.\n• Tell the health worker which vaccines your child has already received.\n• The health worker can tell you which vaccine your child needs next.\n• Do not stop vaccination because your child missed a dose.';
 
   @override
-  String get learnTopic4Title => 'Topic 4';
-
-  @override
-  String get learnTopic4Summary => 'A short summary of topic 4.';
+  String get learnTopic4Title => 'Are vaccines safe?';
 
   @override
   String get learnTopic4Body =>
-      'This is placeholder content for topic 4. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 4 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 4 and answer common questions.\n\nThis paragraph will say where to get more help with topic 4, such as the local health facility or a health worker.';
+      '• Vaccines are given to protect your child from serious diseases.\n• Most children have only mild effects after vaccination.\n• Your child may have a mild fever.\n• Your child may have some pain or swelling where the injection was given.\n• Your child may be a little fussy or irritable for a short time.\n• These effects are usually temporary.';
 
   @override
-  String get learnTopic5Title => 'Topic 5';
-
-  @override
-  String get learnTopic5Summary => 'A short summary of topic 5.';
+  String get learnTopic5Title => 'What can happen after vaccination?';
 
   @override
   String get learnTopic5Body =>
-      'This is placeholder content for topic 5. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 5 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 5 and answer common questions.\n\nThis paragraph will say where to get more help with topic 5, such as the local health facility or a health worker.';
+      '**After the vaccine: what is normal**\nSome children have small problems after a vaccine. This is normal. It means the vaccine is working.\n• A little fever\n• Pain or swelling where the needle went in\n• Crying more than usual\n• Sleeping more than usual\n\n**What you can do**\n• Breastfeed your baby more often.\n• Keep your baby in light clothes. Do not wrap your baby too tightly.\n• Give your baby extra fluids if your baby is older than 6 months.\n• Do not rub or press the swollen place.\n• Ask the health worker before you give any medicine.\n\nThese problems go away in 1 to 2 days.\n\n**When to go to the health facility quickly**\nTake your child to the health facility right away if your child:\n• has a very high fever\n• has fits or shakes\n• cannot breastfeed or drink\n• has trouble breathing\n• will not stop crying for a long time\n• has swelling that is getting bigger\n• looks very weak or is hard to wake';
 
   @override
-  String get learnTopic6Title => 'Topic 6';
-
-  @override
-  String get learnTopic6Summary => 'A short summary of topic 6.';
+  String get learnTopic6Title => 'Vaccine myths and facts';
 
   @override
   String get learnTopic6Body =>
-      'This is placeholder content for topic 6. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 6 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 6 and answer common questions.\n\nThis paragraph will say where to get more help with topic 6, such as the local health facility or a health worker.';
+      '**Myth:** Vaccines make children sick.\n**Fact:** Vaccines are safe. They teach the body to fight disease. A small fever after the vaccine is normal and passes quickly.\n\n**Myth:** My child is healthy, so my child does not need vaccines.\n**Fact:** Vaccines work best before a child gets sick. Healthy children can catch these diseases too.\n\n**Myth:** If my child misses a vaccine, my child cannot get it anymore.\n**Fact:** Your child can still get it. Go to the health post as soon as you can.\n\n**Myth:** Breastfed babies do not need vaccines.\n**Fact:** Breast milk is very good for your baby. But it cannot stop these diseases. Your baby still needs vaccines.\n\n**Myth:** Diseases like polio and measles are gone, so vaccines are not needed.\n**Fact:** These diseases can still come back if children are not vaccinated.';
 
   @override
-  String get learnTopic7Title => 'Topic 7';
-
-  @override
-  String get learnTopic7Summary => 'A short summary of topic 7.';
+  String get learnTopic7Title => 'Keep your child\'s vaccination card safe';
 
   @override
   String get learnTopic7Body =>
-      'This is placeholder content for topic 7. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 7 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 7 and answer common questions.\n\nThis paragraph will say where to get more help with topic 7, such as the local health facility or a health worker.';
+      '• Keep your child\'s vaccination card in a safe place.\n• Take the card whenever you visit a health facility.\n• Ask the health worker to update the card after each vaccination.\n• Use the app to keep track of your child\'s vaccines.\n• Do not lose the vaccination card.';
 
   @override
-  String get learnTopic8Title => 'Topic 8';
-
-  @override
-  String get learnTopic8Summary => 'A short summary of topic 8.';
+  String get learnTopic8Title => 'Where can your child get vaccines?';
 
   @override
   String get learnTopic8Body =>
-      'This is placeholder content for topic 8. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 8 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 8 and answer common questions.\n\nThis paragraph will say where to get more help with topic 8, such as the local health facility or a health worker.';
+      '• Your child can receive vaccines at vaccination services and health facilities.\n• You may visit your nearest health facility.\n• If you are not sure where to go, ask a health worker.';
+
+  @override
+  String get learnTopic9Title => 'Remember';
+
+  @override
+  String get learnTopic9Body =>
+      '• Vaccines help protect your child from serious diseases.\n• Give your child vaccines on time.\n• Keep your child\'s vaccination card safe.\n• Follow the vaccination schedule.\n• If your child misses a vaccine, visit a health facility.\n• If you have questions, ask a healthcare worker.';
+
+  @override
+  String get learnTopic10Title => 'What each vaccine protects against';
+
+  @override
+  String get learnTopic10Body => '';
+
+  @override
+  String get learnTopic10Table =>
+      'Vaccine | Protects your child from\nBCG | Tuberculosis\nPentavalent | Five diseases, including diphtheria, whooping cough, tetanus, hepatitis B, Haemophilus influenzae type b (Hib) infection.\nPolio drops and polio injection | Polio\nRotavirus | Diarrhoea\nPCV | Pneumonia and brain fever\nMR | Measles and rubella\nJE | Japanese encephalitis (brain fever)\nTCV | Typhoid fever\nHPV (girls, at school in Grade 6) | Cancer of the womb mouth (cervical cancer) when older';
 
   @override
   String get childStatusSetupIncomplete => 'Awaiting setup completion';
@@ -729,6 +851,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get childSetupIncompleteBanner =>
       'Past vaccine history hasn\'t been set up yet. Complete setup to get an accurate schedule.';
+
+  @override
+  String childSetupIncompleteSpeech(String childName) {
+    return '$childName\'s past vaccine history hasn\'t been set up yet. Please complete the setup to get an accurate vaccination schedule.';
+  }
+
+  @override
+  String get childSpeechOverdueAdvice =>
+      'Please visit your nearest health facility for advice on missed vaccines.';
+
+  @override
+  String childSpeechVaccineDueOn(String date) {
+    return 'due on $date';
+  }
 
   @override
   String get childActionCompleteSetup => 'Complete setup';
@@ -778,6 +914,122 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vaccineRecordsEmpty => 'There are no recorded vaccinations.';
 
   @override
+  String vaccineHistoryUpToDate(Object childName) {
+    return '$childName has received all age-appropriate vaccines.';
+  }
+
+  @override
+  String vaccineHistoryRecordedInclude(Object recordedVaccines) {
+    return 'These include $recordedVaccines.';
+  }
+
+  @override
+  String get vaccineHistoryUpToDateEditAdvice =>
+      'You can untick a vaccine if it was selected by mistake, or edit the vaccination date if the recorded date is incorrect.';
+
+  @override
+  String vaccineHistoryRecordedAgeAppropriate(
+      Object childName, Object recordedVaccines) {
+    return '$childName has these age-appropriate vaccines recorded as received: $recordedVaccines.';
+  }
+
+  @override
+  String vaccineHistoryNoRecordedAgeAppropriate(Object childName) {
+    return 'No age-appropriate vaccines have been recorded as received for $childName yet.';
+  }
+
+  @override
+  String vaccineHistoryUnrecordedAgeAppropriate(Object unrecordedVaccines) {
+    return 'These age-appropriate vaccines have not been recorded as received: $unrecordedVaccines.';
+  }
+
+  @override
+  String get vaccineHistoryMissedAdvice =>
+      'Please visit your nearest health facility for advice about vaccines your child may have missed.';
+
+  @override
+  String get vaccineHistoryEditAdvice =>
+      'You can tick vaccines that have already been given, untick vaccines selected by mistake, or edit the vaccination date of a vaccine that is already ticked.';
+
+  @override
+  String vaccineHistoryFullShown(Object childName) {
+    return '$childName\'s full vaccine history is shown.';
+  }
+
+  @override
+  String vaccineHistoryFullShownNoRecorded(Object childName) {
+    return '$childName\'s full vaccine history is shown. No vaccines have been recorded as received yet.';
+  }
+
+  @override
+  String vaccineHistoryRecordedIncludeFull(Object recordedVaccines) {
+    return 'Vaccines recorded as received include $recordedVaccines.';
+  }
+
+  @override
+  String get vaccineHistoryOtherUnrecorded =>
+      'Other vaccines have not been recorded as received.';
+
+  @override
+  String vaccineHistoryLaterSchedule(Object childName) {
+    return 'Some may be scheduled for later as $childName grows.';
+  }
+
+  @override
+  String get vaccineScheduleAdministeredCategory => 'Administered vaccines.';
+
+  @override
+  String vaccineScheduleAdministeredGroupSingular(
+      Object date, Object vaccines) {
+    return '$vaccines was given on $date.';
+  }
+
+  @override
+  String vaccineScheduleAdministeredGroupPlural(Object date, Object vaccines) {
+    return '$vaccines were given on $date.';
+  }
+
+  @override
+  String get vaccineScheduleMissedCategory => 'Missed vaccines.';
+
+  @override
+  String vaccineScheduleMissedGroupSingular(Object date, Object vaccines) {
+    return '$vaccines are overdue since $date.';
+  }
+
+  @override
+  String vaccineScheduleMissedGroupPlural(Object date, Object vaccines) {
+    return '$vaccines are overdue since $date.';
+  }
+
+  @override
+  String get vaccineScheduleMissedAdvice =>
+      'Please visit your nearest health facility for advice on missed vaccines.';
+
+  @override
+  String get vaccineScheduleUpcomingCategory => 'Upcoming vaccines.';
+
+  @override
+  String vaccineScheduleUpcomingTodaySingular(Object vaccines) {
+    return '$vaccines is due today.';
+  }
+
+  @override
+  String vaccineScheduleUpcomingTodayPlural(Object vaccines) {
+    return '$vaccines are due today.';
+  }
+
+  @override
+  String vaccineScheduleUpcomingGroupSingular(Object date, Object vaccines) {
+    return '$vaccines is due on $date.';
+  }
+
+  @override
+  String vaccineScheduleUpcomingGroupPlural(Object date, Object vaccines) {
+    return '$vaccines are due on $date.';
+  }
+
+  @override
   String get dose => 'Dose';
 
   @override
@@ -797,6 +1049,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get vaccineScheduleEmpty => 'There are no upcoming vaccines.';
+
+  @override
+  String vaccineScheduleDueGroupSingular(String date, String vaccines) {
+    return '$vaccines is due on $date';
+  }
+
+  @override
+  String vaccineScheduleDueGroupPlural(String date, String vaccines) {
+    return '$vaccines are due on $date';
+  }
 
   @override
   String get vaccineScheduleToday => 'Today';
@@ -873,6 +1135,18 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get reminderLeadTomorrow =>
+      'Tomorrow is the scheduled vaccination day.';
+
+  @override
+  String get reminderLeadToday => 'Today is your child\'s vaccination day.';
+
+  @override
+  String reminderFacility(String facility) {
+    return 'Your saved health facility: $facility.';
+  }
+
+  @override
   String reminderMissedYesterday(String vaccineName, String date) {
     return '$vaccineName was due on $date and has not been recorded yet. Completing every dose on time keeps your child protected. Please visit your nearest health post.';
   }
@@ -886,4 +1160,60 @@ class AppLocalizationsEn extends AppLocalizations {
   String reminderOverdue(String vaccineName) {
     return '$vaccineName is overdue. Contact your nearest health facility for catch-up vaccination.';
   }
+
+  @override
+  String get backupSectionTitle => 'Backup';
+
+  @override
+  String get backupExportAction => 'Export backup';
+
+  @override
+  String get backupImportAction => 'Import backup';
+
+  @override
+  String get backupPrivacyNote =>
+      'Keep this file somewhere safe and only share it with people you trust. It contains your child\'s health information.';
+
+  @override
+  String get backupPhoneChangeNote =>
+      'Your records do not move to a new phone by themselves. Before changing phones, export a backup.';
+
+  @override
+  String get backupReplaceTitle => 'Replace data on this phone?';
+
+  @override
+  String get backupReplaceMessage =>
+      'This will replace all data on this phone. Continue?';
+
+  @override
+  String get backupReplaceConfirm => 'Continue';
+
+  @override
+  String get backupExportSuccess => 'Backup file ready to save.';
+
+  @override
+  String get backupImportSuccess => 'Backup imported.';
+
+  @override
+  String get backupExportError => 'Could not export the backup.';
+
+  @override
+  String get backupImportError => 'Could not import the backup.';
+
+  @override
+  String get backupInvalidFile =>
+      'This file is not a TikaSathi backup this app can read.';
+
+  @override
+  String get databaseLockedTitle => 'Your saved data cannot be opened';
+
+  @override
+  String get databaseLockedMessage =>
+      'This phone no longer has the key that protects the data in TikaSathi, so the data cannot be read. This can happen after the phone\'s security is reset. If you have a backup file, you can import it after starting fresh.';
+
+  @override
+  String get databaseLockedAction => 'Start fresh';
+
+  @override
+  String get databaseLockedError => 'Could not start fresh. Please try again.';
 }

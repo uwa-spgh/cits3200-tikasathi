@@ -12,6 +12,9 @@ class AppLocalizationsNe extends AppLocalizations {
   String get appTitle => 'टीकासाथी';
 
   @override
+  String get appBarBack => 'फर्कनुहोस्';
+
+  @override
   String get childPageTitle => 'बच्चा पृष्ठ';
 
   @override
@@ -274,6 +277,108 @@ class AppLocalizationsNe extends AppLocalizations {
   String get deleteChildAction => 'बच्चा मेटाउनुहोस्';
 
   @override
+  String get editVaccineScheduleAction =>
+      'बच्चाको खोप तालिका सम्पादन गर्नुहोस् (स्वास्थ्यकर्मीका लागि मात्र)';
+
+  @override
+  String get healthcareProfessionalQuestion =>
+      'के तपाईं स्वास्थ्यकर्मी हुनुहुन्छ?';
+
+  @override
+  String get healthcareProfessionalConfirm => 'हो';
+
+  @override
+  String get healthcareProfessionalDecline => 'होइन';
+
+  @override
+  String get scheduleEditorTitle => 'खोप तालिका सम्पादन गर्नुहोस्';
+
+  @override
+  String scheduleEditorTitleForChild(String childName) {
+    return '$childName को खोप तालिका सम्पादन गर्नुहोस्';
+  }
+
+  @override
+  String get scheduleEditorEmpty => 'कुनै बाँकी खोप तालिका छैन।';
+
+  @override
+  String get scheduleEditorEdit => 'निर्धारित खोप सम्पादन गर्नुहोस्';
+
+  @override
+  String get scheduleEditorVaccine => 'खोप';
+
+  @override
+  String get scheduleEditorDose => 'खोप मात्रा';
+
+  @override
+  String get scheduleEditorDueDate => 'निर्धारित मिति';
+
+  @override
+  String get scheduleEditorSave => 'तालिका परिवर्तनहरू बचत गर्नुहोस्';
+
+  @override
+  String get scheduleEditorSaveConfirmTitle => 'तालिका परिवर्तनहरू बचत गर्ने?';
+
+  @override
+  String get scheduleEditorSaveConfirmMessage =>
+      'बच्चाको खोप तालिकामा स्वास्थ्यकर्मीका परिवर्तनहरू बचत गर्ने?';
+
+  @override
+  String get scheduleEditorRestore =>
+      'पूर्वनिर्धारित खोप तालिका पुनर्स्थापना गर्नुहोस्';
+
+  @override
+  String get scheduleEditorRestoreTitle =>
+      'पूर्वनिर्धारित खोप तालिका पुनर्स्थापना गर्ने?';
+
+  @override
+  String get scheduleEditorRestoreMessage =>
+      'यसले स्वास्थ्यकर्मीका सबै परिवर्तन हटाएर बच्चाको मानक खोप तालिका पुनर्स्थापना गर्नेछ। खोप इतिहास परिवर्तन हुनेछैन।';
+
+  @override
+  String get scheduleEditorRestoreConfirm => 'पुनर्स्थापना गर्नुहोस्';
+
+  @override
+  String get scheduleEditorInvalidDose => 'यो खोप र मात्रा संयोजन मान्य छैन।';
+
+  @override
+  String get scheduleEditorDuplicateDose =>
+      'यो खोप र मात्रा बच्चाका लागि पहिले नै निर्धारित छ।';
+
+  @override
+  String get scheduleEditorAdministeredDose =>
+      'यो खोप र मात्रा पहिले नै लगाइसकिएको छ।';
+
+  @override
+  String get scheduleEditorSaveSuccess => 'खोप तालिका अद्यावधिक भयो।';
+
+  @override
+  String get scheduleEditorSaveError => 'खोप तालिका अद्यावधिक गर्न सकिएन।';
+
+  @override
+  String get scheduleEditorRemove => 'तालिकाबाट हटाउनुहोस्';
+
+  @override
+  String get scheduleEditorRemoveConfirm => 'हटाउनुहोस्';
+
+  @override
+  String get scheduleEditorDueDateChange => 'खोपको तालिका मिति परिवर्तन गर्ने?';
+
+  @override
+  String get scheduleEditorRemoveTitle => 'खोपलाई तालिकाबाट हटाउने?';
+
+  @override
+  String scheduleEditorRemoveMessage(Object vaccineCode, Object doseNumber) {
+    return '$vaccineCode मात्रा $doseNumber लाई बच्चाको खोप तालिकाबाट हटाउने? यसले खोप इतिहासमा असर गर्दैन।';
+  }
+
+  @override
+  String scheduleEditorRemoveSuccess(
+      Object vaccineCode, Object doseNumber, Object childName) {
+    return '$childName को तालिकाबाट $vaccineCode मात्रा $doseNumber हटाइयो।';
+  }
+
+  @override
   String get editCaregiverTitle => 'हेरचाहकर्ताको विवरण सम्पादन गर्नुहोस्';
 
   @override
@@ -414,6 +519,10 @@ class AppLocalizationsNe extends AppLocalizations {
       'कृपया हेरचाहकर्ताको नाम प्रविष्ट गर्नुहोस्';
 
   @override
+  String get onboardingErrorInvalidCaregiverName =>
+      'कृपया हेरचाहकर्ताको मान्य नाम प्रविष्ट गर्नुहोस्।';
+
+  @override
   String get onboardingErrorEmptyCaregiverPhone =>
       'कृपया हेरचाहकर्ताको फोन नम्बर प्रविष्ट गर्नुहोस्';
 
@@ -458,6 +567,10 @@ class AppLocalizationsNe extends AppLocalizations {
 
   @override
   String get onboardingErrorEmptyName => 'कृपया बच्चाको नाम प्रविष्ट गर्नुहोस्';
+
+  @override
+  String get onboardingErrorInvalidName =>
+      'कृपया बच्चाको मान्य नाम प्रविष्ट गर्नुहोस्।';
 
   @override
   String get onboardingErrorInvalidDate =>
@@ -631,10 +744,17 @@ class AppLocalizationsNe extends AppLocalizations {
   String get homeSectionDueToday => 'आज दिइने';
 
   @override
+  String get homeSectionOverdue => 'ढिलो भएको';
+
+  @override
   String get homeSectionDueSoon => 'चाँडै दिइने';
 
   @override
   String get homeSectionUpToDate => 'पूरा भएको';
+
+  @override
+  String get homeScrollInstruction =>
+      'सबै बालबालिका हेर्न तल स्क्रोल गर्नुहोस्।';
 
   @override
   String get homeEmptyStateTitle => 'अहिलेसम्म कुनै बच्चा थपिएको छैन।';
@@ -647,84 +767,87 @@ class AppLocalizationsNe extends AppLocalizations {
   String get learnTitle => 'सिक्नुहोस्';
 
   @override
-  String get learnTopic1Title => 'विषय १';
+  String get learnSpeechSummary =>
+      'सिक्ने पृष्ठ। यहाँ तपाईं खोपबारे जान्न सक्नुहुन्छ। थप पढ्न कुनै खण्डमा थिच्नुहोस्।';
 
   @override
-  String get learnTopic1Summary => 'विषय १ को छोटो सारांश।';
+  String get learnMythLabel => 'भ्रम:';
+
+  @override
+  String get learnFactLabel => 'तथ्य:';
+
+  @override
+  String get learnTopic1Title => 'खोप किन महत्त्वपूर्ण छ?';
 
   @override
   String get learnTopic1Body =>
-      'यो विषय १ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय १ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय १ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय १ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।';
+      '**खोपले तपाईंको बच्चालाई सुरक्षित राख्छ।**\n• केही रोगले बच्चालाई धेरै बिरामी बनाउन सक्छन्।\n• केही रोगले बच्चालाई जीवनभर कमजोर बनाउन सक्छन्।\n• केही रोगले बच्चाको ज्यान लिन सक्छन्।\n• खोपले यी रोगहरूलाई सुरु हुनुअघि नै रोक्छ।\n\n**खोपले अरू बच्चाहरूलाई पनि जोगाउँछ।**\n• धेरै बच्चाहरूले खोप लगाएपछि रोग फैलिन सक्दैन।\n• यसले तपाईंको परिवार, छिमेकी र गाउँलाई सुरक्षित राख्छ।\n\n**खोप निःशुल्क छ।**\n• स्वास्थ्य चौकी र खोप केन्द्रहरूमा खोप निःशुल्क पाइन्छ।\n\n**तपाईंको बच्चालाई सबै मात्रा चाहिन्छ।**\n• धेरै खोपका लागि एक मात्रा मात्र पुग्दैन।\n• हरेक मात्राले तपाईंको बच्चाको शरीरलाई अझ बलियो बनाउँछ।\n• एपमा दिइएका मितिहरू पालना गर्नुहोस्।';
 
   @override
-  String get learnTopic2Title => 'विषय २';
-
-  @override
-  String get learnTopic2Summary => 'विषय २ को छोटो सारांश।';
+  String get learnTopic2Title => 'तपाईंको बच्चालाई कहिले खोप लगाउनुपर्छ?';
 
   @override
   String get learnTopic2Body =>
-      'यो विषय २ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय २ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय २ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय २ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।';
+      '• तपाईंको बच्चालाई फरक-फरक उमेरमा फरक-फरक खोप चाहिन्छ।\n• केही खोप जन्मेलगत्तै दिइन्छ।\n• अरू खोप बच्चा ६, १० र १४ हप्ताको हुँदा दिइन्छ।\n• थप खोप ९, १२ र १५ महिनामा दिइन्छ।\n• तपाईंको बच्चाको खोप लगाउने समय आएपछि एपले तपाईंलाई सम्झाउनेछ।\n• तपाईंको बच्चालाई सुरक्षित राख्न खोप तालिका पालना गर्नुहोस्।';
 
   @override
-  String get learnTopic3Title => 'विषय ३';
-
-  @override
-  String get learnTopic3Summary => 'विषय ३ को छोटो सारांश।';
+  String get learnTopic3Title => 'तपाईंको बच्चाको खोप छुट्यो भने के गर्ने?';
 
   @override
   String get learnTopic3Body =>
-      'यो विषय ३ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ३ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ३ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ३ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।';
+      '• बच्चाको खोप छुट्यो भने चिन्ता नगर्नुहोस्।\n• आफ्नो बच्चालाई नजिकको स्वास्थ्य संस्थामा लैजानुहोस्।\n• स्वास्थ्यकर्मीलाई बच्चाको खोप कार्ड देखाउनुहोस्।\n• बच्चाले कुन-कुन खोप लगाइसकेको छ, स्वास्थ्यकर्मीलाई भन्नुहोस्।\n• अब कुन खोप चाहिन्छ भनेर स्वास्थ्यकर्मीले बताउन सक्नुहुन्छ।\n• एउटा मात्रा छुटेकै कारणले खोप लगाउन नछोड्नुहोस्।';
 
   @override
-  String get learnTopic4Title => 'विषय ४';
-
-  @override
-  String get learnTopic4Summary => 'विषय ४ को छोटो सारांश।';
+  String get learnTopic4Title => 'के खोपहरू सुरक्षित छन्?';
 
   @override
   String get learnTopic4Body =>
-      'यो विषय ४ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ४ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ४ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ४ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।';
+      '• तपाईंको बच्चालाई गम्भीर रोगहरूबाट जोगाउन खोप दिइन्छ।\n• धेरैजसो बच्चाहरूमा खोपपछि हल्का असर मात्र देखिन्छ।\n• तपाईंको बच्चालाई हल्का ज्वरो आउन सक्छ।\n• सुई लगाएको ठाउँमा अलिकति दुख्न वा सुन्निन सक्छ।\n• तपाईंको बच्चा केही समयका लागि अलि रोइरहने वा झर्किने हुन सक्छ।\n• यी असरहरू प्रायः केही समयमै हराउँछन्।';
 
   @override
-  String get learnTopic5Title => 'विषय ५';
-
-  @override
-  String get learnTopic5Summary => 'विषय ५ को छोटो सारांश।';
+  String get learnTopic5Title => 'खोपपछि के हुन सक्छ?';
 
   @override
   String get learnTopic5Body =>
-      'यो विषय ५ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ५ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ५ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ५ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।';
+      '**खोपपछि: के सामान्य हो**\nकेही बच्चाहरूलाई खोपपछि साना समस्या हुन्छन्। यो सामान्य हो। यसको अर्थ खोपले काम गरिरहेको छ।\n• अलिकति ज्वरो\n• सुई लगाएको ठाउँमा दुखाइ वा सुन्निने\n• सामान्यभन्दा बढी रुने\n• सामान्यभन्दा बढी सुत्ने\n\n**तपाईं के गर्न सक्नुहुन्छ**\n• बच्चालाई धेरैपटक आमाको दूध खुवाउनुहोस्।\n• बच्चालाई हलुका लुगा लगाइदिनुहोस्। बच्चालाई धेरै कसेर नबेर्नुहोस्।\n• बच्चा ६ महिनाभन्दा माथिको छ भने थप तरल पदार्थ (झोलिलो कुरा) दिनुहोस्।\n• सुन्निएको ठाउँ नमल्नुहोस् र नथिच्नुहोस्।\n• कुनै पनि औषधि दिनुअघि स्वास्थ्यकर्मीलाई सोध्नुहोस्।\n\nयी समस्याहरू १ देखि २ दिनमा ठीक हुन्छन्।\n\n**तुरुन्तै स्वास्थ्य संस्था कहिले जाने**\nतपाईंको बच्चामा तलका मध्ये कुनै पनि लक्षण देखिएमा तुरुन्तै स्वास्थ्य संस्थामा लैजानुहोस्:\n• धेरै उच्च ज्वरो आउने\n• झट्का आउने वा शरीर काँप्ने\n• आमाको दूध चुस्न वा केही पिउन नसक्ने\n• सास फेर्न गाह्रो हुने\n• लामो समयसम्म रोइरहने, चुप नलाग्ने\n• सुन्निएको ठाउँ झन्-झन् ठूलो हुँदै जाने\n• धेरै कमजोर देखिने वा ब्युँझाउन गाह्रो हुने';
 
   @override
-  String get learnTopic6Title => 'विषय ६';
-
-  @override
-  String get learnTopic6Summary => 'विषय ६ को छोटो सारांश।';
+  String get learnTopic6Title => 'खोपबारे भ्रम र तथ्य';
 
   @override
   String get learnTopic6Body =>
-      'यो विषय ६ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ६ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ६ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ६ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।';
+      '**भ्रम:** खोपले बच्चालाई बिरामी बनाउँछ।\n**तथ्य:** खोपहरू सुरक्षित छन्। खोपले शरीरलाई रोगसँग लड्न सिकाउँछ। खोपपछि अलिकति ज्वरो आउनु सामान्य हो र यो छिट्टै ठीक हुन्छ।\n\n**भ्रम:** मेरो बच्चा स्वस्थ छ, त्यसैले मेरो बच्चालाई खोप चाहिँदैन।\n**तथ्य:** बच्चा बिरामी हुनुअघि नै खोपले सबैभन्दा राम्रो काम गर्छ। स्वस्थ बच्चालाई पनि यी रोग लाग्न सक्छन्।\n\n**भ्रम:** मेरो बच्चाको खोप छुट्यो भने अब त्यो खोप पाउन सक्दैन।\n**तथ्य:** तपाईंको बच्चाले अझै पनि खोप पाउन सक्छ। सकेसम्म छिटो स्वास्थ्य चौकी जानुहोस्।\n\n**भ्रम:** आमाको दूध खाने बच्चालाई खोप चाहिँदैन।\n**तथ्य:** आमाको दूध तपाईंको बच्चाका लागि धेरै राम्रो हो। तर यसले यी रोगहरू रोक्न सक्दैन। तपाईंको बच्चालाई खोप पनि चाहिन्छ।\n\n**भ्रम:** पोलियो र दादुरा जस्ता रोगहरू हराइसके, त्यसैले खोप चाहिँदैन।\n**तथ्य:** बच्चाहरूलाई खोप नलगाए यी रोगहरू फेरि फर्किन सक्छन्।';
 
   @override
-  String get learnTopic7Title => 'विषय ७';
-
-  @override
-  String get learnTopic7Summary => 'विषय ७ को छोटो सारांश।';
+  String get learnTopic7Title => 'आफ्नो बच्चाको खोप कार्ड सुरक्षित राख्नुहोस्';
 
   @override
   String get learnTopic7Body =>
-      'यो विषय ७ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ७ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ७ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ७ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।';
+      '• बच्चाको खोप कार्ड सुरक्षित ठाउँमा राख्नुहोस्।\n• स्वास्थ्य संस्था जाँदा सधैँ कार्ड लिएर जानुहोस्।\n• हरेक खोपपछि कार्डमा विवरण भरिदिन स्वास्थ्यकर्मीलाई भन्नुहोस्।\n• बच्चाले लगाएका खोपहरूको हिसाब राख्न एप प्रयोग गर्नुहोस्।\n• खोप कार्ड नहराउनुहोस्।';
 
   @override
-  String get learnTopic8Title => 'विषय ८';
-
-  @override
-  String get learnTopic8Summary => 'विषय ८ को छोटो सारांश।';
+  String get learnTopic8Title => 'तपाईंको बच्चाले खोप कहाँ पाउन सक्छ?';
 
   @override
   String get learnTopic8Body =>
-      'यो विषय ८ को लागि अस्थायी सामग्री हो। यसलाई यस विषयको वास्तविक जानकारीले बदल्नुहोस्।\n\nयो अनुच्छेदले विषय ८ ले अभिभावक र उनीहरूका बच्चाहरूका लागि के अर्थ राख्छ भनेर बताउनेछ।\n\nयो अनुच्छेदले विषय ८ बारे व्यावहारिक सल्लाह दिनेछ र सामान्य प्रश्नहरूको जवाफ दिनेछ।\n\nयो अनुच्छेदले विषय ८ बारे थप सहयोग कहाँ पाइन्छ भनेर बताउनेछ, जस्तै नजिकको स्वास्थ्य संस्था वा स्वास्थ्यकर्मी।';
+      '• तपाईंको बच्चाले खोप सेवा केन्द्र र स्वास्थ्य संस्थाहरूमा खोप पाउन सक्छ।\n• तपाईं आफ्नो नजिकको स्वास्थ्य संस्थामा जान सक्नुहुन्छ।\n• कहाँ जाने थाहा छैन भने स्वास्थ्यकर्मीलाई सोध्नुहोस्।';
+
+  @override
+  String get learnTopic9Title => 'याद राख्नुहोस्';
+
+  @override
+  String get learnTopic9Body =>
+      '• खोपले तपाईंको बच्चालाई गम्भीर रोगहरूबाट जोगाउन मद्दत गर्छ।\n• बच्चालाई समयमै खोप लगाउनुहोस्।\n• बच्चाको खोप कार्ड सुरक्षित राख्नुहोस्।\n• खोप तालिका पालना गर्नुहोस्।\n• बच्चाको खोप छुटेमा स्वास्थ्य संस्थामा जानुहोस्।\n• केही प्रश्न भएमा स्वास्थ्यकर्मीलाई सोध्नुहोस्।';
+
+  @override
+  String get learnTopic10Title => 'कुन खोपले कुन रोगबाट जोगाउँछ';
+
+  @override
+  String get learnTopic10Body => '';
+
+  @override
+  String get learnTopic10Table =>
+      'खोप | तपाईंको बच्चालाई यी रोगबाट जोगाउँछ\nबीसीजी (BCG) | क्षयरोग (टीबी)\nपेन्टाभ्यालेन्ट | पाँच रोग: भ्यागुते रोग (डिप्थेरिया), लहरे खोकी, धनुष्टङ्कार, हेपाटाइटिस बी र हिब (हेमोफिलस इन्फ्लुएन्जा टाइप बी) संक्रमण\nपोलियो थोपा र पोलियो सुई | पोलियो\nरोटाभाइरस | झाडापखाला\nपीसीभी (PCV) | निमोनिया र मस्तिष्कज्वर\nएमआर (MR) | दादुरा र रुबेला\nजेई (JE) | जापानिज इन्सेफलाइटिस (मस्तिष्कज्वर)\nटीसीभी (TCV) | टाइफाइड (मियादी ज्वरो)\nएचपीभी (HPV) – छात्राहरूलाई, कक्षा ६ मा विद्यालयमै | ठूलो भएपछि हुन सक्ने पाठेघरको मुखको क्यान्सर';
 
   @override
   String get childStatusSetupIncomplete => 'सेटअप पूरा हुन बाँकी';
@@ -738,6 +861,20 @@ class AppLocalizationsNe extends AppLocalizations {
   @override
   String get childSetupIncompleteBanner =>
       'पहिले लगाइएका खोपहरूको विवरण भरिएको छैन। सही तालिका हेर्न सेटअप पूरा गर्नुहोस्।';
+
+  @override
+  String childSetupIncompleteSpeech(String childName) {
+    return '$childNameको पहिले लगाइएका खोपहरूको इतिहास सेटअप गरिएको छैन। सही खोप तालिका प्राप्त गर्न कृपया सेटअप पूरा गर्नुहोस्।';
+  }
+
+  @override
+  String get childSpeechOverdueAdvice =>
+      'छुटेका खोपबारे सल्लाह लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।';
+
+  @override
+  String childSpeechVaccineDueOn(String date) {
+    return 'मिति: $date';
+  }
 
   @override
   String get childActionCompleteSetup => 'सेटअप पूरा गर्नुहोस्';
@@ -787,6 +924,122 @@ class AppLocalizationsNe extends AppLocalizations {
   String get vaccineRecordsEmpty => 'खोप लगाइएको कुनै रेकर्ड छैन।';
 
   @override
+  String vaccineHistoryUpToDate(Object childName) {
+    return '$childName का उमेरअनुसारका सबै खोप लगाइएको छ।';
+  }
+
+  @override
+  String vaccineHistoryRecordedInclude(Object recordedVaccines) {
+    return 'यी खोपहरू समावेश छन्: $recordedVaccines।';
+  }
+
+  @override
+  String get vaccineHistoryUpToDateEditAdvice =>
+      'गल्तीले चयन गरिएको खोप भएमा त्यसको चिन्ह हटाउन वा रेकर्ड गरिएको मिति गलत भएमा खोप लगाएको मिति सम्पादन गर्न सक्नुहुन्छ।';
+
+  @override
+  String vaccineHistoryRecordedAgeAppropriate(
+      Object childName, Object recordedVaccines) {
+    return '$childName का उमेरअनुसार लगाइएका खोपहरूको रेकर्ड: $recordedVaccines।';
+  }
+
+  @override
+  String vaccineHistoryNoRecordedAgeAppropriate(Object childName) {
+    return '$childName का उमेरअनुसार कुनै खोप लगाइएको रेकर्ड छैन।';
+  }
+
+  @override
+  String vaccineHistoryUnrecordedAgeAppropriate(Object unrecordedVaccines) {
+    return 'उमेरअनुसार लगाइएका तर रेकर्ड नभएका खोपहरू: $unrecordedVaccines।';
+  }
+
+  @override
+  String get vaccineHistoryMissedAdvice =>
+      'बच्चाले छुटाएका हुन सक्ने खोपबारे सल्लाह लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।';
+
+  @override
+  String get vaccineHistoryEditAdvice =>
+      'पहिले लगाइसकेका खोपमा चिन्ह लगाउन, गल्तीले चयन गरिएको खोपको चिन्ह हटाउन वा चिन्ह लगाइसकेको खोपको मिति सम्पादन गर्न सक्नुहुन्छ।';
+
+  @override
+  String vaccineHistoryFullShown(Object childName) {
+    return '$childName को सम्पूर्ण खोप इतिहास देखाइएको छ।';
+  }
+
+  @override
+  String vaccineHistoryFullShownNoRecorded(Object childName) {
+    return '$childName को सम्पूर्ण खोप इतिहास देखाइएको छ। अहिलेसम्म कुनै खोप लगाइएको रेकर्ड छैन।';
+  }
+
+  @override
+  String vaccineHistoryRecordedIncludeFull(Object recordedVaccines) {
+    return 'रेकर्डअनुसार लगाइएका खोपहरू: $recordedVaccines।';
+  }
+
+  @override
+  String get vaccineHistoryOtherUnrecorded =>
+      'अन्य खोपहरू लगाइएको भनेर रेकर्ड गरिएको छैन।';
+
+  @override
+  String vaccineHistoryLaterSchedule(Object childName) {
+    return '$childName ठूलो हुँदै जाँदा केही खोप पछि लगाउनुपर्ने हुन सक्छ।';
+  }
+
+  @override
+  String get vaccineScheduleAdministeredCategory => 'लगाइएका खोपहरू।';
+
+  @override
+  String vaccineScheduleAdministeredGroupSingular(
+      Object date, Object vaccines) {
+    return '$vaccines $date मा लगाइएको थियो।';
+  }
+
+  @override
+  String vaccineScheduleAdministeredGroupPlural(Object date, Object vaccines) {
+    return '$vaccines $date मा लगाइएका थिए।';
+  }
+
+  @override
+  String get vaccineScheduleMissedCategory => 'छुटेका खोपहरू।';
+
+  @override
+  String vaccineScheduleMissedGroupSingular(Object date, Object vaccines) {
+    return '$vaccines $date देखि लगाउन बाँकी छन्।';
+  }
+
+  @override
+  String vaccineScheduleMissedGroupPlural(Object date, Object vaccines) {
+    return '$vaccines $date देखि लगाउन बाँकी छन्।';
+  }
+
+  @override
+  String get vaccineScheduleMissedAdvice =>
+      'छुटेका खोपबारे सल्लाह लिन कृपया आफ्नो नजिकको स्वास्थ्य संस्थामा जानुहोस्।';
+
+  @override
+  String get vaccineScheduleUpcomingCategory => 'आगामी खोपहरू।';
+
+  @override
+  String vaccineScheduleUpcomingTodaySingular(Object vaccines) {
+    return '$vaccines आज लगाउनुपर्नेछ।';
+  }
+
+  @override
+  String vaccineScheduleUpcomingTodayPlural(Object vaccines) {
+    return '$vaccines आज लगाउनुपर्नेछ।';
+  }
+
+  @override
+  String vaccineScheduleUpcomingGroupSingular(Object date, Object vaccines) {
+    return '$vaccines $date मा लगाउनुपर्नेछ।';
+  }
+
+  @override
+  String vaccineScheduleUpcomingGroupPlural(Object date, Object vaccines) {
+    return '$vaccines $date मा लगाउनुपर्नेछन्।';
+  }
+
+  @override
   String get dose => 'खुराक';
 
   @override
@@ -806,6 +1059,16 @@ class AppLocalizationsNe extends AppLocalizations {
 
   @override
   String get vaccineScheduleEmpty => 'आगामी खोपहरू छैनन्।';
+
+  @override
+  String vaccineScheduleDueGroupSingular(String date, String vaccines) {
+    return '$date मा $vaccines लगाउनुपर्नेछ';
+  }
+
+  @override
+  String vaccineScheduleDueGroupPlural(String date, String vaccines) {
+    return '$date मा $vaccines लगाउनुपर्नेछ';
+  }
 
   @override
   String get vaccineScheduleToday => 'आज';
@@ -870,6 +1133,17 @@ class AppLocalizationsNe extends AppLocalizations {
   }
 
   @override
+  String get reminderLeadTomorrow => 'भोलि खोप लगाउने तोकिएको दिन हो।';
+
+  @override
+  String get reminderLeadToday => 'आज तपाईंको बच्चाको खोप लगाउने दिन हो।';
+
+  @override
+  String reminderFacility(String facility) {
+    return 'तपाईंले सेभ गर्नुभएको स्वास्थ्य संस्था: $facility।';
+  }
+
+  @override
   String reminderMissedYesterday(String vaccineName, String date) {
     return '$vaccineName $date मा लगाउनुपर्ने थियो, तर अहिलेसम्म रेकर्ड भएको छैन। हरेक मात्रा समयमै पूरा गर्दा बच्चा सुरक्षित रहन्छ। कृपया नजिकैको स्वास्थ्य चौकीमा जानुहोस्।';
   }
@@ -883,4 +1157,61 @@ class AppLocalizationsNe extends AppLocalizations {
   String reminderOverdue(String vaccineName) {
     return '$vaccineName को म्याद नाघिसक्यो। क्याच-अप खोपका लागि नजिकैको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।';
   }
+
+  @override
+  String get backupSectionTitle => 'ब्याकअप';
+
+  @override
+  String get backupExportAction => 'ब्याकअप निकाल्नुहोस्';
+
+  @override
+  String get backupImportAction => 'ब्याकअप ल्याउनुहोस्';
+
+  @override
+  String get backupPrivacyNote =>
+      'यो फाइल सुरक्षित ठाउँमा राख्नुहोस् र विश्वास गर्ने मानिससँग मात्र साझा गर्नुहोस्। यसमा तपाईंको बच्चाको स्वास्थ्य जानकारी छ।';
+
+  @override
+  String get backupPhoneChangeNote =>
+      'फोन परिवर्तन गर्दा तपाईंको रेकर्ड आफैँ सर्दैन। फोन बदल्नुअघि ब्याकअप निकाल्नुहोस्।';
+
+  @override
+  String get backupReplaceTitle => 'यस फोनको डाटा बदल्ने?';
+
+  @override
+  String get backupReplaceMessage =>
+      'यसले यस फोनको सबै डाटा बदल्नेछ। जारी राख्ने?';
+
+  @override
+  String get backupReplaceConfirm => 'जारी राख्नुहोस्';
+
+  @override
+  String get backupExportSuccess => 'ब्याकअप फाइल बचत गर्न तयार छ।';
+
+  @override
+  String get backupImportSuccess => 'ब्याकअप ल्याइयो।';
+
+  @override
+  String get backupExportError => 'ब्याकअप निकाल्न सकिएन।';
+
+  @override
+  String get backupImportError => 'ब्याकअप ल्याउन सकिएन।';
+
+  @override
+  String get backupInvalidFile =>
+      'यो फाइल यो एपले पढ्न सक्ने टिकासथी ब्याकअप होइन।';
+
+  @override
+  String get databaseLockedTitle => 'तपाईंको सुरक्षित डाटा खोल्न सकिएन';
+
+  @override
+  String get databaseLockedMessage =>
+      'यस फोनमा टिकासथीको डाटा सुरक्षित राख्ने साँचो अब छैन, त्यसैले डाटा पढ्न सकिँदैन। फोनको सुरक्षा रिसेट गरेपछि यस्तो हुन सक्छ। तपाईंसँग ब्याकअप फाइल छ भने नयाँ सुरु गरेपछि ल्याउन सक्नुहुन्छ।';
+
+  @override
+  String get databaseLockedAction => 'नयाँ सुरु गर्नुहोस्';
+
+  @override
+  String get databaseLockedError =>
+      'नयाँ सुरु गर्न सकिएन। फेरि प्रयास गर्नुहोस्।';
 }

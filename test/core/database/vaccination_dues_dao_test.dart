@@ -515,6 +515,209 @@ void main() {
       expect(dues, isNotEmpty);
     });
 
+    test('does not materialise an administered override', () async {
+      const childId = 'administered-override-child';
+      await insertChild(childId);
+      await vaccinationRecordsDao.insertVaccinationRecord(
+        VaccinationRecordsCompanion.insert(
+          id: 'record-1',
+          childId: childId,
+          vaccineCode: 'MR',
+          doseNumber: 1,
+          administeredDate: DateTime(2026, 1, 1),
+        ),
+      );
+      await database.manualVaccinationScheduleOverridesDao.saveDateOverride(
+        childId: childId,
+        vaccineCode: 'MR',
+        doseNumber: 1,
+        dueDate: DateTime(2027, 1, 20),
+      );
+
+      await vaccinationDuesDao.recalculateDuesForChild(childId);
+
+      expect(
+        (await duesFor(childId))
+            .any((due) => due.vaccineCode == 'MR' && due.doseNumber == 1),
+        isFalse,
+      );
+      expect(
+        await database.manualVaccinationScheduleOverridesDao.forChild(childId),
+        hasLength(1),
+      );
+    });
+
+    test('persists a date override without changing the vaccine or dose',
+        () async {
+      const childId = 'date-override-child';
+      await insertChild(childId);
+      await vaccinationDuesDao.insertDuesForChild(childId);
+      await database.manualVaccinationScheduleOverridesDao.saveDateOverride(
+        childId: childId,
+        vaccineCode: 'PENTA',
+        doseNumber: 1,
+        dueDate: DateTime(2027, 1, 20),
+      );
+
+      await vaccinationDuesDao.recalculateDuesForChild(childId);
+
+      final dues = await duesFor(childId);
+      final penta = dues.firstWhere(
+        (due) => due.vaccineCode == 'PENTA' && due.doseNumber == 1,
+      );
+      expect(penta.dueDate, DateTime(2027, 1, 20));
+    });
+
+    test('removes an outstanding dose across recalculation', () async {
+      const childId = 'removed-dose-child';
+      await insertChild(childId);
+      await vaccinationDuesDao.insertDuesForChild(childId);
+      await database.manualVaccinationScheduleOverridesDao.removeDose(
+        childId: childId,
+        vaccineCode: 'PENTA',
+        doseNumber: 1,
+      );
+
+      await vaccinationDuesDao.recalculateDuesForChild(childId);
+
+      expect(
+        (await duesFor(childId)).any(
+          (due) => due.vaccineCode == 'PENTA' && due.doseNumber == 1,
+        ),
+        isFalse,
+      );
+      expect(
+        (await database.manualVaccinationScheduleOverridesDao.forChild(childId))
+            .single
+            .isRemoved,
+        isTrue,
+      );
+      expect(
+        (await database.manualVaccinationScheduleOverridesDao.forChild(childId))
+            .single
+            .dueDate,
+        isNull,
+      );
+    });
+
+    test('changes a date override into a removal without duplicates', () async {
+      const childId = 'date-to-removal-child';
+      await insertChild(childId);
+      final dao = database.manualVaccinationScheduleOverridesDao;
+
+      await dao.saveDateOverride(
+        childId: childId,
+        vaccineCode: 'PENTA',
+        doseNumber: 1,
+        dueDate: DateTime(2027, 1, 20),
+      );
+      await dao.removeDose(
+        childId: childId,
+        vaccineCode: 'PENTA',
+        doseNumber: 1,
+      );
+
+      final overrides = await dao.forChild(childId);
+      expect(overrides, hasLength(1));
+      expect(overrides.single.isRemoved, isTrue);
+      expect(overrides.single.dueDate, isNull);
+    });
+
+    test('removing an outstanding dose does not change vaccination history',
+        () async {
+      const childId = 'history-protection-child';
+      await insertChild(childId);
+      await vaccinationRecordsDao.insertVaccinationRecord(
+        VaccinationRecordsCompanion.insert(
+          id: 'history-record',
+          childId: childId,
+          vaccineCode: 'BCG',
+          doseNumber: 1,
+          administeredDate: DateTime(2026, 1, 1),
+        ),
+      );
+      await vaccinationDuesDao.insertDuesForChild(childId);
+      await database.manualVaccinationScheduleOverridesDao.removeDose(
+        childId: childId,
+        vaccineCode: 'PENTA',
+        doseNumber: 1,
+      );
+
+      await vaccinationDuesDao.recalculateDuesForChild(childId);
+
+      final records = await vaccinationRecordsDao
+          .watchVaccinationRecordsForChild(childId)
+          .first;
+      expect(records, hasLength(1));
+      expect(records.single.vaccineCode, 'BCG');
+    });
+
+    test('restoring defaults brings removed and rescheduled doses back',
+        () async {
+      const childId = 'restore-schedule-child';
+      await insertChild(childId);
+      await vaccinationDuesDao.insertDuesForChild(childId);
+      final original = (await duesFor(childId)).firstWhere(
+        (due) => due.vaccineCode == 'PENTA' && due.doseNumber == 1,
+      );
+      await database.manualVaccinationScheduleOverridesDao.saveDateOverride(
+        childId: childId,
+        vaccineCode: 'PENTA',
+        doseNumber: 1,
+        dueDate: DateTime(2027, 1, 20),
+      );
+      await database.manualVaccinationScheduleOverridesDao.removeDose(
+        childId: childId,
+        vaccineCode: 'PENTA',
+        doseNumber: 2,
+      );
+      await vaccinationDuesDao.recalculateDuesForChild(childId);
+
+      await database.manualVaccinationScheduleOverridesDao
+          .deleteAllForChild(childId);
+      await vaccinationDuesDao.recalculateDuesForChild(childId);
+
+      final restored = await duesFor(childId);
+      expect(
+        restored
+            .firstWhere(
+              (due) => due.vaccineCode == 'PENTA' && due.doseNumber == 1,
+            )
+            .dueDate,
+        original.dueDate,
+      );
+      expect(
+        restored.any(
+          (due) => due.vaccineCode == 'PENTA' && due.doseNumber == 2,
+        ),
+        isTrue,
+      );
+    });
+
+    test('switches a dose from removed to rescheduled without duplicates',
+        () async {
+      const childId = 'override-transition-child';
+      await insertChild(childId);
+      final dao = database.manualVaccinationScheduleOverridesDao;
+
+      await dao.removeDose(
+        childId: childId,
+        vaccineCode: 'PENTA',
+        doseNumber: 1,
+      );
+      await dao.saveDateOverride(
+        childId: childId,
+        vaccineCode: 'PENTA',
+        doseNumber: 1,
+        dueDate: DateTime(2027, 1, 20),
+      );
+
+      final overrides = await dao.forChild(childId);
+      expect(overrides, hasLength(1));
+      expect(overrides.single.isRemoved, isFalse);
+      expect(overrides.single.dueDate, DateTime(2027, 1, 20));
+    });
+
     group('reminders', () {
       Future<List<Reminder>> remindersFor(String childId) {
         return (database.select(database.reminders)

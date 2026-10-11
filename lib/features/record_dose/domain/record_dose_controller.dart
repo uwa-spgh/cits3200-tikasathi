@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
+import 'package:tikasathi/features/home/domain/home_helpers.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
 
 part 'record_dose_controller.g.dart';
@@ -50,8 +51,16 @@ class RecordDoseState {
       .where((VaccinationDue due) => _dateOnly(due.dueDate).isAfter(_todayOnly))
       .toList();
 
-  List<VaccinationDue> get visibleDues =>
-      showAllUpcoming ? _sortedDues : actionableDues;
+  /// Doses within the same 14-day window that Home labels as due soon.
+  List<VaccinationDue> get dueSoonDues => upcomingDues
+      .where((VaccinationDue due) => isDueSoon(due.dueDate, today))
+      .toList();
+
+  List<VaccinationDue> get visibleDues => showAllUpcoming
+      ? _sortedDues
+      : actionableDues.isNotEmpty
+          ? actionableDues
+          : dueSoonDues;
 
   int get selectedCount => selectedDueIds.length;
 

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/settings/domain/phone_number_validation.dart';
+import 'package:tikasathi/core/validation/name_validation.dart';
 
 class CaregiverEditScreen extends ConsumerStatefulWidget {
   const CaregiverEditScreen({super.key});
@@ -53,12 +55,19 @@ class _CaregiverEditScreenState extends ConsumerState<CaregiverEditScreen> {
   Future<void> _save() async {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
     final String name = _nameController.text.trim();
-    final String phone = _phoneController.text.trim();
+    final String phone = normalizePhoneNumber(_phoneController.text);
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(localizations.onboardingErrorEmptyCaregiverName),
         ),
+      );
+      return;
+    }
+    if (!isValidPersonName(name)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(localizations.onboardingErrorInvalidCaregiverName)),
       );
       return;
     }
@@ -149,11 +158,15 @@ class _CaregiverEditScreenState extends ConsumerState<CaregiverEditScreen> {
                                 color: Color(0xFF0F172A))),
                         const SizedBox(height: 32),
                         _field(l10n.onboardingCaregiverNameLabel,
-                            l10n.onboardingCaregiverNameHint, _nameController),
+                            l10n.onboardingCaregiverNameHint, _nameController,
+                            inputFormatters: [PersonNameInputFormatter()]),
                         const SizedBox(height: 24),
                         _field(l10n.onboardingCaregiverPhoneLabel,
                             l10n.onboardingCaregiverPhoneHint, _phoneController,
-                            keyboardType: TextInputType.phone),
+                            keyboardType: TextInputType.phone,
+                            inputFormatters: const [
+                              PhoneNumberInputFormatter()
+                            ]),
                         const SizedBox(height: 24),
                         _field(
                             l10n.onboardingCaregiverAddressLabel,
@@ -185,7 +198,8 @@ class _CaregiverEditScreenState extends ConsumerState<CaregiverEditScreen> {
   }
 
   Widget _field(String label, String hint, TextEditingController controller,
-      {TextInputType keyboardType = TextInputType.text}) {
+      {TextInputType keyboardType = TextInputType.text,
+      List<TextInputFormatter>? inputFormatters}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -198,6 +212,7 @@ class _CaregiverEditScreenState extends ConsumerState<CaregiverEditScreen> {
         TextField(
           controller: controller,
           keyboardType: keyboardType,
+          inputFormatters: inputFormatters,
           decoration: InputDecoration(
             hintText: hint,
             filled: true,

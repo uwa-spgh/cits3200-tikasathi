@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12 and newer. The database key lives in the Android Keystore and
+     cannot move to a new phone. A restored database without its key is
+     unreadable, so the database and the stored key are kept out of backups
+     and the app starts clean on the new phone. -->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="root" path="app_flutter/tikasathi.sqlite" />
+        <exclude domain="root" path="app_flutter/tikasathi.sqlite-journal" />
+        <exclude domain="root" path="app_flutter/tikasathi.sqlite-wal" />
+        <exclude domain="root" path="app_flutter/tikasathi.sqlite-shm" />
+        <exclude domain="sharedpref" path="FlutterSecureStorage.xml" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="root" path="app_flutter/tikasathi.sqlite" />
+        <exclude domain="root" path="app_flutter/tikasathi.sqlite-journal" />
+        <exclude domain="root" path="app_flutter/tikasathi.sqlite-wal" />
+        <exclude domain="root" path="app_flutter/tikasathi.sqlite-shm" />
+        <exclude domain="sharedpref" path="FlutterSecureStorage.xml" />
+    </device-transfer>
+</data-extraction-rules>

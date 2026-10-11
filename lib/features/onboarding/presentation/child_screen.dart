@@ -6,6 +6,7 @@ import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
+import 'package:tikasathi/core/validation/name_validation.dart';
 import 'package:tikasathi/features/app_shell/presentation/app_shell_screen.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/child/domain/date_of_birth_validation.dart';
@@ -33,6 +34,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
 
   String _selectedGender = 'female';
   bool _isSaving = false;
+  bool _draftInitialized = false;
 
   @override
   void dispose() {
@@ -46,9 +48,16 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
   Future<void> _onFinish() async {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
 
-    if (_nameController.text.trim().isEmpty) {
+    final String name = _nameController.text.trim();
+    if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(localizations.onboardingErrorEmptyName)),
+      );
+      return;
+    }
+    if (!isValidPersonName(name)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(localizations.onboardingErrorInvalidName)),
       );
       return;
     }
@@ -92,7 +101,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
         await db.childProfilesDao.insertChildProfile(
           ChildProfilesCompanion.insert(
             id: childId,
-            name: _nameController.text.trim(),
+            name: name,
             dateOfBirth: dob,
             sex: _selectedGender,
           ),
@@ -132,7 +141,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
     final controller = ref.read(onboardingControllerProvider.notifier);
 
     controller.updateChildInfo(
-      name: _nameController.text.trim(),
+      name: name,
       dob: dob,
       sex: _selectedGender,
     );
@@ -147,7 +156,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
           (route) => false,
         );
       } else {
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           MaterialPageRoute<void>(
             builder: (context) => RetroactiveVaccineScreen(
@@ -172,6 +181,18 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
     final state = ref.watch(onboardingControllerProvider);
+    if (widget.isOnboardingFlow && !_draftInitialized) {
+      _nameController.text = state.childName;
+      _selectedGender =
+          state.childSex.toLowerCase() == 'male' ? 'male' : 'female';
+      final dob = state.childDob;
+      if (dob != null) {
+        _ddController.text = dob.day.toString().padLeft(2, '0');
+        _mmController.text = dob.month.toString().padLeft(2, '0');
+        _yyController.text = dob.year.toString();
+      }
+      _draftInitialized = true;
+    }
     final bool isSaving = widget.isOnboardingFlow ? state.isSaving : _isSaving;
     final String submitLabel = widget.isOnboardingFlow
         ? localizations.onboardingContinue
@@ -294,6 +315,8 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
                     const SizedBox(height: 12),
                     TextField(
                       controller: _nameController,
+                      inputFormatters: [PersonNameInputFormatter()],
+                      onChanged: (_) => _updateDraftIfValid(),
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         hintText: localizations.onboardingChildNameHint,
@@ -402,6 +425,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
       {int maxLength = 2}) {
     return TextField(
       controller: controller,
+      onChanged: (_) => _updateDraftIfValid(),
       keyboardType: TextInputType.number,
       textAlign: TextAlign.center,
       maxLength: maxLength,
@@ -435,6 +459,7 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
         setState(() {
           _selectedGender = genderId;
         });
+        _updateDraftIfValid();
       },
       borderRadius: BorderRadius.circular(12),
       child: Container(
@@ -466,5 +491,29 @@ class _ChildScreenState extends ConsumerState<ChildScreen> {
         ),
       ),
     );
+  }
+
+  void _updateDraftIfValid() {
+    if (!widget.isOnboardingFlow) {
+      return;
+    }
+    final dd = int.tryParse(_ddController.text);
+    final mm = int.tryParse(_mmController.text);
+    final yy = int.tryParse(_yyController.text);
+    if (dd == null || mm == null || yy == null) {
+      return;
+    }
+    final validation = validateChildDateOfBirth(
+      day: dd,
+      month: mm,
+      year: yy,
+    );
+    if (validation.isValid) {
+      ref.read(onboardingControllerProvider.notifier).updateChildInfo(
+            name: _nameController.text.trim(),
+            dob: validation.dateOfBirth!,
+            sex: _selectedGender,
+          );
+    }
   }
 }

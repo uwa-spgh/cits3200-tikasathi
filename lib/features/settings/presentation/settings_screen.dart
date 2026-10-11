@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -6,17 +7,17 @@ import 'package:tikasathi/core/database/app_database_provider.dart';
 import 'package:tikasathi/core/services/notification_service.dart';
 import 'package:tikasathi/core/services/secure_storage_service.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
-import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
+import 'package:tikasathi/core/theme/app_theme.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
-import 'package:tikasathi/features/settings/domain/health_facility_controller.dart';
 import 'package:tikasathi/features/settings/domain/language_controller.dart';
-import 'package:tikasathi/features/settings/presentation/health_facility_card.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_helpers.dart';
 import 'package:tikasathi/features/home/domain/home_status_groups_provider.dart';
+import 'package:tikasathi/features/settings/presentation/backup_section.dart';
 import 'package:tikasathi/features/settings/presentation/caregiver_edit_screen.dart';
 import 'package:tikasathi/features/settings/presentation/child_edit_screen.dart';
+import 'package:tikasathi/features/vaccine_schedule/presentation/vaccine_schedule_editor_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -26,20 +27,12 @@ class SettingsScreen extends ConsumerWidget {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
     final AsyncValue<AppLanguage> languageState =
         ref.watch(languageControllerProvider);
-    final AsyncValue<HealthFacility?> facilitatorState =
-        ref.watch(healthFacilityProvider);
 
     return languageState.when(
-      data: (AppLanguage language) => facilitatorState.when(
-        data: (facilitator) => _buildContent(
-          context,
-          ref,
-          isNp: language == AppLanguage.nepali,
-          facilitator: facilitator,
-        ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => Center(
-            child: Text(localizations.appLanguageLoadError(error.toString()))),
+      data: (AppLanguage language) => _buildContent(
+        context,
+        ref,
+        isNp: language == AppLanguage.nepali,
       ),
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stackTrace) => Center(
@@ -173,43 +166,26 @@ class SettingsScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref, {
     required bool isNp,
-    required HealthFacility? facilitator,
   }) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-        child: SingleChildScrollView(
+
+    return Scaffold(
+        appBar: BasicAppBar(
+            title: localizations.settingsTitle,
+            isMainTitle: true,
+            textGetter: () => ScreenSpeechHelper.settingsScreenText(
+                  context: context,
+                  localizations: localizations,
+                  currentLanguage:
+                      isNp ? AppLanguage.nepali : AppLanguage.english,
+                ),
+            haveBackButton: false),
+        body: SingleChildScrollView(
+          primary: true,
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Text(
-                      localizations.settingsTitle,
-                      style: const TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF0F172A),
-                      ),
-                    ),
-                  ),
-                  ReadAloudButton(
-                    tooltip: localizations.childReadAloudTooltip,
-                    unavailableMessage: localizations.childReadAloudUnavailable,
-                    textGetter: () => ScreenSpeechHelper.settingsScreenText(
-                      context: context,
-                      localizations: localizations,
-                      currentLanguage:
-                          isNp ? AppLanguage.nepali : AppLanguage.english,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 0),
               Text(
                 localizations.settingsLanguageTitle,
                 style: const TextStyle(
@@ -271,69 +247,74 @@ class SettingsScreen extends ConsumerWidget {
                 title: localizations.deleteChildAction,
                 onTap: () => _chooseChild(context, ref, delete: true),
               ),
+              const SizedBox(height: 14),
+              _HealthcareScheduleAction(
+                title: localizations.editVaccineScheduleAction,
+                onTap: () => _chooseChildForSchedule(context, ref),
+              ),
               const SizedBox(height: 18),
-              HealthFacilityCard(
-                key: const Key('health-facilitator-action'),
-                facility: facilitator,
-              ),
+              const BackupSection(),
               const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: () => _testNotifications(context, ref, isNp: isNp),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+              // Developer tools. Clearing storage also destroys the database
+              // key, so none of this may reach a release build.
+              if (kDebugMode) ...<Widget>[
+                ElevatedButton(
+                  onPressed: () => _testNotifications(context, ref, isNp: isNp),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: Text(isNp
+                      ? 'DEBUG: सूचना परीक्षण गर्नुहोस्'
+                      : 'DEBUG: Test Notifications'),
                 ),
-                child: Text(isNp
-                    ? 'DEBUG: सूचना परीक्षण गर्नुहोस्'
-                    : 'DEBUG: Test Notifications'),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => _remindInTwoMinutes(context, ref, isNp: isNp),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () =>
+                      _remindInTwoMinutes(context, ref, isNp: isNp),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: Text(isNp
+                      ? 'DEBUG: २ मिनेटमा रिमाइन्डर'
+                      : 'DEBUG: Remind Me In 2 Minutes'),
                 ),
-                child: Text(isNp
-                    ? 'DEBUG: २ मिनेटमा रिमाइन्डर'
-                    : 'DEBUG: Remind Me In 2 Minutes'),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () async {
-                  // Debug: Clear secure storage
-                  await ref.read(secureStorageServiceProvider).clearAll();
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () async {
+                    // Debug: Clear secure storage
+                    await ref.read(secureStorageServiceProvider).clearAll();
 
-                  // Debug: Clear database tables
-                  final db = ref.read(appDatabaseProvider);
-                  await db.delete(db.reminders).go();
-                  await db.delete(db.vaccinationRecords).go();
-                  await db.delete(db.vaccinationDues).go();
-                  await db.delete(db.childProfiles).go();
-                  await db.delete(db.healthFacilitators).go();
+                    // Debug: Clear database tables
+                    final db = ref.read(appDatabaseProvider);
+                    await db.delete(db.reminders).go();
+                    await db.delete(db.vaccinationRecords).go();
+                    await db.delete(db.vaccinationDues).go();
+                    await db.delete(db.childProfiles).go();
+                    await db.delete(db.healthFacilitators).go();
 
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(isNp
-                            ? 'सबै डाटा मेटाइयो (डिबग)। सुरुदेखि हेर्न एप रिस्टार्ट गर्नुहोस्।'
-                            : 'All data cleared (Debug). Restart the app to see the onboarding screen again.'),
-                      ),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(isNp
+                              ? 'सबै डाटा मेटाइयो (डिबग)। सुरुदेखि हेर्न एप रिस्टार्ट गर्नुहोस्।'
+                              : 'All data cleared (Debug). Restart the app to see the onboarding screen again.'),
+                        ),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: Text(isNp
+                      ? 'DEBUG: सबै डाटा मेटाउनुहोस्'
+                      : 'DEBUG: Clear All Storage'),
                 ),
-                child: Text(isNp
-                    ? 'DEBUG: सबै डाटा मेटाउनुहोस्'
-                    : 'DEBUG: Clear All Storage'),
-              ),
+              ],
             ],
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Future<void> _chooseChild(
@@ -352,59 +333,8 @@ class SettingsScreen extends ConsumerWidget {
           .showSnackBar(SnackBar(content: Text(l10n.noChildrenMessage)));
       return;
     }
-    final selected = children.length == 1
-        ? children.single
-        : await showDialog<ChildProfile>(
-            context: context,
-            builder: (dialogContext) => AlertDialog(
-              backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              titlePadding: const EdgeInsets.fromLTRB(28, 28, 28, 8),
-              contentPadding: const EdgeInsets.fromLTRB(28, 8, 28, 0),
-              actionsPadding: const EdgeInsets.fromLTRB(28, 12, 28, 24),
-              title: Text(l10n.selectChildTitle),
-              content: SizedBox(
-                width: double.maxFinite,
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: children.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
-                  itemBuilder: (_, index) {
-                    final child = children[index];
-                    return ListTile(
-                      leading: Text(
-                        getChildAvatar(
-                          sex: childSexFromString(child.sex),
-                          dateOfBirth: child.dateOfBirth,
-                        ),
-                        style: const TextStyle(fontSize: 28),
-                      ),
-                      title: Text(child.name),
-                      subtitle: Text(childSexLabel(child.sex, l10n)),
-                      onTap: () => Navigator.of(dialogContext).pop(child),
-                    );
-                  },
-                ),
-              ),
-              actions: [
-                FilledButton(
-                  autofocus: true,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xFF0F52BA),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
-                    ),
-                  ),
-                  onPressed: () => Navigator.of(dialogContext).pop(),
-                  child: Text(l10n.profileCancel),
-                ),
-              ],
-            ),
-          );
+
+    final selected = await _selectChild(context, children);
     if (selected == null || !context.mounted) return;
     if (!delete) {
       await Navigator.of(context).push(
@@ -505,6 +435,140 @@ class SettingsScreen extends ConsumerWidget {
           .showSnackBar(SnackBar(content: Text(l10n.deleteChildError)));
     }
   }
+
+  Future<void> _chooseChildForSchedule(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        titlePadding: const EdgeInsets.fromLTRB(32, 32, 32, 0),
+        contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 0),
+        actionsPadding: const EdgeInsets.fromLTRB(32, 28, 32, 28),
+        title: Text(
+          l10n.healthcareProfessionalQuestion,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        actions: [
+          Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FilledButton(
+                  autofocus: true,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF0F52BA),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                  ),
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
+                  child: Text(l10n.healthcareProfessionalDecline),
+                ),
+                const SizedBox(width: 12),
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF0F52BA),
+                    side: const BorderSide(color: Color(0xFF0F52BA)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                  ),
+                  onPressed: () => Navigator.of(dialogContext).pop(true),
+                  child: Text(l10n.healthcareProfessionalConfirm),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+    final children = await ref
+        .read(appDatabaseProvider)
+        .childProfilesDao
+        .getAllChildProfiles();
+    if (!context.mounted) return;
+    if (children.isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.noChildrenMessage)));
+      return;
+    }
+    final selected = await _selectChild(context, children);
+    if (selected == null || !context.mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => VaccineScheduleEditorScreen(childId: selected.id),
+      ),
+    );
+  }
+
+  Future<ChildProfile?> _selectChild(
+    BuildContext context,
+    List<ChildProfile> children,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
+    if (children.length == 1) return Future.value(children.single);
+    return showDialog<ChildProfile>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        titlePadding: const EdgeInsets.fromLTRB(28, 28, 28, 8),
+        contentPadding: const EdgeInsets.fromLTRB(28, 8, 28, 0),
+        actionsPadding: const EdgeInsets.fromLTRB(28, 12, 28, 24),
+        title: Text(l10n.selectChildTitle),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView.separated(
+            shrinkWrap: true,
+            itemCount: children.length,
+            separatorBuilder: (_, __) => const Divider(height: 1),
+            itemBuilder: (_, index) {
+              final child = children[index];
+              return ListTile(
+                leading: Text(
+                  getChildAvatar(
+                    sex: childSexFromString(child.sex),
+                    dateOfBirth: child.dateOfBirth,
+                  ),
+                  style: const TextStyle(fontSize: 28),
+                ),
+                title: Text(child.name),
+                subtitle: Text(childSexLabel(child.sex, l10n)),
+                onTap: () => Navigator.of(dialogContext).pop(child),
+              );
+            },
+          ),
+        ),
+        actions: [
+          FilledButton(
+            autofocus: true,
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFF0F52BA),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 12,
+              ),
+            ),
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(l10n.profileCancel),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _ProfileAction extends StatelessWidget {
@@ -545,6 +609,83 @@ class _ProfileAction extends StatelessWidget {
               ),
             ),
             const Icon(Icons.chevron_right, color: Color(0xFF0E64C5)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HealthcareScheduleAction extends StatelessWidget {
+  const _HealthcareScheduleAction({
+    required this.title,
+    required this.onTap,
+  });
+
+  final String title;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFF8E6),
+          border: Border.all(color: const Color(0xFFF0C36A), width: 1),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.calendar_month, color: Color(0xFF9A5B00)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Builder(
+                builder: (context) {
+                  final parentheticalStart = title.indexOf('(');
+                  final mainTitle = parentheticalStart < 0
+                      ? title
+                      : title.substring(0, parentheticalStart).trimRight();
+                  final parentheticalTitle = parentheticalStart < 0
+                      ? null
+                      : title.substring(parentheticalStart);
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      FittedBox(
+                        alignment: Alignment.centerLeft,
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          mainTitle,
+                          style: const TextStyle(
+                            color: Color(0xFF9A5B00),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      if (parentheticalTitle != null)
+                        FittedBox(
+                          alignment: Alignment.centerLeft,
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            parentheticalTitle,
+                            style: const TextStyle(
+                              color: Color(0xFF9A5B00),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
+              ),
+            ),
+            const Icon(Icons.chevron_right, color: Color(0xFF9A5B00)),
           ],
         ),
       ),

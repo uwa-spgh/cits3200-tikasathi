@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 enum HomeVaccinationGroup {
   awaitingSetup,
+  overdue,
   dueToday,
   dueSoon,
   upToDate,

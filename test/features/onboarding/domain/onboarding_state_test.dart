@@ -53,6 +53,8 @@ void main() {
       ),
     ).thenAnswer((_) async {});
     when(secureStorage.setOnboardingCompleted).thenAnswer((_) async {});
+    when(() => secureStorage.writeOnboardingCompleted(any()))
+        .thenAnswer((_) async {});
   });
 
   ProviderContainer containerWith(SettingsRepository repository) {
@@ -79,7 +81,7 @@ void main() {
 
     expect(success, isNotNull);
     expect(repository.language, AppLanguage.nepali);
-    verify(secureStorage.setOnboardingCompleted).called(1);
+    verifyNever(secureStorage.setOnboardingCompleted);
   });
 
   test('finishSetup stops when language persistence fails', () async {
@@ -166,6 +168,53 @@ void main() {
     expect(results, hasLength(2));
     expect(results[0], results[1]);
     expect(await database.childProfilesDao.getAllChildProfiles(), hasLength(1));
+  });
+
+  test('preserves vaccine selections and reuses the provisional child',
+      () async {
+    final AppDatabase database =
+        AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(database.close);
+    final ProviderContainer container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(database),
+        secureStorageServiceProvider.overrideWithValue(secureStorage),
+        settingsRepositoryProvider.overrideWith(
+          (ref) => FakeSettingsRepository(language: AppLanguage.english),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final OnboardingController controller =
+        container.read(onboardingControllerProvider.notifier);
+    final DateTime initialDob = DateTime(2020, 1, 2);
+    controller.updateChildInfo(
+      name: 'Nima',
+      dob: initialDob,
+      sex: 'female',
+    );
+    controller.updateVaccineDose(
+      key: 'BCG-1',
+      administeredDate: DateTime(2020, 1, 3),
+    );
+
+    final String? childId = await controller.finishSetup();
+    controller.updateChildInfo(
+      name: 'Nima Updated',
+      dob: initialDob,
+      sex: 'male',
+    );
+    expect(await controller.finishSetup(), childId);
+
+    final children = await database.childProfilesDao.getAllChildProfiles();
+    expect(children, hasLength(1));
+    expect(children.single.name, 'Nima Updated');
+    expect(children.single.sex, 'male');
+    expect(
+      container.read(onboardingControllerProvider).selectedVaccineDoses,
+      <String, DateTime>{'BCG-1': DateTime(2020, 1, 3)},
+    );
   });
 
   test('retry after a post-insert failure reuses the child profile', () async {

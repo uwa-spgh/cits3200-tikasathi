@@ -1,10 +1,11 @@
 import 'dart:io';
 
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import 'package:tikasathi/core/database/encryption/database_key_store.dart';
+import 'package:tikasathi/core/database/encryption/encrypted_database.dart';
 import 'package:tikasathi/core/nip/vaccine_catalogue.dart';
 import 'package:tikasathi/core/reminders/reminder_schedule.dart';
 import 'package:tikasathi/features/home/domain/home_helpers.dart';
@@ -20,6 +21,9 @@ part 'tables/vaccination_dues.dart';
 part 'tables/reminders.dart';
 part 'tables/health_facilitators.dart';
 part 'daos/health_facilitators_dao.dart';
+part 'daos/backup_dao.dart';
+part 'tables/manual_vaccination_schedule_overrides.dart';
+part 'daos/manual_vaccination_schedule_overrides_dao.dart';
 part 'app_database.g.dart';
 
 /// The central Drift database for TikaSathi.
@@ -40,6 +44,7 @@ part 'app_database.g.dart';
     VaccinationDues,
     Reminders,
     HealthFacilitators,
+    ManualVaccinationScheduleOverrides,
   ],
   daos: [
     ChildProfilesDao,
@@ -47,14 +52,17 @@ part 'app_database.g.dart';
     VaccinationDuesDao,
     RemindersDao,
     HealthFacilitatorsDao,
+    BackupDao,
+    ManualVaccinationScheduleOverridesDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  AppDatabase({required DatabaseKeyStore keyStore})
+      : super(_openConnection(keyStore));
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration {
@@ -66,6 +74,9 @@ class AppDatabase extends _$AppDatabase {
         if (from == 1) {
           await m.addColumn(childProfiles, childProfiles.isSetupComplete);
         }
+        if (from < 5) {
+          await m.addColumn(reminders, reminders.registeredAt);
+        }
       },
       beforeOpen: (OpeningDetails details) async {
         await customStatement('PRAGMA foreign_keys = ON');
@@ -74,11 +85,15 @@ class AppDatabase extends _$AppDatabase {
   }
 }
 
-/// Opens a persistent SQLite database file in the app's documents directory.
-LazyDatabase _openConnection() {
+/// The database file in the app's documents directory.
+Future<File> databaseFile() async {
+  final dbFolder = await getApplicationDocumentsDirectory();
+  return File(p.join(dbFolder.path, 'tikasathi.sqlite'));
+}
+
+/// Opens the encrypted database file.
+LazyDatabase _openConnection(DatabaseKeyStore keyStore) {
   return LazyDatabase(() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'tikasathi.sqlite'));
-    return NativeDatabase.createInBackground(file);
+    return openEncryptedDatabase(file: await databaseFile(), keys: keyStore);
   });
 }

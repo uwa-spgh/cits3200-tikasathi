@@ -99,13 +99,56 @@ class VaccinationDuesDao extends DatabaseAccessor<AppDatabase>
   /// due out from under them trips the foreign key.
   Future<void> recalculateDuesForChild(String childId) async {
     final generatedDues = await _generateDuesForChild(childId);
+    final overrides = await attachedDatabase
+        .manualVaccinationScheduleOverridesDao
+        .forChild(childId);
+    final records = await (select(vaccinationRecords)
+          ..where((row) => row.childId.equals(childId)))
+        .get();
+    final administeredKeys = records
+        .map((record) => '${record.vaccineCode}:${record.doseNumber}')
+        .toSet();
+
+    for (final override in overrides) {
+      if (!doesDoseExist(override.vaccineCode, override.doseNumber)) {
+        throw StateError('invalid manual vaccine schedule override');
+      }
+      if (!override.isRemoved && override.dueDate == null) {
+        throw StateError('manual date is required for an active override');
+      }
+    }
+
+    final overrideKeys = overrides
+        .map((override) => '${override.vaccineCode}:${override.doseNumber}')
+        .toSet();
+
+    final Map<String, GeneratedDue> merged = <String, GeneratedDue>{};
+    for (final generated in generatedDues) {
+      final key = '${generated.vaccineCode}:${generated.doseNumber}';
+      if (overrideKeys.contains(key) || administeredKeys.contains(key)) {
+        continue;
+      }
+      merged[key] = generated;
+    }
+    for (final override in overrides) {
+      final key = '${override.vaccineCode}:${override.doseNumber}';
+      if (override.isRemoved || administeredKeys.contains(key)) {
+        continue;
+      }
+      merged[key] = (
+        vaccineCode: override.vaccineCode,
+        doseNumber: override.doseNumber,
+        dueDate: override.dueDate!,
+      );
+    }
+
     await transaction(() async {
       await (delete(reminders)..where((row) => row.childId.equals(childId)))
           .go();
       await (delete(vaccinationDues)
             ..where((row) => row.childId.equals(childId)))
           .go();
-      await _insertGeneratedDuesInTransaction(childId, generatedDues);
+      await _insertGeneratedDuesInTransaction(childId, merged.values.toList());
     });
   }
 

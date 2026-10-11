@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
 import 'package:tikasathi/core/services/screen_speech_helper.dart';
+import 'package:tikasathi/core/validation/name_validation.dart';
 import 'package:tikasathi/features/app_shell/presentation/read_aloud_button.dart';
 import 'package:tikasathi/features/onboarding/domain/onboarding_state.dart';
 import 'package:tikasathi/features/onboarding/presentation/child_screen.dart';
@@ -18,6 +20,7 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
+  bool _draftInitialized = false;
 
   @override
   void dispose() {
@@ -30,12 +33,19 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
   void _onContinue() {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
     final String name = _nameController.text.trim();
-    final String phone = _phoneController.text.trim();
+    final String phone = normalizePhoneNumber(_phoneController.text);
 
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(localizations.onboardingErrorEmptyCaregiverName)),
+      );
+      return;
+    }
+    if (!isValidPersonName(name)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(localizations.onboardingErrorInvalidCaregiverName)),
       );
       return;
     }
@@ -70,7 +80,13 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
-    ref.watch(onboardingControllerProvider);
+    final state = ref.watch(onboardingControllerProvider);
+    if (!_draftInitialized) {
+      _nameController.text = state.caregiverName;
+      _phoneController.text = state.caregiverPhone;
+      _addressController.text = state.caregiverAddress;
+      _draftInitialized = true;
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F9FC),
@@ -165,6 +181,7 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
                 label: localizations.onboardingCaregiverNameLabel,
                 hint: localizations.onboardingCaregiverNameHint,
                 controller: _nameController,
+                onChanged: (value) => _updateDraft(),
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 24),
@@ -172,7 +189,9 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
                 label: localizations.onboardingCaregiverPhoneLabel,
                 hint: localizations.onboardingCaregiverPhoneHint,
                 controller: _phoneController,
+                onChanged: (value) => _updateDraft(),
                 keyboardType: TextInputType.phone,
+                inputFormatters: const [PhoneNumberInputFormatter()],
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 24),
@@ -180,6 +199,7 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
                 label: localizations.onboardingCaregiverAddressLabel,
                 hint: localizations.onboardingCaregiverAddressHint,
                 controller: _addressController,
+                onChanged: (value) => _updateDraft(),
                 textInputAction: TextInputAction.done,
               ),
               const SizedBox(height: 48),
@@ -220,8 +240,10 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
     required String label,
     required String hint,
     required TextEditingController controller,
+    required ValueChanged<String> onChanged,
     TextInputType keyboardType = TextInputType.text,
     TextInputAction textInputAction = TextInputAction.next,
+    List<TextInputFormatter>? inputFormatters,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -237,6 +259,11 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
         const SizedBox(height: 8),
         TextField(
           controller: controller,
+          inputFormatters: inputFormatters ??
+              (controller == _nameController
+                  ? [PersonNameInputFormatter()]
+                  : null),
+          onChanged: onChanged,
           keyboardType: keyboardType,
           textInputAction: textInputAction,
           decoration: InputDecoration(
@@ -260,5 +287,13 @@ class _CaregiverScreenState extends ConsumerState<CaregiverScreen> {
         ),
       ],
     );
+  }
+
+  void _updateDraft() {
+    ref.read(onboardingControllerProvider.notifier).updateCaregiverInfo(
+          name: _nameController.text.trim(),
+          phone: _phoneController.text.trim(),
+          address: _addressController.text.trim(),
+        );
   }
 }

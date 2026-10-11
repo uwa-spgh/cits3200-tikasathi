@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tikasathi/core/database/app_database.dart';
 import 'package:tikasathi/core/generated/app_localizations.dart';
+import 'package:tikasathi/core/nip/vaccine_display.dart';
 import 'package:tikasathi/features/child/domain/child_profile_provider.dart';
 import 'package:tikasathi/features/home/domain/home_models.dart';
 import 'package:tikasathi/features/settings/domain/app_language.dart';
@@ -9,6 +10,13 @@ import 'package:tikasathi/features/settings/domain/app_language.dart';
 /// Helper to generate natural, conversational spoken summaries for each screen
 /// tailored for low-literacy caregivers in both English and Nepali.
 class ScreenSpeechHelper {
+  /// Builds the short purpose-and-navigation summary for the Learn screen.
+  static String learnScreenText({
+    required AppLocalizations localizations,
+  }) {
+    return localizations.learnSpeechSummary;
+  }
+
   /// Extracts all visible text from [Text] and [RichText] widgets within
   /// the nearest [Scaffold] or the subtree of [context].
   static String extractVisibleText(BuildContext context) {
@@ -81,6 +89,9 @@ class ScreenSpeechHelper {
               'दर्ता पूरा गर्न बाँकी बालबालिका: $names। खोप रेकर्ड सुरु गर्न दर्ता पूरा गर्नुहोस्। ',
             );
             break;
+          case HomeVaccinationGroup.overdue:
+            buffer.write('ढिलो भएका खोप भएका बालबालिका: $names। ');
+            break;
           case HomeVaccinationGroup.dueToday:
             buffer.write('आज खोप लगाउने मिति भएका बालबालिका: $names। ');
             break;
@@ -110,6 +121,9 @@ class ScreenSpeechHelper {
               'Setup pending for: $names. Please complete setup to track vaccines. ',
             );
             break;
+          case HomeVaccinationGroup.overdue:
+            buffer.write('Overdue vaccines for: $names. ');
+            break;
           case HomeVaccinationGroup.dueToday:
             buffer.write('Vaccines due today for: $names. ');
             break;
@@ -121,6 +135,13 @@ class ScreenSpeechHelper {
             break;
         }
       }
+    }
+
+    final ScrollPosition? position = Scrollable.maybeOf(context)?.position;
+    if (position != null &&
+        position.hasContentDimensions &&
+        position.pixels < position.maxScrollExtent) {
+      buffer.write(' ${localizations.homeScrollInstruction}');
     }
 
     return buffer.toString().trim();
@@ -138,27 +159,34 @@ class ScreenSpeechHelper {
     final StringBuffer buffer = StringBuffer();
 
     if (!details.isSetupComplete) {
-      if (isNepali) {
-        return '$childNameको दर्ता पूरा गर्न बाँकी छ। खोप तालिका हेर्न कृपया दर्ता पूरा गर्नुहोस्।';
-      } else {
-        return 'Setup is pending for $childName. Please complete registration to track vaccines.';
-      }
+      return localizations.childSetupIncompleteSpeech(childName);
     }
 
     final VaccinationDue? nextDue = details.nextDue;
+    final DateTime today =
+        DateTime(details.now.year, details.now.month, details.now.day);
     final String? nextDueDate = nextDue != null
         ? DateFormat('d MMMM y', locale).format(nextDue.dueDate)
         : null;
+    final bool nextDueIsOverdue = nextDue != null &&
+        DateTime(
+          nextDue.dueDate.year,
+          nextDue.dueDate.month,
+          nextDue.dueDate.day,
+        ).isBefore(today);
 
     if (isNepali) {
       if (details.hasOverdueDoses) {
         if (nextDue != null) {
           buffer.write(
-            '$childNameको खोप लगाउने मिति नाघिसकेको छ। अर्को खोप: ${nextDue.vaccineCode}, मिति: $nextDueDate। ',
+            '$childNameको खोप लगाउने मिति नाघिसकेको छ। अर्को खोप: '
+            '${nextDue.vaccineCode}, '
+            '${nextDueIsOverdue ? localizations.recordDoseOverdueLabel(nextDueDate!) : localizations.childSpeechVaccineDueOn(nextDueDate!)}। ',
           );
         } else {
           buffer.write('$childNameको खोप लगाउने मिति नाघिसकेको छ। ');
         }
+        buffer.write('${localizations.childSpeechOverdueAdvice} ');
       } else if (details.hasDosesDueToday) {
         if (nextDue != null) {
           buffer.write(
@@ -182,17 +210,18 @@ class ScreenSpeechHelper {
           buffer.write('$childNameका सबै खोपहरू पूर्ण भएका छन्। ');
         }
       }
-
-      buffer.write('लागेका खोपहरू: ${details.records.length} मात्रा।');
     } else {
       if (details.hasOverdueDoses) {
         if (nextDue != null) {
           buffer.write(
-            '$childName has overdue vaccines. Next vaccine: ${nextDue.vaccineCode}, due on $nextDueDate. ',
+            '$childName has overdue vaccines. Next vaccine: '
+            '${nextDue.vaccineCode}, '
+            '${nextDueIsOverdue ? localizations.recordDoseOverdueLabel(nextDueDate!) : localizations.childSpeechVaccineDueOn(nextDueDate!)}. ',
           );
         } else {
           buffer.write('$childName has overdue vaccines. ');
         }
+        buffer.write('${localizations.childSpeechOverdueAdvice} ');
       } else if (details.hasDosesDueToday) {
         if (nextDue != null) {
           buffer.write(
@@ -216,8 +245,6 @@ class ScreenSpeechHelper {
           buffer.write('All vaccinations are completed for $childName. ');
         }
       }
-
-      buffer.write('Completed vaccines: ${details.records.length} doses.');
     }
 
     return buffer.toString().trim();
@@ -248,7 +275,7 @@ class ScreenSpeechHelper {
           buffer.write('ठेगाना: ${facilityAddress.trim()}। ');
         }
         if (facilityPhone != null && facilityPhone.trim().isNotEmpty) {
-          buffer.write('फोन नम्बर: ${facilityPhone.trim()}। ');
+          buffer.write('फोन नम्बर: ${_spellPhoneNumber(facilityPhone)}। ');
         }
         buffer.write('तपाईं यी विवरणहरू परिवर्तन गर्न र सेभ गर्न सक्नुहुन्छ।');
       } else {
@@ -266,7 +293,7 @@ class ScreenSpeechHelper {
           buffer.write('Address: ${facilityAddress.trim()}. ');
         }
         if (facilityPhone != null && facilityPhone.trim().isNotEmpty) {
-          buffer.write('Phone number: ${facilityPhone.trim()}. ');
+          buffer.write('Phone number: ${_spellPhoneNumber(facilityPhone)}. ');
         }
         buffer.write('You can edit these details and tap save.');
       } else {
@@ -276,6 +303,10 @@ class ScreenSpeechHelper {
       }
     }
     return buffer.toString().trim();
+  }
+
+  static String _spellPhoneNumber(String phone) {
+    return phone.trim().split('').join(' ');
   }
 
   /// Builds a spoken summary for adding or registering a child.
@@ -322,6 +353,20 @@ class ScreenSpeechHelper {
     }
   }
 
+  /// Builds a spoken summary for editing child details.
+  static String childEditScreenText({
+    required BuildContext context,
+    required AppLocalizations localizations,
+  }) {
+    final bool isNepali = Localizations.localeOf(context).languageCode == 'ne';
+    if (isNepali) {
+      return 'बच्चाको प्रोफाइल सम्पादन गर्नुहोस्। '
+          'कृपया बच्चाको नाम, जन्म मिति, वा लिङ्ग सम्पादन गर्नुहोस्, र सेभ थिच्नुहोस्।';
+    }
+    return 'Edit child profile. '
+        'Please update the child\'s name, date of birth, or sex, then tap save.';
+  }
+
   /// Builds a spoken summary of Vaccine Records & History.
   ///
   /// During onboarding/registration, prompts the user to tick vaccines for [childName],
@@ -340,6 +385,9 @@ class ScreenSpeechHelper {
     required List<String> tickedVaccineNames,
     required List<VaccinationRecord> records,
     required List<VaccinationDue> dues,
+    List<String> recordedVaccineNames = const <String>[],
+    List<String> unrecordedVaccineNames = const <String>[],
+    bool isUpToDate = false,
   }) {
     final bool isNepali = Localizations.localeOf(context).languageCode == 'ne';
     final StringBuffer buffer = StringBuffer();
@@ -401,72 +449,226 @@ class ScreenSpeechHelper {
       return buffer.toString().trim();
     }
 
-    // Normal Vaccine History flow from Child Page
-    if (isNepali) {
-      buffer.write('$childNameको खोप इतिहास। ');
-      if (records.isNotEmpty) {
-        final String recList = records
-            .map((VaccinationRecord r) => r.vaccineCode)
-            .toSet()
-            .join(', ');
-        buffer.write('लागेका खोपहरू: $recList। ');
+    if (showAllVaccines) {
+      if (recordedVaccineNames.isEmpty) {
+        buffer.write(
+          '${localizations.vaccineHistoryFullShownNoRecorded(childName)} ',
+        );
       } else {
-        buffer.write('हालसम्म कुनै खोप रेकर्ड गरिएको छैन। ');
+        buffer.write('${localizations.vaccineHistoryFullShown(childName)} ');
+        buffer.write(
+          '${localizations.vaccineHistoryRecordedIncludeFull(
+            _joinSpeechItems(recordedVaccineNames, isNepali: isNepali),
+          )} ',
+        );
       }
-
-      // Only read upcoming vaccines if the user has explicitly selected all vaccines tab
-      if (showAllVaccines && dues.isNotEmpty) {
-        final String dueList =
-            dues.map((VaccinationDue d) => d.vaccineCode).toSet().join(', ');
-        buffer.write('आगामी खोपहरू: $dueList। ');
+      if (unrecordedVaccineNames.isNotEmpty) {
+        buffer.write('${localizations.vaccineHistoryOtherUnrecorded} ');
+        buffer.write(
+          '${localizations.vaccineHistoryLaterSchedule(childName)} ',
+        );
       }
+      buffer.write(localizations.vaccineHistoryEditAdvice);
     } else {
-      buffer.write('Vaccine history for $childName. ');
-      if (records.isNotEmpty) {
-        final String recList = records
-            .map((VaccinationRecord r) => r.vaccineCode)
-            .toSet()
-            .join(', ');
-        buffer.write('Completed vaccines: $recList. ');
+      if (isUpToDate) {
+        buffer.write('${localizations.vaccineHistoryUpToDate(childName)} ');
+        if (recordedVaccineNames.isNotEmpty) {
+          buffer.write(
+            '${localizations.vaccineHistoryRecordedInclude(
+              _joinSpeechItems(recordedVaccineNames, isNepali: isNepali),
+            )} ',
+          );
+        }
+        buffer.write(localizations.vaccineHistoryUpToDateEditAdvice);
       } else {
-        buffer.write('No vaccines recorded yet. ');
-      }
-
-      // Only read upcoming vaccines if the user has explicitly selected all vaccines tab
-      if (showAllVaccines && dues.isNotEmpty) {
-        final String dueList =
-            dues.map((VaccinationDue d) => d.vaccineCode).toSet().join(', ');
-        buffer.write('Upcoming vaccines: $dueList. ');
+        if (recordedVaccineNames.isNotEmpty) {
+          buffer.write(
+            '${localizations.vaccineHistoryRecordedAgeAppropriate(
+              childName,
+              _joinSpeechItems(recordedVaccineNames, isNepali: isNepali),
+            )} ',
+          );
+        } else {
+          buffer.write(
+            '${localizations.vaccineHistoryNoRecordedAgeAppropriate(childName)} ',
+          );
+        }
+        if (unrecordedVaccineNames.isNotEmpty) {
+          buffer.write(
+            '${localizations.vaccineHistoryUnrecordedAgeAppropriate(
+              _joinSpeechItems(unrecordedVaccineNames, isNepali: isNepali),
+            )} ',
+          );
+        }
+        buffer.write('${localizations.vaccineHistoryMissedAdvice} ');
+        buffer.write(localizations.vaccineHistoryEditAdvice);
       }
     }
 
     return buffer.toString().trim();
   }
 
+  static DateTime _dateOnly(DateTime date) =>
+      DateTime(date.year, date.month, date.day);
+
+  static Map<DateTime, List<String>> _groupSpeechItems<T>(
+    List<T> items, {
+    required DateTime Function(T item) dateOf,
+    required String Function(T item) itemOf,
+  }) {
+    final Map<DateTime, List<String>> groups = <DateTime, List<String>>{};
+    for (final T item in items) {
+      final DateTime date = _dateOnly(dateOf(item));
+      groups.putIfAbsent(date, () => <String>[]).add(itemOf(item));
+    }
+    return groups;
+  }
+
+  static void _appendSpeechGroups(
+    StringBuffer buffer,
+    Map<DateTime, List<String>> groups, {
+    required bool isNepali,
+    required String locale,
+    required String category,
+    required String Function(String date, String vaccines) singular,
+    required String Function(String date, String vaccines) plural,
+  }) {
+    if (groups.isEmpty) return;
+    buffer.write('$category ');
+    final List<DateTime> dates = groups.keys.toList()..sort();
+    for (final DateTime date in dates) {
+      final String vaccines = _joinSpeechItems(
+        groups[date]!,
+        isNepali: isNepali,
+      );
+      final String dateText = DateFormat('d MMMM y', locale).format(date);
+      buffer.write(groups[date]!.length == 1
+          ? singular(dateText, vaccines)
+          : plural(dateText, vaccines));
+      buffer.write(' ');
+    }
+  }
+
+  static void _appendUpcomingSpeechGroups(
+    StringBuffer buffer,
+    Map<DateTime, List<String>> groups, {
+    required bool isNepali,
+    required String locale,
+    required AppLocalizations localizations,
+  }) {
+    if (groups.isEmpty) return;
+    buffer.write('${localizations.vaccineScheduleUpcomingCategory} ');
+    final List<DateTime> dates = groups.keys.toList()..sort();
+    final DateTime today = _dateOnly(DateTime.now());
+    for (final DateTime date in dates) {
+      final String vaccines = _joinSpeechItems(
+        groups[date]!,
+        isNepali: isNepali,
+      );
+      if (date == today) {
+        buffer.write(groups[date]!.length == 1
+            ? localizations.vaccineScheduleUpcomingTodaySingular(vaccines)
+            : localizations.vaccineScheduleUpcomingTodayPlural(vaccines));
+      } else {
+        final String dateText = DateFormat('d MMMM y', locale).format(date);
+        buffer.write(groups[date]!.length == 1
+            ? localizations.vaccineScheduleUpcomingGroupSingular(
+                dateText,
+                vaccines,
+              )
+            : localizations.vaccineScheduleUpcomingGroupPlural(
+                dateText,
+                vaccines,
+              ));
+      }
+      buffer.write(' ');
+    }
+  }
+
   /// Builds a spoken summary of the Vaccine Schedule screen.
   static String vaccineScheduleScreenText({
     required BuildContext context,
     required AppLocalizations localizations,
+    List<VaccinationDue> dues = const <VaccinationDue>[],
+    List<VaccinationRecord> records = const <VaccinationRecord>[],
   }) {
     final bool isNepali = Localizations.localeOf(context).languageCode == 'ne';
-
-    if (isNepali) {
-      return 'नेपालको राष्ट्रिय बाल खोप तालिका। '
-          'जन्मँदा: बीसीजी, ओपिभी ०। '
-          '६ हप्तामा: पेन्टाभालेन्ट १, रोटाभाइरस १, पिसिभी १, ओपिभी १। '
-          '१० हप्तामा: पेन्टाभालेन्ट २, रोटाभाइरस २। '
-          '१४ हप्तामा: पेन्टाभालेन्ट ३, पिसिभी २, एफआइपिभी १। '
-          '९ महिनामा: दादुरा-रुबेला १, पिसिभी ३, एफआइपिभी २। '
-          '१५ महिनामा: दादुरा-रुबेला २, टाइफाइड खोप।';
-    } else {
-      return 'National Immunisation Schedule of Nepal. '
-          'At birth: BCG, OPV 0. '
-          'At 6 weeks: Pentavalent 1, Rotavirus 1, PCV 1, OPV 1. '
-          'At 10 weeks: Pentavalent 2, Rotavirus 2. '
-          'At 14 weeks: Pentavalent 3, PCV 2, fIPV 1. '
-          'At 9 months: Measles-Rubella 1, PCV 3, fIPV 2. '
-          'At 15 months: Measles-Rubella 2, Typhoid vaccine.';
+    if (dues.isEmpty && records.isEmpty) {
+      return isNepali
+          ? 'नेपालको राष्ट्रिय बाल खोप तालिका। बीसीजी, पेन्टाभालेन्ट, रोटाभाइरस, पिसिभी, एफआइपीभी, दादुरा-रुबेला र टाइफाइड खोपहरू।'
+          : 'National Immunisation Schedule of Nepal. BCG, Pentavalent, Rotavirus, PCV, fIPV, Measles-Rubella and Typhoid vaccines.';
     }
+    final String locale = Localizations.localeOf(context).languageCode;
+    final StringBuffer buffer = StringBuffer(
+      isNepali ? 'खोप तालिका। ' : 'Vaccination schedule. ',
+    );
+    _appendSpeechGroups(
+      buffer,
+      _groupSpeechItems<VaccinationRecord>(
+        records,
+        dateOf: (VaccinationRecord record) => record.administeredDate,
+        itemOf: (VaccinationRecord record) => vaccineHasSingleDose(
+          record.vaccineCode,
+        )
+            ? record.vaccineCode
+            : '${record.vaccineCode} ${record.doseNumber}',
+      ),
+      isNepali: isNepali,
+      locale: locale,
+      category: localizations.vaccineScheduleAdministeredCategory,
+      singular: localizations.vaccineScheduleAdministeredGroupSingular,
+      plural: localizations.vaccineScheduleAdministeredGroupPlural,
+    );
+
+    final DateTime today = _dateOnly(DateTime.now());
+    final List<VaccinationDue> missed = dues
+        .where((VaccinationDue due) => _dateOnly(due.dueDate).isBefore(today))
+        .toList();
+    final List<VaccinationDue> upcoming = dues
+        .where((VaccinationDue due) => !_dateOnly(due.dueDate).isBefore(today))
+        .toList();
+    _appendSpeechGroups(
+      buffer,
+      _groupSpeechItems<VaccinationDue>(
+        missed,
+        dateOf: (VaccinationDue due) => due.dueDate,
+        itemOf: (VaccinationDue due) => vaccineHasSingleDose(due.vaccineCode)
+            ? due.vaccineCode
+            : '${due.vaccineCode} ${due.doseNumber}',
+      ),
+      isNepali: isNepali,
+      locale: locale,
+      category: localizations.vaccineScheduleMissedCategory,
+      singular: localizations.vaccineScheduleMissedGroupSingular,
+      plural: localizations.vaccineScheduleMissedGroupPlural,
+    );
+    if (missed.isNotEmpty) {
+      buffer.write('${localizations.vaccineScheduleMissedAdvice} ');
+    }
+    _appendUpcomingSpeechGroups(
+      buffer,
+      _groupSpeechItems<VaccinationDue>(
+        upcoming,
+        dateOf: (VaccinationDue due) => due.dueDate,
+        itemOf: (VaccinationDue due) => vaccineHasSingleDose(due.vaccineCode)
+            ? due.vaccineCode
+            : '${due.vaccineCode} ${due.doseNumber}',
+      ),
+      isNepali: isNepali,
+      locale: locale,
+      localizations: localizations,
+    );
+    return buffer.toString().trim();
+  }
+
+  static String _joinSpeechItems(
+    List<String> items, {
+    required bool isNepali,
+  }) {
+    if (items.length < 2) return items.join();
+    final conjunction = isNepali ? ' र ' : ' and ';
+    if (items.length == 2) return items.join(conjunction);
+    return '${items.sublist(0, items.length - 1).join(', ')}$conjunction${items.last}';
   }
 
   /// Builds a spoken summary of the Settings screen.
@@ -477,16 +679,24 @@ class ScreenSpeechHelper {
   }) {
     final bool isNepali = currentLanguage == AppLanguage.nepali;
 
+    final String backup = '${localizations.backupSectionTitle}. '
+        '${localizations.backupExportAction}. '
+        '${localizations.backupImportAction}. '
+        '${localizations.backupPhoneChangeNote} '
+        '${localizations.backupPrivacyNote}';
     if (isNepali) {
       return 'सेटिङहरू। भाषा छनोट: हाल नेपाली भाषा चयन गरिएको छ। '
-          'अभिभावकको विवरण हेर्न र सम्पादन गर्न सकिन्छ। '
-          'बालबालिकाको विवरण सम्पादन गर्न सकिन्छ। '
-          'नजिकैको स्वास्थ्य संस्थाको सम्पर्क विवरण उपलब्ध छ।';
+          'प्रोफाइलहरू व्यवस्थापन गर्नुहोस्: हेरचाहकर्ताको प्रोफाइल सम्पादन। '
+          'बालबालिकाको प्रोफाइल सम्पादन। बालबालिकाको प्रोफाइल मेटाउनुहोस्। '
+          'बच्चाको खोप तालिका सम्पादन गर्नुहोस्। यो स्वास्थ्यकर्मीका लागि मात्र हो। '
+          '$backup';
     } else {
       return 'Settings. Language options: English or Nepali. '
-          'Caregiver profile management. '
-          'Child profiles editing. '
-          'Local health facility contact information.';
+          'Manage profiles: Caregiver profile editing. '
+          'Child profiles editing. Delete child profile. '
+          "Edit child's vaccination schedule. "
+          'This is for healthcare professionals only. '
+          '$backup';
     }
   }
 

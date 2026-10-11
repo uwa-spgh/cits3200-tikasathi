@@ -104,6 +104,12 @@ abstract class AppLocalizations {
   /// **'TikaSathi'**
   String get appTitle;
 
+  /// No description provided for @appBarBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get appBarBack;
+
   /// Title shown at the top of the child profile screen
   ///
   /// In en, this message translates to:
@@ -584,6 +590,181 @@ abstract class AppLocalizations {
   /// **'Delete child'**
   String get deleteChildAction;
 
+  /// No description provided for @editVaccineScheduleAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit child\'s vaccination schedule (HEALTHCARE PROFESSIONAL ONLY)'**
+  String get editVaccineScheduleAction;
+
+  /// No description provided for @healthcareProfessionalQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you a healthcare professional?'**
+  String get healthcareProfessionalQuestion;
+
+  /// No description provided for @healthcareProfessionalConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get healthcareProfessionalConfirm;
+
+  /// No description provided for @healthcareProfessionalDecline.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get healthcareProfessionalDecline;
+
+  /// No description provided for @scheduleEditorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit vaccine schedule'**
+  String get scheduleEditorTitle;
+
+  /// No description provided for @scheduleEditorTitleForChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {childName}\'s vaccine schedule'**
+  String scheduleEditorTitleForChild(String childName);
+
+  /// No description provided for @scheduleEditorEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No outstanding vaccines are scheduled.'**
+  String get scheduleEditorEmpty;
+
+  /// No description provided for @scheduleEditorEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit scheduled vaccine'**
+  String get scheduleEditorEdit;
+
+  /// No description provided for @scheduleEditorVaccine.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine'**
+  String get scheduleEditorVaccine;
+
+  /// No description provided for @scheduleEditorDose.
+  ///
+  /// In en, this message translates to:
+  /// **'Dose number'**
+  String get scheduleEditorDose;
+
+  /// No description provided for @scheduleEditorDueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled date'**
+  String get scheduleEditorDueDate;
+
+  /// No description provided for @scheduleEditorSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save schedule changes'**
+  String get scheduleEditorSave;
+
+  /// No description provided for @scheduleEditorSaveConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save schedule changes?'**
+  String get scheduleEditorSaveConfirmTitle;
+
+  /// No description provided for @scheduleEditorSaveConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Save these healthcare professional changes to the child\'s vaccine schedule?'**
+  String get scheduleEditorSaveConfirmMessage;
+
+  /// No description provided for @scheduleEditorRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore default vaccine schedule'**
+  String get scheduleEditorRestore;
+
+  /// No description provided for @scheduleEditorRestoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore default vaccine schedule?'**
+  String get scheduleEditorRestoreTitle;
+
+  /// No description provided for @scheduleEditorRestoreMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will remove all healthcare professional changes and restore the standard vaccination schedule for this child. Vaccination history will not be changed.'**
+  String get scheduleEditorRestoreMessage;
+
+  /// No description provided for @scheduleEditorRestoreConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get scheduleEditorRestoreConfirm;
+
+  /// No description provided for @scheduleEditorInvalidDose.
+  ///
+  /// In en, this message translates to:
+  /// **'That vaccine and dose combination is not valid.'**
+  String get scheduleEditorInvalidDose;
+
+  /// No description provided for @scheduleEditorDuplicateDose.
+  ///
+  /// In en, this message translates to:
+  /// **'That vaccine and dose is already scheduled for this child.'**
+  String get scheduleEditorDuplicateDose;
+
+  /// No description provided for @scheduleEditorAdministeredDose.
+  ///
+  /// In en, this message translates to:
+  /// **'That vaccine and dose has already been administered.'**
+  String get scheduleEditorAdministeredDose;
+
+  /// No description provided for @scheduleEditorSaveSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine schedule updated.'**
+  String get scheduleEditorSaveSuccess;
+
+  /// No description provided for @scheduleEditorSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update the vaccine schedule.'**
+  String get scheduleEditorSaveError;
+
+  /// No description provided for @scheduleEditorRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from schedule'**
+  String get scheduleEditorRemove;
+
+  /// No description provided for @scheduleEditorRemoveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get scheduleEditorRemoveConfirm;
+
+  /// No description provided for @scheduleEditorDueDateChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change scheduled date?'**
+  String get scheduleEditorDueDateChange;
+
+  /// No description provided for @scheduleEditorRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove vaccine from schedule?'**
+  String get scheduleEditorRemoveTitle;
+
+  /// No description provided for @scheduleEditorRemoveMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove {vaccineCode} dose {doseNumber} from this child\'s vaccine schedule? This will not affect vaccination history.'**
+  String scheduleEditorRemoveMessage(Object vaccineCode, Object doseNumber);
+
+  /// No description provided for @scheduleEditorRemoveSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccineCode} dose {doseNumber} removed from {childName}\'s schedule.'**
+  String scheduleEditorRemoveSuccess(
+      Object vaccineCode, Object doseNumber, Object childName);
+
   /// No description provided for @editCaregiverTitle.
   ///
   /// In en, this message translates to:
@@ -830,6 +1011,12 @@ abstract class AppLocalizations {
   /// **'Please enter caregiver\'s name'**
   String get onboardingErrorEmptyCaregiverName;
 
+  /// No description provided for @onboardingErrorInvalidCaregiverName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid caregiver\'s name.'**
+  String get onboardingErrorInvalidCaregiverName;
+
   /// No description provided for @onboardingErrorEmptyCaregiverPhone.
   ///
   /// In en, this message translates to:
@@ -913,6 +1100,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please enter child\'s name'**
   String get onboardingErrorEmptyName;
+
+  /// No description provided for @onboardingErrorInvalidName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid child\'s name.'**
+  String get onboardingErrorInvalidName;
 
   /// No description provided for @onboardingErrorInvalidDate.
   ///
@@ -1118,6 +1311,12 @@ abstract class AppLocalizations {
   /// **'Due today'**
   String get homeSectionDueToday;
 
+  /// No description provided for @homeSectionOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get homeSectionOverdue;
+
   /// No description provided for @homeSectionDueSoon.
   ///
   /// In en, this message translates to:
@@ -1129,6 +1328,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Up to date'**
   String get homeSectionUpToDate;
+
+  /// No description provided for @homeScrollInstruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll down to see all children.'**
+  String get homeScrollInstruction;
 
   /// No description provided for @homeEmptyStateTitle.
   ///
@@ -1148,149 +1353,149 @@ abstract class AppLocalizations {
   /// **'Learn'**
   String get learnTitle;
 
+  /// No description provided for @learnSpeechSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn page. Here you can learn about vaccines. Click on a section to read more.'**
+  String get learnSpeechSummary;
+
+  /// Label for a myth on the Learn page. Bold text in a Learn topic that exactly matches this label is shown in red.
+  ///
+  /// In en, this message translates to:
+  /// **'Myth:'**
+  String get learnMythLabel;
+
+  /// Label for a fact on the Learn page. Bold text in a Learn topic that exactly matches this label is shown in green.
+  ///
+  /// In en, this message translates to:
+  /// **'Fact:'**
+  String get learnFactLabel;
+
   /// No description provided for @learnTopic1Title.
   ///
   /// In en, this message translates to:
-  /// **'Topic 1'**
+  /// **'Why are vaccines important?'**
   String get learnTopic1Title;
 
-  /// No description provided for @learnTopic1Summary.
+  /// Expanded text for Learn topic 1. Separate paragraphs with a blank line (\n\n). Wrap text in **double asterisks** to make it bold.
   ///
   /// In en, this message translates to:
-  /// **'A short summary of topic 1.'**
-  String get learnTopic1Summary;
-
-  /// Full page text for Learn topic 1. Separate paragraphs with a blank line (\n\n).
-  ///
-  /// In en, this message translates to:
-  /// **'This is placeholder content for topic 1. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 1 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 1 and answer common questions.\n\nThis paragraph will say where to get more help with topic 1, such as the local health facility or a health worker.'**
+  /// **'**Vaccines keep your child safe.**\n• Some diseases can make a child very sick.\n• Some diseases can make a child weak for life.\n• Some diseases can kill a child.\n• Vaccines stop these diseases before they start.\n\n**Vaccines protect other children too.**\n• When many children are vaccinated, the disease cannot spread.\n• This keeps your family, your neighbours and your village safe.\n\n**Vaccines are free.**\n• Vaccines are free at the health post and immunisation clinics.\n\n**Your child needs all the doses.**\n• One dose is not enough for many vaccines.\n• Each dose helps your child\'s body become stronger.\n• Follow the dates in the app.'**
   String get learnTopic1Body;
 
   /// No description provided for @learnTopic2Title.
   ///
   /// In en, this message translates to:
-  /// **'Topic 2'**
+  /// **'When should your child get vaccines?'**
   String get learnTopic2Title;
 
-  /// No description provided for @learnTopic2Summary.
+  /// Expanded text for Learn topic 2. Separate paragraphs with a blank line (\n\n). Wrap text in **double asterisks** to make it bold.
   ///
   /// In en, this message translates to:
-  /// **'A short summary of topic 2.'**
-  String get learnTopic2Summary;
-
-  /// Full page text for Learn topic 2. Separate paragraphs with a blank line (\n\n).
-  ///
-  /// In en, this message translates to:
-  /// **'This is placeholder content for topic 2. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 2 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 2 and answer common questions.\n\nThis paragraph will say where to get more help with topic 2, such as the local health facility or a health worker.'**
+  /// **'• Your child needs different vaccines at different ages.\n• Some vaccines are given soon after birth.\n• Other vaccines are given when your child is 6, 10 and 14 weeks old.\n• More vaccines are given at 9, 12 and 15 months.\n• The app will remind you when your child is due for a vaccine.\n• Follow the vaccination schedule to keep your child protected.'**
   String get learnTopic2Body;
 
   /// No description provided for @learnTopic3Title.
   ///
   /// In en, this message translates to:
-  /// **'Topic 3'**
+  /// **'What if your child misses a vaccine?'**
   String get learnTopic3Title;
 
-  /// No description provided for @learnTopic3Summary.
+  /// Expanded text for Learn topic 3. Separate paragraphs with a blank line (\n\n). Wrap text in **double asterisks** to make it bold.
   ///
   /// In en, this message translates to:
-  /// **'A short summary of topic 3.'**
-  String get learnTopic3Summary;
-
-  /// Full page text for Learn topic 3. Separate paragraphs with a blank line (\n\n).
-  ///
-  /// In en, this message translates to:
-  /// **'This is placeholder content for topic 3. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 3 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 3 and answer common questions.\n\nThis paragraph will say where to get more help with topic 3, such as the local health facility or a health worker.'**
+  /// **'• Do not worry if your child misses a vaccine.\n• Take your child to the nearest health facility.\n• Show the health worker your child\'s vaccination card.\n• Tell the health worker which vaccines your child has already received.\n• The health worker can tell you which vaccine your child needs next.\n• Do not stop vaccination because your child missed a dose.'**
   String get learnTopic3Body;
 
   /// No description provided for @learnTopic4Title.
   ///
   /// In en, this message translates to:
-  /// **'Topic 4'**
+  /// **'Are vaccines safe?'**
   String get learnTopic4Title;
 
-  /// No description provided for @learnTopic4Summary.
+  /// Expanded text for Learn topic 4. Separate paragraphs with a blank line (\n\n). Wrap text in **double asterisks** to make it bold.
   ///
   /// In en, this message translates to:
-  /// **'A short summary of topic 4.'**
-  String get learnTopic4Summary;
-
-  /// Full page text for Learn topic 4. Separate paragraphs with a blank line (\n\n).
-  ///
-  /// In en, this message translates to:
-  /// **'This is placeholder content for topic 4. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 4 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 4 and answer common questions.\n\nThis paragraph will say where to get more help with topic 4, such as the local health facility or a health worker.'**
+  /// **'• Vaccines are given to protect your child from serious diseases.\n• Most children have only mild effects after vaccination.\n• Your child may have a mild fever.\n• Your child may have some pain or swelling where the injection was given.\n• Your child may be a little fussy or irritable for a short time.\n• These effects are usually temporary.'**
   String get learnTopic4Body;
 
   /// No description provided for @learnTopic5Title.
   ///
   /// In en, this message translates to:
-  /// **'Topic 5'**
+  /// **'What can happen after vaccination?'**
   String get learnTopic5Title;
 
-  /// No description provided for @learnTopic5Summary.
+  /// Expanded text for Learn topic 5. Separate paragraphs with a blank line (\n\n). Wrap text in **double asterisks** to make it bold.
   ///
   /// In en, this message translates to:
-  /// **'A short summary of topic 5.'**
-  String get learnTopic5Summary;
-
-  /// Full page text for Learn topic 5. Separate paragraphs with a blank line (\n\n).
-  ///
-  /// In en, this message translates to:
-  /// **'This is placeholder content for topic 5. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 5 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 5 and answer common questions.\n\nThis paragraph will say where to get more help with topic 5, such as the local health facility or a health worker.'**
+  /// **'**After the vaccine: what is normal**\nSome children have small problems after a vaccine. This is normal. It means the vaccine is working.\n• A little fever\n• Pain or swelling where the needle went in\n• Crying more than usual\n• Sleeping more than usual\n\n**What you can do**\n• Breastfeed your baby more often.\n• Keep your baby in light clothes. Do not wrap your baby too tightly.\n• Give your baby extra fluids if your baby is older than 6 months.\n• Do not rub or press the swollen place.\n• Ask the health worker before you give any medicine.\n\nThese problems go away in 1 to 2 days.\n\n**When to go to the health facility quickly**\nTake your child to the health facility right away if your child:\n• has a very high fever\n• has fits or shakes\n• cannot breastfeed or drink\n• has trouble breathing\n• will not stop crying for a long time\n• has swelling that is getting bigger\n• looks very weak or is hard to wake'**
   String get learnTopic5Body;
 
   /// No description provided for @learnTopic6Title.
   ///
   /// In en, this message translates to:
-  /// **'Topic 6'**
+  /// **'Vaccine myths and facts'**
   String get learnTopic6Title;
 
-  /// No description provided for @learnTopic6Summary.
+  /// Expanded text for Learn topic 6. Separate paragraphs with a blank line (\n\n). Wrap text in **double asterisks** to make it bold.
   ///
   /// In en, this message translates to:
-  /// **'A short summary of topic 6.'**
-  String get learnTopic6Summary;
-
-  /// Full page text for Learn topic 6. Separate paragraphs with a blank line (\n\n).
-  ///
-  /// In en, this message translates to:
-  /// **'This is placeholder content for topic 6. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 6 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 6 and answer common questions.\n\nThis paragraph will say where to get more help with topic 6, such as the local health facility or a health worker.'**
+  /// **'**Myth:** Vaccines make children sick.\n**Fact:** Vaccines are safe. They teach the body to fight disease. A small fever after the vaccine is normal and passes quickly.\n\n**Myth:** My child is healthy, so my child does not need vaccines.\n**Fact:** Vaccines work best before a child gets sick. Healthy children can catch these diseases too.\n\n**Myth:** If my child misses a vaccine, my child cannot get it anymore.\n**Fact:** Your child can still get it. Go to the health post as soon as you can.\n\n**Myth:** Breastfed babies do not need vaccines.\n**Fact:** Breast milk is very good for your baby. But it cannot stop these diseases. Your baby still needs vaccines.\n\n**Myth:** Diseases like polio and measles are gone, so vaccines are not needed.\n**Fact:** These diseases can still come back if children are not vaccinated.'**
   String get learnTopic6Body;
 
   /// No description provided for @learnTopic7Title.
   ///
   /// In en, this message translates to:
-  /// **'Topic 7'**
+  /// **'Keep your child\'s vaccination card safe'**
   String get learnTopic7Title;
 
-  /// No description provided for @learnTopic7Summary.
+  /// Expanded text for Learn topic 7. Separate paragraphs with a blank line (\n\n). Wrap text in **double asterisks** to make it bold.
   ///
   /// In en, this message translates to:
-  /// **'A short summary of topic 7.'**
-  String get learnTopic7Summary;
-
-  /// Full page text for Learn topic 7. Separate paragraphs with a blank line (\n\n).
-  ///
-  /// In en, this message translates to:
-  /// **'This is placeholder content for topic 7. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 7 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 7 and answer common questions.\n\nThis paragraph will say where to get more help with topic 7, such as the local health facility or a health worker.'**
+  /// **'• Keep your child\'s vaccination card in a safe place.\n• Take the card whenever you visit a health facility.\n• Ask the health worker to update the card after each vaccination.\n• Use the app to keep track of your child\'s vaccines.\n• Do not lose the vaccination card.'**
   String get learnTopic7Body;
 
   /// No description provided for @learnTopic8Title.
   ///
   /// In en, this message translates to:
-  /// **'Topic 8'**
+  /// **'Where can your child get vaccines?'**
   String get learnTopic8Title;
 
-  /// No description provided for @learnTopic8Summary.
+  /// Expanded text for Learn topic 8. Separate paragraphs with a blank line (\n\n). Wrap text in **double asterisks** to make it bold.
   ///
   /// In en, this message translates to:
-  /// **'A short summary of topic 8.'**
-  String get learnTopic8Summary;
-
-  /// Full page text for Learn topic 8. Separate paragraphs with a blank line (\n\n).
-  ///
-  /// In en, this message translates to:
-  /// **'This is placeholder content for topic 8. Replace it with the real information for this topic.\n\nThis paragraph will explain what topic 8 means for caregivers and their children.\n\nThis paragraph will give practical advice about topic 8 and answer common questions.\n\nThis paragraph will say where to get more help with topic 8, such as the local health facility or a health worker.'**
+  /// **'• Your child can receive vaccines at vaccination services and health facilities.\n• You may visit your nearest health facility.\n• If you are not sure where to go, ask a health worker.'**
   String get learnTopic8Body;
+
+  /// No description provided for @learnTopic9Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember'**
+  String get learnTopic9Title;
+
+  /// Expanded text for Learn topic 9. Separate paragraphs with a blank line (\n\n). Wrap text in **double asterisks** to make it bold.
+  ///
+  /// In en, this message translates to:
+  /// **'• Vaccines help protect your child from serious diseases.\n• Give your child vaccines on time.\n• Keep your child\'s vaccination card safe.\n• Follow the vaccination schedule.\n• If your child misses a vaccine, visit a health facility.\n• If you have questions, ask a healthcare worker.'**
+  String get learnTopic9Body;
+
+  /// No description provided for @learnTopic10Title.
+  ///
+  /// In en, this message translates to:
+  /// **'What each vaccine protects against'**
+  String get learnTopic10Title;
+
+  /// Expanded text for Learn topic 10, shown above its table. May be empty. Separate paragraphs with a blank line (\n\n). Wrap text in **double asterisks** to make it bold.
+  ///
+  /// In en, this message translates to:
+  /// **''**
+  String get learnTopic10Body;
+
+  /// Table shown under Learn topic 10. One row per line; the first line is the header row. Separate cells with |.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine | Protects your child from\nBCG | Tuberculosis\nPentavalent | Five diseases, including diphtheria, whooping cough, tetanus, hepatitis B, Haemophilus influenzae type b (Hib) infection.\nPolio drops and polio injection | Polio\nRotavirus | Diarrhoea\nPCV | Pneumonia and brain fever\nMR | Measles and rubella\nJE | Japanese encephalitis (brain fever)\nTCV | Typhoid fever\nHPV (girls, at school in Grade 6) | Cancer of the womb mouth (cervical cancer) when older'**
+  String get learnTopic10Table;
 
   /// No description provided for @childStatusSetupIncomplete.
   ///
@@ -1315,6 +1520,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Past vaccine history hasn\'t been set up yet. Complete setup to get an accurate schedule.'**
   String get childSetupIncompleteBanner;
+
+  /// Spoken message for a child whose vaccine history setup is incomplete
+  ///
+  /// In en, this message translates to:
+  /// **'{childName}\'s past vaccine history hasn\'t been set up yet. Please complete the setup to get an accurate vaccination schedule.'**
+  String childSetupIncompleteSpeech(String childName);
+
+  /// Spoken advice appended to an overdue child profile summary
+  ///
+  /// In en, this message translates to:
+  /// **'Please visit your nearest health facility for advice on missed vaccines.'**
+  String get childSpeechOverdueAdvice;
+
+  /// Spoken due-date phrase for a child profile vaccine summary
+  ///
+  /// In en, this message translates to:
+  /// **'due on {date}'**
+  String childSpeechVaccineDueOn(String date);
 
   /// No description provided for @childActionCompleteSetup.
   ///
@@ -1400,6 +1623,157 @@ abstract class AppLocalizations {
   /// **'There are no recorded vaccinations.'**
   String get vaccineRecordsEmpty;
 
+  /// No description provided for @vaccineHistoryUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'{childName} has received all age-appropriate vaccines.'**
+  String vaccineHistoryUpToDate(Object childName);
+
+  /// No description provided for @vaccineHistoryRecordedInclude.
+  ///
+  /// In en, this message translates to:
+  /// **'These include {recordedVaccines}.'**
+  String vaccineHistoryRecordedInclude(Object recordedVaccines);
+
+  /// No description provided for @vaccineHistoryUpToDateEditAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'You can untick a vaccine if it was selected by mistake, or edit the vaccination date if the recorded date is incorrect.'**
+  String get vaccineHistoryUpToDateEditAdvice;
+
+  /// No description provided for @vaccineHistoryRecordedAgeAppropriate.
+  ///
+  /// In en, this message translates to:
+  /// **'{childName} has these age-appropriate vaccines recorded as received: {recordedVaccines}.'**
+  String vaccineHistoryRecordedAgeAppropriate(
+      Object childName, Object recordedVaccines);
+
+  /// No description provided for @vaccineHistoryNoRecordedAgeAppropriate.
+  ///
+  /// In en, this message translates to:
+  /// **'No age-appropriate vaccines have been recorded as received for {childName} yet.'**
+  String vaccineHistoryNoRecordedAgeAppropriate(Object childName);
+
+  /// No description provided for @vaccineHistoryUnrecordedAgeAppropriate.
+  ///
+  /// In en, this message translates to:
+  /// **'These age-appropriate vaccines have not been recorded as received: {unrecordedVaccines}.'**
+  String vaccineHistoryUnrecordedAgeAppropriate(Object unrecordedVaccines);
+
+  /// No description provided for @vaccineHistoryMissedAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'Please visit your nearest health facility for advice about vaccines your child may have missed.'**
+  String get vaccineHistoryMissedAdvice;
+
+  /// No description provided for @vaccineHistoryEditAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'You can tick vaccines that have already been given, untick vaccines selected by mistake, or edit the vaccination date of a vaccine that is already ticked.'**
+  String get vaccineHistoryEditAdvice;
+
+  /// No description provided for @vaccineHistoryFullShown.
+  ///
+  /// In en, this message translates to:
+  /// **'{childName}\'s full vaccine history is shown.'**
+  String vaccineHistoryFullShown(Object childName);
+
+  /// No description provided for @vaccineHistoryFullShownNoRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'{childName}\'s full vaccine history is shown. No vaccines have been recorded as received yet.'**
+  String vaccineHistoryFullShownNoRecorded(Object childName);
+
+  /// No description provided for @vaccineHistoryRecordedIncludeFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccines recorded as received include {recordedVaccines}.'**
+  String vaccineHistoryRecordedIncludeFull(Object recordedVaccines);
+
+  /// No description provided for @vaccineHistoryOtherUnrecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Other vaccines have not been recorded as received.'**
+  String get vaccineHistoryOtherUnrecorded;
+
+  /// No description provided for @vaccineHistoryLaterSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Some may be scheduled for later as {childName} grows.'**
+  String vaccineHistoryLaterSchedule(Object childName);
+
+  /// No description provided for @vaccineScheduleAdministeredCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Administered vaccines.'**
+  String get vaccineScheduleAdministeredCategory;
+
+  /// No description provided for @vaccineScheduleAdministeredGroupSingular.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} was given on {date}.'**
+  String vaccineScheduleAdministeredGroupSingular(Object date, Object vaccines);
+
+  /// No description provided for @vaccineScheduleAdministeredGroupPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} were given on {date}.'**
+  String vaccineScheduleAdministeredGroupPlural(Object date, Object vaccines);
+
+  /// No description provided for @vaccineScheduleMissedCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed vaccines.'**
+  String get vaccineScheduleMissedCategory;
+
+  /// No description provided for @vaccineScheduleMissedGroupSingular.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} are overdue since {date}.'**
+  String vaccineScheduleMissedGroupSingular(Object date, Object vaccines);
+
+  /// No description provided for @vaccineScheduleMissedGroupPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} are overdue since {date}.'**
+  String vaccineScheduleMissedGroupPlural(Object date, Object vaccines);
+
+  /// No description provided for @vaccineScheduleMissedAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'Please visit your nearest health facility for advice on missed vaccines.'**
+  String get vaccineScheduleMissedAdvice;
+
+  /// No description provided for @vaccineScheduleUpcomingCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming vaccines.'**
+  String get vaccineScheduleUpcomingCategory;
+
+  /// No description provided for @vaccineScheduleUpcomingTodaySingular.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} is due today.'**
+  String vaccineScheduleUpcomingTodaySingular(Object vaccines);
+
+  /// No description provided for @vaccineScheduleUpcomingTodayPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} are due today.'**
+  String vaccineScheduleUpcomingTodayPlural(Object vaccines);
+
+  /// No description provided for @vaccineScheduleUpcomingGroupSingular.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} is due on {date}.'**
+  String vaccineScheduleUpcomingGroupSingular(Object date, Object vaccines);
+
+  /// No description provided for @vaccineScheduleUpcomingGroupPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} are due on {date}.'**
+  String vaccineScheduleUpcomingGroupPlural(Object date, Object vaccines);
+
   /// No description provided for @dose.
   ///
   /// In en, this message translates to:
@@ -1441,6 +1815,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'There are no upcoming vaccines.'**
   String get vaccineScheduleEmpty;
+
+  /// No description provided for @vaccineScheduleDueGroupSingular.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} is due on {date}'**
+  String vaccineScheduleDueGroupSingular(String date, String vaccines);
+
+  /// No description provided for @vaccineScheduleDueGroupPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'{vaccines} are due on {date}'**
+  String vaccineScheduleDueGroupPlural(String date, String vaccines);
 
   /// No description provided for @vaccineScheduleToday.
   ///
@@ -1526,6 +1912,24 @@ abstract class AppLocalizations {
   /// **'Your child is due for {vaccineName} on {date}. Please visit your nearest health post or immunisation clinic.'**
   String reminderUpcoming(String vaccineName, String date);
 
+  /// Opens the day-before reminder, ahead of the client's exact push sentence (reminderUpcoming). The brief (section 5, 3-touch approach) asks this reminder to reinforce that tomorrow is the scheduled vaccination day; this is that phrase. Combining it with the push sentence is our reading of the brief and needs client sign-off.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow is the scheduled vaccination day.'**
+  String get reminderLeadTomorrow;
+
+  /// Opens the same-day reminder, ahead of the client's exact push sentence. The brief quotes this phrase directly for the final reminder. Combining it with the push sentence is our reading of the brief and needs client sign-off.
+  ///
+  /// In en, this message translates to:
+  /// **'Today is your child\'s vaccination day.'**
+  String get reminderLeadToday;
+
+  /// DRAFT, NOT CLIENT-SUPPLIED. Added after the week-before, day-before and same-day reminders when the caregiver has saved a health facility. The brief asks these reminders for the location, where to attend, and facility details 'if available'; the only facility data the app holds is the one the caregiver saves on the home page. Kept as a separate sentence so the client's fixed wording is untouched.
+  ///
+  /// In en, this message translates to:
+  /// **'Your saved health facility: {facility}.'**
+  String reminderFacility(String facility);
+
   /// DRAFT, NEEDS CLIENT SIGN-OFF. Sent one day after a missed dose. The brief gives no exact wording here, only that it must carry the missed vaccine name, why finishing the schedule matters, and catch-up guidance where it applies.
   ///
   /// In en, this message translates to:
@@ -1543,6 +1947,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{vaccineName} is overdue. Contact your nearest health facility for catch-up vaccination.'**
   String reminderOverdue(String vaccineName);
+
+  /// No description provided for @backupSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get backupSectionTitle;
+
+  /// No description provided for @backupExportAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Export backup'**
+  String get backupExportAction;
+
+  /// No description provided for @backupImportAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Import backup'**
+  String get backupImportAction;
+
+  /// No description provided for @backupPrivacyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep this file somewhere safe and only share it with people you trust. It contains your child\'s health information.'**
+  String get backupPrivacyNote;
+
+  /// No description provided for @backupPhoneChangeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your records do not move to a new phone by themselves. Before changing phones, export a backup.'**
+  String get backupPhoneChangeNote;
+
+  /// No description provided for @backupReplaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace data on this phone?'**
+  String get backupReplaceTitle;
+
+  /// No description provided for @backupReplaceMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will replace all data on this phone. Continue?'**
+  String get backupReplaceMessage;
+
+  /// No description provided for @backupReplaceConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get backupReplaceConfirm;
+
+  /// No description provided for @backupExportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup file ready to save.'**
+  String get backupExportSuccess;
+
+  /// No description provided for @backupImportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup imported.'**
+  String get backupImportSuccess;
+
+  /// No description provided for @backupExportError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not export the backup.'**
+  String get backupExportError;
+
+  /// No description provided for @backupImportError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not import the backup.'**
+  String get backupImportError;
+
+  /// No description provided for @backupInvalidFile.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is not a TikaSathi backup this app can read.'**
+  String get backupInvalidFile;
+
+  /// No description provided for @databaseLockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your saved data cannot be opened'**
+  String get databaseLockedTitle;
+
+  /// No description provided for @databaseLockedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone no longer has the key that protects the data in TikaSathi, so the data cannot be read. This can happen after the phone\'s security is reset. If you have a backup file, you can import it after starting fresh.'**
+  String get databaseLockedMessage;
+
+  /// No description provided for @databaseLockedAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Start fresh'**
+  String get databaseLockedAction;
+
+  /// No description provided for @databaseLockedError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not start fresh. Please try again.'**
+  String get databaseLockedError;
 }
 
 class _AppLocalizationsDelegate

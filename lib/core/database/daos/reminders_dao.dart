@@ -138,11 +138,16 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
   }
 
   /// Reminders not yet handed to the device, soonest first.
-  Future<List<Reminder>> getPendingReminders() {
-    return (select(reminders)
-          ..where((row) => row.deliveredAt.isNull())
-          ..orderBy([(row) => OrderingTerm.asc(row.scheduledFor)]))
-        .get();
+  ///
+  /// [limit] is the window the device can hold. Later rows stay in the table.
+  Future<List<Reminder>> getPendingReminders({int? limit}) {
+    final query = select(reminders)
+      ..where((row) => row.deliveredAt.isNull())
+      ..orderBy([(row) => OrderingTerm.asc(row.scheduledFor)]);
+    if (limit != null) {
+      query.limit(limit);
+    }
+    return query.get();
   }
 
   /// Pending reminders that were due at or before [instant], soonest first.
@@ -176,6 +181,45 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
         deliveredAt: Value(deliveredAt ?? DateTime.now()),
       ),
     );
+  }
+
+  /// Records that the reminders under [notificationIds] are now queued with
+  /// the device.
+  ///
+  /// Only rows not already marked are written. The scheduler re-registers on
+  /// every change to this table, so writing rows that are already marked would
+  /// wake it again with nothing new to do.
+  Future<int> markRemindersRegistered(
+    List<int> notificationIds, {
+    DateTime? registeredAt,
+  }) {
+    if (notificationIds.isEmpty) {
+      return Future<int>.value(0);
+    }
+    return (update(reminders)
+          ..where(
+            (row) =>
+                row.notificationId.isIn(notificationIds) &
+                row.registeredAt.isNull(),
+          ))
+        .write(
+      RemindersCompanion(registeredAt: Value(registeredAt ?? DateTime.now())),
+    );
+  }
+
+  /// Records that the device no longer holds the reminders under
+  /// [notificationIds], because they were taken off its queue.
+  Future<int> clearRemindersRegistered(List<int> notificationIds) {
+    if (notificationIds.isEmpty) {
+      return Future<int>.value(0);
+    }
+    return (update(reminders)
+          ..where(
+            (row) =>
+                row.notificationId.isIn(notificationIds) &
+                row.registeredAt.isNotNull(),
+          ))
+        .write(const RemindersCompanion(registeredAt: Value(null)));
   }
 
   Future<int> markReminderDelivered(String id, {DateTime? deliveredAt}) {
