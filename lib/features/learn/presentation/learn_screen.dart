@@ -9,11 +9,19 @@ import 'package:tikasathi/features/settings/domain/language_controller.dart';
 
 /// Learn tab: an FAQ-style list of collapsible tabs. Tapping a tab's title
 /// expands it to show that topic's information.
-class LearnScreen extends ConsumerWidget {
+class LearnScreen extends ConsumerStatefulWidget {
   const LearnScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LearnScreen> createState() => _LearnScreenState();
+}
+
+class _LearnScreenState extends ConsumerState<LearnScreen> {
+  /// The topic currently expanded, read aloud in place of the page summary.
+  LearnTopic? _expandedTopic;
+
+  @override
+  Widget build(BuildContext context) {
     final AsyncValue<AppLanguage> languageState =
         ref.watch(languageControllerProvider);
 
@@ -37,11 +45,16 @@ class LearnScreen extends ConsumerWidget {
             isMainTitle: true,
             textGetter: () => ScreenSpeechHelper.learnScreenText(
                   localizations: l10n,
+                  expandedTopic: _expandedTopic,
                 ),
             haveBackButton: false,
             titleKey: const Key('learn-title')),
-        body: const SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(16, 8, 16, 20), child: _TopicList()));
+        body: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+            child: _TopicList(
+              onExpandedTopicChanged: (LearnTopic? topic) =>
+                  _expandedTopic = topic,
+            )));
   }
 }
 
@@ -71,7 +84,10 @@ Color _boldColor(AppLocalizations l10n, String text) {
 /// The topic tabs, of which at most one is expanded at a time: opening a tab
 /// collapses whichever tab was open before.
 class _TopicList extends StatefulWidget {
-  const _TopicList();
+  const _TopicList({required this.onExpandedTopicChanged});
+
+  /// Called with the newly expanded topic, or null once no topic is open.
+  final ValueChanged<LearnTopic?> onExpandedTopicChanged;
 
   @override
   State<_TopicList> createState() => _TopicListState();
@@ -92,8 +108,12 @@ class _TopicListState extends State<_TopicList> {
 
   void _onExpansionChanged(int index, bool expanded) {
     if (!expanded) {
+      if (_controllers.every((ExpansibleController c) => !c.isExpanded)) {
+        widget.onExpandedTopicChanged(null);
+      }
       return;
     }
+    widget.onExpandedTopicChanged(learnTopics[index]);
     for (int other = 0; other < _controllers.length; other++) {
       if (other != index && _controllers[other].isExpanded) {
         _controllers[other].collapse();
