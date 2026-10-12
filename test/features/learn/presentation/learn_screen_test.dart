@@ -112,6 +112,37 @@ void main() {
       }
     });
 
+    testWidgets('read aloud speaks the expanded topic, else the summary',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(_app());
+      await tester.pumpAndSettle();
+
+      String spoken() => tester
+          .widget<ReadAloudButton>(find.byType(ReadAloudButton))
+          .textGetter!();
+
+      expect(spoken(), _en.learnSpeechSummary);
+
+      final LearnTopic first = learnTopics[0];
+      await _toggle(tester, first);
+      expect(spoken(), startsWith(first.title(_en)));
+      for (final String paragraph in _shown(first, _en)) {
+        expect(spoken(), contains(paragraph));
+      }
+      expect(spoken(), isNot(contains('**')));
+
+      final LearnTopic last = learnTopics.last;
+      await _toggle(tester, last);
+      expect(spoken(), startsWith(last.title(_en)));
+      expect(spoken(), isNot(contains(first.title(_en))));
+      for (final List<String> row in last.tableRows(_en)) {
+        expect(spoken(), contains(row.last));
+      }
+
+      await _toggle(tester, last);
+      expect(spoken(), _en.learnSpeechSummary);
+    });
+
     testWidgets('tapping a tab expands and collapses its content',
         (WidgetTester tester) async {
       await tester.pumpWidget(_app());
